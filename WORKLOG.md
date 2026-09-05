@@ -25,6 +25,13 @@ Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se 
 - Rezultat: `Orizont-RSS-1.5.3-win-x64.zip` apare ca asset oficial, cu 85.194.997 bytes; API-ul GitHub confirmă `draft=false`, `prerelease=false`, `asset_count=1`.
 - Verificare download: URL-ul public al asset-ului a răspuns `HTTP 200` și a transferat 85.194.997 bytes.
 
+## 2026-09-05 — Activarea GitHub Pages
+
+- Scop: publicarea unei pagini accesibile de prezentare și descărcare pentru Orizont RSS.
+- Configurație: ramura `main`, directorul `/docs`.
+- URL public: `https://grifnas.github.io/OrizontRSS/`.
+- Verificare: `HTTP 200`; titlu `Orizont RSS — cititor RSS accesibil`; limba HTML `ro`; linkul către `releases/latest` prezent.
+
 ## 2026-09-05 — Distribuția Orizont RSS 1.5.3
 
 - Scop: generarea distribuției 1.5.3 la cererea expresă a utilizatorului.
