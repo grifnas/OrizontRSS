@@ -134,6 +134,14 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Rezultat: nu au fost identificate regresii automate; nu s-a creat o distribuție nouă.
 - Executabil de test: `bin/Release/final-1.5.3-win-x64/Orizont.exe`.
 
+## 2026-09-05 — Test WinGet local
+
+- Scop: verificarea instalării reale din manifestul local WinGet, pas cu pas, cu utilizatorul.
+- Rezultat: validarea manifestului a trecut; instalarea a raportat succes; `winget list` afișează `Orizont RSS 1.5.3`; executabilul instalat a fost găsit în `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Grifnas.OrizontRSS__DefaultSource\Orizont.exe` și a pornit normal.
+- Observație: aliasul `orizont-rss.exe` a fost creat în `%LOCALAPPDATA%\Microsoft\WinGet\Links`, dar nu a fost recunoscut în sesiunea PowerShell curentă deoarece acel folder nu era disponibil în `PATH`. Acest lucru nu a împiedicat pornirea aplicației.
+- Comportament protejat: nu au fost atinse feedurile, articolele sau setările existente; nu s-a creat o distribuție nouă și nu s-a trimis manifestul în depozitul Microsoft.
+- Executabil de test: copia instalată prin WinGet; executabilul local de referință rămâne `bin/Release/final-1.5.3-win-x64/Orizont.exe`.
+
 ## 2026-09-01 — Perioade scurte de păstrare
 
 - Scop: adăugarea perioadelor de 1, 3, 7 și 14 zile pentru curățarea automată a articolelor obișnuite.
