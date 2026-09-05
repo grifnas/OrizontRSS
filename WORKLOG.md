@@ -128,7 +128,7 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 ## 2026-09-05 — Verificare automată completă după pregătirea publicării
 
 - Scop: verificarea automată a stării actuale înainte de următoarea etapă publică.
-- Fișiere modificate: `WORKLOG.md` doar.
+- Fișiere modificate: doar `WORKLOG.md`.
 - Verificări: build Release fără erori sau avertismente; CoreSmoke trecut (16 verificări, 1.200 articole); LocalizationSmoke trecut pentru en-US, es-ES, fr-FR, de-DE și pt-BR; eSpeakSmoke trecut (132 voci); localizare 814/814 fără lipsuri, intrări extra sau erori; ghiduri HTML trecute; distribuția dezarhivată verificată cu versiunea fișierului `1.5.3.0`, versiunea produsului `1.5.3` și 441 fișiere eSpeak NG.
 - Observație: `verify-all.ps1` așteaptă directorul distribuției, nu arhiva ZIP; verificarea finală a fost rerulată cu `bin/Release/final-1.5.3-win-x64` și a trecut.
 - Rezultat: nu au fost identificate regresii automate; nu s-a creat o distribuție nouă.
