@@ -157,6 +157,15 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Ordine stabilită: instalator accesibil cu scurtătură și navigare din tastatură → test administrator/non-administrator → Pull Request WinGet.
 - Comportament protejat: manifestul existent, Release-ul 1.5.3 și funcțiile aplicației rămân neschimbate; nu s-a creat o distribuție nouă.
 
+## 2026-09-05 — Primul instalator Windows accesibil
+
+- Scop: crearea unui instalator autonom, per utilizator, care descarcă Release-ul oficial, verifică hash-ul și creează scurtături în meniul Start.
+- Fișiere adăugate: `packaging/installer/OrizontSetup.csproj`, `App.xaml`, `App.xaml.cs`, `MainWindow.xaml`, `MainWindow.xaml.cs`; `docs/PROJECT-STATUS.md` actualizat.
+- Comportament: interfață WPF cu controale etichetate pentru cititoare de ecran; instalare în `%LOCALAPPDATA%\Programs\Orizont RSS`; păstrarea datelor utilizatorului; scurtături pentru pornire și dezinstalare; verificare SHA-256 a arhivei înainte de extragere.
+- Verificări: compilare fără erori sau avertismente; publicare autonomă win-x64 reușită; executabilul `OrizontSetup.exe` are versiunea de fișier `1.5.3.0`, versiunea produsului `1.5.3`, 68,28 MB și pornește fără închidere imediată. Publicarea a emis avertismente de conectare la NuGet, fără a bloca rezultatul; testarea manuală cu JAWS/NVDA rămâne necesară.
+- Comportament protejat: nu s-a modificat codul aplicației; nu s-au atins feeduri, articole sau setări; distribuția publică 1.5.3 existentă nu a fost înlocuită.
+- Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
+
 ## 2026-09-01 — Perioade scurte de păstrare
 
 - Scop: adăugarea perioadelor de 1, 3, 7 și 14 zile pentru curățarea automată a articolelor obișnuite.

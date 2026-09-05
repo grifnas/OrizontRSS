@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>OrizontSetup</AssemblyName>
+    <RootNamespace>OrizontSetup</RootNamespace>
+    <Version>1.5.3</Version>
+    <AssemblyVersion>1.5.3.0</AssemblyVersion>
+    <FileVersion>1.5.3.0</FileVersion>
+    <InformationalVersion>1.5.3</InformationalVersion>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Title>Instalare Orizont RSS</Title>
+    <Product>Orizont RSS</Product>
+    <Authors>Grigore Frișan</Authors>
+    <Company>Grigore Frișan</Company>
+    <Description>Instalator accesibil pentru Orizont RSS</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="..\..\Assets\OrizontRSS.ico" Link="OrizontRSS.ico" />
+  </ItemGroup>
+</Project>

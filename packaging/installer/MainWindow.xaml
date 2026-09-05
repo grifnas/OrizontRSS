@@ -1,0 +1,103 @@
+<Window x:Class="OrizontSetup.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Instalare Orizont RSS"
+        Width="620"
+        Height="430"
+        MinWidth="560"
+        MinHeight="360"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResizeWithGrip">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="TitleText"
+                   Grid.Row="0"
+                   FontSize="24"
+                   FontWeight="SemiBold"
+                   Text="Instalare Orizont RSS"
+                   AutomationProperties.HeadingLevel="Level1" />
+        <TextBlock x:Name="IntroText"
+                   Grid.Row="1"
+                   Margin="0,12,0,18"
+                   TextWrapping="Wrap"
+                   Text="Instalator accesibil pentru Orizont RSS. Aplicația va fi instalată pentru utilizatorul curent."
+                   AutomationProperties.Name="Informații despre instalare" />
+
+        <GroupBox x:Name="InstallFolderGroup"
+                  Grid.Row="2"
+                  Header="Folderul instalării"
+                  AutomationProperties.Name="Folderul instalării">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="InstallPathBox"
+                         Grid.Column="0"
+                         MinHeight="30"
+                         VerticalContentAlignment="Center"
+                         AutomationProperties.Name="Calea folderului instalării"
+                         AutomationProperties.HelpText="Folderul în care vor fi copiate fișierele aplicației" />
+                <Button x:Name="BrowseButton"
+                        Grid.Column="1"
+                        Margin="10,0,0,0"
+                        Padding="14,6"
+                        Content="Răsfoiește..."
+                        AutomationProperties.Name="Alege folderul instalării"
+                        Click="BrowseButton_Click" />
+            </Grid>
+        </GroupBox>
+
+        <TextBlock x:Name="DataNoticeText"
+                   Grid.Row="3"
+                   Margin="0,18,0,0"
+                   TextWrapping="Wrap"
+                   Text="Feedurile, articolele și setările existente nu sunt șterse; ele sunt păstrate în profilul Windows al utilizatorului."
+                   AutomationProperties.Name="Notă despre datele utilizatorului" />
+
+        <ProgressBar x:Name="ProgressBar"
+                     Grid.Row="4"
+                     Margin="0,16,0,8"
+                     Height="18"
+                     Minimum="0"
+                     Maximum="100"
+                     IsHitTestVisible="False"
+                     AutomationProperties.Name="Progresul instalării" />
+        <TextBlock x:Name="StatusText"
+                   Grid.Row="5"
+                   MinHeight="28"
+                   TextWrapping="Wrap"
+                   AutomationProperties.LiveSetting="Polite"
+                   AutomationProperties.Name="Starea instalării" />
+
+        <StackPanel Grid.Row="6"
+                    Margin="0,18,0,0"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+            <Button x:Name="PrimaryButton"
+                    MinWidth="120"
+                    Margin="0,0,10,0"
+                    Padding="16,8"
+                    Content="Instalează"
+                    IsDefault="True"
+                    AutomationProperties.Name="Instalează Orizont RSS"
+                    Click="PrimaryButton_Click" />
+            <Button x:Name="CancelButton"
+                    MinWidth="100"
+                    Padding="16,8"
+                    Content="Anulează"
+                    IsCancel="True"
+                    AutomationProperties.Name="Anulează operația"
+                    Click="CancelButton_Click" />
+        </StackPanel>
+    </Grid>
+</Window>
