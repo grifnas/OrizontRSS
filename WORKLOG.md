@@ -150,6 +150,13 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Concluzie: ciclul local WinGet validare → instalare → pornire → dezinstalare este închis cu succes.
 - Executabil de test: nu mai există copia WinGet instalată; executabilul local de referință rămâne `bin/Release/final-1.5.3-win-x64/Orizont.exe`.
 
+## 2026-09-05 — Decizie: amânarea trimiterii WinGet
+
+- Decizie: trimiterea manifestului în `microsoft/winget-pkgs` se amână până la pregătirea unui instalator Windows accesibil.
+- Motiv: testul WinGet portabil a confirmat instalarea și pornirea, dar nu a creat o intrare evidentă în meniul Start, iar verificarea în regim non-administrator nu este încă efectuată.
+- Ordine stabilită: instalator accesibil cu scurtătură și navigare din tastatură → test administrator/non-administrator → Pull Request WinGet.
+- Comportament protejat: manifestul existent, Release-ul 1.5.3 și funcțiile aplicației rămân neschimbate; nu s-a creat o distribuție nouă.
+
 ## 2026-09-01 — Perioade scurte de păstrare
 
 - Scop: adăugarea perioadelor de 1, 3, 7 și 14 zile pentru curățarea automată a articolelor obișnuite.

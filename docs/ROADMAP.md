@@ -10,9 +10,11 @@ Distribuția 1.5.3 Windows x64 și arhiva sursă au fost verificate și sunt dis
 
 ## Următoarea etapă
 
-1. Revizuirea manifestului WinGet pregătit local folosind URL-ul stabil al Release-ului, apoi trimiterea lui numai după confirmarea identității publice și verificarea instalării pe un Windows curat.
-2. Promovarea paginii publice și colectarea feedbackului inițial.
-3. Menținerea proiectului Windows fără schimbarea funcțiilor stabile; orice modificare nouă rămâne supusă regulilor din `AGENTS.md`.
+1. Pregătirea unui instalator Windows accesibil, cu scurtătură în meniul Start și navigare completă din tastatură.
+2. Retestarea WinGet prin acel instalator, inclusiv instalare și dezinstalare în regim non-administrator.
+3. Trimiterea manifestului WinGet numai după aceste verificări și confirmarea identității publice.
+4. Promovarea paginii publice și colectarea feedbackului inițial.
+5. Menținerea proiectului Windows fără schimbarea funcțiilor stabile; orice modificare nouă rămâne supusă regulilor din `AGENTS.md`.
 
 ## Idei pentru etape ulterioare
 
