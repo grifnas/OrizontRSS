@@ -12,6 +12,8 @@
     .skip { position: absolute; left: -9999px; }
     .skip:focus { left: 1rem; top: 1rem; padding: .5rem; background: Canvas; color: CanvasText; }
     .card { border: 1px solid GrayText; border-radius: .6rem; padding: 1rem; margin: 1rem 0; }
+    .download-button { display: inline-block; padding: .65rem 1rem; border-radius: .4rem; background: #0b62b2; color: #fff; font-weight: 700; text-decoration: none; }
+    .download-button:focus, .download-button:hover { text-decoration: underline; outline: 3px solid currentColor; outline-offset: 3px; }
     h1, h2 { line-height: 1.2; }
   </style>
 </head>
@@ -33,7 +35,8 @@
     <section class="card" aria-labelledby="download">
       <h2 id="download">Version 1.5.3</h2>
       <p>Stabile, eigenständige Version für Windows x64. Eine separate .NET-Runtime ist nicht erforderlich.</p>
-      <p><a href="https://github.com/grifnas/OrizontRSS/releases/latest">Neueste Version herunterladen</a></p>
+      <p><a class="download-button" href="https://github.com/grifnas/OrizontRSS/releases/latest/download/OrizontSetup.exe">Orizont RSS installieren (empfohlen)</a></p>
+      <p><a href="https://github.com/grifnas/OrizontRSS/releases/latest">Portable Version herunterladen (ZIP)</a></p>
       <p>Prüfen Sie vor der Installation die auf der Release-Seite angezeigte SHA-256-Prüfsumme.</p>
     </section>
     <section aria-labelledby="funktionen">

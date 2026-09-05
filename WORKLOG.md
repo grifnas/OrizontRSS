@@ -2,6 +2,14 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-05 — Buton public pentru instalator
+
+- Scop: facilitarea descărcării pentru utilizatorii finali printr-un buton direct către instalator.
+- Fișiere modificate: `docs/index.html`, `docs/index.en.html`, `docs/index.es.html`, `docs/index.fr.html`, `docs/index.de.html`, `docs/index.pt.html`, `docs/PROJECT-STATUS.md`, `WORKLOG.md`.
+- Comportament: toate cele șase pagini GitHub Pages au buton principal „instalează” către `releases/latest/download/OrizontSetup.exe`; arhiva portabilă rămâne link alternativ către ultimul release. Butonul are stil vizibil și indicator de focus accesibil.
+- Verificări: fiecare pagină conține ambele linkuri; URL-ul public al instalatorului răspunde HTTP 200 și livrează 161.696.832 bytes.
+- Executabil de test: nu s-a modificat codul aplicației; instalatorul public verificat este `https://github.com/grifnas/OrizontRSS/releases/latest/download/OrizontSetup.exe`.
+
 ## 2026-09-05 — Localizarea etichetei folderului de instalare
 
 - Scop: eliminarea anunțului mixt română-engleză pentru câmpul folderului de instalare.

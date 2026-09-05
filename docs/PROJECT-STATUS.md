@@ -22,7 +22,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 
 ## În lucru acum
 
-- Publicarea publică este activă: sursa, tagul `v1.5.3`, Release-ul stabil și arhiva Windows sunt publicate în `grifnas/OrizontRSS`; pagina GitHub Pages multilingvă funcționează la `https://grifnas.github.io/OrizontRSS/`.
+- Publicarea publică este activă: sursa, tagul `v1.5.3`, Release-ul stabil, arhiva Windows și instalatorul `OrizontSetup.exe` sunt publicate în `grifnas/OrizontRSS`; pagina GitHub Pages multilingvă funcționează la `https://grifnas.github.io/OrizontRSS/` și oferă acum buton direct pentru instalator, cu arhiva portabilă ca alternativă.
 - Instalatorul autonom `OrizontSetup.exe` pentru Windows x64 include acum alegerea inițială a limbii (cu limba Windows preselectată), opțiune pentru pictogramă pe desktop și bară de stare live; instalarea și dezinstalarea completă au fost testate manual, iar retestarea acestor funcții noi cu JAWS/NVDA rămâne necesară înainte de publicarea lui.
 - Verificarea manuală raportată de utilizator pentru bara de stare și facilitățile Orizont este în regulă; etapa de consolidare și distribuția 1.5.3 sunt închise.
 - Experimentul Android `OrizontRSSAndroid` este separat de proiectul Windows și este pus pe pauză.
