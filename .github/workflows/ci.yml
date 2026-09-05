@@ -22,9 +22,9 @@ jobs:
       - name: CoreSmoke
         run: dotnet run --project .\tests\CoreSmoke\CoreSmoke.csproj --configuration Release
       - name: LocalizationSmoke
-        run: dotnet run --project .\tests\LocalizationSmoke\LocalizationSmoke.csproj --configuration Release --no-restore
+        run: dotnet run --project .\tests\LocalizationSmoke\LocalizationSmoke.csproj --configuration Release
       - name: eSpeakSmoke
-        run: dotnet run --project .\tests\EspeakSmoke\EspeakSmoke.csproj --configuration Release --no-restore
+        run: dotnet run --project .\tests\EspeakSmoke\EspeakSmoke.csproj --configuration Release
       - name: Verifică localizarea
         run: powershell -ExecutionPolicy Bypass -File .\tools\verify-localization.ps1 -RequireComplete
       - name: Verifică ghidurile

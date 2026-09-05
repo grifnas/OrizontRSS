@@ -2,6 +2,15 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-05 — Restaurarea dependențelor în CI
+
+- Scop: corectarea celui de-al doilea eșec al workflow-ului GitHub după separarea surselor instalatorului.
+- Fișiere modificate: `.github/workflows/ci.yml`, `WORKLOG.md`.
+- Cauză: `LocalizationSmoke` și `eSpeakSmoke` erau rulate cu `--no-restore` pe runner curat, fără `project.assets.json`.
+- Remediere: cele două comenzi permit restaurarea normală a dependențelor.
+- Verificări: ambele smoke testuri trecute local cu restaurare normală; workflow-ul GitHub va rula din nou după commit.
+- Notă: avertizarea GitHub despre Node.js 20 rămâne informativă și nu blochează execuția.
+
 ## 2026-09-05 — Repararea workflow-ului CI
 
 - Scop: eliminarea eșecurilor repetate GitHub Actions raportate prin email.
