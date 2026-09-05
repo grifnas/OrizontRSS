@@ -125,6 +125,15 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: structură multi-fișier și câmpuri YAML verificate static; URL-ul, versiunea și hash-ul corespund Release-ului 1.5.3; nu s-a executat instalarea WinGet pe un Windows curat.
 - Executabil de test: `bin/Release/final-1.5.3-win-x64/Orizont.exe` (neschimbat; disponibil pentru retestare manuală).
 
+## 2026-09-05 — Verificare automată completă după pregătirea publicării
+
+- Scop: verificarea automată a stării actuale înainte de următoarea etapă publică.
+- Fișiere modificate: `WORKLOG.md` doar.
+- Verificări: build Release fără erori sau avertismente; CoreSmoke trecut (16 verificări, 1.200 articole); LocalizationSmoke trecut pentru en-US, es-ES, fr-FR, de-DE și pt-BR; eSpeakSmoke trecut (132 voci); localizare 814/814 fără lipsuri, intrări extra sau erori; ghiduri HTML trecute; distribuția dezarhivată verificată cu versiunea fișierului `1.5.3.0`, versiunea produsului `1.5.3` și 441 fișiere eSpeak NG.
+- Observație: `verify-all.ps1` așteaptă directorul distribuției, nu arhiva ZIP; verificarea finală a fost rerulată cu `bin/Release/final-1.5.3-win-x64` și a trecut.
+- Rezultat: nu au fost identificate regresii automate; nu s-a creat o distribuție nouă.
+- Executabil de test: `bin/Release/final-1.5.3-win-x64/Orizont.exe`.
+
 ## 2026-09-01 — Perioade scurte de păstrare
 
 - Scop: adăugarea perioadelor de 1, 3, 7 și 14 zile pentru curățarea automată a articolelor obișnuite.
