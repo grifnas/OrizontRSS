@@ -166,6 +166,14 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Comportament protejat: nu s-a modificat codul aplicației; nu s-au atins feeduri, articole sau setări; distribuția publică 1.5.3 existentă nu a fost înlocuită.
 - Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
 
+## 2026-09-05 — Închiderea instalatorului după pornirea aplicației
+
+- Scop: corectarea comportamentului observat la testul manual: aplicația pornea, dar fereastra instalatorului rămânea deschisă.
+- Fișier modificat: `packaging/installer/MainWindow.xaml.cs`.
+- Schimbare: butonul „Pornește Orizont RSS” lansează aplicația instalată și închide imediat fereastra instalatorului.
+- Verificări: recompilare și publicare autonomă win-x64 reușite; aplicația principală nu a fost modificată.
+- Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
+
 ## 2026-09-01 — Perioade scurte de păstrare
 
 - Scop: adăugarea perioadelor de 1, 3, 7 și 14 zile pentru curățarea automată a articolelor obișnuite.

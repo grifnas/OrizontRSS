@@ -153,7 +153,11 @@ public partial class MainWindow : Window
         PrimaryButton.SetValue(AutomationProperties.NameProperty, "Pornește Orizont RSS");
         PrimaryButton.IsEnabled = true;
         PrimaryButton.Click -= PrimaryButton_Click;
-        PrimaryButton.Click += (_, _) => Process.Start(new ProcessStartInfo(Path.Combine(destination, "Orizont.exe")) { UseShellExecute = true });
+        PrimaryButton.Click += (_, _) =>
+        {
+            Process.Start(new ProcessStartInfo(Path.Combine(destination, "Orizont.exe")) { UseShellExecute = true });
+            Close();
+        };
         CancelButton.Content = "Închide";
         CancelButton.IsEnabled = true;
         File.Delete(tempZip);
