@@ -2,6 +2,15 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-05 — Corectarea tranziției dialogului de limbă
+
+- Scop: remedierea închiderii neașteptate a instalatorului după apăsarea butonului `Continue`.
+- Fișiere modificate: `packaging/installer/App.xaml.cs`, `WORKLOG.md`.
+- Cauză identificată: modul implicit WPF `OnLastWindowClose` închidea aplicația între dialogul de limbă și fereastra principală.
+- Remediere: `ShutdownMode.OnExplicitShutdown` pe durata dialogului, apoi revenire la `OnMainWindowClose` după afișarea instalatorului; excepțiile de pornire sunt jurnalizate în `%TEMP%\\OrizontSetup-startup.log`.
+- Verificări: publicare win-x64 fără erori; test automat UI Automation — după `Continue`, procesul rămâne activ și titlul devine `Install Orizont RSS`.
+- Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
+
 ## 2026-09-05 — Pregătirea publicării publice
 
 - Scop: inițierea demersurilor pentru publicarea publică a Orizont RSS 1.5.3, fără publicare externă neautorizată.
