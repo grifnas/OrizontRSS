@@ -260,6 +260,7 @@ public partial class MainWindow : Window
         TitleText.Text = uninstall ? _texts.UninstallTitle : _texts.InstallTitle;
         IntroText.Text = uninstall ? _texts.UninstallIntro : _texts.InstallIntro;
         InstallFolderGroup.Header = _texts.FolderHeader;
+        InstallFolderGroup.SetValue(AutomationProperties.NameProperty, _texts.FolderHeader);
         BrowseButton.Content = _texts.BrowseButton;
         BrowseButton.SetValue(AutomationProperties.NameProperty, _texts.BrowseButton);
         DesktopShortcutCheckBox.Content = _texts.DesktopShortcut;
@@ -271,6 +272,7 @@ public partial class MainWindow : Window
         PrimaryButton.SetValue(AutomationProperties.NameProperty, PrimaryButton.Content);
         CancelButton.SetValue(AutomationProperties.NameProperty, _texts.CancelButton);
         InstallPathBox.SetValue(AutomationProperties.NameProperty, _texts.FolderHeader);
+        InstallPathBox.SetValue(AutomationProperties.HelpTextProperty, _texts.FolderHeader);
         StatusBarControl.SetValue(AutomationProperties.NameProperty, uninstall ? _texts.UninstallTitle : _texts.InstallTitle);
     }
 

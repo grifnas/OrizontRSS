@@ -2,6 +2,14 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-05 — Localizarea etichetei folderului de instalare
+
+- Scop: eliminarea anunțului mixt română-engleză pentru câmpul folderului de instalare.
+- Fișiere modificate: `packaging/installer/MainWindow.xaml.cs`, `WORKLOG.md`.
+- Remediere: numele de automatizare al grupului și textul de ajutor al câmpului sunt setate din limba selectată, nu rămân valorile românești din XAML.
+- Verificări: publicare win-x64 fără erori.
+- Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
+
 ## 2026-09-05 — Localizarea anunțului pentru pictograma desktop
 
 - Scop: corectarea anunțului JAWS/NVDA care rămânea în română după alegerea limbii engleze.
