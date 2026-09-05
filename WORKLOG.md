@@ -182,6 +182,14 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: publicare autonomă win-x64 reușită; problema a fost izolată ca limitare de director de lucru, fără atingerea datelor utilizatorului.
 - Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
 
+## 2026-09-05 — Retestare instalare și dezinstalare completă
+
+- Scop: verificarea manuală a instalatorului corectat după observația privind folderul gol rămas.
+- Rezultat: instalarea și pornirea aplicației au reușit; scurtătura din meniul Start a pornit aplicația; dezinstalarea confirmată a eliminat complet folderul `%LOCALAPPDATA%\Programs\Orizont RSS`, executabilul, copia instalatorului și ambele scurtături.
+- Comportament protejat: nu au fost modificate feedurile, articolele sau setările utilizatorului; nu rulează procese Orizont după dezinstalare.
+- Concluzie: ciclul instalator accesibil → instalare → pornire → scurtătură Start → dezinstalare completă este trecut manual.
+- Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
+
 ## 2026-09-01 — Perioade scurte de păstrare
 
 - Scop: adăugarea perioadelor de 1, 3, 7 și 14 zile pentru curățarea automată a articolelor obișnuite.
