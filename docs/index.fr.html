@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orizont RSS — lecteur RSS accessible</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { max-width: 52rem; margin: 0 auto; padding: 2rem 1.25rem; font: 1.05rem/1.6 system-ui, sans-serif; }
+    a { color: #0b62b2; }
+    @media (prefers-color-scheme: dark) { a { color: #8cc8ff; } }
+    .skip { position: absolute; left: -9999px; }
+    .skip:focus { left: 1rem; top: 1rem; padding: .5rem; background: Canvas; color: CanvasText; }
+    .card { border: 1px solid GrayText; border-radius: .6rem; padding: 1rem; margin: 1rem 0; }
+    h1, h2 { line-height: 1.2; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#contenu">Aller au contenu</a>
+  <header>
+    <h1>Orizont RSS</h1>
+    <p>Lecteur RSS accessible pour Windows, conçu pour le clavier et les lecteurs d’écran.</p>
+    <nav aria-label="Langue de la page">
+      <a href="index.html" lang="ro">Română</a> ·
+      <a href="index.en.html" lang="en">English</a> ·
+      <a href="index.es.html" lang="es">Español</a> ·
+      <a href="index.fr.html" lang="fr" aria-current="page">Français</a> ·
+      <a href="index.de.html" lang="de">Deutsch</a> ·
+      <a href="index.pt.html" lang="pt">Português</a>
+    </nav>
+  </header>
+  <main id="contenu">
+    <section class="card" aria-labelledby="telechargement">
+      <h2 id="telechargement">Version 1.5.3</h2>
+      <p>Version stable et autonome pour Windows x64. L’installation séparée du .NET Runtime n’est pas nécessaire.</p>
+      <p><a href="https://github.com/grifnas/OrizontRSS/releases/latest">Télécharger la dernière version</a></p>
+      <p>Vérifiez la somme SHA-256 affichée sur la page du Release avant l’installation.</p>
+    </section>
+    <section aria-labelledby="fonctions">
+      <h2 id="fonctions">Fonctions</h2>
+      <ul>
+        <li>dossiers de flux, étiquettes, favoris et liste « À lire plus tard » ;</li>
+        <li>lecteur intégré avec navigation par flèches et lecture vocale ;</li>
+        <li>recherche, importation OPML, sauvegarde et partage ;</li>
+        <li>conversations Gemini et traduction DeepL, activées explicitement par l’utilisateur ;</li>
+        <li>interface en roumain, anglais, espagnol, français, allemand et portugais.</li>
+      </ul>
+    </section>
+    <section aria-labelledby="accessibilite">
+      <h2 id="accessibilite">Accessibilité et confidentialité</h2>
+      <p>L’application est utilisable au clavier et testée avec JAWS et NVDA. Les flux, les articles et les clés API restent dans le profil Windows local ; le texte n’est envoyé à Gemini ou DeepL que lorsque l’utilisateur lance explicitement l’action.</p>
+    </section>
+    <section aria-labelledby="aide">
+      <h2 id="aide">Aide et contributions</h2>
+      <p><a href="https://github.com/grifnas/OrizontRSS/issues">Signaler un problème ou proposer une amélioration</a>.</p>
+      <p>Le projet est distribué sous licence <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0-or-later</a>.</p>
+    </section>
+  </main>
+  <footer><p>Orizont RSS — version 1.5.3</p></footer>
+</body>
+</html>

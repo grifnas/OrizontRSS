@@ -32,6 +32,14 @@ Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se 
 - URL public: `https://grifnas.github.io/OrizontRSS/`.
 - Verificare: `HTTP 200`; titlu `Orizont RSS — cititor RSS accesibil`; limba HTML `ro`; linkul către `releases/latest` prezent.
 
+## 2026-09-05 — Pagini GitHub Pages multilingve
+
+- Scop: extinderea paginii publice pentru toate limbile interfeței.
+- Fișiere adăugate: `docs/index.en.html`, `docs/index.es.html`, `docs/index.fr.html`, `docs/index.de.html`, `docs/index.pt.html`.
+- Fișier actualizat: `docs/index.html`, cu selector accesibil de limbă și indicarea paginii curente.
+- Conținut: aceleași informații despre versiune, funcții, accesibilitate, confidențialitate, contribuții și descărcare, traduse pentru engleză, spaniolă, franceză, germană și portugheză.
+- Verificare locală: toate cele șase pagini conțin `lang`, titlu, navigare de limbă și linkul către Release-ul stabil; codul aplicației nu a fost modificat.
+
 ## 2026-09-05 — Distribuția Orizont RSS 1.5.3
 
 - Scop: generarea distribuției 1.5.3 la cererea expresă a utilizatorului.

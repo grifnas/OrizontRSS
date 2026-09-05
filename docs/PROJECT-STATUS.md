@@ -22,7 +22,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 
 ## În lucru acum
 
-- Publicarea publică este activă: sursa, tagul `v1.5.3`, Release-ul stabil și arhiva Windows sunt publicate în `grifnas/OrizontRSS`; pagina GitHub Pages funcționează la `https://grifnas.github.io/OrizontRSS/`.
+- Publicarea publică este activă: sursa, tagul `v1.5.3`, Release-ul stabil și arhiva Windows sunt publicate în `grifnas/OrizontRSS`; pagina GitHub Pages multilingvă funcționează la `https://grifnas.github.io/OrizontRSS/`.
 - Verificarea manuală raportată de utilizator pentru bara de stare și facilitățile Orizont este în regulă; etapa de consolidare și distribuția 1.5.3 sunt închise.
 - Experimentul Android `OrizontRSSAndroid` este separat de proiectul Windows și este pus pe pauză.
 - Feedul Bistrițeanul a fost validat prin XML-ul primit, dar prototipul Android a primit 404. Nu se mai fac încercări speculative până la o decizie nouă și o metodă de diagnostic adecvată.
