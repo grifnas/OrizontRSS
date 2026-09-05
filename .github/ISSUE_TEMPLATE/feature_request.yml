@@ -1,0 +1,24 @@
+name: Propune o îmbunătățire
+description: Propune o funcție sau o îmbunătățire accesibilă.
+title: "[Propunere] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema rezolvată
+      description: Ce situație întâmpini și cine ar beneficia?
+    validations:
+      required: true
+  - type: textarea
+    id: propunere
+    attributes:
+      label: Propunerea
+      description: Descrie comportamentul dorit, inclusiv navigarea din tastatură.
+    validations:
+      required: true
+  - type: textarea
+    id: accesibilitate
+    attributes:
+      label: Criterii de accesibilitate
+      description: Cum ar trebui anunțată și parcursă funcția cu un cititor de ecran?

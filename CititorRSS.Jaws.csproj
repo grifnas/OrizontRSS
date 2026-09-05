@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Orizont</AssemblyName>
+    <RootNamespace>CititorRSS.Jaws</RootNamespace>
+    <Version>1.5.3</Version>
+    <AssemblyVersion>1.5.3.0</AssemblyVersion>
+    <FileVersion>1.5.3.0</FileVersion>
+    <InformationalVersion>1.5.3</InformationalVersion>
+    <ApplicationIcon>Assets\OrizontRSS.ico</ApplicationIcon>
+    <Title>Orizont RSS</Title>
+    <Product>Orizont RSS</Product>
+    <Authors>Grigore Frișan</Authors>
+    <Company>Grigore Frișan</Company>
+    <Copyright>Copyright © 2026 Grigore Frișan</Copyright>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+    <NeutralLanguage>ro-RO</NeutralLanguage>
+    <Description>Cititor RSS accesibil pentru Windows</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="tests\**\*.cs" />
+    <Resource Include="Assets\OrizontRSS.ico" />
+    <Content Include="Ghid-utilizator-Orizont-RSS.html" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Ghid-utilizator-Orizont-RSS.*.html" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="LICENSE" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="README.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="ACKNOWLEDGEMENTS.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="CHANGELOG.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="RELEASE-NOTES-1.5.3.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Licenses\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="ThirdParty\eSpeakNG\libespeak-ng.dll">
+      <Link>libespeak-ng.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ThirdParty\eSpeakNG\espeak-ng-data\**\*">
+      <Link>SpeechEngines\eSpeakNG\espeak-ng-data\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ThirdParty\eSpeakNG\UPSTREAM.md" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,15 @@
+<Window x:Class="CititorRSS.Jaws.TagDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Etichete articole" Width="600" Height="520" MinWidth="520" MinHeight="460" WindowStartupLocation="CenterOwner">
+  <Grid Margin="24">
+    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+    <TextBlock Grid.Row="0" Text="Etichete personale" Style="{StaticResource SectionTitleTextStyle}" />
+    <TextBlock Grid.Row="1" Text="Alege etichete existente sau scrie unele noi. Lista salvată va înlocui etichetele actuale ale articolelor selectate." Style="{StaticResource DialogIntroTextStyle}" />
+    <Grid Grid.Row="2"><Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+      <Label Content="Alege etichetele existente" Target="{Binding ElementName=ExistingTags}" />
+      <ListBox Grid.Row="1" x:Name="ExistingTags" SelectionMode="Extended" MinHeight="150" AutomationProperties.Name="Etichete existente. Folosește Ctrl sau Shift pentru mai multe alegeri." AutomationProperties.HelpText="Selectează una sau mai multe etichete. Butonul Șterge le elimină din toate articolele numai după confirmare." />
+    </Grid>
+    <Label Grid.Row="3" Content="Adaugă etichete noi, separate prin virgulă" Target="{Binding ElementName=NewTagsBox}" Margin="4,10,4,0" />
+    <TextBox Grid.Row="4" x:Name="NewTagsBox" AcceptsReturn="True" TextWrapping="Wrap" Height="70" VerticalScrollBarVisibility="Auto" AutomationProperties.Name="Etichete noi, separate prin virgulă" />
+    <TextBlock Grid.Row="5" Text="Ștergerea unei etichete existente o elimină din toate articolele și solicită confirmare." Style="{StaticResource SecondaryTextStyle}" Margin="4,6,4,0" />
+    <StackPanel Grid.Row="6" Style="{StaticResource DialogButtonBarStyle}"><Button Content="Șterge etichetele selectate" Click="DeleteSelected_Click" /><Button Content="Anulează" IsCancel="True" /><Button Content="Salvează" IsDefault="True" Click="Save_Click" /></StackPanel>
+  </Grid>
+</Window>

@@ -1,0 +1,69 @@
+<Window x:Class="CititorRSS.Jaws.ArticleReaderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Cititor Orizont" Width="900" Height="700"
+        WindowStartupLocation="CenterOwner" PreviewKeyDown="Window_KeyDown" Closed="Window_Closed">
+  <DockPanel Margin="12">
+    <Menu DockPanel.Dock="Top" Margin="0,0,0,8" AutomationProperties.Name="Meniu cititor">
+      <MenuItem Header="Cititor">
+        <MenuItem Header="Reîncarcă și curăță articolul" Click="Refresh_Click" />
+        <Separator />
+        <MenuItem Header="Mărește textul" Click="IncreaseText_Click" />
+        <MenuItem Header="Micșorează textul" Click="DecreaseText_Click" />
+        <MenuItem Header="Spațiere normală" Click="NormalSpacing_Click" />
+        <MenuItem Header="Spațiere largă" Click="WideSpacing_Click" />
+      </MenuItem>
+      <MenuItem Header="Citire vocală">
+        <MenuItem Header="Citește selecția sau articolul" InputGestureText="F9 / Ctrl+Alt+V" Click="SpeakContent_Click" />
+        <MenuItem Header="Citește de la cursor" Click="SpeakFromCursor_Click" />
+        <MenuItem Header="Pauză sau continuă" InputGestureText="F9 / Ctrl+Alt+P" Click="PauseResumeSpeech_Click" />
+        <MenuItem Header="Oprește citirea" InputGestureText="Escape / Ctrl+Alt+S" Click="StopSpeech_Click" />
+      </MenuItem>
+    </Menu>
+    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+      <TextBlock x:Name="ArticleTitle" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.Name="Titlul articolului" />
+      <TextBlock x:Name="ArticleDetails" Margin="0,6,0,0" Foreground="Gray" AutomationProperties.Name="Sursa și data articolului" />
+    </StackPanel>
+      <StatusBar x:Name="ReaderStatusBar" DockPanel.Dock="Bottom" Margin="0,8,0,0">
+        <StatusBarItem Focusable="False" IsTabStop="False">
+          <TextBlock x:Name="Status" AutomationProperties.LiveSetting="Polite" />
+        </StatusBarItem>
+      </StatusBar>
+    <TextBox x:Name="ArticleText" IsReadOnly="True" IsReadOnlyCaretVisible="True" AcceptsReturn="True"
+             TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontSize="18"
+             AutomationProperties.Name="Articol în modul cititor"
+             AutomationProperties.HelpText="Folosește săgețile pentru citire. Shift+F10 deschide comenzile articolului. Bara de stare anunță încărcarea și acțiunile în curs."
+             ContextMenuOpening="Content_ContextMenuOpening">
+      <TextBox.ContextMenu>
+        <ContextMenu AutomationProperties.Name="Comenzi cititor">
+          <MenuItem Header="AI și traducere">
+            <MenuItem Header="Întreabă AI despre articol">
+              <MenuItem Header="Rezuma articolul" Click="AiSummarize_Click" />
+              <MenuItem Header="Tradu articolul" Click="AiTranslate_Click" />
+              <MenuItem Header="Explică pe înțelesul tuturor" Click="AiExplain_Click" />
+              <MenuItem Header="Care sunt ideile principale?" Click="AiKeyPoints_Click" />
+              <MenuItem Header="Discută liber despre articol" Click="AiDiscuss_Click" />
+            </MenuItem>
+            <MenuItem Header="Traduce cu DeepL" Click="DeepLTranslate_Click" />
+            <MenuItem Header="Afișează notițele AI salvate" Click="ShowAiNotes_Click" />
+          </MenuItem>
+          <Separator />
+          <MenuItem Header="Citire vocală">
+            <MenuItem Header="Citește selecția sau articolul" InputGestureText="F9 / Ctrl+Alt+V" Click="SpeakContent_Click" />
+            <MenuItem Header="Citește de la cursor" Click="SpeakFromCursor_Click" />
+            <MenuItem Header="Pauză sau continuă" InputGestureText="F9 / Ctrl+Alt+P" Click="PauseResumeSpeech_Click" />
+            <MenuItem Header="Oprește citirea" InputGestureText="Escape / Ctrl+Alt+S" Click="StopSpeech_Click" />
+          </MenuItem>
+          <Separator />
+          <MenuItem Header="Copiere și distribuire">
+            <MenuItem Header="Copiază selecția" Click="CopySelection_Click" />
+            <MenuItem Header="Copiază articolul complet" Click="CopyFullArticle_Click" />
+            <MenuItem Header="Copiază adresa articolului" Click="CopyLink_Click" />
+            <MenuItem Header="Distribuie prin e-mail" Click="ShareByEmail_Click" />
+            <MenuItem Header="Distribuie prin WhatsApp" Click="ShareByWhatsApp_Click" />
+          </MenuItem>
+        </ContextMenu>
+      </TextBox.ContextMenu>
+    </TextBox>
+  </DockPanel>
+</Window>

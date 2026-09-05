@@ -1,0 +1,7 @@
+<Window x:Class="CititorRSS.Jaws.AiNotesWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Notițe AI salvate" Width="720" Height="520" MinWidth="500" MinHeight="380" WindowStartupLocation="CenterOwner">
+  <Grid Margin="24"><Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+    <StackPanel Grid.Row="0"><TextBlock Text="Notițe AI salvate" Style="{StaticResource SectionTitleTextStyle}" /><TextBlock Text="Notițele sunt afișate de la cea mai nouă la cea mai veche și pot fi citite cu săgețile." Style="{StaticResource DialogIntroTextStyle}" /></StackPanel>
+    <TextBox Grid.Row="1" x:Name="Notes" Style="{StaticResource ReadOnlyDocumentStyle}" AutomationProperties.Name="Notițe AI salvate pentru articol, numai citire" AutomationProperties.HelpText="Folosește săgețile pentru citire. Escape închide fereastra." />
+    <StackPanel Grid.Row="2" Style="{StaticResource DialogButtonBarStyle}"><Button Content="Închide" IsCancel="True" /></StackPanel>
+  </Grid>
+</Window>

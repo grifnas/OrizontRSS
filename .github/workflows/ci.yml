@@ -1,0 +1,31 @@
+name: Verificare Orizont RSS
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    steps:
+      - name: Descarcă sursa
+        uses: actions/checkout@v4
+      - name: Configurează .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Compilează aplicația
+        run: dotnet build .\CititorRSS.Jaws.csproj --configuration Release --ignore-failed-sources
+      - name: CoreSmoke
+        run: dotnet run --project .\tests\CoreSmoke\CoreSmoke.csproj --configuration Release
+      - name: LocalizationSmoke
+        run: dotnet run --project .\tests\LocalizationSmoke\LocalizationSmoke.csproj --configuration Release --no-restore
+      - name: eSpeakSmoke
+        run: dotnet run --project .\tests\EspeakSmoke\EspeakSmoke.csproj --configuration Release --no-restore
+      - name: Verifică localizarea
+        run: powershell -ExecutionPolicy Bypass -File .\tools\verify-localization.ps1 -RequireComplete
+      - name: Verifică ghidurile
+        run: powershell -ExecutionPolicy Bypass -File .\tools\verify-user-guides.ps1

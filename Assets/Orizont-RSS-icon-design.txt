@@ -1,0 +1,13 @@
+ORIGINAL ASSET — Orizont RSS
+
+Concept: a warm sun rising above a white horizon, with three clear RSS waves.
+The dark blue rounded background provides strong contrast on light and dark Windows themes.
+The icon contains no text and is intentionally reduced to a few geometric shapes so it
+remains recognizable from 16×16 pixels through 256×256 pixels.
+
+Palette:
+- background: #123A6D
+- sun: #FFC857
+- horizon and RSS waves: #FFFFFF
+
+The distributable OrizontRSS.ico is generated from this design in multiple raster sizes.

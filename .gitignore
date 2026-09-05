@@ -1,0 +1,28 @@
+# Compilare .NET
+bin/
+obj/
+publish/
+Publicare*/
+
+# Visual Studio și editoare
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Simboluri și diagnostice
+*.pdb
+*.log
+diagnostic/
+
+# Date locale și secrete
+settings.json
+feeds.json
+*.backup.json
+.env
+.env.*
+
+# Distribuții generate
+Orizont-RSS-*-Windows-x64/
+Orizont-RSS-*-Windows-x64.zip
+Orizont-RSS-*-Source.zip

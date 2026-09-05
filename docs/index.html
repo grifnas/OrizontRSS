@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orizont RSS — cititor RSS accesibil</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { max-width: 52rem; margin: 0 auto; padding: 2rem 1.25rem; font: 1.05rem/1.6 system-ui, sans-serif; }
+    a { color: #0b62b2; }
+    @media (prefers-color-scheme: dark) { a { color: #8cc8ff; } }
+    .skip { position: absolute; left: -9999px; }
+    .skip:focus { left: 1rem; top: 1rem; padding: .5rem; background: Canvas; color: CanvasText; }
+    .card { border: 1px solid GrayText; border-radius: .6rem; padding: 1rem; margin: 1rem 0; }
+    h1, h2 { line-height: 1.2; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#continut">Sari la conținut</a>
+  <header>
+    <h1>Orizont RSS</h1>
+    <p>Cititor RSS accesibil pentru Windows, proiectat pentru tastatură și cititoare de ecran.</p>
+  </header>
+  <main id="continut">
+    <section class="card" aria-labelledby="descarca">
+      <h2 id="descarca">Versiunea 1.5.3</h2>
+      <p>Versiune stabilă Windows x64, autonomă: nu necesită instalarea separată a .NET Runtime.</p>
+      <p><a href="https://github.com/OWNER/REPOSITORY/releases/latest">Descarcă ultima versiune</a></p>
+      <p>Verifică suma SHA-256 afișată în pagina Release-ului înainte de instalare.</p>
+    </section>
+    <section aria-labelledby="functii">
+      <h2 id="functii">Funcții</h2>
+      <ul>
+        <li>organizarea feedurilor în foldere, etichete, favorite și lista „Mai târziu”;</li>
+        <li>cititor integrat cu navigare prin săgeți și citire vocală;</li>
+        <li>căutare, import OPML, backup și partajare;</li>
+        <li>conversații Gemini și traducere DeepL activate explicit de utilizator;</li>
+        <li>interfață în română, engleză, spaniolă, franceză, germană și portugheză.</li>
+      </ul>
+    </section>
+    <section aria-labelledby="accesibilitate">
+      <h2 id="accesibilitate">Accesibilitate și confidențialitate</h2>
+      <p>Aplicația este controlabilă din tastatură și verificată cu JAWS și NVDA. Feedurile, articolele și cheile API rămân în profilul local Windows; textul este trimis către Gemini sau DeepL numai la comanda explicită a utilizatorului.</p>
+    </section>
+    <section aria-labelledby="ajutor">
+      <h2 id="ajutor">Ajutor și contribuții</h2>
+      <p><a href="https://github.com/OWNER/REPOSITORY/issues">Raportează o problemă sau propune o îmbunătățire</a>.</p>
+      <p>Proiectul este distribuit sub licența <a href="https://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0-or-later</a>.</p>
+    </section>
+  </main>
+  <footer><p>Orizont RSS — versiunea 1.5.3</p></footer>
+</body>
+</html>

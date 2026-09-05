@@ -1,0 +1,39 @@
+name: Raportează o problemă
+description: Raportează o problemă reproductibilă în Orizont RSS.
+title: "[Problemă] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Nu include chei API, feeduri private sau date personale.
+  - type: textarea
+    id: descriere
+    attributes:
+      label: Descriere
+      description: Ce s-a întâmplat și ce te așteptai să se întâmple?
+    validations:
+      required: true
+  - type: textarea
+    id: reproducere
+    attributes:
+      label: Pași pentru reproducere
+      description: Enumeră pașii exacți și scurtătura de tastatură, dacă este relevantă.
+    validations:
+      required: true
+  - type: input
+    id: versiune
+    attributes:
+      label: Versiunea aplicației
+      placeholder: 1.5.3
+    validations:
+      required: true
+  - type: input
+    id: cititor
+    attributes:
+      label: Cititor de ecran
+      placeholder: JAWS 2026, NVDA sau Nu se aplică
+  - type: textarea
+    id: jurnal
+    attributes:
+      label: Mesaj sau jurnal relevant
+      description: Elimină informațiile personale înainte de trimitere.

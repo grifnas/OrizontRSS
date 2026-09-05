@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ghidul utilizatorului — Orizont RSS</title>
+  <style>
+    :root { color-scheme: light dark; font-family: "Segoe UI", Arial, sans-serif; line-height: 1.65; }
+    body { max-width: 64rem; margin: 0 auto; padding: 1.25rem; background: Canvas; color: CanvasText; }
+    header, nav, main, footer { margin-block: 1.5rem; }
+    h1 { font-size: 2rem; } h2 { margin-top: 2.2rem; border-bottom: 2px solid LinkText; padding-bottom: .25rem; }
+    h3 { margin-top: 1.5rem; } a { color: LinkText; } li { margin-block: .35rem; }
+    .skip { position: absolute; left: -10000px; } .skip:focus { position: static; display: inline-block; padding: .5rem; }
+    kbd { border: 1px solid GrayText; border-radius: .25rem; padding: .1rem .35rem; background: ButtonFace; color: ButtonText; }
+    .note { border-left: .35rem solid LinkText; padding: .75rem 1rem; background: ButtonFace; color: ButtonText; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#continut">Sari direct la conținut</a>
+  <header>
+    <h1>Ghidul utilizatorului Orizont RSS</h1>
+    <p>Ghid pentru Orizont RSS 1.5.3, cu acces rapid la foldere, vedere agregată și motoarele SAPI5, eSpeak NG și Gemini TTS.</p>
+  </header>
+  <nav aria-label="Cuprins">
+    <h2>Cuprins</h2>
+    <ol>
+      <li><a href="#inceput">Prima deschidere</a></li>
+      <li><a href="#interfata">Structura ferestrei</a></li>
+      <li><a href="#feeduri">Feeduri și foldere</a></li>
+      <li><a href="#articole">Citirea și organizarea articolelor</a></li>
+      <li><a href="#cautare">Căutare și filtre</a></li>
+      <li><a href="#voce">Citire vocală SAPI5, eSpeak NG și Gemini</a></li>
+      <li><a href="#ai">Gemini și conversațiile AI</a></li>
+      <li><a href="#date">Import, backup și curățare</a></li>
+      <li><a href="#stare">Stare, erori și rezolvarea problemelor</a></li>
+      <li><a href="#licenta">Licență și contribuții</a></li>
+      <li><a href="#scurtaturi">Lista scurtăturilor</a></li>
+    </ol>
+  </nav>
+  <main id="continut">
+    <section id="inceput">
+      <h2>1. Prima deschidere</h2>
+      <p>Orizont RSS pornește direct în fereastra principală. Dacă nu există feeduri, folosește meniul Feeduri, opțiunea Adaugă feed, sau importă un fișier OPML. Datele, setările și cheia Gemini sunt păstrate în profilul contului Windows; ele nu sunt incluse în arhiva de distribuție.</p>
+      <p>Limba interfeței se alege din Setări aplicație. Sunt disponibile româna, engleza, spaniola, franceza și germana. Modificarea se aplică după repornirea aplicației. La o instalare nouă, opțiunea Automată folosește limba Windows când aceasta este acceptată și engleza în celelalte cazuri.</p>
+      <p class="note"><strong>Accesibilitate:</strong> Interfața este compatibilă cu cititoarele de ecran. Motorul vocal ales este opțional și citește conținut numai la comanda utilizatorului.</p>
+    </section>
+    <section id="interfata">
+      <h2>2. Structura ferestrei principale</h2>
+      <p>Fereastra conține trei panouri, urmate de bara de stare:</p>
+      <ol>
+        <li><strong>Feeduri:</strong> folderul afișat, Citește acum, filtrul pentru sursele care necesită atenție și lista feedurilor.</li>
+        <li><strong>Articole:</strong> căutarea, butonul Filtre articole și lista rezultatelor.</li>
+        <li><strong>Conținut articol:</strong> un câmp numai în citire, navigabil cu săgețile.</li>
+      </ol>
+      <h3>Navigarea între panouri</h3>
+      <p>Folosește <kbd>F6</kbd> pentru panoul următor și <kbd>Shift+F6</kbd> pentru cel precedent. Comenzile directe sunt <kbd>Ctrl+1</kbd>, <kbd>Ctrl+2</kbd> și <kbd>Ctrl+3</kbd>. <kbd>Tab</kbd> trece numai prin controalele utile.</p>
+      <p><kbd>Ctrl+Shift+1</kbd> mută direct la selectorul de foldere. După alegerea folderului, <kbd>Ctrl+Shift+2</kbd> afișează lista combinată a articolelor sale și mută focalizarea în ea.</p>
+      <h3>Bara de stare</h3>
+      <p>Bara de stare descrie panoul curent, numărul elementelor, operațiile în curs și erorile. Cititorul de ecran o poate citi cu comanda pentru bara de stare, dacă aceasta există.</p>
+    </section>
+    <section id="feeduri">
+      <h2>3. Feeduri și foldere</h2>
+      <h3>Adăugarea unui feed</h3>
+      <p>Alege Feeduri, apoi Adaugă feed. Introdu numele și adresa RSS și alege un folder existent sau creează unul nou. Orizont RSS nu permite adăugarea aceleiași adrese de mai multe ori.</p>
+      <h3>Vederea unui folder</h3>
+      <p>Când alegi un folder, lista Articole combină articolele tuturor feedurilor sale și le ordonează de la cel mai nou la cel mai vechi. Cititorul de ecran anunță sursa fiecărui articol, iar bara de stare indică numărul feedurilor și totalurile articolelor.</p>
+      <h3>Descoperirea unor surse noi</h3>
+      <p>Poți căuta feeduri după subiect în catalogul verificat sau poți cere aplicației să găsească feedurile declarate de un anumit site.</p>
+      <h3>Feeduri care necesită atenție</h3>
+      <p>Butonul din panoul Feeduri afișează sursele care au cel puțin trei erori consecutive sau nu au primit articole de peste 90 de zile. Când filtrul este activ, același buton revine la toate feedurile.</p>
+      <h3>Duplicate</h3>
+      <p>Opțiunea Verifică și curăță duplicatele comasează duplicatele certe numai după confirmare. Pentru surse cu adrese diferite, dar articole aproape identice, utilizatorul alege feedul păstrat.</p>
+    </section>
+    <section id="articole">
+      <h2>4. Citirea și organizarea articolelor</h2>
+      <p>Selectează un articol și apasă <kbd>Enter</kbd> pentru conținut. Apasă <kbd>Escape</kbd> pentru întoarcerea la același articol sau, dacă acesta a dispărut în urma unei acțiuni, la următorul articol de la aceeași poziție.</p>
+      <h3>Acțiuni rapide</h3>
+      <ul>
+        <li><kbd>R</kbd> marchează citit sau necitit.</li>
+        <li><kbd>F</kbd> adaugă sau elimină din Favorite.</li>
+        <li><kbd>L</kbd> adaugă sau elimină din De citit mai târziu.</li>
+        <li><kbd>Delete</kbd> șterge articolele selectate după confirmare.</li>
+        <li><kbd>Shift+F10</kbd> deschide meniul contextual pentru etichete, mutare, copiere și alte acțiuni.</li>
+      </ul>
+      <h3>Etichete</h3>
+      <p>La etichetare poți alege etichetele deja create sau poți introduce una nouă. Dialogul permite și ștergerea definitivă a etichetelor din toate articolele.</p>
+      <h3>Deschiderea fără reclame în browser</h3>
+      <p>Din meniul contextual al articolului sau al conținutului, alege <strong>Deschide articolul în cititorul Orizont</strong>. Aplicația descarcă și curăță pagina, apoi afișează titlul, sursa și textul principal într-o fereastră accesibilă, fără reclame, bare laterale și navigare inutilă. Opțiunile pentru copierea selecției, copierea articolului complet și citirea vocală rămân disponibile. <strong>Deschide pagina originală în browser</strong> rămâne disponibilă separat.</p>
+    </section>
+    <section id="cautare">
+      <h2>5. Căutare și filtre</h2>
+      <p><kbd>Ctrl+F</kbd> sau <kbd>F3</kbd> mută focalizarea în căutarea articolelor. Căutarea verifică titlul, sursa și conținutul RSS. <kbd>Escape</kbd> golește textul căutării.</p>
+      <p><kbd>Ctrl+Shift+F</kbd> deschide dialogul Filtre articole. Poți alege starea, perioada și eticheta. Modificările se aplică numai prin butonul Aplică; Escape închide fără modificări.</p>
+      <p><kbd>Ctrl+Shift+U</kbd> afișează toate articolele necitite din toate sursele.</p>
+    </section>
+    <section id="voce">
+      <h2>6. Citire vocală SAPI5, eSpeak NG și Gemini</h2>
+      <p>Orizont RSS poate utiliza vocile SAPI5 înregistrate în Windows, motorul local eSpeak NG sau cele 30 de voci online Gemini TTS. SAPI5 și eSpeak funcționează local. La folosirea Gemini TTS, textul citit este trimis la Google și poate consuma cota sau creditele cheii API.</p>
+      <h3>Configurarea vocii</h3>
+      <p>Deschide Setări aplicație, apoi secțiunea Citire vocală. Alege SAPI5, eSpeak NG sau Gemini TTS, apoi vocea, viteza și volumul. Pentru eSpeak poți regla și înălțimea vocii. Gemini TTS folosește cheia salvată în Setările Inteligență artificială. Folosește Testează vocea, apoi Salvează.</p>
+      <h3>Comenzile de lectură</h3>
+      <ul>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+V</kbd> citește selecția din conținut; dacă nu există selecție, citește titlul, sursa, data și articolul complet afișat.</li>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+P</kbd> întrerupe sau continuă lectura.</li>
+        <li><kbd>Escape</kbd> / <kbd>Ctrl+Alt+S</kbd> oprește lectura.</li>
+        <li>Meniul Voce și meniul contextual conțin și comanda Citește de la cursor.</li>
+              <li><kbd>Shift+F9</kbd>: deschide SetÄƒri voce.</li>
+        <li><kbd>F11</kbd>: maximizeazÄƒ sau restabileÈ™te fereastra.</li>
+</ul>
+      <p>Citirea nu pornește automat la schimbarea focalizării, pentru a nu se suprapune peste cititorul de ecran.</p>
+      <p>Toate cele trei motoare folosesc aceleași comenzi de pornire, pauză, continuare și oprire, atât în articole, cât și în conversațiile Gemini. Starea motorului activ și erorile de cheie, cotă sau conexiune apar în bara de stare.</p>
+    </section>
+    <section id="ai">
+      <h2>7. Gemini și conversațiile AI</h2>
+      <p>Gemini este opțional și necesită o cheie API configurată de utilizator. La întrebarea AI este inclus întregul conținut afișat al articolului. Conversația poate continua și poate fi copiată, salvată, exportată sau trimisă integral. Comenzile Rezumat, Traducere, Explicație și Ideile principale solicită răspunsul în limba interfeței.</p>
+      <p>În fereastra conversației, <kbd>F9</kbd> / <kbd>Ctrl+Alt+V</kbd> citește selecția sau întreaga discuție cu vocea configurată. <kbd>F9</kbd> / <kbd>Ctrl+Alt+P</kbd> întrerupe sau continuă, iar <kbd>Escape</kbd> / <kbd>Ctrl+Alt+S</kbd> oprește citirea. Meniul contextual oferă și citirea de la cursor.</p>
+      <p>Orizont RSS afișează starea cererii și un mesaj clar dacă serviciul nu răspunde, cheia este respinsă sau conexiunea nu este disponibilă.</p>
+    </section>
+    <section id="date">
+      <h2>8. Import, backup și curățare</h2>
+      <h3>OPML</h3>
+      <p>Din meniul Feeduri poți importa sau exporta un fișier OPML. Importul evită adresele deja existente.</p>
+      <h3>Copie de siguranță</h3>
+      <p>Copia de siguranță include feedurile, articolele, folderele, etichetele, stările și notițele AI. Cheile secrete nu sunt exportate în clar.</p>
+      <h3>Articole vechi</h3>
+      <p>Curățarea automată este configurabilă. Favoritele și articolele De citit mai târziu sunt protejate. Aplicația memorează articolele eliminate prin regula de vechime și nu le importă din nou la următoarea actualizare.</p>
+    </section>
+    <section id="stare">
+      <h2>9. Stare, erori și rezolvarea problemelor</h2>
+      <p><kbd>Ctrl+Shift+H</kbd> deschide istoricul stării și al erorilor. Textul poate fi citit cu săgețile, copiat sau salvat pentru diagnostic.</p>
+      <h3>Dacă vocea nu apare</h3>
+      <p>Pentru SAPI5, verifică dacă sintetizatorul este instalat pentru aceeași arhitectură Windows. Pentru eSpeak NG nu este necesară instalarea unei voci; dacă lista lipsește, descarcă din nou distribuția completă Orizont RSS.</p>
+      <h3>Dacă actualizarea durează mult</h3>
+      <p>Bara de stare arată progresul. Escape poate opri procesul și întrerupe conexiunea curentă, păstrând datele deja primite. Din meniul Feeduri poți reîncerca numai sursele care au dat eroare.</p>
+      <h3>Dacă ghidul nu se deschide</h3>
+      <p>Verifică dacă fișierul Ghid-utilizator-Orizont-RSS.html și ghidurile traduse se află lângă Orizont.exe. Extrage întreaga arhivă ZIP, nu numai executabilul.</p>
+      <h3>Dacă apare o eroare neașteptată</h3>
+      <p>Aplicația oprește comanda curentă, afișează un mesaj accesibil și încearcă să salveze un raport tehnic în subfolderul diagnostic al datelor locale. Raportul nu include cheia Gemini. Închide și redeschide aplicația înainte de a repeta operația.</p>
+    </section>
+    <section id="licenta">
+      <h2>10. Licență și contribuții</h2>
+      <p>Orizont RSS a fost inițiat și este coordonat de Grigore Frișan. Dezvoltarea a fost realizată în colaborare cu OpenAI Codex, care a oferit asistență pentru proiectare, programare, depanare, testare, documentare și pregătirea versiunilor de distribuție.</p>
+      <p>Aplicația este software liber distribuit sub GNU General Public License, versiunea 3 sau, la alegerea utilizatorului, orice versiune ulterioară. Textul integral se află în fișierul LICENSE de lângă Orizont.exe și poate fi deschis și din meniul Ajutor.</p>
+      <p>Codul-sursă corespunzător versiunii distribuite este oferit într-o arhivă separată. Corecțiile, traducerile și îmbunătățirile de accesibilitate sunt binevenite în condițiile licenței proiectului.</p>
+    </section>
+    <section id="scurtaturi">
+      <h2>11. Lista scurtăturilor</h2>
+      <ul>
+        <li><kbd>F1</kbd>: ajutor și scurtături.</li>
+        <li><kbd>F6</kbd> și <kbd>Shift+F6</kbd>: panoul următor sau precedent.</li>
+        <li><kbd>Ctrl+1</kbd>, <kbd>Ctrl+2</kbd>, <kbd>Ctrl+3</kbd>: Feeduri, Articole, Conținut.</li>
+        <li><kbd>Ctrl+Shift+1</kbd>: selectorul de foldere.</li>
+        <li><kbd>Ctrl+Shift+2</kbd>: articolele combinate ale folderului selectat.</li>
+        <li><kbd>Ctrl+4</kbd>: Citește acum.</li>
+        <li><kbd>Ctrl+F</kbd> sau <kbd>F3</kbd>: căutare în articole.</li>
+        <li><kbd>Ctrl+Shift+F</kbd>: filtre articole.</li>
+        <li><kbd>Ctrl+Shift+U</kbd>: toate necititele.</li>
+        <li><kbd>Ctrl+Shift+R</kbd>: textul complet al articolului.</li>
+        <li><kbd>Ctrl+Shift+H</kbd>: istoricul stării și al erorilor.</li>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+V</kbd>: citește cu voce.</li>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+P</kbd>: pauză sau continuare voce.</li>
+        <li><kbd>Escape</kbd> / <kbd>Ctrl+Alt+S</kbd>: oprește vocea.</li>
+      </ul>
+    </section>
+  </main>
+  <footer><p>Orizont RSS 1.5.3 — creat de Grigore Frișan în colaborare cu OpenAI Codex. Software liber disponibil sub GNU GPL versiunea 3 sau ulterioară.</p></footer>
+</body>
+</html>
+

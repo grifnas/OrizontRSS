@@ -1,0 +1,9 @@
+<Window x:Class="CititorRSS.Jaws.FolderNameDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Creează folder nou" Width="460" SizeToContent="Height" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+  <StackPanel Margin="24">
+    <TextBlock Text="Creează folder nou" Style="{StaticResource SectionTitleTextStyle}" />
+    <TextBlock Text="Folderul va apărea imediat în lista de organizare a feedurilor." Style="{StaticResource DialogIntroTextStyle}" />
+    <Label Content="Numele folderului" Target="{Binding ElementName=FolderNameBox}" />
+    <TextBox x:Name="FolderNameBox" AutomationProperties.Name="Numele noului folder" AutomationProperties.HelpText="Scrie numele noului folder, de exemplu Tehnologie sau Cultură." />
+    <StackPanel Style="{StaticResource DialogButtonBarStyle}"><Button Content="Anulează" IsCancel="True" /><Button Content="Creează" IsDefault="True" Click="Create_Click" /></StackPanel>
+  </StackPanel>
+</Window>

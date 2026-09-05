@@ -1,0 +1,14 @@
+<Window x:Class="CititorRSS.Jaws.FeedDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Adaugă feed" Width="540" SizeToContent="Height" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+  <StackPanel Margin="24">
+    <TextBlock x:Name="Heading" Text="Adaugă un feed RSS" Style="{StaticResource SectionTitleTextStyle}" />
+    <TextBlock Text="Completează sursa și alege locul în care va fi organizată. Toate câmpurile pot fi parcurse cu Tab și Shift+Tab." Style="{StaticResource DialogIntroTextStyle}" />
+    <Label Content="Nume feed" Target="{Binding ElementName=NameBox}" />
+    <TextBox x:Name="NameBox" AutomationProperties.Name="Nume feed" />
+    <Label Content="Adresă RSS sau Atom" Target="{Binding ElementName=UrlBox}" />
+    <TextBox x:Name="UrlBox" AutomationProperties.Name="Adresă RSS sau Atom" />
+    <Label Content="Folder tematic" Target="{Binding ElementName=FolderBox}" />
+    <ComboBox x:Name="FolderBox" SelectionChanged="FolderBox_SelectionChanged" AutomationProperties.Name="Folder tematic" AutomationProperties.HelpText="Alege un folder existent sau opțiunea Creează folder nou." />
+    <TextBlock Text="La sfârșitul listei de foldere poți alege Creează folder nou. Adresa trebuie să înceapă cu https:// sau http://." Style="{StaticResource SecondaryTextStyle}" Margin="4,8,4,4" />
+    <StackPanel Style="{StaticResource DialogButtonBarStyle}"><Button Content="Anulează" IsCancel="True" /><Button x:Name="SaveButton" Content="Adaugă" IsDefault="True" Click="Save_Click" /></StackPanel>
+  </StackPanel>
+</Window>

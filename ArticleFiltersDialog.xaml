@@ -1,0 +1,31 @@
+<Window x:Class="CititorRSS.Jaws.ArticleFiltersDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Filtre articole" Width="620" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
+  <StackPanel Margin="24">
+    <TextBlock Text="Filtre articole" Style="{StaticResource SectionTitleTextStyle}" />
+    <TextBlock Text="Alege ce articole vrei să apară. Modificările sunt aplicate numai după confirmare." Style="{StaticResource DialogIntroTextStyle}" />
+
+    <GroupBox Header="Criterii de filtrare">
+      <StackPanel Margin="12">
+        <Label Content="Starea articolului" Target="{Binding ElementName=StateFilter}" />
+        <ComboBox x:Name="StateFilter" AutomationProperties.HelpText="Alege Toate, Necitite, Favorite sau De citit mai târziu." />
+
+        <Label Content="Perioada" Target="{Binding ElementName=TimeFilter}" Margin="4,10,4,0" />
+        <ComboBox x:Name="TimeFilter" AutomationProperties.Name="Perioada articolelor" />
+
+        <Label Content="Eticheta" Target="{Binding ElementName=TagFilter}" Margin="4,10,4,0" />
+        <ComboBox x:Name="TagFilter" AutomationProperties.Name="Eticheta articolelor" AutomationProperties.HelpText="Alege o etichetă existentă sau Toate etichetele." />
+      </StackPanel>
+    </GroupBox>
+
+    <TextBlock x:Name="DialogStatus" Text="Enter aplică filtrele. Escape închide dialogul fără modificări." Style="{StaticResource DialogStatusTextStyle}" AutomationProperties.LiveSetting="Polite" />
+
+    <StackPanel Style="{StaticResource DialogButtonBarStyle}">
+      <Button Content="Resetează filtrele" Click="Reset_Click" AutomationProperties.HelpText="Pregătește valorile Toate, Oricând și Toate etichetele. Alege Aplică pentru confirmare." />
+      <Button Content="Anulează" IsCancel="True" />
+      <Button Content="Aplică" IsDefault="True" Click="Apply_Click" />
+    </StackPanel>
+  </StackPanel>
+</Window>
