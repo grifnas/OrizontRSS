@@ -16,7 +16,7 @@ Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se 
 - Depozit: `https://github.com/grifnas/OrizontRSS.git`, ramura `main`.
 - Commit inițial publicat: `64bc049` (`Prepare Orizont RSS 1.5.3 for public release`).
 - Actualizare: linkurile din `PUBLICATION.md` și `docs/index.html` au fost fixate pe depozitul real `grifnas/OrizontRSS`.
-- Stare: sursa este publicată; tagul și Release-ul `v1.5.3` urmează după verificarea finală a linkurilor.
+- Stare: sursa este publicată în `main`, iar tagul `v1.5.3` este publicat; Release-ul cu arhivele binare și activarea Pages rămân de finalizat în interfața GitHub.
 
 ## 2026-09-05 — Distribuția Orizont RSS 1.5.3
 

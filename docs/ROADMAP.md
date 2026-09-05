@@ -10,11 +10,10 @@ Distribuția 1.5.3 Windows x64 și arhiva sursă au fost verificate și sunt dis
 
 ## Următoarea etapă
 
-1. Alegerea contului GitHub și a adresei publice a depozitului.
-2. Publicarea sursei și a Release-ului 1.5.3, cu arhivele și hash-urile verificate.
-3. Activarea paginii GitHub Pages din directorul `/docs`, după înlocuirea linkurilor demonstrative.
-4. Pregătirea manifestului WinGet după confirmarea URL-ului stabil al Release-ului.
-5. Menținerea proiectului Windows fără schimbarea funcțiilor stabile; orice modificare nouă rămâne supusă regulilor din `AGENTS.md`.
+1. Crearea Release-ului 1.5.3 în depozitul public, cu arhivele și hash-urile verificate.
+2. Activarea paginii GitHub Pages din directorul `/docs`.
+3. Pregătirea manifestului WinGet după confirmarea URL-ului stabil al Release-ului.
+4. Menținerea proiectului Windows fără schimbarea funcțiilor stabile; orice modificare nouă rămâne supusă regulilor din `AGENTS.md`.
 
 ## Idei pentru etape ulterioare
 
