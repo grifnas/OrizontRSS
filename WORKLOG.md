@@ -18,6 +18,13 @@ Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se 
 - Actualizare: linkurile din `PUBLICATION.md` și `docs/index.html` au fost fixate pe depozitul real `grifnas/OrizontRSS`.
 - Stare: sursa este publicată în `main`, iar tagul `v1.5.3` este publicat; Release-ul cu arhivele binare și activarea Pages rămân de finalizat în interfața GitHub.
 
+## 2026-09-05 — Asset Windows publicat în Release
+
+- Scop: verificarea publicării arhivei Windows pentru utilizatorii finali.
+- Release: `https://github.com/grifnas/OrizontRSS/releases/tag/v1.5.3`.
+- Rezultat: `Orizont-RSS-1.5.3-win-x64.zip` apare ca asset oficial, cu 85.194.997 bytes; API-ul GitHub confirmă `draft=false`, `prerelease=false`, `asset_count=1`.
+- Verificare download: URL-ul public al asset-ului a răspuns `HTTP 200` și a transferat 85.194.997 bytes.
+
 ## 2026-09-05 — Distribuția Orizont RSS 1.5.3
 
 - Scop: generarea distribuției 1.5.3 la cererea expresă a utilizatorului.
