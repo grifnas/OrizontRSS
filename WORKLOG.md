@@ -2,6 +2,15 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-05 — Repararea workflow-ului CI
+
+- Scop: eliminarea eșecurilor repetate GitHub Actions raportate prin email.
+- Fișiere modificate: `CititorRSS.Jaws.csproj`, `docs/PROJECT-STATUS.md`, `WORKLOG.md`.
+- Cauză: globurile implicite SDK includeau sursele proiectului separat `packaging/installer` în compilarea aplicației principale, iar referința Windows Forms exista doar în proiectul instalatorului.
+- Remediere: sursele C# și XAML ale instalatorului sunt excluse explicit din proiectul aplicației; instalatorul rămâne compilat prin `packaging/installer/OrizontSetup.csproj`.
+- Verificări: build Release fără erori; CoreSmoke trecut (16 verificări, 1.200 articole); LocalizationSmoke trecut pentru en-US, es-ES, fr-FR, de-DE și pt-BR; eSpeakSmoke trecut (132 voci); verificarea localizării și ghidurilor trecută.
+- Notificările de eroare au fost mutate în Coș înainte de remediere; următorul workflow GitHub va confirma remedierea pe server.
+
 ## 2026-09-05 — Localizarea dialogului de limbă pentru cititoarele de ecran
 
 - Scop: eliminarea anunțului românesc „Limba instalatorului” atunci când interfața instalatorului este în engleză.

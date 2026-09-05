@@ -23,6 +23,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="tests\**\*.cs" />
+    <Compile Remove="packaging\installer\**\*.cs" />
+    <Page Remove="packaging\installer\**\*.xaml" />
+    <ApplicationDefinition Remove="packaging\installer\App.xaml" />
     <Resource Include="Assets\OrizontRSS.ico" />
     <Content Include="Ghid-utilizator-Orizont-RSS.html" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Ghid-utilizator-Orizont-RSS.*.html" CopyToOutputDirectory="PreserveNewest" />
