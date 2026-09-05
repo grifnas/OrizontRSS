@@ -29,6 +29,9 @@ public partial class LanguageWindow : Window
         Title = texts.LanguageDialogTitle;
         HeadingText.Text = texts.LanguageDialogTitle;
         PromptText.Text = texts.LanguageDialogPrompt;
+        PromptText.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, texts.LanguageDialogPrompt);
+        LanguageComboBox.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, texts.LanguageDialogTitle);
+        LanguageComboBox.SetValue(System.Windows.Automation.AutomationProperties.HelpTextProperty, texts.LanguageDialogPrompt);
         ContinueButton.Content = texts.ContinueButton;
         CancelButton.Content = texts.CancelButton;
         ContinueButton.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, texts.ContinueButton);

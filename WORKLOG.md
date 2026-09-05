@@ -2,6 +2,14 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-05 — Localizarea dialogului de limbă pentru cititoarele de ecran
+
+- Scop: eliminarea anunțului românesc „Limba instalatorului” atunci când interfața instalatorului este în engleză.
+- Fișiere modificate: `packaging/installer/LanguageWindow.xaml.cs`, `WORKLOG.md`.
+- Remediere: numele și textul de ajutor pentru lista de limbi și instrucțiunile dialogului sunt actualizate din textele limbii selectate.
+- Verificări: publicare win-x64 fără erori.
+- Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
+
 ## 2026-09-05 — Buton public pentru instalator
 
 - Scop: facilitarea descărcării pentru utilizatorii finali printr-un buton direct către instalator.
