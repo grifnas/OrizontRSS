@@ -190,6 +190,15 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Concluzie: ciclul instalator accesibil → instalare → pornire → scurtătură Start → dezinstalare completă este trecut manual.
 - Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
 
+## 2026-09-05 — Limbă, pictogramă desktop și bară de stare în instalator
+
+- Scop: îmbunătățirea experienței de instalare pentru utilizatori nevăzători.
+- Fișiere adăugate/modificate: `packaging/installer/LanguageWindow.xaml`, `LanguageWindow.xaml.cs`, `InstallerLanguage.cs`, `App.xaml.cs`, `MainWindow.xaml`, `MainWindow.xaml.cs`; `docs/PROJECT-STATUS.md` actualizat.
+- Schimbări: dialog inițial de limbă cu preselectarea limbii Windows și șase opțiuni; interfața principală și mesajele de progres localizate în română, engleză, spaniolă, franceză, germană și portugheză; opțiune implicit activată pentru pictogramă pe desktop; bara de stare este un `StatusBar` cu regiune live `Assertive`, nume de automatizare actualizat și procente de descărcare anunțate etapizat.
+- Verificări: build fără erori; publicare autonomă win-x64 reușită; executabilul are versiunea `1.5.3.0`/`1.5.3`; verificare statică pentru dialog, cele șase limbi, pictogramă și regiune live; avertismentele de restaurare sunt numai de conectare la NuGet și nu blochează publicarea. Testarea manuală JAWS/NVDA a acestor funcții noi rămâne necesară.
+- Comportament protejat: instalarea, pornirea, scurtăturile existente și dezinstalarea completă rămân disponibile; nu sunt atinse feedurile, articolele sau setările.
+- Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
+
 ## 2026-09-01 — Perioade scurte de păstrare
 
 - Scop: adăugarea perioadelor de 1, 3, 7 și 14 zile pentru curățarea automată a articolelor obișnuite.

@@ -3,7 +3,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Security.Cryptography;
-using System.Text;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Automation.Peers;
@@ -16,28 +15,33 @@ public partial class MainWindow : Window
     private const string DownloadUrl = "https://github.com/grifnas/OrizontRSS/releases/download/v1.5.3/Orizont-RSS-1.5.3-win-x64.zip";
     private const string ExpectedSha256 = "7536070499680C2C2859C69C181BB8B6689EFA510E51C8E61E01DBD4EB48F6EB";
     private readonly bool _uninstallMode;
+    private readonly InstallerTexts _texts;
+    private int _lastAnnouncedProgress = -1;
     private readonly string _defaultInstallPath = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "Programs",
         "Orizont RSS");
 
-    public MainWindow(bool uninstallMode)
+    public MainWindow(bool uninstallMode, string languageCode)
     {
         InitializeComponent();
         _uninstallMode = uninstallMode;
+        _texts = InstallerLanguages.FromCode(languageCode);
         InstallPathBox.Text = _defaultInstallPath;
+        ApplyTexts();
         Loaded += (_, _) =>
         {
             if (_uninstallMode)
             {
-                Title = "Dezinstalare Orizont RSS";
-                TitleText.Text = "Dezinstalare Orizont RSS";
-                IntroText.Text = "Aplicația și scurtăturile Orizont RSS vor fi eliminate din acest folder.";
-                DataNoticeText.Text = "Feedurile, articolele și setările din profilul Windows nu sunt șterse.";
+                Title = _texts.UninstallTitle;
+                TitleText.Text = _texts.UninstallTitle;
+                IntroText.Text = _texts.UninstallIntro;
+                DataNoticeText.Text = _texts.UninstallDataNotice;
                 InstallFolderGroup.Visibility = Visibility.Collapsed;
+                DesktopShortcutCheckBox.Visibility = Visibility.Collapsed;
                 BrowseButton.IsEnabled = false;
-                PrimaryButton.Content = "Dezinstalează";
-                PrimaryButton.SetValue(AutomationProperties.NameProperty, "Dezinstalează Orizont RSS");
+                PrimaryButton.Content = _texts.UninstallButton;
+                PrimaryButton.SetValue(AutomationProperties.NameProperty, _texts.UninstallButton);
                 InstallPathBox.Text = AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);
                 PrimaryButton.Focus();
             }
@@ -53,7 +57,7 @@ public partial class MainWindow : Window
     {
         var dialog = new System.Windows.Forms.FolderBrowserDialog
         {
-            Description = "Alege folderul pentru Orizont RSS",
+            Description = _texts.FolderHeader,
             SelectedPath = InstallPathBox.Text
         };
         if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -79,7 +83,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            SetStatus($"Operația nu a reușit: {ex.Message}");
+            SetStatus($"{_texts.FailedPrefix} {ex.Message}");
             PrimaryButton.IsEnabled = true;
             CancelButton.IsEnabled = true;
         }
@@ -92,12 +96,12 @@ public partial class MainWindow : Window
         var destination = InstallPathBox.Text.Trim();
         if (string.IsNullOrWhiteSpace(destination))
         {
-            throw new InvalidOperationException("Alege un folder pentru instalare.");
+            throw new InvalidOperationException(_texts.FolderRequired);
         }
 
         Directory.CreateDirectory(destination);
         var tempZip = Path.Combine(Path.GetTempPath(), $"Orizont-RSS-{Version}.zip");
-        SetStatus("Se descarcă pachetul Orizont RSS...");
+        SetStatus(_texts.Downloading);
         ProgressBar.Value = 0;
 
         try
@@ -117,7 +121,14 @@ public partial class MainWindow : Window
                 received += read;
                 if (total is > 0)
                 {
-                    ProgressBar.Value = received * 80d / total.Value;
+                    var progress = received * 80d / total.Value;
+                    ProgressBar.Value = progress;
+                    var roundedProgress = Math.Clamp((int)(progress / 10) * 10, 0, 80);
+                    if (roundedProgress != _lastAnnouncedProgress)
+                    {
+                        _lastAnnouncedProgress = roundedProgress;
+                        SetStatus($"{_texts.Downloading} {roundedProgress}%");
+                    }
                 }
             }
         }
@@ -127,17 +138,17 @@ public partial class MainWindow : Window
             throw;
         }
 
-        SetStatus("Se verifică integritatea pachetului...");
+        SetStatus(_texts.Verifying);
         await using (var hashStream = File.OpenRead(tempZip))
         {
             var hash = Convert.ToHexString(await SHA256.HashDataAsync(hashStream));
             if (!hash.Equals(ExpectedSha256, StringComparison.OrdinalIgnoreCase))
             {
-                throw new InvalidDataException("Hash-ul pachetului descărcat nu corespunde Release-ului oficial.");
+                throw new InvalidDataException(_texts.HashMismatch);
             }
         }
 
-        SetStatus("Se copiază fișierele aplicației...");
+        SetStatus(_texts.Copying);
         ZipFile.ExtractToDirectory(tempZip, destination, overwriteFiles: true);
         var selfPath = Environment.ProcessPath;
         if (!string.IsNullOrWhiteSpace(selfPath))
@@ -145,12 +156,12 @@ public partial class MainWindow : Window
             File.Copy(selfPath, Path.Combine(destination, "OrizontSetup.exe"), overwrite: true);
         }
 
-        SetStatus("Se creează scurtăturile accesibile...");
-        CreateShortcuts(destination);
+        SetStatus(_texts.CreatingShortcuts);
+        CreateShortcuts(destination, DesktopShortcutCheckBox.IsChecked == true);
         ProgressBar.Value = 100;
-        SetStatus("Instalarea s-a finalizat cu succes.");
-        PrimaryButton.Content = "Pornește Orizont RSS";
-        PrimaryButton.SetValue(AutomationProperties.NameProperty, "Pornește Orizont RSS");
+        SetStatus(_texts.Completed);
+        PrimaryButton.Content = _texts.StartButton;
+        PrimaryButton.SetValue(AutomationProperties.NameProperty, _texts.StartButton);
         PrimaryButton.IsEnabled = true;
         PrimaryButton.Click -= PrimaryButton_Click;
         PrimaryButton.Click += (_, _) =>
@@ -158,7 +169,7 @@ public partial class MainWindow : Window
             Process.Start(new ProcessStartInfo(Path.Combine(destination, "Orizont.exe")) { UseShellExecute = true });
             Close();
         };
-        CancelButton.Content = "Închide";
+        CancelButton.Content = _texts.CloseButton;
         CancelButton.IsEnabled = true;
         File.Delete(tempZip);
     }
@@ -168,14 +179,14 @@ public partial class MainWindow : Window
         var destination = InstallPathBox.Text.TrimEnd(Path.DirectorySeparatorChar);
         if (!Directory.Exists(destination))
         {
-            SetStatus("Folderul instalării nu mai există.");
+            SetStatus(_texts.MissingFolder);
             Close();
             return;
         }
 
         var answer = System.Windows.MessageBox.Show(
-            "Sigur dorești să dezinstalezi Orizont RSS? Datele utilizatorului nu vor fi șterse.",
-            "Confirmă dezinstalarea",
+            _texts.ConfirmMessage,
+            _texts.ConfirmTitle,
             MessageBoxButton.YesNo,
             MessageBoxImage.Question,
             MessageBoxResult.No);
@@ -187,11 +198,11 @@ public partial class MainWindow : Window
             return;
         }
 
-        SetStatus("Se elimină scurtăturile...");
+        SetStatus(_texts.RemovingShortcuts);
         DeleteShortcuts();
         var currentSetup = Environment.ProcessPath;
-        if (string.IsNullOrWhiteSpace(currentSetup)) throw new InvalidOperationException("Nu s-a putut determina instalatorul.");
-        SetStatus("Se finalizează dezinstalarea...");
+        if (string.IsNullOrWhiteSpace(currentSetup)) throw new InvalidOperationException(_texts.MissingInstaller);
+        SetStatus(_texts.FinishingUninstall);
         var command = $"ping 127.0.0.1 -n 2 > nul & rmdir /s /q \"{destination}\"";
         Process.Start(new ProcessStartInfo("cmd.exe", $"/c {command}")
         {
@@ -204,12 +215,17 @@ public partial class MainWindow : Window
         Close();
     }
 
-    private void CreateShortcuts(string destination)
+    private void CreateShortcuts(string destination, bool createDesktopShortcut)
     {
         var programs = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
         Directory.CreateDirectory(programs);
         CreateShortcut(Path.Combine(programs, "Orizont RSS.lnk"), Path.Combine(destination, "Orizont.exe"), destination, "Orizont RSS");
         CreateShortcut(Path.Combine(programs, "Dezinstalează Orizont RSS.lnk"), Path.Combine(destination, "OrizontSetup.exe"), destination, "Dezinstalează Orizont RSS", "/uninstall");
+        if (createDesktopShortcut)
+        {
+            var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            CreateShortcut(Path.Combine(desktop, "Orizont RSS.lnk"), Path.Combine(destination, "Orizont.exe"), destination, "Orizont RSS");
+        }
     }
 
     private static void CreateShortcut(string shortcutPath, string targetPath, string workingDirectory, string description, string arguments = "")
@@ -233,11 +249,33 @@ public partial class MainWindow : Window
             var path = Path.Combine(programs, name);
             if (File.Exists(path)) File.Delete(path);
         }
+        var desktopShortcut = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), "Orizont RSS.lnk");
+        if (File.Exists(desktopShortcut)) File.Delete(desktopShortcut);
+    }
+
+    private void ApplyTexts()
+    {
+        var uninstall = _uninstallMode;
+        Title = uninstall ? _texts.UninstallTitle : _texts.InstallTitle;
+        TitleText.Text = uninstall ? _texts.UninstallTitle : _texts.InstallTitle;
+        IntroText.Text = uninstall ? _texts.UninstallIntro : _texts.InstallIntro;
+        InstallFolderGroup.Header = _texts.FolderHeader;
+        BrowseButton.Content = _texts.BrowseButton;
+        BrowseButton.SetValue(AutomationProperties.NameProperty, _texts.BrowseButton);
+        DesktopShortcutCheckBox.Content = _texts.DesktopShortcut;
+        DataNoticeText.Text = uninstall ? _texts.UninstallDataNotice : _texts.DataNotice;
+        PrimaryButton.Content = uninstall ? _texts.UninstallButton : _texts.InstallButton;
+        CancelButton.Content = _texts.CancelButton;
+        PrimaryButton.SetValue(AutomationProperties.NameProperty, PrimaryButton.Content);
+        CancelButton.SetValue(AutomationProperties.NameProperty, _texts.CancelButton);
+        InstallPathBox.SetValue(AutomationProperties.NameProperty, _texts.FolderHeader);
+        StatusBarControl.SetValue(AutomationProperties.NameProperty, uninstall ? _texts.UninstallTitle : _texts.InstallTitle);
     }
 
     private void SetStatus(string message)
     {
         StatusText.Text = message;
+        StatusText.SetValue(AutomationProperties.NameProperty, $"{(_uninstallMode ? _texts.UninstallTitle : _texts.InstallTitle)}: {message}");
         if (UIElementAutomationPeer.CreatePeerForElement(StatusText) is FrameworkElementAutomationPeer peer)
         {
             peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);

@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Instalare Orizont RSS"
         Width="620"
-        Height="430"
+        Height="500"
         MinWidth="560"
         MinHeight="360"
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanResizeWithGrip">
     <Grid Margin="24">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -57,29 +58,43 @@
             </Grid>
         </GroupBox>
 
+        <CheckBox x:Name="DesktopShortcutCheckBox"
+                  Grid.Row="3"
+                  Margin="0,14,0,0"
+                  IsChecked="True"
+                  Content="Creează și o pictogramă pe desktop"
+                  AutomationProperties.Name="Creează o pictogramă pe desktop"
+                  AutomationProperties.HelpText="Creează o scurtătură Orizont RSS pe desktop"
+                  />
+
         <TextBlock x:Name="DataNoticeText"
-                   Grid.Row="3"
+                   Grid.Row="4"
                    Margin="0,18,0,0"
                    TextWrapping="Wrap"
                    Text="Feedurile, articolele și setările existente nu sunt șterse; ele sunt păstrate în profilul Windows al utilizatorului."
                    AutomationProperties.Name="Notă despre datele utilizatorului" />
 
         <ProgressBar x:Name="ProgressBar"
-                     Grid.Row="4"
+                     Grid.Row="5"
                      Margin="0,16,0,8"
                      Height="18"
                      Minimum="0"
                      Maximum="100"
                      IsHitTestVisible="False"
                      AutomationProperties.Name="Progresul instalării" />
-        <TextBlock x:Name="StatusText"
-                   Grid.Row="5"
-                   MinHeight="28"
-                   TextWrapping="Wrap"
-                   AutomationProperties.LiveSetting="Polite"
-                   AutomationProperties.Name="Starea instalării" />
+        <StatusBar x:Name="StatusBarControl"
+                   Grid.Row="6"
+                   MinHeight="32"
+                   AutomationProperties.Name="Bara de stare a instalării">
+            <StatusBarItem>
+                <TextBlock x:Name="StatusText"
+                           TextWrapping="Wrap"
+                           AutomationProperties.LiveSetting="Assertive"
+                           AutomationProperties.Name="Starea instalării" />
+            </StatusBarItem>
+        </StatusBar>
 
-        <StackPanel Grid.Row="6"
+        <StackPanel Grid.Row="7"
                     Margin="0,18,0,0"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
