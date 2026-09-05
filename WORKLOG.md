@@ -174,6 +174,14 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: recompilare și publicare autonomă win-x64 reușite; aplicația principală nu a fost modificată.
 - Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
 
+## 2026-09-05 — Curățare completă la dezinstalarea instalatorului
+
+- Scop: eliminarea folderului gol rămas după dezinstalarea observată în testul manual.
+- Fișier modificat: `packaging/installer/MainWindow.xaml.cs`.
+- Schimbare: procesul de ștergere amânată rulează din folderul temporar, nu din folderul pe care îl elimină, pentru a permite ștergerea completă a directorului instalării.
+- Verificări: publicare autonomă win-x64 reușită; problema a fost izolată ca limitare de director de lucru, fără atingerea datelor utilizatorului.
+- Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
+
 ## 2026-09-01 — Perioade scurte de păstrare
 
 - Scop: adăugarea perioadelor de 1, 3, 7 și 14 zile pentru curățarea automată a articolelor obișnuite.

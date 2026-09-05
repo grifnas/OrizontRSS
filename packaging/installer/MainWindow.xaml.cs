@@ -197,6 +197,7 @@ public partial class MainWindow : Window
         {
             CreateNoWindow = true,
             UseShellExecute = false,
+            WorkingDirectory = Path.GetTempPath(),
             WindowStyle = ProcessWindowStyle.Hidden
         });
         await Task.Delay(300);
