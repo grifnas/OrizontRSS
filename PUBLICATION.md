@@ -16,7 +16,7 @@ date ale utilizatorilor sau feeduri personale.
 
 1. Creează sau alege contul GitHub care va fi autorul public al proiectului.
 2. Creează un depozit public, de exemplu `orizont-rss`.
-3. Înlocuiește `OWNER/REPOSITORY` în `docs/index.html` cu adresa reală a depozitului.
+3. Linkurile publice folosesc depozitul real `grifnas/OrizontRSS`.
 4. Publică sursa, documentația, licența și notificările terțe.
 5. Activează Issues și Discussions numai dacă dorești să primești feedback direct în GitHub.
 6. Adaugă topicurile: `rss`, `accessibility`, `screen-reader`, `jaws`, `nvda`, `windows`, `wpf`, `romanian`.

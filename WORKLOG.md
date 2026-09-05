@@ -10,6 +10,14 @@ Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se 
 - Conținut: plan etapizat GitHub Releases, GitHub Pages, WinGet și Microsoft Store; pagină publică accesibilă cu linkuri demonstrative; CI Windows pentru build, smoke tests, localizare și ghiduri; formulare de feedback fără date sensibile.
 - Verificări: fișierele publice sunt prezente; funcționalitatea aplicației nu a fost modificată. Executabilul stabil pentru testare rămâne [`bin/Release/final-1.5.3-win-x64/Orizont.exe`](bin/Release/final-1.5.3-win-x64/Orizont.exe).
 
+## 2026-09-05 — Publicarea sursei în GitHub
+
+- Scop: încărcarea sursei Orizont RSS în depozitul public furnizat de utilizator.
+- Depozit: `https://github.com/grifnas/OrizontRSS.git`, ramura `main`.
+- Commit inițial publicat: `64bc049` (`Prepare Orizont RSS 1.5.3 for public release`).
+- Actualizare: linkurile din `PUBLICATION.md` și `docs/index.html` au fost fixate pe depozitul real `grifnas/OrizontRSS`.
+- Stare: sursa este publicată; tagul și Release-ul `v1.5.3` urmează după verificarea finală a linkurilor.
+
 ## 2026-09-05 — Distribuția Orizont RSS 1.5.3
 
 - Scop: generarea distribuției 1.5.3 la cererea expresă a utilizatorului.
