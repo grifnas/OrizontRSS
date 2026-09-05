@@ -142,6 +142,14 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Comportament protejat: nu au fost atinse feedurile, articolele sau setările existente; nu s-a creat o distribuție nouă și nu s-a trimis manifestul în depozitul Microsoft.
 - Executabil de test: copia instalată prin WinGet; executabilul local de referință rămâne `bin/Release/final-1.5.3-win-x64/Orizont.exe`.
 
+## 2026-09-05 — Dezinstalare WinGet verificată
+
+- Scop: confirmarea curățării instalării locale WinGet după testul de pornire.
+- Rezultat: `winget uninstall --id Grifnas.OrizontRSS -e` a dezinstalat cu succes copia instalată prin manifest.
+- Comportament protejat: testul nu a modificat feedurile, articolele sau setările aplicației și nu a afectat Release-ul public.
+- Concluzie: ciclul local WinGet validare → instalare → pornire → dezinstalare este închis cu succes.
+- Executabil de test: nu mai există copia WinGet instalată; executabilul local de referință rămâne `bin/Release/final-1.5.3-win-x64/Orizont.exe`.
+
 ## 2026-09-01 — Perioade scurte de păstrare
 
 - Scop: adăugarea perioadelor de 1, 3, 7 și 14 zile pentru curățarea automată a articolelor obișnuite.
