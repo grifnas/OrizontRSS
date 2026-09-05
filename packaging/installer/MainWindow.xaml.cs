@@ -263,6 +263,8 @@ public partial class MainWindow : Window
         BrowseButton.Content = _texts.BrowseButton;
         BrowseButton.SetValue(AutomationProperties.NameProperty, _texts.BrowseButton);
         DesktopShortcutCheckBox.Content = _texts.DesktopShortcut;
+        DesktopShortcutCheckBox.SetValue(AutomationProperties.NameProperty, _texts.DesktopShortcut);
+        DesktopShortcutCheckBox.SetValue(AutomationProperties.HelpTextProperty, _texts.DesktopShortcut);
         DataNoticeText.Text = uninstall ? _texts.UninstallDataNotice : _texts.DataNotice;
         PrimaryButton.Content = uninstall ? _texts.UninstallButton : _texts.InstallButton;
         CancelButton.Content = _texts.CancelButton;

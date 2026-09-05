@@ -2,6 +2,14 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-05 — Localizarea anunțului pentru pictograma desktop
+
+- Scop: corectarea anunțului JAWS/NVDA care rămânea în română după alegerea limbii engleze.
+- Fișiere modificate: `packaging/installer/MainWindow.xaml.cs`, `WORKLOG.md`.
+- Remediere: `AutomationProperties.Name` și `AutomationProperties.HelpText` pentru opțiunea pictogramei sunt actualizate din textele limbii selectate, la fel ca textul vizibil.
+- Verificări: publicare win-x64 fără erori; verificare statică a setării proprietăților localizate.
+- Executabil de test: `bin/Release/installer-1.5.3-win-x64/OrizontSetup.exe`.
+
 ## 2026-09-05 — Corectarea tranziției dialogului de limbă
 
 - Scop: remedierea închiderii neașteptate a instalatorului după apăsarea butonului `Continue`.
