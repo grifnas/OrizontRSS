@@ -4,6 +4,22 @@ Orizont RSS este un cititor RSS accesibil pentru Windows, proiectat pentru utili
 
 Aplicația a fost inițiată și este coordonată de **Grigore Frișan**. Dezvoltarea a fost realizată în colaborare cu **OpenAI Codex**, care a oferit asistență pentru proiectarea aplicației, programare, depanare, testare, documentare și pregătirea versiunilor de distribuție.
 
+## Pagina publică și descărcare
+
+- [Pagina publică Orizont RSS](https://grifnas.github.io/OrizontRSS/), disponibilă în română, engleză, spaniolă, franceză, germană și portugheză;
+- [Release-ul stabil 1.5.3 pentru Windows x64](https://github.com/grifnas/OrizontRSS/releases/tag/v1.5.3);
+- [Descarcă ultima versiune](https://github.com/grifnas/OrizontRSS/releases/latest);
+- [Codul-sursă și documentația](https://github.com/grifnas/OrizontRSS).
+
+### Instalare rapidă
+
+1. Descarcă arhiva Windows x64 din Release.
+2. Dezarhivează conținutul într-un folder ales de tine.
+3. Pornește `Orizont.exe`.
+4. Deschide `Setări` pentru limba interfeței, voce, feeduri și, opțional, cheile API Gemini și DeepL.
+
+Pachetul Windows este autonom și nu necesită instalarea separată a .NET Runtime. Pentru probleme de securitate afișate de Windows, verifică mai întâi că arhiva provine de pe pagina oficială de Release de mai sus.
+
 ## Funcții principale
 
 - organizarea feedurilor în foldere;
@@ -26,6 +42,12 @@ Aplicația a fost inițiată și este coordonată de **Grigore Frișan**. Dezvol
 - interfață în română, engleză, spaniolă, franceză, germană și portugheză, cu alegere automată după limba Windows sau selecție explicită în Setări.
 
 Resursele interfeței și ghidurile HTML sunt verificate automat pentru toate cele șase limbi înaintea unei distribuții.
+
+## Accesibilitate
+
+Aplicația este construită pentru navigare cu tastatura și testare cu JAWS 2026 și NVDA. Listele, meniurile contextuale, bara de stare, cititorul integrat și dialogurile au etichete accesibile și păstrează focalizarea cât mai predictibil. Comenzile importante sunt documentate în ajutorul inclus în aplicație și în ghidurile HTML din depozit.
+
+Feedbackul privind focalizarea, anunțurile vocale sau comportamentul cu un anumit cititor de ecran este deosebit de util. La raportare, menționează versiunea Windows, cititorul de ecran și pașii care reproduc problema.
 
 ## Cerințe
 
@@ -55,11 +77,11 @@ Instrucțiunile complete sunt în [BUILDING.md](BUILDING.md).
 
 ## Contribuții
 
-Rapoartele de probleme, corecțiile, traducerile și îmbunătățirile de accesibilitate sunt binevenite. Consultă [CONTRIBUTING.md](CONTRIBUTING.md) înainte de a trimite o contribuție.
+Rapoartele de probleme, corecțiile, traducerile și îmbunătățirile de accesibilitate sunt binevenite. Deschide un [issue pe GitHub](https://github.com/grifnas/OrizontRSS/issues) sau consultă [CONTRIBUTING.md](CONTRIBUTING.md) înainte de a trimite o contribuție.
 
 ## Publicare
 
-Planul pentru publicarea depozitului, a versiunilor Windows, a paginii GitHub Pages și a pachetului WinGet este în [PUBLICATION.md](PUBLICATION.md).
+Starea și pașii rămași pentru publicare sunt în [PUBLICATION.md](PUBLICATION.md), iar foaia de parcurs este în [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Licență
 

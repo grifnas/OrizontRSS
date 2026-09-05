@@ -108,6 +108,14 @@ Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se 
 
 Orice intervenție viitoare asupra proiectului trebuie adăugată aici după aplicarea modificării și verificarea rezultatului. Intrarea trebuie să includă data, scopul, fișierele atinse, efectul, testele și calea executabilului de test, dacă a fost construit.
 
+## 2026-09-05 — Prezentare publică și instrucțiuni de pornire
+
+- Scop: clarificarea paginii publice a proiectului pentru utilizatori noi, fără modificarea funcțiilor stabile ale aplicației.
+- Fișiere modificate: `README.md`, `WORKLOG.md`.
+- Schimbări: linkuri directe către pagina GitHub Pages multilingvă, Release-ul 1.5.3, codul-sursă și Issues; pași de instalare rapidă; secțiune dedicată accesibilității JAWS/NVDA; instrucțiuni mai clare pentru raportarea problemelor și trimitere către documentația de publicare.
+- Verificări: verificare statică a linkurilor și a secțiunilor Markdown; nu s-a modificat codul aplicației și nu s-a creat o distribuție nouă.
+- Executabil de test: `bin/Release/final-1.5.3-win-x64/Orizont.exe` (neschimbat; disponibil pentru retestare manuală).
+
 ## 2026-09-01 — Perioade scurte de păstrare
 
 - Scop: adăugarea perioadelor de 1, 3, 7 și 14 zile pentru curățarea automată a articolelor obișnuite.
