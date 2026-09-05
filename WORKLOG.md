@@ -116,6 +116,15 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: verificare statică a linkurilor și a secțiunilor Markdown; nu s-a modificat codul aplicației și nu s-a creat o distribuție nouă.
 - Executabil de test: `bin/Release/final-1.5.3-win-x64/Orizont.exe` (neschimbat; disponibil pentru retestare manuală).
 
+## 2026-09-05 — Manifest WinGet pregătit pentru revizie
+
+- Scop: pregătirea instalării prin Windows Package Manager folosind Release-ul stabil existent, fără trimitere încă în depozitul Microsoft.
+- Fișiere adăugate: `packaging/winget/Grifnas.OrizontRSS/1.5.3/Grifnas.OrizontRSS.yaml`, `Grifnas.OrizontRSS.locale.ro-RO.yaml`, `Grifnas.OrizontRSS.locale.en-US.yaml`, `Grifnas.OrizontRSS.installer.yaml`; `docs/ROADMAP.md` actualizat.
+- Comportament protejat: arhiva și executabilul publicate nu au fost modificate; nu s-a creat o distribuție nouă.
+- Metadate: identificator propus `Grifnas.OrizontRSS`, instalare portabilă x64 din arhiva oficială Release, alias `orizont-rss`, hash SHA-256 verificat local.
+- Verificări: structură multi-fișier și câmpuri YAML verificate static; URL-ul, versiunea și hash-ul corespund Release-ului 1.5.3; nu s-a executat instalarea WinGet pe un Windows curat.
+- Executabil de test: `bin/Release/final-1.5.3-win-x64/Orizont.exe` (neschimbat; disponibil pentru retestare manuală).
+
 ## 2026-09-01 — Perioade scurte de păstrare
 
 - Scop: adăugarea perioadelor de 1, 3, 7 și 14 zile pentru curățarea automată a articolelor obișnuite.
