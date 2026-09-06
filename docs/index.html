@@ -4,6 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Orizont RSS — cititor RSS accesibil</title>
+  <script>
+    (() => {
+      // Automatic selection applies only to the landing URL. Explicit language
+      // pages remain stable so the language links always work as expected.
+      if (!/\/OrizontRSS\/?$/i.test(window.location.pathname)) return;
+      const pages = { ro: "index.html", en: "index.en.html", es: "index.es.html", fr: "index.fr.html", de: "index.de.html", pt: "index.pt.html" };
+      const languages = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"]);
+      const language = languages.map(value => String(value).toLowerCase().split("-")[0]).find(code => pages[code]) || "en";
+      if (language !== "ro") window.location.replace(pages[language]);
+    })();
+  </script>
   <style>
     :root { color-scheme: light dark; }
     body { max-width: 52rem; margin: 0 auto; padding: 2rem 1.25rem; font: 1.05rem/1.6 system-ui, sans-serif; }

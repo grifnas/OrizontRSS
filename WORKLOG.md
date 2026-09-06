@@ -2,6 +2,14 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-06 — Selectarea automată a limbii pe pagina publică
+
+- Scop: deschiderea paginii GitHub Pages în limba preferată a browserului utilizatorului.
+- Fișiere modificate: `docs/index.html`, `docs/PROJECT-STATUS.md`, `WORKLOG.md`.
+- Comportament: numai URL-ul rădăcină detectează `navigator.languages`/`navigator.language`; limbile ro, en, es, fr, de și pt trimit la pagina corespunzătoare, iar orice altă limbă trimite la engleză. Pagini precum `index.en.html` nu sunt redirecționate, astfel încât alegerea manuală rămâne funcțională.
+- Verificări: hartă statică pentru toate cele șase pagini și fallback engleză; nu s-a modificat codul aplicației și nu s-a creat distribuție.
+- Executabil de test: nu este necesar pentru o modificare exclusivă GitHub Pages.
+
 ## 2026-09-05 — Restaurarea dependențelor în CI
 
 - Scop: corectarea celui de-al doilea eșec al workflow-ului GitHub după separarea surselor instalatorului.
