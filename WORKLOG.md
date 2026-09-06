@@ -2,6 +2,14 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-06 — Menționarea contribuției OpenAI Codex pe pagina publică
+
+- Scop: prezentarea transparentă a colaborării la fel ca în secțiunea „Despre” a aplicației.
+- Fișiere modificate: toate cele șase `docs/index*.html`, `docs/PROJECT-STATUS.md`, `WORKLOG.md`.
+- Comportament: fiecare limbă afișează contribuția lui Grigore Frișan și OpenAI Codex și leagă documentul complet `ACKNOWLEDGEMENTS.md`.
+- Verificări: toate cele șase pagini conțin mențiunea și legătura; nu s-a modificat codul aplicației și nu s-a creat distribuție.
+- Executabil de test: nu este necesar pentru o modificare exclusivă GitHub Pages.
+
 ## 2026-09-06 — Selectarea automată a limbii pe pagina publică
 
 - Scop: deschiderea paginii GitHub Pages în limba preferată a browserului utilizatorului.
