@@ -8,10 +8,25 @@ Localizarea este disponibilă în română, engleză, spaniolă, franceză, germ
 
 Distribuția 1.5.3 Windows x64 și arhiva sursă au fost verificate și sunt disponibile.
 
+## Workflow obligatoriu pentru orice versiune nouă
+
+Pentru ca instalatorul și versiunea portabilă să conțină aceleași modificări, se folosește aceeași stare a sursei și aceeași versiune:
+
+1. Modificarea codului și actualizarea documentației, limbilor și `WORKLOG.md`.
+2. Build, smoke tests și verificări manuale țintite cu JAWS/NVDA.
+3. Creșterea versiunii (de exemplu `1.5.3` → `1.5.4`).
+4. Construirea arhivei portabile Windows x64.
+5. Construirea instalatorului autonom din aceeași stare a sursei.
+6. Actualizarea în instalator a versiunii, adresei arhivei și hash-ului SHA-256.
+7. Încărcarea în același release GitHub a arhivei portabile și a `OrizontSetup.exe`.
+8. Actualizarea paginii GitHub Pages și verificarea linkurilor publice.
+
+Nu se publică un singur pachet izolat. O nouă distribuție se creează numai la cererea expresă și după verificarea tuturor limbilor.
+
 ## Următoarea etapă
 
-1. Pregătirea unui instalator Windows accesibil, cu scurtătură în meniul Start și navigare completă din tastatură.
-2. Retestarea WinGet prin acel instalator, inclusiv instalare și dezinstalare în regim non-administrator.
+1. Verificarea instalatorului public descărcat direct de pe GitHub, inclusiv limbă, focus, bară de stare, pictogramă desktop, instalare și dezinstalare.
+2. Retestarea WinGet prin instalatorul public, inclusiv instalare și dezinstalare în regim non-administrator.
 3. Trimiterea manifestului WinGet numai după aceste verificări și confirmarea identității publice.
 4. Promovarea paginii publice și colectarea feedbackului inițial.
 5. Menținerea proiectului Windows fără schimbarea funcțiilor stabile; orice modificare nouă rămâne supusă regulilor din `AGENTS.md`.

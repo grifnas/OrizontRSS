@@ -2,6 +2,14 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-06 — Workflow de sincronizare a pachetelor
+
+- Scop: consemnarea modului obligatoriu prin care modificările ajung atât în instalator, cât și în versiunea portabilă.
+- Fișiere modificate: `docs/ROADMAP.md`, `WORKLOG.md`.
+- Documentație: foaia de parcurs precizează folosirea aceleiași stări a sursei, creșterea versiunii, buildurile și testele, actualizarea hash-ului și încărcarea ambelor pachete în același release GitHub; pagina publică trebuie verificată după publicare.
+- Verificări: documentația a fost verificată textual; nu s-a modificat codul și nu s-a creat distribuție.
+- Executabil de test: nu este necesar pentru o modificare exclusivă de documentație.
+
 ## 2026-09-06 — Menționarea contribuției OpenAI Codex pe pagina publică
 
 - Scop: prezentarea transparentă a colaborării la fel ca în secțiunea „Despre” a aplicației.
