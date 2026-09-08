@@ -25,6 +25,13 @@ Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se 
 - Verificări: toate cele opt pagini au câte un description, canonical, nouă hreflang, JSON-LD și opt metadate Open Graph; JSON-LD se parsează fără erori; sitemap-ul este XML valid; `git diff --check` fără erori.
 - Publicare: modificările sunt pregătite local; nu s-a făcut commit/push și nu s-a creat distribuție nouă.
 
+## 2026-09-08 — Commit și push GitHub pentru modificările publice
+
+- Scop: publicarea automată a modificărilor aprobate de utilizator.
+- Acțiune: commitul `5a491b6` („Add multilingual RSS demos and SEO metadata”) a fost împins cu succes în `origin/main` pentru repository-ul `grifnas/OrizontRSS`.
+- Verificare: `ls-remote` confirmă hash-ul remote `5a491b65d4d8c93f53a039b13da5a1d1db8c7a4d`; arborele local este curat.
+- Notă: nu s-a creat release, instalator nou sau distribuție nouă; GitHub Pages poate avea nevoie de câteva minute pentru redeploy.
+
 ## 2026-09-07 — Localizare maghiară și italiană
 
 - Scop: adăugarea limbilor `hu-HU` și `it-IT`, solicitată ca necesitate stringentă.
