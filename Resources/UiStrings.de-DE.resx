@@ -2461,4 +2461,19 @@ Details: {1}</value>
   <data name="Testează sunetul" xml:space="preserve"><value>Ton testen</value></data>
   <data name="Sunetul de test a fost redat." xml:space="preserve"><value>Der Testton wurde abgespielt.</value></data>
   <data name="Copiere și distribuire" xml:space="preserve"><value>Kopieren und teilen</value></data>
+  <data name="Nu s-au putut verifica exemplele RSS: {0}" xml:space="preserve"><value>Die RSS-Beispiele konnten nicht überprüft werden: {0}</value></data>
+  <data name="Nu există feeduri demonstrative de eliminat." xml:space="preserve"><value>Es gibt keine Demo-Feeds zum Entfernen.</value></data>
+  <data name="Adaugă feed demonstrativ local" xml:space="preserve"><value>Lokalen Demo-Feed hinzufügen</value></data>
+  <data name="Toate exemplele RSS pentru limba {0} sunt deja abonate." xml:space="preserve"><value>Alle RSS-Beispiele für die Sprache {0} sind bereits abonniert.</value></data>
+  <data name="Feed demonstrativ local adăugat. Articolele sunt gata pentru testare." xml:space="preserve"><value>Lokaler Demo-Feed hinzugefügt. Die Artikel sind zum Testen bereit.</value></data>
+  <data name="Exemplu demonstrativ" xml:space="preserve"><value>Demonstrationsbeispiel</value></data>
+  <data name="Elimină feedurile demonstrative" xml:space="preserve"><value>Demo-Feeds entfernen</value></data>
+  <data name="Feedurile locale nu se actualizează de pe internet; articolele demonstrative sunt deja disponibile." xml:space="preserve"><value>Lokale Feeds werden nicht aus dem Internet aktualisiert; die Demo-Artikel sind bereits verfügbar.</value></data>
+  <data name="Feedul demonstrativ local există deja." xml:space="preserve"><value>Der lokale Demo-Feed ist bereits vorhanden.</value></data>
+  <data name="Feed demonstrativ local" xml:space="preserve"><value>Lokaler Demo-Feed</value></data>
+  <data name="Adaugă exemple RSS pentru limba interfeței" xml:space="preserve"><value>RSS-Beispiele für die Sprache der Benutzeroberfläche hinzufügen</value></data>
+  <data name="Exemple RSS pentru {0}" xml:space="preserve"><value>RSS-Beispiele für {0}</value></data>
+  <data name="Au fost adăugate {0} feeduri RSS pentru limba {1}." xml:space="preserve"><value>{0} RSS-Feed(s) für die Sprache {1} wurden hinzugefügt.</value></data>
+  <data name="Au fost eliminate {0} feeduri demonstrative." xml:space="preserve"><value>{0} Demo-Feed(s) wurden entfernt.</value></data>
+  <data name="Nu s-au putut salva feedurile demonstrative: {0}" xml:space="preserve"><value>Die Demo-Feeds konnten nicht gespeichert werden: {0}</value></data>
 </root>

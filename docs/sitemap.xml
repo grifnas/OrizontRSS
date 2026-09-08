@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://grifnas.github.io/OrizontRSS/</loc>
+    <lastmod>2026-09-08</lastmod>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://grifnas.github.io/OrizontRSS/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://grifnas.github.io/OrizontRSS/index.en.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://grifnas.github.io/OrizontRSS/index.es.html" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://grifnas.github.io/OrizontRSS/index.fr.html" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://grifnas.github.io/OrizontRSS/index.de.html" />
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://grifnas.github.io/OrizontRSS/index.pt.html" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://grifnas.github.io/OrizontRSS/index.hu.html" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://grifnas.github.io/OrizontRSS/index.it.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://grifnas.github.io/OrizontRSS/index.en.html" />
+  </url>
+  <url><loc>https://grifnas.github.io/OrizontRSS/index.en.html</loc><lastmod>2026-09-08</lastmod></url>
+  <url><loc>https://grifnas.github.io/OrizontRSS/index.es.html</loc><lastmod>2026-09-08</lastmod></url>
+  <url><loc>https://grifnas.github.io/OrizontRSS/index.fr.html</loc><lastmod>2026-09-08</lastmod></url>
+  <url><loc>https://grifnas.github.io/OrizontRSS/index.de.html</loc><lastmod>2026-09-08</lastmod></url>
+  <url><loc>https://grifnas.github.io/OrizontRSS/index.pt.html</loc><lastmod>2026-09-08</lastmod></url>
+  <url><loc>https://grifnas.github.io/OrizontRSS/index.hu.html</loc><lastmod>2026-09-08</lastmod></url>
+  <url><loc>https://grifnas.github.io/OrizontRSS/index.it.html</loc><lastmod>2026-09-08</lastmod></url>
+</urlset>

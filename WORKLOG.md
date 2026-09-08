@@ -2,6 +2,67 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-07 — Exemple RSS pentru testare în fiecare limbă
+
+- Scop: oferirea unui exemplu de lucru imediat pentru fiecare limbă a interfeței, la cererea utilizatorului.
+- Fișiere adăugate: `DemoFeedCatalog.cs`.
+- Fișiere actualizate: `Models.cs`, `MainWindow.xaml`, `MainWindow.xaml.cs`, `tests/CoreSmoke/Program.cs`, toate resursele `Resources/UiStrings*.resx`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md`.
+- Comportament: meniul Feeduri are comenzile „Adaugă feed demonstrativ local”, „Adaugă exemple RSS pentru limba interfeței” și „Elimină feedurile demonstrative”. Feedul local conține trei articole fictive, inclusiv marcaje citit/favorit/Mai târziu, și nu este trimis la actualizare pe internet. Feedul online al limbii curente este verificat înainte de salvare; duplicatele sunt refuzate.
+- Corecție de focalizare: după adăugarea unui exemplu, filtrul de folder este mutat automat pe folderul demonstrativ, iar feedul și primul articol rămân vizibile și selectabile.
+- Catalog online: câte o adresă RSS oficială pentru română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană. Catalogul este separat de feedurile personale și marchează vizibil exemplele în lista accesibilă.
+- Verificări: build Release reușit fără erori sau avertismente; CoreSmoke trecut cu 26 verificări; localizare completă 829/829 pentru toate cele opt limbi; ghidurile verificate pentru en, es, fr, de, pt, hu și it; `git diff --check` fără erori.
+- Verificare manuală: trebuie efectuată de utilizator cu JAWS/NVDA pentru focusul după adăugare, citirea celor trei articole și confirmarea eliminării; serviciul Computer Use nu este disponibil în această sesiune.
+- Distribuție: nu s-a creat și nu s-a publicat o versiune nouă.
+- Executabil de test: `bin/Release/net8.0-windows/Orizont.exe`.
+
+## 2026-09-08 — Metadate SEO pentru pagina publică
+
+- Scop: îmbunătățirea indexării și a previzualizărilor la distribuirea paginii GitHub Pages.
+- Fișiere actualizate: toate cele opt `docs/index*.html`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md`.
+- Fișiere adăugate: `docs/sitemap.xml`, `docs/robots.txt`.
+- Comportament: fiecare pagină are descriere localizată, URL canonical propriu, nouă legături `hreflang` inclusiv `x-default`, Open Graph, Twitter Card și JSON-LD pentru `WebSite` și `SoftwareApplication`. Sitemap-ul enumeră toate paginile cu URL-uri absolute și este declarat în robots.txt.
+- Protecții: nu s-au adăugat meta-keywords și nu s-a modificat aplicația Windows, instalatorul sau datele utilizatorului.
+- Verificări: toate cele opt pagini au câte un description, canonical, nouă hreflang, JSON-LD și opt metadate Open Graph; JSON-LD se parsează fără erori; sitemap-ul este XML valid; `git diff --check` fără erori.
+- Publicare: modificările sunt pregătite local; nu s-a făcut commit/push și nu s-a creat distribuție nouă.
+
+## 2026-09-07 — Localizare maghiară și italiană
+
+- Scop: adăugarea limbilor `hu-HU` și `it-IT`, solicitată ca necesitate stringentă.
+- Fișiere adăugate: `Resources/UiStrings.hu-HU.resx`, `Resources/UiStrings.it-IT.resx`, `Ghid-utilizator-Orizont-RSS.hu.html`, `Ghid-utilizator-Orizont-RSS.it.html`, `docs/index.hu.html`, `docs/index.it.html`.
+- Fișiere actualizate: `Localization/UiCulture.cs`, `Localization/UserGuideLocator.cs`, `packaging/installer/InstallerLanguage.cs`, `tests/LocalizationSmoke/Program.cs`, `tools/verify-localization.ps1`, `tools/verify-user-guides.ps1`, `tools/verify-distribution.ps1`, `tools/translate-localization.ps1`, `tools/translate-user-guide.ps1`, `docs/index*.html`, `README.md`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md`, `WORKLOG.md`.
+- Comportament: detectarea automată după limba Windows recunoaște maghiara și italiana; ambele apar în Setări și în alegerea inițială a instalatorului; ghidurile și paginile publice au pagini dedicate. Traducerile sunt incluse static și nu adaugă dependențe la rularea aplicației.
+- Verificări: build aplicație Release fără erori sau avertismente; build instalator fără erori; CoreSmoke trecut (16 verificări, 1.200 articole); LocalizationSmoke trecut pentru toate cele șapte culturi testate, inclusiv `hu-HU` și `it-IT`; eSpeakSmoke trecut (132 voci); verificarea localizării 814/814 pentru fiecare cultură; verificarea ghidurilor trecută pentru en, es, fr, de, pt, hu și it.
+- Verificare manuală: executabilul aplicației a pornit și a rămas activ în smoke testul local; testarea cu JAWS/NVDA a listelor de limbă și a anunțurilor rămâne necesară înaintea unei distribuții publice.
+- Distribuție: nu s-a creat și nu s-a publicat o versiune nouă.
+- Executabil de test: `bin/Release/net8.0-windows/Orizont.exe`.
+
+## 2026-09-07 — Pregătirea capturilor pentru pagina publică
+
+- Scop: pregătirea galeriei de capturi de ecran recomandate pentru pagina GitHub Pages.
+- Fișier adăugat: `docs/assets/screenshots/README.md`, cu cele patru capturi necesare și regulile de confidențialitate.
+- Documentație actualizată: `docs/ROADMAP.md`, cu etapa și blocajul curent.
+- Verificare: în proiect nu existau capturi ale interfeței, ci doar pictogramele aplicației. S-a încercat capturarea ferestrei reale prin serviciul Windows Computer Use, dar acesta a răspuns `Trusted RPC service is not configured: sky`. Nu s-au generat imagini artificiale și nu s-au folosit datele personale din profilul local.
+- Distribuție: nu s-a creat și nu s-a publicat o versiune nouă.
+
+## 2026-09-07 — Galerie vizuală demonstrativă pe GitHub Pages
+
+- Scop: adăugarea unor imagini pentru promovarea interfeței, fără capturarea profilului personal.
+- Fișiere adăugate: `docs/assets/screenshots/main-window.png`, `reader.png`, `context-menu.png`, `settings.png`.
+- Fișiere actualizate: toate cele opt `docs/index*.html`, cu galerie responsive, text alternativ și descrieri localizate; `docs/ROADMAP.md`.
+- Metodă: imaginile au fost generate offline cu un utilitar temporar WPF, folosind componente vizuale și date demonstrative. Utilitarul temporar a fost eliminat după generare.
+- Verificări: cele opt pagini conțin fiecare cele patru imagini și câte patru texte alternative; imaginile au fost inspectate vizual și decupate la 1440×882 pentru eliminarea zonei negre de randare; nu sunt incluse date personale sau chei API.
+- Distribuție: nu s-a creat și nu s-a publicat o versiune nouă.
+
+## 2026-09-07 — Cerință GitHub pentru autentificare în doi pași
+
+- Scop: consemnarea emailului GitHub care solicită activarea 2FA pentru contul `grifnas`.
+- Fișiere modificate: `docs/ROADMAP.md`, `WORKLOG.md`.
+- Termen: **21 octombrie 2026, ora 00:00 UTC**; după termen, accesul la GitHub va fi limitat până la activarea 2FA.
+- Acțiune cerută utilizatorului: configurarea 2FA la <https://github.com/settings/two_factor_authentication/setup/intro> și păstrarea codurilor de recuperare într-un loc sigur.
+- Impact asupra proiectului: niciunul asupra codului, feedurilor, articolelor, release-urilor sau GitHub Pages.
+- Verificări: documentația a fost verificată textual; nu s-a modificat codul și nu s-a creat distribuție.
+- Executabil de test: nu este necesar pentru această actualizare exclusiv documentară.
+
 ## 2026-09-06 — Workflow de sincronizare a pachetelor
 
 - Scop: consemnarea modului obligatoriu prin care modificările ajung atât în instalator, cât și în versiunea portabilă.

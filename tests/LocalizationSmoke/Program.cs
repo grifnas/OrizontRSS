@@ -4,7 +4,7 @@ using CititorRSS.Jaws.Localization;
 
 var failures = new List<string>();
 Check("version", "final product title", AppVersionInfo.ProductTitle, value => value == "Orizont RSS 1.5.3");
-foreach (var cultureName in new[] { "en-US", "es-ES", "fr-FR", "de-DE", "pt-BR" })
+foreach (var cultureName in new[] { "en-US", "es-ES", "fr-FR", "de-DE", "pt-BR", "hu-HU", "it-IT" })
 {
     var culture = CultureInfo.GetCultureInfo(cultureName);
     CultureInfo.CurrentCulture = culture;
@@ -30,7 +30,7 @@ if (failures.Count > 0)
     return 1;
 }
 
-Console.WriteLine("Localization smoke test passed for en-US, es-ES, fr-FR, de-DE and pt-BR.");
+Console.WriteLine("Localization smoke test passed for en-US, es-ES, fr-FR, de-DE, pt-BR, hu-HU and it-IT.");
 return 0;
 
 void Check(string culture, string test, string value, Func<string, bool> predicate)

@@ -33,6 +33,8 @@ $requiredFiles = @(
     'fr-FR\Orizont.resources.dll',
     'de-DE\Orizont.resources.dll',
     'pt-BR\Orizont.resources.dll',
+    'hu-HU\Orizont.resources.dll',
+    'it-IT\Orizont.resources.dll',
     'RELEASE-NOTES-1.5.3.md'
 )
 

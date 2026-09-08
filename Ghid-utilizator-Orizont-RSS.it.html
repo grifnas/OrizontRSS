@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guida per l'utente — Orizont RSS</title>
+  <style>
+    :root { color-scheme: light dark; font-family: "Segoe UI", Arial, sans-serif; line-height: 1.65; }
+    body { max-width: 64rem; margin: 0 auto; padding: 1.25rem; background: Canvas; color: CanvasText; }
+    header, nav, main, footer { margin-block: 1.5rem; }
+    h1 { font-size: 2rem; } h2 { margin-top: 2.2rem; border-bottom: 2px solid LinkText; padding-bottom: .25rem; }
+    h3 { margin-top: 1.5rem; } a { color: LinkText; } li { margin-block: .35rem; }
+    .skip { position: absolute; left: -10000px; } .skip:focus { position: static; display: inline-block; padding: .5rem; }
+    kbd { border: 1px solid GrayText; border-radius: .25rem; padding: .1rem .35rem; background: ButtonFace; color: ButtonText; }
+    .note { border-left: .35rem solid LinkText; padding: .75rem 1rem; background: ButtonFace; color: ButtonText; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#continut">Vai al contenuto</a>
+  <header>
+    <h1>Orizont RSS Guida per l'utente</h1>
+    <p>Guida per Orizont RSS 1.5.3 con accesso rapido alle cartelle, visualizzazione aggregata e motori SAPI5, eSpeak NG e Gemini TTS.</p>
+  </header>
+  <nav aria-label="Cuprins">
+    <h2>Contenuto</h2>
+    <ol>
+      <li><a href="#inceput">Prima apertura</a></li>
+      <li><a href="#interfata">Struttura della finestra</a></li>
+      <li><a href="#feeduri">Feed e cartelle</a></li>
+      <li><a href="#articole">Lettura e organizzazione di articoli</a></li>
+      <li><a href="#cautare">Cerca e filtra</a></li>
+      <li><a href="#voce">Lettura vocale SAPI5, eSpeak NG e Gemini</a></li>
+      <li><a href="#ai">Gemini e conversazioni AI</a></li>
+      <li><a href="#date">Importazione, backup e pulizia</a></li>
+      <li><a href="#stare">Stato, errori e risoluzione dei problemi</a></li>
+      <li><a href="#licenta">Licenza e Contributi</a></li>
+      <li><a href="#scurtaturi">Elenco delle scorciatoie</a></li>
+    </ol>
+  </nav>
+  <main id="continut">
+    <section id="inceput">
+      <h2>1. Prima apertura</h2>
+      <p>Orizont RSS si avvia direttamente nella finestra principale. Se non sono presenti feed, utilizza il menu Feed, l'opzione Aggiungi feed o importa un file OPML. I dati, le impostazioni e la chiave Gemini vengono conservati nel profilo dell'account Windows; non sono inclusi nell'archivio di distribuzione.</p>
+      <p>La lingua dell'interfaccia viene scelta da Impostazioni applicazione. Sono disponibili rumeno, inglese, spagnolo, francese, tedesco, portoghese, ungherese e italiano. La modifica viene applicata dopo il riavvio dell'applicazione. In una nuova installazione, l'opzione Automatica utilizza la lingua Windows quando supportata e l'inglese negli altri casi.</p>
+      <p class="note"><strong>Accessibilità:</strong> L'interfaccia è compatibile con gli screen reader. Il motore vocale scelto è facoltativo e legge il contenuto solo su comando dell'utente.</p>
+    </section>
+    <section id="interfata">
+      <h2>2. Struttura della finestra principale</h2>
+      <p>La finestra contiene tre pannelli, seguiti dalla barra di stato:</p>
+      <ol>
+        <li><strong>Feed:</strong> la cartella visualizzata, Leggi ora, il filtro per le fonti che richiedono attenzione e l'elenco dei feed.</li>
+        <li><strong>Articoli:</strong> la ricerca, il pulsante Filtra articoli e l'elenco dei risultati.</li>
+        <li><strong>Contenuto dell'articolo:</strong> un campo di sola lettura, navigabile con le frecce.</li>
+      </ol>
+      <h3>Navigazione tra i pannelli</h3>
+      <p>Usalo <kbd>F6</kbd> per il pannello successivo e <kbd>Shift+F6</kbd> per quello precedente. Gli ordini diretti lo sono <kbd>Ctrl+1</kbd>, <kbd>Ctrl+2</kbd> e <kbd>Ctrl+3</kbd>. <kbd>Tab</kbd> passa solo attraverso i controlli utili.</p>
+      <p><kbd>Ctrl+Shift+1</kbd> passare direttamente al selettore di cartelle. Dopo aver scelto la cartella, <kbd>Ctrl+Shift+2</kbd> visualizza l'elenco combinato dei suoi elementi e sposta lo stato attivo su di esso.</p>
+      <h3>Barra di stato</h3>
+      <p>La barra di stato descrive il pannello corrente, il numero di elementi, le operazioni in corso e gli errori. Lo screen reader può leggerlo con il comando della barra di stato, se esiste.</p>
+    </section>
+    <section id="feeduri">
+      <h2>3. Feed e cartelle</h2>
+      <h3>Aggiunta di un feed</h3>
+      <p>Scegli Feed, quindi Aggiungi feed. Inserisci il nome e l'indirizzo RSS e scegli una cartella esistente o creane una nuova. Orizont RSS non consente di aggiungere lo stesso indirizzo più di una volta.</p>
+      <h3>Visualizzazione di una cartella</h3>
+      <p>Quando scegli una cartella, l'elenco Articoli combina gli articoli di tutti i suoi feed e li ordina dal più recente al più vecchio. Lo screen reader annuncia la fonte di ciascun articolo e la barra di stato mostra il conteggio dei feed e i totali degli articoli.</p>
+      <h3>Alla scoperta di nuove fonti</h3>
+      <p>Puoi cercare i feed per argomento nel catalogo verificato o chiedere all'app di trovare i feed dichiarati da un sito specifico.</p>
+      <h3>Feed che necessitano di attenzione</h3>
+      <p>Il pulsante nel pannello Feed visualizza i feed che presentano almeno tre errori consecutivi o che non hanno ricevuto articoli da più di 90 giorni. Quando il filtro è attivo, lo stesso pulsante ritorna a tutti i feed.</p>
+      <h3>Duplicati</h3>
+      <p>L'opzione Controlla e pulisci duplicati unisce i duplicati conosciuti solo dopo la conferma. Per fonti con indirizzi diversi ma articoli quasi identici, l'utente sceglie il feed conservato.</p>
+    </section>
+    <section id="articole">
+      <h2>4. Lettura e organizzazione di articoli</h2>
+      <p>Selezionare un elemento e premere <kbd>Enter</kbd> per i contenuti. Premere <kbd>Escape</kbd> per ritornare allo stesso oggetto o, se è scomparso a causa di un'azione, all'oggetto successivo nella stessa posizione.</p>
+      <h3>Azioni rapide</h3>
+      <ul>
+        <li><kbd>R</kbd> contrassegnare come letto o non letto.</li>
+        <li><kbd>F</kbd> aggiungere o rimuovere dai preferiti.</li>
+        <li><kbd>L</kbd> aggiungere o rimuovere da Leggi più tardi.</li>
+        <li><kbd>Delete</kbd> eliminare gli elementi selezionati dopo la conferma.</li>
+        <li><kbd>Shift+F10</kbd> apre il menu contestuale per tag, spostamento, copia e altre azioni.</li>
+      </ul>
+      <h3>Etichette</h3>
+      <p>Durante l'etichettatura è possibile scegliere le etichette già create oppure inserirne una nuova. La finestra di dialogo consente inoltre la cancellazione permanente dei tag da tutti gli articoli.</p>
+      <h3>Apertura senza pubblicità nel browser</h3>
+      <p>Dal menu contestuale dell'articolo o del contenuto, scegli <strong>Apri l'articolo nel lettore Orizont</strong>. L'applicazione scarica e pulisce la pagina, quindi visualizza il titolo, la fonte e il testo principale in una finestra accessibile, senza pubblicità, barre laterali e navigazione non necessaria. Le opzioni Copia selezione, Copia articolo completo e Leggi ad alta voce rimangono disponibili. <strong>Apri la pagina originale nel browser</strong> rimane disponibile separatamente.</p>
+    </section>
+    <section id="cautare">
+      <h2>5. Ricerca e filtri</h2>
+      <p><kbd>Ctrl+F</kbd> o <kbd>F3</kbd> sposta lo stato attivo sugli elementi da cercare. La ricerca verifica titolo, fonte e contenuto RSS. <kbd>Escape</kbd> cancellare il testo di ricerca.</p>
+      <p><kbd>Ctrl+Shift+F</kbd> apre la finestra di dialogo Filtri elementi. Puoi scegliere lo stato, il periodo e il tag. Le modifiche vengono applicate solo tramite il pulsante Applica; L'Escape si chiude senza modifiche.</p>
+      <p><kbd>Ctrl+Shift+U</kbd> mostra tutti gli articoli non letti da tutte le fonti.</p>
+    </section>
+    <section id="voce">
+      <h2>6. Lettura vocale SAPI5, eSpeak NG e Gemini</h2>
+      <p>Orizont RSS può utilizzare le voci SAPI5 registrate in Windows, il motore eSpeak NG locale o le 30 voci TTS Gemini online. SAPI5 ed eSpeak funzionano localmente. Quando si utilizza Gemini TTS, il testo letto viene inviato a Google e potrebbe consumare la quota o i crediti della chiave API.</p>
+      <h3>Configurazione vocale</h3>
+      <p>Apri Impostazioni app, quindi la sezione Leggi ad alta voce. Scegli SAPI5, eSpeak NG o Gemini TTS, quindi voce, velocità e volume. Per eSpeak puoi anche regolare il tono della voce. Gemini TTS utilizza la chiave salvata nelle Impostazioni di intelligenza artificiale. Utilizza Prova voce, quindi Salva.</p>
+      <h3>Comandi di lettura</h3>
+      <ul>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+V</kbd> leggere la selezione dal contenuto; se non c'è alcuna selezione, leggi il titolo, la fonte, la data e l'articolo completo visualizzato.</li>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+P</kbd> mettere in pausa o continuare a leggere.</li>
+        <li><kbd>Escape</kbd> / <kbd>Ctrl+Alt+S</kbd> smetti di leggere.</li>
+        <li>Il menu vocale e il menu contestuale contengono anche il comando Leggi dal cursore.</li>
+              <li><kbd>Shift+F9</kbd>: apre le Impostazioni vocali.</li>
+        <li><kbd>F11</kbd>: massimizza o ripristina la finestra.</li>
+</ul>
+      <p>La lettura non si avvia automaticamente quando si cambia il focus, per non sovrapporsi allo screen reader.</p>
+      <p>Tutti e tre i motori utilizzano gli stessi controlli di avvio, pausa, ripresa e arresto, sia negli articoli che nelle conversazioni Gemini. Nella barra di stato vengono visualizzati lo stato del motore attivo e gli errori di chiave, dimensione o connessione.</p>
+    </section>
+    <section id="ai">
+      <h2>7. Gemini e le conversazioni AI</h2>
+      <p>Gemini è opzionale e richiede una chiave API configurata dall'utente. L'intero contenuto visualizzato dell'articolo è incluso nella domanda AI. La conversazione può continuare e può essere copiata, salvata, esportata o inviata nella sua interezza. I comandi Riepilogo, Traduzione, Spiegazione e Idee principali richiedono la risposta nella lingua dell'interfaccia.</p>
+      <p>Nella finestra di conversazione, <kbd>F9</kbd> / <kbd>Ctrl+Alt+V</kbd> leggere la selezione o l'intera conversazione con la voce configurata. <kbd>F9</kbd> / <kbd>Ctrl+Alt+P</kbd> mettere in pausa o continuare di nuovo <kbd>Escape</kbd> / <kbd>Ctrl+Alt+S</kbd> smetti di leggere. Il menu contestuale fornisce anche la lettura dal cursore.</p>
+      <p>Orizont RSS visualizza lo stato della richiesta e un messaggio chiaro se il servizio non risponde, la chiave viene rifiutata o la connessione non è disponibile.</p>
+    </section>
+    <section id="date">
+      <h2>8. Importazione, backup e pulizia</h2>
+      <h3>OPML</h3>
+      <p>Dal menu Feed è possibile importare o esportare un file OPML. L'importazione evita gli indirizzi già esistenti.</p>
+      <h3>Backup</h3>
+      <p>Il backup include feed, articoli, cartelle, tag, stati e note di AI. Le chiavi segrete non vengono esportate in chiaro.</p>
+      <h3>Vecchi articoli</h3>
+      <p>La pulizia automatica è configurabile. I Preferiti e gli elementi Leggi dopo sono protetti. L'applicazione ricorda gli articoli rimossi dalla regola di invecchiamento e non li importa nuovamente al successivo aggiornamento.</p>
+    </section>
+    <section id="stare">
+      <h2>9. Stato, errori e risoluzione dei problemi</h2>
+      <p><kbd>Ctrl+Shift+H</kbd> stato aperto e cronologia degli errori. Il testo può essere letto con le frecce, copiato o salvato per la diagnosi.</p>
+      <h3>Se la voce non appare</h3>
+      <p>Per SAPI5, verificare se il sintetizzatore è installato per la stessa architettura Windows. Per eSpeak NG non è necessario installare una voce; se l'elenco manca, scaricare nuovamente la distribuzione completa Orizont RSS.</p>
+      <h3>Se l'aggiornamento richiede molto tempo</h3>
+      <p>La barra di stato mostra l'avanzamento. Escape può interrompere il processo e terminare la connessione corrente, mantenendo i dati già ricevuti. Dal menu Feed è possibile riprovare solo dalle fonti che hanno dato errore.</p>
+      <h3>Se la guida non si apre</h3>
+      <p>Controlla che il file Ghid-utilizator-Orizont-RSS.html e le guide tradotte siano accanto a Orizont.exe. Estrai l'intero archivio ZIP, non solo l'eseguibile.</p>
+      <h3>Se si verifica un errore imprevisto</h3>
+      <p>L'applicazione interrompe il comando corrente, visualizza un messaggio accessibile e tenta di salvare un rapporto tecnico nella sottocartella di diagnostica dei dati locali. Il rapporto non include la chiave Gemini. Chiudere e riaprire l'applicazione prima di ripetere l'operazione.</p>
+    </section>
+    <section id="licenta">
+      <h2>10. Licenza e Contributi</h2>
+      <p>Orizont RSS è stato avviato ed è coordinato da Grigore Frișan. Lo sviluppo è stato effettuato in collaborazione con OpenAI Codex, che ha fornito assistenza con progettazione, programmazione, debug, test, documentazione e preparazione delle versioni di distribuzione.</p>
+      <p>L'applicazione è un software gratuito distribuito sotto la GNU General Public License, versione 3 o, a scelta dell'utente, qualsiasi versione successiva. Il testo completo si trova nel file LICENSE accanto a Orizont.exe e può essere aperto anche dal menu Guida.</p>
+      <p>Il codice sorgente corrispondente alla versione distribuita è fornito in un archivio separato. Correzioni, traduzioni e miglioramenti dell'accessibilità sono benvenuti secondo i termini della licenza del progetto.</p>
+    </section>
+    <section id="scurtaturi">
+      <h2>11. Elenco delle scorciatoie</h2>
+      <ul>
+        <li><kbd>F1</kbd>: aiuto e scorciatoie.</li>
+        <li><kbd>F6</kbd> e <kbd>Shift+F6</kbd>: pannello successivo o precedente.</li>
+        <li><kbd>Ctrl+1</kbd>, <kbd>Ctrl+2</kbd>, <kbd>Ctrl+3</kbd>: Feed, articoli, contenuti.</li>
+        <li><kbd>Ctrl+Shift+1</kbd>: il selettore della cartella.</li>
+        <li><kbd>Ctrl+Shift+2</kbd>: gli elementi combinati della cartella selezionata.</li>
+        <li><kbd>Ctrl+4</kbd>: Leggi ora.</li>
+        <li><kbd>Ctrl+F</kbd> o <kbd>F3</kbd>: cerca negli articoli.</li>
+        <li><kbd>Ctrl+Shift+F</kbd>: filtra gli elementi.</li>
+        <li><kbd>Ctrl+Shift+U</kbd>: tutto non letto.</li>
+        <li><kbd>Ctrl+Shift+R</kbd>: il testo completo dell'articolo.</li>
+        <li><kbd>Ctrl+Shift+H</kbd>: stato e cronologia degli errori.</li>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+V</kbd>: leggere ad alta voce.</li>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+P</kbd>: mette in pausa o riprende la voce.</li>
+        <li><kbd>Escape</kbd> / <kbd>Ctrl+Alt+S</kbd>: disattiva la voce.</li>
+      </ul>
+    </section>
+  </main>
+  <footer><p>Orizont RSS 1.5.3 — creato da Grigore Frișan in collaborazione con OpenAI Codex. Software gratuito disponibile con GNU GPL versione 3 o successiva.</p></footer>
+</body>
+</html>
+

@@ -4,7 +4,7 @@
 
 Versiunea 1.5.3 este o versiune stabilizată. Funcțiile de bază pentru feeduri, articole, organizare, citire accesibilă, AI Gemini, traducere DeepL, voce, alerte sonore, meniu contextual AI, backup și localizare sunt implementate.
 
-Localizarea este disponibilă în română, engleză, spaniolă, franceză, germană și portugheză. Verificarea automată curentă confirmă resurse complete și fără erori pentru toate cele șase limbi.
+Localizarea este disponibilă în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană. Verificarea automată curentă confirmă resurse complete și fără erori pentru toate cele opt limbi.
 
 Distribuția 1.5.3 Windows x64 și arhiva sursă au fost verificate și sunt disponibile.
 
@@ -25,11 +25,21 @@ Nu se publică un singur pachet izolat. O nouă distribuție se creează numai l
 
 ## Următoarea etapă
 
-1. Verificarea instalatorului public descărcat direct de pe GitHub, inclusiv limbă, focus, bară de stare, pictogramă desktop, instalare și dezinstalare.
-2. Retestarea WinGet prin instalatorul public, inclusiv instalare și dezinstalare în regim non-administrator.
-3. Trimiterea manifestului WinGet numai după aceste verificări și confirmarea identității publice.
-4. Promovarea paginii publice și colectarea feedbackului inițial.
-5. Menținerea proiectului Windows fără schimbarea funcțiilor stabile; orice modificare nouă rămâne supusă regulilor din `AGENTS.md`.
+1. Publicarea modificărilor SEO pe ramura GitHub Pages și verificarea adreselor publice `sitemap.xml` și `robots.txt`.
+2. Verificarea manuală cu JAWS/NVDA a comenzilor pentru exemplele RSS: adăugare locală, verificare online, focalizare pe primul articol și eliminare cu confirmare.
+3. Verificarea instalatorului public descărcat direct de pe GitHub, inclusiv limbă, focus, bară de stare, pictogramă desktop, instalare și dezinstalare.
+4. Retestarea WinGet prin instalatorul public, inclusiv instalare și dezinstalare în regim non-administrator.
+5. Trimiterea manifestului WinGet numai după aceste verificări și confirmarea identității publice.
+6. Promovarea paginii publice și colectarea feedbackului inițial.
+7. Menținerea proiectului Windows fără schimbarea funcțiilor stabile; orice modificare nouă rămâne supusă regulilor din `AGENTS.md`.
+
+## Cerință de securitate GitHub — acțiune necesară
+
+- Contul GitHub `grifnas` trebuie să activeze autentificarea în doi pași (2FA) până la **21 octombrie 2026, ora 00:00 UTC**.
+- Configurarea se face din pagina oficială: <https://github.com/settings/two_factor_authentication/setup/intro>.
+- Se recomandă o aplicație de autentificare sau un passkey; codurile de recuperare trebuie salvate într-un loc sigur.
+- Cerința protejează accesul la GitHub și nu necesită nicio modificare în aplicația Orizont RSS, în release-uri sau în GitHub Pages.
+- Până la confirmarea activării, starea contului va fi verificată periodic și utilizatorului i se va reaminti această acțiune.
 
 ## Idei pentru etape ulterioare
 
@@ -38,3 +48,7 @@ Nu se publică un singur pachet izolat. O nouă distribuție se creează numai l
 - extinderea testelor automate pentru scenarii cu colecții mari de articole.
 
 Aceste idei nu sunt angajamente de implementare și nu modifică funcționalitatea curentă.
+
+## Capturi pentru pagina publică
+
+Galeria de previzualizări este activă în toate cele opt pagini GitHub Pages. Cele patru imagini PNG din `docs/assets/screenshots/` sunt generate offline din componente WPF și folosesc exclusiv date demonstrative; nu conțin fluxuri personale sau chei API. Textul alternativ și descrierile sunt localizate pentru fiecare limbă.

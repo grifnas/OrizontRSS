@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Felhasználói kézikönyv — Orizont RSS</title>
+  <style>
+    :root { color-scheme: light dark; font-family: "Segoe UI", Arial, sans-serif; line-height: 1.65; }
+    body { max-width: 64rem; margin: 0 auto; padding: 1.25rem; background: Canvas; color: CanvasText; }
+    header, nav, main, footer { margin-block: 1.5rem; }
+    h1 { font-size: 2rem; } h2 { margin-top: 2.2rem; border-bottom: 2px solid LinkText; padding-bottom: .25rem; }
+    h3 { margin-top: 1.5rem; } a { color: LinkText; } li { margin-block: .35rem; }
+    .skip { position: absolute; left: -10000px; } .skip:focus { position: static; display: inline-block; padding: .5rem; }
+    kbd { border: 1px solid GrayText; border-radius: .25rem; padding: .1rem .35rem; background: ButtonFace; color: ButtonText; }
+    .note { border-left: .35rem solid LinkText; padding: .75rem 1rem; background: ButtonFace; color: ButtonText; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#continut">Ugrás a tartalomhoz</a>
+  <header>
+    <h1>Orizont RSS Felhasználói kézikönyv</h1>
+    <p>Útmutató a Orizont RSS 1.5.3-hoz gyors mappahozzáféréssel, összesített nézettel és SAPI5, eSpeak NG és Gemini TTS motorokkal.</p>
+  </header>
+  <nav aria-label="Cuprins">
+    <h2>Tartalom</h2>
+    <ol>
+      <li><a href="#inceput">Első nyitás</a></li>
+      <li><a href="#interfata">Ablak szerkezete</a></li>
+      <li><a href="#feeduri">Feedek és mappák</a></li>
+      <li><a href="#articole">Cikkek olvasása, rendszerezése</a></li>
+      <li><a href="#cautare">Keresés és szűrők</a></li>
+      <li><a href="#voce">Hangolvasás SAPI5, eSpeak NG és Gemini</a></li>
+      <li><a href="#ai">Gemini és AI beszélgetések</a></li>
+      <li><a href="#date">Importálás, biztonsági mentés és tisztítás</a></li>
+      <li><a href="#stare">Állapot, hibák és hibaelhárítás</a></li>
+      <li><a href="#licenta">Licenc és hozzájárulások</a></li>
+      <li><a href="#scurtaturi">Parancsikonok listája</a></li>
+    </ol>
+  </nav>
+  <main id="continut">
+    <section id="inceput">
+      <h2>1. Első nyitás</h2>
+      <p>Orizont A RSS közvetlenül a főablakból indul el. Ha nincsenek hírcsatornák, használja a Hírcsatornák menüt, a Hírcsatorna hozzáadása opciót, vagy importáljon egy OPML fájlt. A Gemini adatok, beállítások és kulcs a Windows fiókprofilban tárolódnak; nem szerepelnek a terjesztési archívumban.</p>
+      <p>A felület nyelve az Alkalmazásbeállítások közül választható ki. Román, angol, spanyol, francia, német, portugál, magyar és olasz nyelven érhető el. A módosítás az alkalmazás újraindítása után kerül alkalmazásra. Új telepítéskor az Automatikus opció a Windows nyelvet használja, ha támogatott, és egyébként az angolt.</p>
+      <p class="note"><strong>Kisegítő lehetőségek:</strong> A felület kompatibilis a képernyőolvasókkal. A kiválasztott hangmotor nem kötelező, és csak a felhasználói parancsra olvassa be a tartalmat.</p>
+    </section>
+    <section id="interfata">
+      <h2>2. A főablak felépítése</h2>
+      <p>Az ablak három panelt tartalmaz, amelyeket az állapotsor követ:</p>
+      <ol>
+        <li><strong>Hírcsatornák:</strong> a megjelenített mappa, az Olvasás most, a figyelmet igénylő források szűrője és a hírfolyamok listája.</li>
+        <li><strong>Cikkek:</strong> a keresést, a Cikkek szűrése gombot és a találatok listáját.</li>
+        <li><strong>Cikk tartalma:</strong> csak olvasható mező, amely a nyilakkal navigálható.</li>
+      </ol>
+      <h3>Navigálás a panelek között</h3>
+      <p>Használd <kbd>F6</kbd> a következő panelhez és <kbd>Shift+F6</kbd> az előzőhöz. A közvetlen rendelések <kbd>Ctrl+1</kbd>, <kbd>Ctrl+2</kbd> és <kbd>Ctrl+3</kbd>. <kbd>Tab</kbd> csak hasznos vezérléseken megy keresztül.</p>
+      <p><kbd>Ctrl+Shift+1</kbd> lépjen közvetlenül a mappaválasztóra. A mappa kiválasztása után <kbd>Ctrl+Shift+2</kbd> megjeleníti az elemek összesített listáját, és áthelyezi rá a fókuszt.</p>
+      <h3>Állapotsor</h3>
+      <p>Az állapotsor leírja az aktuális panelt, az elemek számát, a folyamatban lévő műveleteket és a hibákat. A képernyőolvasó az állapotsor paranccsal tudja elolvasni, ha van ilyen.</p>
+    </section>
+    <section id="feeduri">
+      <h2>3. Feedek és mappák</h2>
+      <h3>Hírcsatorna hozzáadása</h3>
+      <p>Válassza a Feeds, majd a Hírcsatorna hozzáadása lehetőséget. Írja be a RSS nevet és címet, és válasszon egy meglévő mappát, vagy hozzon létre egy újat. Orizont A RSS nem teszi lehetővé ugyanazt a címet egynél többször.</p>
+      <h3>Mappa megtekintése</h3>
+      <p>Amikor kiválaszt egy mappát, a Cikkek lista egyesíti az összes hírfolyam cikkeit, és a legújabbtól a legrégebbiig rendezi őket. A képernyőolvasó bejelenti az egyes cikkek forrását, az állapotsor pedig a hírcsatornák számát és a cikkek összegét mutatja.</p>
+      <h3>Új források felfedezése</h3>
+      <p>Kereshet hírcsatornákat téma szerint az ellenőrzött katalógusban, vagy megkérheti az alkalmazást, hogy keresse meg az adott webhely által deklarált hírcsatornákat.</p>
+      <h3>Figyelmet igénylő tápok</h3>
+      <p>A Hírcsatornák panel gombja azokat a hírcsatornákat jeleníti meg, amelyekben legalább három egymást követő hiba van, vagy amelyek 90 napnál hosszabb ideig nem kaptak cikket. Ha a szűrő aktív, ugyanaz a gomb visszatér az összes hírcsatornához.</p>
+      <h3>Ismétlődések</h3>
+      <p>A Másolatok ellenőrzése és törlése opció csak a megerősítés után egyesíti az ismert ismétlődéseket. A különböző címekkel rendelkező, de szinte azonos cikkekkel rendelkező források esetén a felhasználó a megőrzött hírfolyamot választja.</p>
+    </section>
+    <section id="articole">
+      <h2>4. Cikkek olvasása, rendszerezése</h2>
+      <p>Válasszon ki egy elemet, és nyomja meg a gombot <kbd>Enter</kbd> a tartalomhoz. Nyomja meg <kbd>Escape</kbd> ugyanahhoz a tételhez való visszatérésért, vagy ha az egy cselekvés miatt eltűnt, akkor a következő, ugyanazon a helyen lévő tételhez.</p>
+      <h3>Gyors cselekvések</h3>
+      <ul>
+        <li><kbd>R</kbd> jelölje meg olvasottként vagy olvasatlanként.</li>
+        <li><kbd>F</kbd> hozzáadni vagy eltávolítani a Kedvencek közül.</li>
+        <li><kbd>L</kbd> add hozzá vagy távolítsd el a későbbi olvasásból.</li>
+        <li><kbd>Delete</kbd> a kiválasztott elemek törlése megerősítés után.</li>
+        <li><kbd>Shift+F10</kbd> megnyitja a helyi menüt a címkékhez, áthelyezéshez, másoláshoz és egyéb műveletekhez.</li>
+      </ul>
+      <h3>Címkék</h3>
+      <p>Címkézéskor kiválaszthatja a már létrehozott címkéket, vagy beilleszthet újat. A párbeszédpanel lehetővé teszi a címkék végleges törlését is az összes cikkből.</p>
+      <h3>Megnyitás hirdetések nélkül a böngészőben</h3>
+      <p>A cikk vagy tartalom helyi menüjéből válassza a lehetőséget <strong>Nyissa meg a cikket a Orizont olvasóban</strong>. Az alkalmazás letölti és megtisztítja az oldalt, majd egy hozzáférhető ablakban megjeleníti a címet, a forrást és a fő szöveget, hirdetések, oldalsávok és szükségtelen navigáció nélkül. A kijelölés másolása, a teljes cikk másolása és a felolvasási lehetőségek továbbra is elérhetők. <strong>Nyissa meg az eredeti oldalt a böngészőben</strong> külön is elérhető marad.</p>
+    </section>
+    <section id="cautare">
+      <h2>5. Keresés és szűrők</h2>
+      <p><kbd>Ctrl+F</kbd> vagy <kbd>F3</kbd> áthelyezi a fókuszt a keresési elemekre. A keresés ellenőrzi a címet, a forrást és a tartalmat RSS. <kbd>Escape</kbd> törölje a keresett szöveget.</p>
+      <p><kbd>Ctrl+Shift+F</kbd> megnyitja az Elemszűrők párbeszédpanelt. Kiválaszthatja az állapotot, az időszakot és a címkét. A változtatásokat csak az Alkalmaz gombbal lehet alkalmazni; Az Escape változtatás nélkül zárul.</p>
+      <p><kbd>Ctrl+Shift+U</kbd> az összes olvasatlan cikk megjelenítése minden forrásból.</p>
+    </section>
+    <section id="voce">
+      <h2>6. Hangolvasás SAPI5, eSpeak NG és Gemini</h2>
+      <p>A Orizont A RSS használhatja a SAPI5 Windows-ben rögzített hangokat, a helyi eSpeak NG motort vagy a 30 online Gemini TTS hangot. A SAPI5 és az eSpeak helyileg működik. A Gemini TTS használatakor az olvasott szöveg elküldésre kerül a Google-nak, és felemelheti az API-kulcs kvótáját vagy jóváírásait.</p>
+      <h3>Hangkonfiguráció</h3>
+      <p>Nyissa meg az Alkalmazásbeállításokat, majd a Felolvasás részt. Válassza a SAPI5, az eSpeak NG vagy a Gemini TTS lehetőséget, majd a hangot, a sebességet és a hangerőt. Az eSpeak esetében a hang magasságát is beállíthatja. A Gemini TTS a mesterséges intelligencia beállításaiban mentett kulcsot használja. Használja a Teszthangot, majd a Mentés lehetőséget.</p>
+      <h3>Parancsok olvasása</h3>
+      <ul>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+V</kbd> olvassa el a válogatást a tartalomból; ha nincs kijelölés, olvassa el a címet, a forrást, a dátumot és a teljes cikket.</li>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+P</kbd> szüneteltesse vagy folytassa az olvasást.</li>
+        <li><kbd>Escape</kbd> / <kbd>Ctrl+Alt+S</kbd> hagyja abba az olvasást.</li>
+        <li>A Hang menü és a helyi menü tartalmazza az Olvasás kurzorból parancsot is.</li>
+              <li><kbd>Shift+F9</kbd>: a Hangbeállítások megnyitása.</li>
+        <li><kbd>F11</kbd>: az ablak maximalizálása vagy visszaállítása.</li>
+</ul>
+      <p>Az olvasás nem indul el automatikusan a fókusz megváltoztatásakor, nehogy átfedje a képernyőolvasót.</p>
+      <p>Mindhárom motor ugyanazt az indítási, szüneteltetési, folytatási és leállítási vezérlőket használja, mind a cikkekben, mind a beszélgetésekben Gemini. Az aktív motor állapota és a kulcs-, méret- vagy csatlakozási hibák megjelennek az állapotsorban.</p>
+    </section>
+    <section id="ai">
+      <h2>7. Gemini és az AI beszélgetések</h2>
+      <p>A Gemini opcionális, és felhasználó által konfigurált API-kulcsot igényel. A cikk teljes megjelenített tartalma szerepel az AI-kérdésben. A beszélgetés folytatódhat, és teljes egészében másolható, menthető, exportálható vagy elküldhető. Az Összegzés, a Fordítás, a Magyarázat és a Fő ötletek parancsok a felület nyelvén kérik a választ.</p>
+      <p>A beszélgetés ablakában <kbd>F9</kbd> / <kbd>Ctrl+Alt+V</kbd> olvassa el a kijelölést vagy a teljes beszélgetést a konfigurált hanggal. <kbd>F9</kbd> / <kbd>Ctrl+Alt+P</kbd> szüneteltesse vagy folytassa újra <kbd>Escape</kbd> / <kbd>Ctrl+Alt+S</kbd> hagyja abba az olvasást. A helyi menü a kurzorból való olvasást is lehetővé teszi.</p>
+      <p>Orizont A RSS megjeleníti a kérés állapotát és egyértelmű üzenetet, ha a szolgáltatás nem válaszol, a kulcsot elutasították vagy a kapcsolat nem érhető el.</p>
+    </section>
+    <section id="date">
+      <h2>8. Importálás, biztonsági mentés és tisztítás</h2>
+      <h3>OPML</h3>
+      <p>A Feeds menüből importálhat vagy exportálhat egy OPML fájlt. Az importálás elkerüli a már meglévő címeket.</p>
+      <h3>Biztonsági mentés</h3>
+      <p>A biztonsági másolat az AI hírcsatornáit, cikkeit, mappáit, címkéit, állapotait és megjegyzéseit tartalmazza. A titkos kulcsok nem kerülnek exportálásra az üresen.</p>
+      <h3>Régi cikkek</h3>
+      <p>Az automatikus tisztítás konfigurálható. A kedvencek és az Olvasás később elemek védettek. Az alkalmazás megjegyzi az öregedési szabály által eltávolított cikkeket, és nem importálja őket újra a következő frissítéskor.</p>
+    </section>
+    <section id="stare">
+      <h2>9. Állapot, hibák és hibaelhárítás</h2>
+      <p><kbd>Ctrl+Shift+H</kbd> állapot és hibatörténet megnyitása. A szöveg a nyilakkal olvasható, másolható vagy menthető diagnózis céljából.</p>
+      <h3>Ha a hang nem jelenik meg</h3>
+      <p>SAPI5 esetén ellenőrizze, hogy a szintetizátor ugyanahhoz a Windows architektúrához van-e telepítve. Az eSpeak NG esetében nem szükséges hangot telepíteni; ha a lista hiányzik, töltse le újra a Orizont RSS teljes disztribúcióját.</p>
+      <h3>Ha a frissítés sokáig tart</h3>
+      <p>Az állapotsor mutatja az előrehaladást. Az Escape leállíthatja a folyamatot és megszakíthatja az aktuális kapcsolatot, megtartva a már fogadott adatokat. A Feeds menüből csak a hibát adó forrásokkal próbálkozhat újra.</p>
+      <h3>Ha az útmutató nem nyílik ki</h3>
+      <p>Ellenőrizze, hogy a Ghid-utilizator-Orizont-RSS.html fájl és a lefordított útmutatók a Orizont.exe mellett vannak-e. Bontsa ki a teljes ZIP-archívumot, ne csak a végrehajtható fájlt.</p>
+      <h3>Ha váratlan hiba történik</h3>
+      <p>Az alkalmazás leállítja az aktuális parancsot, elérhető üzenetet jelenít meg, és megpróbálja elmenteni a műszaki jelentést a helyi adatdiagnosztikai almappába. A jelentés nem tartalmazza a Gemini kulcsot. A művelet megismétlése előtt zárja be, majd nyissa meg újra az alkalmazást.</p>
+    </section>
+    <section id="licenta">
+      <h2>10. Licenc és hozzájárulások</h2>
+      <p>Orizont A RSS kezdeményezését Grigore Frișan kezdeményezte és koordinálja. A fejlesztés a OpenAI Codex-vel együttműködve történt, aki segítséget nyújtott a tervezésben, programozásban, hibakeresésben, tesztelésben, dokumentációban és a terjesztési kiadások előkészítésében.</p>
+      <p>Az alkalmazás ingyenes szoftver, amelyet a GNU General Public License 3. verziója vagy a felhasználó választása szerint bármely későbbi verzió alatt terjesztenek. A teljes szöveg a LICENSE fájlban található a Orizont.exe mellett, és a Súgó menüből is megnyitható.</p>
+      <p>A terjesztett verziónak megfelelő forráskód külön archívumban található. A projektlicenc feltételei szerint a javításokat, fordításokat és az akadálymentesítési fejlesztéseket szívesen látjuk.</p>
+    </section>
+    <section id="scurtaturi">
+      <h2>11. Parancsikonok listája</h2>
+      <ul>
+        <li><kbd>F1</kbd>: súgó és gyorsbillentyűk.</li>
+        <li><kbd>F6</kbd> és <kbd>Shift+F6</kbd>: következő vagy előző panel.</li>
+        <li><kbd>Ctrl+1</kbd>, <kbd>Ctrl+2</kbd>, <kbd>Ctrl+3</kbd>: Hírcsatornák, cikkek, tartalom.</li>
+        <li><kbd>Ctrl+Shift+1</kbd>: a mappaválasztó.</li>
+        <li><kbd>Ctrl+Shift+2</kbd>: a kiválasztott mappa egyesített elemei.</li>
+        <li><kbd>Ctrl+4</kbd>: Olvassa el most.</li>
+        <li><kbd>Ctrl+F</kbd> vagy <kbd>F3</kbd>: keresés a cikkekben.</li>
+        <li><kbd>Ctrl+Shift+F</kbd>: elemek szűrése.</li>
+        <li><kbd>Ctrl+Shift+U</kbd>: mind olvasatlan.</li>
+        <li><kbd>Ctrl+Shift+R</kbd>: a cikk teljes szövege.</li>
+        <li><kbd>Ctrl+Shift+H</kbd>: állapot- és hibatörténet.</li>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+V</kbd>: felolvasni.</li>
+        <li><kbd>F9</kbd> / <kbd>Ctrl+Alt+P</kbd>: a hang szüneteltetése vagy folytatása.</li>
+        <li><kbd>Escape</kbd> / <kbd>Ctrl+Alt+S</kbd>: elnémítja a hangot.</li>
+      </ul>
+    </section>
+  </main>
+  <footer><p>Orizont RSS 1.5.3 – Grigore Frișan készítette a OpenAI Codex együttműködésével. Ingyenes szoftver elérhető a GNU GPL 3-as vagy újabb verziója alatt.</p></footer>
+</body>
+</html>
+

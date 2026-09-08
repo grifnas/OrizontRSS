@@ -12,6 +12,10 @@
           <MenuItem Header="Adaugă feed" Click="Add_Click" />
           <MenuItem Header="Găsește feeduri pe site" Click="DiscoverSite_Click" />
           <Separator />
+          <MenuItem Header="Adaugă feed demonstrativ local" Click="AddLocalDemoFeed_Click" />
+          <MenuItem Header="Adaugă exemple RSS pentru limba interfeței" Click="AddLanguageSampleFeeds_Click" />
+          <MenuItem Header="Elimină feedurile demonstrative" Click="RemoveDemoFeeds_Click" />
+          <Separator />
           <MenuItem Header="Importă OPML" Click="ImportOpml_Click" />
           <MenuItem Header="Exportă OPML" Click="ExportOpml_Click" />
           <MenuItem Header="Verifică și curăță duplicatele" Click="CleanDuplicates_Click" />

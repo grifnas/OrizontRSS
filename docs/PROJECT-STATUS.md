@@ -1,6 +1,6 @@
 # Orizont RSS — stare și plan de proiect
 
-Ultima actualizare: 5 septembrie 2026
+Ultima actualizare: 7 septembrie 2026
 
 ## Scopul documentului
 
@@ -12,7 +12,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - Sunt implementate feedurile RSS, folderele, actualizarea, filtrele, favoritele, lista „Mai târziu”, etichetele și curățarea duplicatelor.
 - Sunt implementate cititorul integrat accesibil, citirea vocală, căutarea, copierea, partajarea, backupul și restaurarea.
 - Sunt integrate funcțiile Gemini și traducerea DeepL, cu activare explicită de către utilizator.
-- Interfața este disponibilă în română, engleză, spaniolă, franceză, germană și portugheză.
+- Interfața este disponibilă în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană.
 - Regula de retenție pentru „Citește acum” este stabilită: articolele obișnuite respectă perioada configurată, iar favoritele și articolele „Mai târziu” rămân până la ștergerea manuală.
 - Alertele sonore pentru actualizarea feedurilor sunt disponibile în Setări aplicație, cu opțiuni separate pentru finalizare reușită, articole noi și erori, plus buton de test și limitare a repetării fără articole noi.
 - Fereastra conversației AI are un meniu contextual accesibil, grupat pentru citire vocală, copiere, distribuire și continuarea conversației.
@@ -24,11 +24,14 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 
 - Publicarea publică este activă: sursa, tagul `v1.5.3`, Release-ul stabil, arhiva Windows și instalatorul `OrizontSetup.exe` sunt publicate în `grifnas/OrizontRSS`; pagina GitHub Pages multilingvă funcționează la `https://grifnas.github.io/OrizontRSS/` și oferă acum buton direct pentru instalator, cu arhiva portabilă ca alternativă.
 - Workflow-ul GitHub Actions compilează separat aplicația și instalatorul; sursele instalatorului nu mai intră accidental în proiectul aplicației principale.
-- URL-ul principal GitHub Pages detectează limba preferată a browserului și redirecționează automat către una dintre cele șase pagini; pentru limbile nesuportate folosește engleza, iar paginile accesate explicit rămân stabile.
+- URL-ul principal GitHub Pages detectează limba preferată a browserului și redirecționează automat către una dintre cele opt pagini; pentru limbile nesuportate folosește engleza, iar paginile accesate explicit rămân stabile.
 - Toate paginile publice precizează transparent că Orizont RSS a fost creat de Grigore Frișan în colaborare cu OpenAI Codex și oferă legătură către documentul complet de contribuții.
 - Instalatorul autonom `OrizontSetup.exe` pentru Windows x64 include acum alegerea inițială a limbii (cu limba Windows preselectată), opțiune pentru pictogramă pe desktop și bară de stare live; instalarea și dezinstalarea completă au fost testate manual, iar retestarea acestor funcții noi cu JAWS/NVDA rămâne necesară înainte de publicarea lui.
 - Verificarea manuală raportată de utilizator pentru bara de stare și facilitățile Orizont este în regulă; etapa de consolidare și distribuția 1.5.3 sunt închise.
 - Experimentul Android `OrizontRSSAndroid` este separat de proiectul Windows și este pus pe pauză.
+- Localizarea maghiară (`hu-HU`) și italiană (`it-IT`) este implementată în aplicație, instalator, ghiduri și paginile GitHub Pages; verificarea automată pentru ambele limbi a trecut.
+- Exemplele de lucru pentru feeduri sunt implementate: un feed demonstrativ local, disponibil fără internet, și un feed RSS online oficial pentru fiecare dintre cele opt limbi. Feedurile online sunt adăugate numai după verificarea faptului că răspund cu articole; feedul local este exclus din actualizările de rețea.
+- Pagina GitHub Pages are acum metadate SEO localizate pentru toate cele opt limbi: descriere, canonical, `hreflang`, Open Graph, Twitter Card și JSON-LD pentru site și aplicație. Au fost adăugate `sitemap.xml` și `robots.txt`, cu URL-uri publice absolute.
 - Feedul Bistrițeanul a fost validat prin XML-ul primit, dar prototipul Android a primit 404. Nu se mai fac încercări speculative până la o decizie nouă și o metodă de diagnostic adecvată.
 
 ## Următorii pași propuși

@@ -6,7 +6,7 @@ Aplicația a fost inițiată și este coordonată de **Grigore Frișan**. Dezvol
 
 ## Pagina publică și descărcare
 
-- [Pagina publică Orizont RSS](https://grifnas.github.io/OrizontRSS/), disponibilă în română, engleză, spaniolă, franceză, germană și portugheză;
+- [Pagina publică Orizont RSS](https://grifnas.github.io/OrizontRSS/), disponibilă în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană;
 - [Release-ul stabil 1.5.3 pentru Windows x64](https://github.com/grifnas/OrizontRSS/releases/tag/v1.5.3);
 - [Descarcă ultima versiune](https://github.com/grifnas/OrizontRSS/releases/latest);
 - [Codul-sursă și documentația](https://github.com/grifnas/OrizontRSS).
@@ -36,12 +36,12 @@ Pachetul Windows este autonom și nu necesită instalarea separată a .NET Runti
 - salvarea, copierea, exportul și partajarea conversațiilor AI;
 - backup și restaurare;
 - citire prin vocile locale SAPI5 și eSpeak NG sau prin cele 30 de voci online Gemini TTS;
-- ajutor accesibil cu `F1` și ghiduri HTML cu titluri în română, engleză, spaniolă, franceză, germană și portugheză;
+- ajutor accesibil cu `F1` și ghiduri HTML cu titluri în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană;
 - control complet din tastatură și restaurarea focalizării după citirea unui articol;
 - scurtături documentate pentru panouri (`F6`), căutare (`Ctrl+F` și `F3`), citire vocală (`F9` / `Ctrl+Alt+V`), control vocal (`Ctrl+Alt+P`, `Ctrl+Alt+S`) și maximizare/restaurare (`F11`);
-- interfață în română, engleză, spaniolă, franceză, germană și portugheză, cu alegere automată după limba Windows sau selecție explicită în Setări.
+- interfață în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană, cu alegere automată după limba Windows sau selecție explicită în Setări.
 
-Resursele interfeței și ghidurile HTML sunt verificate automat pentru toate cele șase limbi înaintea unei distribuții.
+Resursele interfeței și ghidurile HTML sunt verificate automat pentru toate cele opt limbi înaintea unei distribuții.
 
 ## Accesibilitate
 

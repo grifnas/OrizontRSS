@@ -4,6 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Orizont RSS — lector RSS accesible</title>
+  <meta name="description" content="Orizont RSS es un lector RSS accesible para Windows, con navegación por teclado, lectura de voz, carpetas, etiquetas, búsqueda e IA opcional.">
+  <meta name="author" content="Grigore Frișan"><meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://grifnas.github.io/OrizontRSS/index.es.html">
+  <link rel="alternate" hreflang="ro" href="https://grifnas.github.io/OrizontRSS/"><link rel="alternate" hreflang="en" href="https://grifnas.github.io/OrizontRSS/index.en.html"><link rel="alternate" hreflang="es" href="https://grifnas.github.io/OrizontRSS/index.es.html"><link rel="alternate" hreflang="fr" href="https://grifnas.github.io/OrizontRSS/index.fr.html"><link rel="alternate" hreflang="de" href="https://grifnas.github.io/OrizontRSS/index.de.html"><link rel="alternate" hreflang="pt-BR" href="https://grifnas.github.io/OrizontRSS/index.pt.html"><link rel="alternate" hreflang="hu" href="https://grifnas.github.io/OrizontRSS/index.hu.html"><link rel="alternate" hreflang="it" href="https://grifnas.github.io/OrizontRSS/index.it.html"><link rel="alternate" hreflang="x-default" href="https://grifnas.github.io/OrizontRSS/index.en.html">
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Orizont RSS"><meta property="og:locale" content="es_ES"><meta property="og:title" content="Orizont RSS — lector RSS accesible"><meta property="og:description" content="Lector RSS accesible para Windows, diseñado para teclado y lectores de pantalla."><meta property="og:url" content="https://grifnas.github.io/OrizontRSS/index.es.html"><meta property="og:image" content="https://grifnas.github.io/OrizontRSS/assets/screenshots/main-window.png"><meta property="og:image:alt" content="Ventana principal de Orizont RSS con fuentes, artículos y lector integrado">
+  <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Orizont RSS — lector RSS accesible"><meta name="twitter:description" content="Lector RSS accesible para Windows con navegación por teclado y voz."><meta name="twitter:image" content="https://grifnas.github.io/OrizontRSS/assets/screenshots/main-window.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","url":"https://grifnas.github.io/OrizontRSS/index.es.html","name":"Orizont RSS","inLanguage":"es-ES"},{"@type":"SoftwareApplication","name":"Orizont RSS","applicationCategory":"NewsApplication","operatingSystem":"Windows","softwareVersion":"1.5.3","description":"Lector RSS accesible para Windows con navegación por teclado y voz.","url":"https://grifnas.github.io/OrizontRSS/index.es.html","downloadUrl":"https://github.com/grifnas/OrizontRSS/releases/latest/download/OrizontSetup.exe","author":{"@type":"Person","name":"Grigore Frișan","url":"https://github.com/grifnas"}}]}</script>
   <style>
     :root { color-scheme: light dark; }
     body { max-width: 52rem; margin: 0 auto; padding: 2rem 1.25rem; font: 1.05rem/1.6 system-ui, sans-serif; }
@@ -12,6 +19,11 @@
     .skip { position: absolute; left: -9999px; }
     .skip:focus { left: 1rem; top: 1rem; padding: .5rem; background: Canvas; color: CanvasText; }
     .card { border: 1px solid GrayText; border-radius: .6rem; padding: 1rem; margin: 1rem 0; }
+    .screenshot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .screenshot-grid figure { margin: 0; }
+    .screenshot-grid img { display: block; width: 100%; height: auto; border: 1px solid GrayText; border-radius: .4rem; }
+    .screenshot-grid figcaption { margin-top: .4rem; font-size: .95rem; }
+    @media (max-width: 42rem) { .screenshot-grid { grid-template-columns: 1fr; } }
     .download-button { display: inline-block; padding: .65rem 1rem; border-radius: .4rem; background: #0b62b2; color: #fff; font-weight: 700; text-decoration: none; }
     .download-button:focus, .download-button:hover { text-decoration: underline; outline: 3px solid currentColor; outline-offset: 3px; }
     h1, h2 { line-height: 1.2; }
@@ -28,7 +40,9 @@
       <a href="index.es.html" lang="es" aria-current="page">Español</a> ·
       <a href="index.fr.html" lang="fr">Français</a> ·
       <a href="index.de.html" lang="de">Deutsch</a> ·
-      <a href="index.pt.html" lang="pt">Português</a>
+      <a href="index.pt.html" lang="pt">Português</a> ·
+      <a href="index.hu.html" lang="hu">Magyar</a> ·
+      <a href="index.it.html" lang="it">Italiano</a>
     </nav>
   </header>
   <main id="contenido">
@@ -46,8 +60,18 @@
         <li>lector integrado con navegación mediante flechas y lectura de voz;</li>
         <li>búsqueda, importación OPML, copias de seguridad y uso compartido;</li>
         <li>conversaciones Gemini y traducción DeepL, activadas explícitamente por el usuario;</li>
-        <li>interfaz en rumano, inglés, español, francés, alemán y portugués.</li>
+        <li>interfaz en rumano, inglés, español, francés, alemán, portugués, húngaro e italiano.</li>
       </ul>
+    </section>
+    <section class="card" aria-labelledby="capturas">
+      <h2 id="capturas">Previsualizaciones de la interfaz</h2>
+      <p>Estas imágenes usan datos de demostración y muestran las áreas principales de la aplicación. No contienen feeds personales ni claves API.</p>
+      <div class="screenshot-grid">
+        <figure><img src="assets/screenshots/main-window.png" loading="lazy" decoding="async" alt="Ventana principal de Orizont RSS con los paneles Feeds, Artículos y Contenido del artículo"><figcaption>Ventana principal con los tres paneles de trabajo.</figcaption></figure>
+        <figure><img src="assets/screenshots/reader.png" loading="lazy" decoding="async" alt="Lector Orizont mostrando un artículo de demostración y la barra de estado"><figcaption>Lector Orizont, preparado para navegar con las flechas.</figcaption></figure>
+        <figure><img src="assets/screenshots/context-menu.png" loading="lazy" decoding="async" alt="Menú contextual de un artículo con acciones de lectura, IA, traducción y organización"><figcaption>Menú contextual agrupado por acciones del artículo.</figcaption></figure>
+        <figure><img src="assets/screenshots/settings.png" loading="lazy" decoding="async" alt="Ventana de configuración con idioma, actualización, conservación y alertas sonoras"><figcaption>Configuración de la aplicación, separada de IA y voz.</figcaption></figure>
+      </div>
     </section>
     <section aria-labelledby="accesibilidad">
       <h2 id="accesibilidad">Accesibilidad y privacidad</h2>

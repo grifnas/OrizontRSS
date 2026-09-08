@@ -9,7 +9,7 @@ $basePath = Join-Path $resourcesRoot 'UiStrings.resx'
 
 [xml]$baseDocument = Get-Content -LiteralPath $basePath -Raw -Encoding utf8
 $baseKeys = @($baseDocument.root.data | ForEach-Object { [string]$_.name })
-$cultures = 'en-US', 'es-ES', 'fr-FR', 'de-DE', 'pt-BR'
+$cultures = 'en-US', 'es-ES', 'fr-FR', 'de-DE', 'pt-BR', 'hu-HU', 'it-IT'
 $failed = $false
 $protectedTerms = 'Orizont', 'RSS', 'OPML', 'SAPI5', 'Gemini', 'Ctrl', 'Shift', 'Alt', 'https://', 'http://'
 

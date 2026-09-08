@@ -10,7 +10,7 @@ public static class UserGuideLocator
     public static string FileNameFor(CultureInfo culture)
     {
         var language = culture.TwoLetterISOLanguageName.ToLowerInvariant();
-        return language is "en" or "es" or "fr" or "de" or "pt" ? $"{BaseName}.{language}.html" : $"{BaseName}.html";
+        return language is "en" or "es" or "fr" or "de" or "pt" or "hu" or "it" ? $"{BaseName}.{language}.html" : $"{BaseName}.html";
     }
 
     public static string? Find()

@@ -89,6 +89,22 @@ public static class InstallerLanguages
             "Instalar", "Baixando o pacote do Orizont RSS...", "Verificando a integridade do pacote...", "Copiando os arquivos do aplicativo...", "Criando atalhos...", "A instalação foi concluída com sucesso.", "Iniciar o Orizont RSS", "Fechar",
             "Desinstalar o Orizont RSS", "O aplicativo e os atalhos do Orizont RSS serão removidos.", "Feeds, artigos e configurações do perfil do Windows não serão excluídos.", "Desinstalar",
             "Confirmar desinstalação", "Tem certeza de que deseja desinstalar o Orizont RSS? Os dados do usuário não serão excluídos.", "A pasta de instalação não existe mais.", "Removendo atalhos...", "Finalizando a desinstalação...", "A operação falhou:", "Escolha uma pasta de instalação.", "O hash do pacote baixado não corresponde à versão oficial.", "Não foi possível determinar o instalador.")
+        ,new InstallerTexts(
+            "hu-HU", "Magyar", "A telepítő nyelve", "Válaszd ki a telepítő nyelvét:", "Folytatás", "Mégse",
+            "Orizont RSS telepítése", "Az Orizont RSS akadálymentes telepítője. Az alkalmazás az aktuális felhasználó számára lesz telepítve.",
+            "Telepítési mappa", "Tallózás...", "Asztali parancsikon létrehozása",
+            "A meglévő hírcsatornák, cikkek és beállítások nem törlődnek; a Windows felhasználói profiljában maradnak.",
+            "Telepítés", "Az Orizont RSS csomag letöltése...", "A csomag sértetlenségének ellenőrzése...", "Az alkalmazás fájljainak másolása...", "Parancsikonok létrehozása...", "A telepítés sikeresen befejeződött.", "Orizont RSS indítása", "Bezárás",
+            "Orizont RSS eltávolítása", "Az Orizont RSS alkalmazás és parancsikonjai eltávolításra kerülnek.", "A Windows felhasználói profiljában lévő hírcsatornák, cikkek és beállítások nem törlődnek.", "Eltávolítás",
+            "Eltávolítás megerősítése", "Biztosan eltávolítod az Orizont RSS-t? A felhasználói adatok nem törlődnek.", "A telepítési mappa már nem létezik.", "Parancsikonok eltávolítása...", "Az eltávolítás befejezése...", "A művelet sikertelen:", "Válassz telepítési mappát.", "A letöltött csomag hash-értéke nem egyezik a hivatalos kiadással.", "A telepítő elérési útja nem határozható meg."),
+        new InstallerTexts(
+            "it-IT", "Italiano", "Lingua del programma di installazione", "Scegli la lingua del programma di installazione:", "Continua", "Annulla",
+            "Installa Orizont RSS", "Programma di installazione accessibile di Orizont RSS. L'applicazione verrà installata per l'utente corrente.",
+            "Cartella di installazione", "Sfoglia...", "Crea un collegamento sul desktop",
+            "I feed, gli articoli e le impostazioni esistenti non verranno eliminati; rimarranno nel profilo utente di Windows.",
+            "Installa", "Download del pacchetto Orizont RSS...", "Verifica dell'integrità del pacchetto...", "Copia dei file dell'applicazione...", "Creazione dei collegamenti...", "Installazione completata correttamente.", "Avvia Orizont RSS", "Chiudi",
+            "Disinstalla Orizont RSS", "L'applicazione e i collegamenti di Orizont RSS verranno rimossi.", "I feed, gli articoli e le impostazioni nel profilo utente di Windows non verranno eliminati.", "Disinstalla",
+            "Conferma disinstallazione", "Vuoi davvero disinstallare Orizont RSS? I dati dell'utente non verranno eliminati.", "La cartella di installazione non esiste più.", "Rimozione dei collegamenti...", "Completamento della disinstallazione...", "Operazione non riuscita:", "Scegli una cartella di installazione.", "L'hash del pacchetto scaricato non corrisponde alla release ufficiale.", "Impossibile determinare il percorso del programma di installazione.")
     };
 
     public static InstallerTexts FromCode(string code) => All.FirstOrDefault(x => x.Code.Equals(code, StringComparison.OrdinalIgnoreCase)) ?? All[0];
@@ -101,6 +117,8 @@ public static class InstallerLanguages
         if (name.StartsWith("fr", StringComparison.OrdinalIgnoreCase)) return "fr-FR";
         if (name.StartsWith("de", StringComparison.OrdinalIgnoreCase)) return "de-DE";
         if (name.StartsWith("pt", StringComparison.OrdinalIgnoreCase)) return "pt-BR";
+        if (name.StartsWith("hu", StringComparison.OrdinalIgnoreCase)) return "hu-HU";
+        if (name.StartsWith("it", StringComparison.OrdinalIgnoreCase)) return "it-IT";
         return "ro-RO";
     }
 }

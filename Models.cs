@@ -15,12 +15,13 @@ public sealed class Feed
     public DateTimeOffset AddedOn { get; set; } = DateTimeOffset.Now;
     public DateTimeOffset? LastSuccessfulUpdate { get; set; }
     public DateTimeOffset? LastArticleReceivedOn { get; set; }
+    public bool IsDemo { get; set; }
     public List<Article> Articles { get; set; } = [];
     public bool HasThreeMonthSilence => DateTimeOffset.Now - (LastArticleReceivedOn ?? LastSuccessfulUpdate ?? AddedOn) >= TimeSpan.FromDays(90);
     public bool NeedsAttention => ConsecutiveFailures >= 3 || HasThreeMonthSilence;
     public string AttentionReason => ConsecutiveFailures >= 3 ? UiText.Translate("după 3 erori consecutive") : UiText.Translate("nu a primit articole de peste 3 luni");
-    public string DisplayName => UiText.Format("{0}{1}, folder: {2}, {3} articole", NeedsAttention ? UiText.Format("Necesită atenție: {0}. ", AttentionReason) : string.Empty, Name, Folder, Articles.Count);
-    public string VisualDetails => UiText.Format("Folder: {0} · {1} articole", Folder, Articles.Count);
+    public string DisplayName => UiText.Format("{0}{1}{2}, folder: {3}, {4} articole", IsDemo ? UiText.Format("{0}: ", UiText.Translate("Exemplu demonstrativ")) : string.Empty, NeedsAttention ? UiText.Format("Necesită atenție: {0}. ", AttentionReason) : string.Empty, Name, Folder, Articles.Count);
+    public string VisualDetails => UiText.Format("{0}Folder: {1} · {2} articole", IsDemo ? UiText.Format("{0} · ", UiText.Translate("Exemplu demonstrativ")) : string.Empty, Folder, Articles.Count);
     public string VisualWarning => NeedsAttention ? UiText.Format("Necesită atenție: {0}", AttentionReason) : string.Empty;
 }
 

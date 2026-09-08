@@ -72,4 +72,13 @@ Check(!sanitized.GeminiEnabled && sanitized.EncryptedGeminiKey is null, "backupu
 Check(!backupJson.Contains("ENCRYPTED-SECRET", StringComparison.Ordinal), "cheia Gemini nu apare în JSON-ul backupului");
 Check(sanitized.ReaderWindowWidth == 1234 && sanitized.ReaderWideSpacing, "backupul păstrează setările de afișare");
 
+var localDemo = DemoFeedCatalog.CreateLocalFeed("ro-RO");
+Check(DemoFeedCatalog.IsLocal(localDemo) && DemoFeedCatalog.IsDemo(localDemo), "catalogul creează feedul demonstrativ local");
+Check(localDemo.Articles.Count == 3 && localDemo.Articles[1].IsFavorite && localDemo.Articles[2].ReadLater, "feedul local include articole pentru testarea marcajelor");
+foreach (var language in new[] { "ro-RO", "en-US", "es-ES", "fr-FR", "de-DE", "pt-BR", "hu-HU", "it-IT" })
+{
+    var online = DemoFeedCatalog.OnlineForLanguage(language);
+    Check(online is not null && Uri.TryCreate(online.Url, UriKind.Absolute, out var onlineUri) && onlineUri.Scheme is "http" or "https", $"catalogul RSS include un feed online valid pentru {language}");
+}
+
 Console.WriteLine($"Core smoke test passed: {checks} verificări, 1.200 articole, retenție, duplicate, backup și căutare.");

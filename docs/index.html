@@ -4,12 +4,40 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Orizont RSS — cititor RSS accesibil</title>
+  <meta name="description" content="Orizont RSS este un cititor RSS accesibil pentru Windows, cu navigare din tastatură, citire vocală, foldere, etichete, căutare și AI opțional.">
+  <meta name="author" content="Grigore Frișan">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://grifnas.github.io/OrizontRSS/">
+  <link rel="alternate" hreflang="ro" href="https://grifnas.github.io/OrizontRSS/">
+  <link rel="alternate" hreflang="en" href="https://grifnas.github.io/OrizontRSS/index.en.html">
+  <link rel="alternate" hreflang="es" href="https://grifnas.github.io/OrizontRSS/index.es.html">
+  <link rel="alternate" hreflang="fr" href="https://grifnas.github.io/OrizontRSS/index.fr.html">
+  <link rel="alternate" hreflang="de" href="https://grifnas.github.io/OrizontRSS/index.de.html">
+  <link rel="alternate" hreflang="pt-BR" href="https://grifnas.github.io/OrizontRSS/index.pt.html">
+  <link rel="alternate" hreflang="hu" href="https://grifnas.github.io/OrizontRSS/index.hu.html">
+  <link rel="alternate" hreflang="it" href="https://grifnas.github.io/OrizontRSS/index.it.html">
+  <link rel="alternate" hreflang="x-default" href="https://grifnas.github.io/OrizontRSS/index.en.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Orizont RSS">
+  <meta property="og:locale" content="ro_RO">
+  <meta property="og:title" content="Orizont RSS — cititor RSS accesibil">
+  <meta property="og:description" content="Cititor RSS accesibil pentru Windows, proiectat pentru tastatură și cititoare de ecran.">
+  <meta property="og:url" content="https://grifnas.github.io/OrizontRSS/">
+  <meta property="og:image" content="https://grifnas.github.io/OrizontRSS/assets/screenshots/main-window.png">
+  <meta property="og:image:alt" content="Fereastra principală Orizont RSS cu feeduri, articole și cititor integrat">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Orizont RSS — cititor RSS accesibil">
+  <meta name="twitter:description" content="Cititor RSS accesibil pentru Windows, cu navigare din tastatură și citire vocală.">
+  <meta name="twitter:image" content="https://grifnas.github.io/OrizontRSS/assets/screenshots/main-window.png">
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://grifnas.github.io/OrizontRSS/#website","url":"https://grifnas.github.io/OrizontRSS/","name":"Orizont RSS","inLanguage":"ro-RO"},{"@type":"SoftwareApplication","name":"Orizont RSS","applicationCategory":"NewsApplication","operatingSystem":"Windows","softwareVersion":"1.5.3","description":"Cititor RSS accesibil pentru Windows, cu navigare din tastatură, citire vocală și organizarea articolelor.","url":"https://grifnas.github.io/OrizontRSS/","downloadUrl":"https://github.com/grifnas/OrizontRSS/releases/latest/download/OrizontSetup.exe","author":{"@type":"Person","name":"Grigore Frișan","url":"https://github.com/grifnas"}}]}
+  </script>
   <script>
     (() => {
       // Automatic selection applies only to the landing URL. Explicit language
       // pages remain stable so the language links always work as expected.
       if (!/\/OrizontRSS\/?$/i.test(window.location.pathname)) return;
-      const pages = { ro: "index.html", en: "index.en.html", es: "index.es.html", fr: "index.fr.html", de: "index.de.html", pt: "index.pt.html" };
+      const pages = { ro: "index.html", en: "index.en.html", es: "index.es.html", fr: "index.fr.html", de: "index.de.html", pt: "index.pt.html", hu: "index.hu.html", it: "index.it.html" };
       const languages = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"]);
       const language = languages.map(value => String(value).toLowerCase().split("-")[0]).find(code => pages[code]) || "en";
       if (language !== "ro") window.location.replace(pages[language]);
@@ -23,6 +51,11 @@
     .skip { position: absolute; left: -9999px; }
     .skip:focus { left: 1rem; top: 1rem; padding: .5rem; background: Canvas; color: CanvasText; }
     .card { border: 1px solid GrayText; border-radius: .6rem; padding: 1rem; margin: 1rem 0; }
+    .screenshot-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .screenshot-grid figure { margin: 0; }
+    .screenshot-grid img { display: block; width: 100%; height: auto; border: 1px solid GrayText; border-radius: .4rem; }
+    .screenshot-grid figcaption { margin-top: .4rem; font-size: .95rem; }
+    @media (max-width: 42rem) { .screenshot-grid { grid-template-columns: 1fr; } }
     .download-button { display: inline-block; padding: .65rem 1rem; border-radius: .4rem; background: #0b62b2; color: #fff; font-weight: 700; text-decoration: none; }
     .download-button:focus, .download-button:hover { text-decoration: underline; outline: 3px solid currentColor; outline-offset: 3px; }
     h1, h2 { line-height: 1.2; }
@@ -39,7 +72,9 @@
       <a href="index.es.html" lang="es">Español</a> ·
       <a href="index.fr.html" lang="fr">Français</a> ·
       <a href="index.de.html" lang="de">Deutsch</a> ·
-      <a href="index.pt.html" lang="pt">Português</a>
+      <a href="index.pt.html" lang="pt">Português</a> ·
+      <a href="index.hu.html" lang="hu">Magyar</a> ·
+      <a href="index.it.html" lang="it">Italiano</a>
     </nav>
   </header>
   <main id="continut">
@@ -57,8 +92,18 @@
         <li>cititor integrat cu navigare prin săgeți și citire vocală;</li>
         <li>căutare, import OPML, backup și partajare;</li>
         <li>conversații Gemini și traducere DeepL activate explicit de utilizator;</li>
-        <li>interfață în română, engleză, spaniolă, franceză, germană și portugheză.</li>
+        <li>interfață în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană.</li>
       </ul>
+    </section>
+    <section class="card" aria-labelledby="capturi">
+      <h2 id="capturi">Previzualizări ale interfeței</h2>
+      <p>Aceste imagini folosesc date demonstrative și prezintă principalele zone ale aplicației. Nu conțin fluxuri personale sau chei API.</p>
+      <div class="screenshot-grid">
+        <figure><img src="assets/screenshots/main-window.png" loading="lazy" decoding="async" alt="Fereastra principală Orizont RSS, cu panourile Feeduri, Articole și Conținut articol"><figcaption>Fereastra principală și cele trei panouri de lucru.</figcaption></figure>
+        <figure><img src="assets/screenshots/reader.png" loading="lazy" decoding="async" alt="Cititorul Orizont afișează un articol demonstrativ și bara de stare"><figcaption>Cititorul Orizont, cu text parcurs ușor cu săgețile.</figcaption></figure>
+        <figure><img src="assets/screenshots/context-menu.png" loading="lazy" decoding="async" alt="Meniul contextual al unui articol, cu acțiuni de citire, AI, traducere și organizare"><figcaption>Meniul contextual grupat logic pentru articol.</figcaption></figure>
+        <figure><img src="assets/screenshots/settings.png" loading="lazy" decoding="async" alt="Fereastra Setări aplicație, cu limba, actualizarea, păstrarea articolelor și alertele sonore"><figcaption>Setările aplicației, separate de setările AI și voce.</figcaption></figure>
+      </div>
     </section>
     <section aria-labelledby="accesibilitate">
       <h2 id="accesibilitate">Accesibilitate și confidențialitate</h2>

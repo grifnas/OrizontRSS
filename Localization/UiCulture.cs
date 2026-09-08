@@ -14,7 +14,9 @@ public static class UiCulture
         new("es-ES", "Español"),
         new("fr-FR", "Français"),
         new("de-DE", "Deutsch"),
-        new("pt-BR", "Português (Brasil)")
+        new("pt-BR", "Português (Brasil)"),
+        new("hu-HU", "Magyar"),
+        new("it-IT", "Italiano")
     ];
 
     public static string NormalizeSelection(string? code)
@@ -39,6 +41,8 @@ public static class UiCulture
             "fr" => "fr-FR",
             "de" => "de-DE",
             "pt" => "pt-BR",
+            "hu" => "hu-HU",
+            "it" => "it-IT",
             _ => "en-US"
         };
     }

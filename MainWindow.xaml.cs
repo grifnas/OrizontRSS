@@ -747,6 +747,130 @@ ContinueCommandHandling:
         RefreshFeedList(feed);
         Say(F("Feed adăugat și salvat: {0}. Apasă Actualizează feed.", feed.Name));
     }
+
+    private async void AddLocalDemoFeed_Click(object sender, RoutedEventArgs e)
+    {
+        if (RejectDataChangeDuringRefresh(T("adăugarea unui feed"))) return;
+        if (_feeds.Any(DemoFeedCatalog.IsLocal))
+        {
+            Say(T("Feedul demonstrativ local există deja."));
+            return;
+        }
+
+        var feed = DemoFeedCatalog.CreateLocalFeed();
+        _feeds.Add(feed);
+        try
+        {
+            await _store.SaveAsync(_feeds);
+        }
+        catch (Exception exception)
+        {
+            _feeds.Remove(feed);
+            Say(F("Nu s-au putut salva feedurile demonstrative: {0}", Describe(exception)));
+            MessageBox.Show(this, F("Nu s-au putut salva feedurile demonstrative: {0}", Describe(exception)), T("Salvare eșuată"), MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        _folderAggregateView = false;
+        _readNowView = false;
+        _feed = feed;
+        ShowAddedFeed(feed);
+        RefreshArticleList(selectFirstWhenNoMatch: true);
+        Say(T("Feed demonstrativ local adăugat. Articolele sunt gata pentru testare."));
+    }
+
+    private async void AddLanguageSampleFeeds_Click(object sender, RoutedEventArgs e)
+    {
+        if (RejectDataChangeDuringRefresh(T("adăugarea unui feed"))) return;
+        var language = DemoFeedCatalog.CurrentLanguageName();
+        var definition = DemoFeedCatalog.OnlineForCurrentLanguage();
+        if (definition is null)
+        {
+            Say(F("Nu s-au putut verifica exemplele RSS: {0}", T("limba interfeței nu este disponibilă")));
+            return;
+        }
+        if (_feeds.Any(feed => string.Equals(feed.Url, definition.Url, StringComparison.OrdinalIgnoreCase)))
+        {
+            Say(F("Toate exemplele RSS pentru limba {0} sunt deja abonate.", language));
+            return;
+        }
+
+        Say(F("Se verifică {0}.", definition.Name));
+        List<Article> articles;
+        try
+        {
+            articles = DuplicateCleaner.DeduplicateArticles(await _rss.LoadAsync(definition.Url), out _);
+            if (articles.Count == 0) throw new InvalidOperationException(T("Adresa nu conține un flux RSS sau Atom cu articole."));
+        }
+        catch (Exception exception)
+        {
+            Say(F("Nu s-au putut verifica exemplele RSS: {0}", Describe(exception)));
+            return;
+        }
+
+        var feed = new Feed
+        {
+            Name = definition.Name,
+            Url = definition.Url,
+            Folder = DemoFeedCatalog.DemoFolder(),
+            IsDemo = true,
+            Articles = articles,
+            LastSuccessfulUpdate = DateTimeOffset.Now,
+            LastArticleReceivedOn = articles.Count > 0 ? DateTimeOffset.Now : null
+        };
+        _feeds.Add(feed);
+        try
+        {
+            await _store.SaveAsync(_feeds);
+        }
+        catch (Exception exception)
+        {
+            _feeds.Remove(feed);
+            Say(F("Nu s-au putut salva feedurile demonstrative: {0}", Describe(exception)));
+            MessageBox.Show(this, F("Nu s-au putut salva feedurile demonstrative: {0}", Describe(exception)), T("Salvare eșuată"), MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        _folderAggregateView = false;
+        _readNowView = false;
+        _feed = feed;
+        ShowAddedFeed(feed);
+        RefreshArticleList(selectFirstWhenNoMatch: true);
+        Say(F("Au fost adăugate {0} feeduri RSS pentru limba {1}.", 1, language));
+    }
+
+    private async void RemoveDemoFeeds_Click(object sender, RoutedEventArgs e)
+    {
+        if (RejectDataChangeDuringRefresh(T("ștergerea feedurilor"))) return;
+        var demoFeeds = _feeds.Where(DemoFeedCatalog.IsDemo).ToList();
+        if (demoFeeds.Count == 0)
+        {
+            Say(T("Nu există feeduri demonstrative de eliminat."));
+            return;
+        }
+
+        var confirmation = F("Ștergi {0} și articolele lor salvate?", $"{demoFeeds.Count} {T("Exemplu demonstrativ").ToLower(CultureInfo.CurrentCulture)}");
+        if (MessageBox.Show(this, confirmation, T("Confirmă ștergerea"), MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes) return;
+
+        _feeds.RemoveAll(DemoFeedCatalog.IsDemo);
+        try
+        {
+            await _store.SaveAsync(_feeds);
+        }
+        catch (Exception exception)
+        {
+            Say(F("Nu s-au putut salva feedurile demonstrative: {0}", Describe(exception)));
+            MessageBox.Show(this, F("Nu s-au putut salva feedurile demonstrative: {0}", Describe(exception)), T("Salvare eșuată"), MessageBoxButton.OK, MessageBoxImage.Error);
+            return;
+        }
+
+        _feed = null;
+        _article = null;
+        _folderAggregateView = true;
+        RefreshFeedList();
+        ShowFolderAggregate(selectFirstWhenNoMatch: true);
+        Say(F("Au fost eliminate {0} feeduri demonstrative.", demoFeeds.Count));
+    }
     private async void Settings_Click(object sender, RoutedEventArgs e)
     {
         await OpenSettingsAsync(SettingsWindow.SettingsSection.Application);
@@ -1519,6 +1643,13 @@ ContinueCommandHandling:
     private async Task RefreshFeedsAsync(List<Feed> feedsToUpdate)
     {
         if (feedsToUpdate.Count == 0) { Say("Nu există feeduri de actualizat."); return; }
+        var skippedLocalDemoFeeds = feedsToUpdate.Count(DemoFeedCatalog.IsLocal);
+        feedsToUpdate = feedsToUpdate.Where(feed => !DemoFeedCatalog.IsLocal(feed)).ToList();
+        if (feedsToUpdate.Count == 0)
+        {
+            Say(T("Feedurile locale nu se actualizează de pe internet; articolele demonstrative sunt deja disponibile."));
+            return;
+        }
         if (_isRefreshing) { Say("O actualizare a feedurilor este deja în curs."); return; }
         _isRefreshing = true;
         _refreshCancellation = new CancellationTokenSource();
@@ -1638,6 +1769,7 @@ ContinueCommandHandling:
             }
             if (failureNames.Count > 0) result += F(" Primele feeduri cu eroare: {0}.", string.Join(", ", failureNames.Take(3)));
             if (failureNames.Count > 0) result += UiText.Translate(" Comanda Reîncearcă feedurile cu eroare este disponibilă în meniul Feeduri.");
+            if (skippedLocalDemoFeeds > 0) result += " " + T("Feedurile locale nu se actualizează de pe internet; articolele demonstrative sunt deja disponibile.");
             Say(result);
             if (!cancelled) SoundAlertService.RefreshFinished(
                 _settings.SoundAlertsEnabled,
@@ -1684,6 +1816,17 @@ ContinueCommandHandling:
         if (select is not null && Feeds.Items.Contains(select)) Feeds.SelectedItem = select;
         _suppressFolderFilter = false;
         UpdateAttentionButton();
+    }
+
+    private void ShowAddedFeed(Feed feed)
+    {
+        // Reîncarcă mai întâi opțiunile de folder, apoi mută discret filtrul pe
+        // folderul nou pentru ca selecția și focalizarea să rămână vizibile.
+        RefreshFeedList();
+        _suppressFolderFilter = true;
+        SelectFolder(feed.Folder);
+        _suppressFolderFilter = false;
+        RefreshFeedList(feed);
     }
     private void RefreshArticleList(Article? select = null, int preferredIndex = -1, bool selectFirstWhenNoMatch = true)
     {

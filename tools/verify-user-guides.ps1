@@ -17,7 +17,7 @@ $sourceKeys = @(Values $source '(?s)<kbd>(.*?)</kbd>' | Sort-Object -Unique)
 $sourceSections = [regex]::Matches($source, '<section\b').Count
 $sourceHeadings = [regex]::Matches($source, '<h[1-6]\b').Count
 
-foreach ($language in 'en', 'es', 'fr', 'de', 'pt')
+foreach ($language in 'en', 'es', 'fr', 'de', 'pt', 'hu', 'it')
 {
     $path = Join-Path $projectRoot "Ghid-utilizator-Orizont-RSS.$language.html"
     if (-not (Test-Path -LiteralPath $path))

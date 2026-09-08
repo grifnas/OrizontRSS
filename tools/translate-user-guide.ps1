@@ -1,13 +1,13 @@
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('en-US', 'es-ES', 'fr-FR', 'de-DE', 'pt-BR')]
+    [ValidateSet('en-US', 'es-ES', 'fr-FR', 'de-DE', 'pt-BR', 'hu-HU', 'it-IT')]
     [string]$Culture
 )
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $sourcePath = Join-Path $projectRoot 'Ghid-utilizator-Orizont-RSS.html'
-$language = @{'en-US'='en';'es-ES'='es';'fr-FR'='fr';'de-DE'='de';'pt-BR'='pt'}[$Culture]
+$language = @{'en-US'='en';'es-ES'='es';'fr-FR'='fr';'de-DE'='de';'pt-BR'='pt';'hu-HU'='hu';'it-IT'='it'}[$Culture]
 $targetPath = Join-Path $projectRoot "Ghid-utilizator-Orizont-RSS.$language.html"
 $protectedTerms = @(
     [pscustomobject]@{Term='Ghid-utilizator-Orizont-RSS.html';Marker='ZXH001HXZ'},

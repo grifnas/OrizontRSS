@@ -1218,4 +1218,19 @@ Detalii: {1}</value></data><data name="Gemini nu a răspuns în 45 de secunde. �
   <data name="Testează sunetul" xml:space="preserve"><value>Testează sunetul</value></data>
   <data name="Sunetul de test a fost redat." xml:space="preserve"><value>Sunetul de test a fost redat.</value></data>
   <data name="Copiere și distribuire" xml:space="preserve"><value>Copiere și distribuire</value></data>
+  <data name="Nu s-au putut verifica exemplele RSS: {0}" xml:space="preserve"><value>Nu s-au putut verifica exemplele RSS: {0}</value></data>
+  <data name="Nu există feeduri demonstrative de eliminat." xml:space="preserve"><value>Nu există feeduri demonstrative de eliminat.</value></data>
+  <data name="Adaugă feed demonstrativ local" xml:space="preserve"><value>Adaugă feed demonstrativ local</value></data>
+  <data name="Toate exemplele RSS pentru limba {0} sunt deja abonate." xml:space="preserve"><value>Toate exemplele RSS pentru limba {0} sunt deja abonate.</value></data>
+  <data name="Feed demonstrativ local adăugat. Articolele sunt gata pentru testare." xml:space="preserve"><value>Feed demonstrativ local adăugat. Articolele sunt gata pentru testare.</value></data>
+  <data name="Exemplu demonstrativ" xml:space="preserve"><value>Exemplu demonstrativ</value></data>
+  <data name="Elimină feedurile demonstrative" xml:space="preserve"><value>Elimină feedurile demonstrative</value></data>
+  <data name="Feedurile locale nu se actualizează de pe internet; articolele demonstrative sunt deja disponibile." xml:space="preserve"><value>Feedurile locale nu se actualizează de pe internet; articolele demonstrative sunt deja disponibile.</value></data>
+  <data name="Feedul demonstrativ local există deja." xml:space="preserve"><value>Feedul demonstrativ local există deja.</value></data>
+  <data name="Feed demonstrativ local" xml:space="preserve"><value>Feed demonstrativ local</value></data>
+  <data name="Adaugă exemple RSS pentru limba interfeței" xml:space="preserve"><value>Adaugă exemple RSS pentru limba interfeței</value></data>
+  <data name="Exemple RSS pentru {0}" xml:space="preserve"><value>Exemple RSS pentru {0}</value></data>
+  <data name="Au fost adăugate {0} feeduri RSS pentru limba {1}." xml:space="preserve"><value>Au fost adăugate {0} feeduri RSS pentru limba {1}.</value></data>
+  <data name="Au fost eliminate {0} feeduri demonstrative." xml:space="preserve"><value>Au fost eliminate {0} feeduri demonstrative.</value></data>
+  <data name="Nu s-au putut salva feedurile demonstrative: {0}" xml:space="preserve"><value>Nu s-au putut salva feedurile demonstrative: {0}</value></data>
 </root>

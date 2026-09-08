@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('en-US', 'es-ES', 'fr-FR', 'de-DE', 'pt-BR')]
+    [ValidateSet('en-US', 'es-ES', 'fr-FR', 'de-DE', 'pt-BR', 'hu-HU', 'it-IT')]
     [string]$Culture
 )
 
@@ -15,6 +15,8 @@ $targetLanguage = @{
     'fr-FR' = 'fr'
     'de-DE' = 'de'
     'pt-BR' = 'pt'
+    'hu-HU' = 'hu'
+    'it-IT' = 'it'
 }[$Culture]
 
 function Read-Resx([string]$Path)
