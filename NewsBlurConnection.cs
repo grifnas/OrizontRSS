@@ -81,11 +81,17 @@ public sealed class NewsBlurConnection
         AllowAutoRedirect = true
     };
 
-    private static HttpClient CreateClient(HttpClientHandler handler) => new(handler)
+    private static HttpClient CreateClient(HttpClientHandler handler)
     {
-        BaseAddress = new Uri(ApiBaseUrl),
-        Timeout = TimeSpan.FromSeconds(20)
-    };
+        var client = new HttpClient(handler)
+        {
+            BaseAddress = new Uri(ApiBaseUrl),
+            Timeout = TimeSpan.FromSeconds(20)
+        };
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("OrizontRSS/1.5.4");
+        client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+        return client;
+    }
 
     private static FormUrlEncodedContent Form(string username, string password) => Form(("username", username.Trim()), ("password", password));
 

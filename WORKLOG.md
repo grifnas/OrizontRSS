@@ -497,3 +497,11 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Corecții: mesajele de așteptare, succes, eroare și verificare sunt anunțate prin `StatusAnnouncer` și bare de stare live; butonul rămâne navigabil; câmpul de autentificare precizează că API-ul cere numele de utilizator, nu adresa de e-mail.
 - Verificări: build Release, CoreSmoke, LocalizationSmoke, publicare autonomă și `verify-distribution.ps1` trecute; avertismentul NU1900 nu a blocat buildul.
 - Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Antet HTTP explicit pentru NewsBlur
+
+- Scop: reducerea riscului ca serverul NewsBlur să trateze cererile aplicației ca trafic neidentificat.
+- Fișier modificat: `NewsBlurConnection.cs`.
+- Corecție: clientul HTTP trimite acum un User-Agent Orizont RSS și solicită răspuns JSON; nu se schimbă parolele, cookie-urile sau datele locale.
+- Verificări: build Release, CoreSmoke, LocalizationSmoke, publicare autonomă și `verify-distribution.ps1` trecute; o rulare paralelă inițială a fost repetată separat după o coliziune temporară de fișiere de resurse.
+- Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.
