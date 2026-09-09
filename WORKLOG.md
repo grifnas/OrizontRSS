@@ -568,3 +568,13 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Date excluse: parolele, cheile API, notițele AI și setările vocale rămân locale.
 - Documentație actualizată: `docs/ROADMAP.md` și `docs/PROJECT-STATUS.md`.
 - Nu s-a modificat codul și nu s-a creat o distribuție nouă.
+
+## 2026-09-09 — Sesiunea A: Saved Stories și etichete NewsBlur
+
+- Scop: sincronizarea configurabilă a articolelor salvate și a etichetelor între NewsBlur și Orizont RSS.
+- Fișiere modificate: `AppSettings.cs`, `BackupPolicy.cs`, `Models.cs`, `SettingsWindow.xaml`, `SettingsWindow.xaml.cs`, `MainWindow.xaml.cs`, resursele `Resources/UiStrings*.resx`, `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md`.
+- Funcții: în Setări aplicație → Sincronizare NewsBlur se poate alege maparea stelelor NewsBlur către `Favorite`, `De citit mai târziu` sau ambele. Baza locală reține starea mapată, astfel încât modificările ulterioare și etichetele să poată fi trimise sau preluate fără a interpreta greșit prima rulare.
+- Protecții: alegerea se aplică numai la sincronizarea explicită, nu șterge articole și nu modifică parole, chei API, notițe AI sau setări vocale. Backupul păstrează preferința fără date de autentificare.
+- Verificări: build Release, CoreSmoke (26 verificări), `verify-distribution.ps1` și `git diff --check` trecute; avertismentul NU1900 provine de la indexul NuGet indisponibil și nu blochează buildul.
+- Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages; nu s-a creat o distribuție publică.
+- Executabil local de test: `bin/Release/test-newsblur-saved-tags-v1-files-win-x64/Orizont.exe`.

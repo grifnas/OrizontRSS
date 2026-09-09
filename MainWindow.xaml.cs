@@ -1202,7 +1202,8 @@ ContinueCommandHandling:
                 matched++;
                 article.NewsBlurStoryHash = story.StoryHash;
                 var hasBaseline = article.NewsBlurLastRead.HasValue && article.NewsBlurLastStarred.HasValue && article.NewsBlurLastTags is not null &&
-                    article.NewsBlurLastLocalRead.HasValue && article.NewsBlurLastLocalStarred.HasValue && article.NewsBlurLastLocalTags is not null;
+                    article.NewsBlurLastLocalRead.HasValue && article.NewsBlurLastLocalStarred.HasValue && article.NewsBlurLastLocalTags is not null &&
+                    article.NewsBlurLastLocalSaved.HasValue;
                 if (!hasBaseline)
                 {
                     SetNewsBlurBaseline(article, story);
@@ -1216,33 +1217,42 @@ ContinueCommandHandling:
                 else if (localReadChanged) (story.IsRead ? toRead : toUnread).Add((article, story.StoryHash));
                 else if (remoteReadChanged) { article.IsRead = story.IsRead; appliedRemote++; }
 
-                var localStarredChanged = article.IsFavorite != article.NewsBlurLastLocalStarred!.Value;
+                var localSaved = NewsBlurSavedState(article);
+                var localStarredChanged = localSaved != article.NewsBlurLastLocalSaved!.Value;
                 var remoteStarredChanged = story.IsStarred != article.NewsBlurLastStarred.GetValueOrDefault();
                 if (localStarredChanged && remoteStarredChanged) conflicts++;
                 else if (localStarredChanged)
                 {
-                    if (article.IsFavorite) toStar.Add((article, story.StoryHash));
+                    if (localSaved) toStar.Add((article, story.StoryHash));
                     else toUnstar.Add((article, story.StoryHash));
                 }
-                else if (remoteStarredChanged) { article.IsFavorite = story.IsStarred; appliedRemote++; }
+                else if (remoteStarredChanged) { ApplyNewsBlurSavedState(article, story.IsStarred); appliedRemote++; }
 
                 var localTagsChanged = !SameTags(article.Tags, article.NewsBlurLastLocalTags!);
                 var remoteTagsChanged = !SameTags(story.UserTags, article.NewsBlurLastTags!);
                 if (localTagsChanged && remoteTagsChanged) conflicts++;
-                else if (localTagsChanged && article.IsFavorite) toStar.Add((article, story.StoryHash));
+                else if (localTagsChanged && localSaved) toStar.Add((article, story.StoryHash));
                 else if (localTagsChanged) skippedTags++;
                 else if (remoteTagsChanged) { article.Tags = story.UserTags.ToList(); appliedRemote++; }
 
                 if (!localReadChanged && !remoteReadChanged) article.NewsBlurLastRead = story.IsRead;
                 if (!localReadChanged && !remoteReadChanged) article.NewsBlurLastLocalRead = article.IsRead;
                 if (!localStarredChanged && !remoteStarredChanged) article.NewsBlurLastStarred = story.IsStarred;
-                if (!localStarredChanged && !remoteStarredChanged) article.NewsBlurLastLocalStarred = article.IsFavorite;
+                if (!localStarredChanged && !remoteStarredChanged)
+                {
+                    article.NewsBlurLastLocalStarred = article.IsFavorite;
+                    article.NewsBlurLastLocalSaved = NewsBlurSavedState(article);
+                }
                 if (!localTagsChanged && !remoteTagsChanged) article.NewsBlurLastTags = story.UserTags.ToList();
                 if (!localTagsChanged && !remoteTagsChanged) article.NewsBlurLastLocalTags = (article.Tags ?? []).ToList();
                 if (remoteReadChanged && !localReadChanged) article.NewsBlurLastRead = story.IsRead;
                 if (remoteReadChanged && !localReadChanged) article.NewsBlurLastLocalRead = story.IsRead;
                 if (remoteStarredChanged && !localStarredChanged) article.NewsBlurLastStarred = story.IsStarred;
-                if (remoteStarredChanged && !localStarredChanged) article.NewsBlurLastLocalStarred = story.IsStarred;
+                if (remoteStarredChanged && !localStarredChanged)
+                {
+                    article.NewsBlurLastLocalStarred = article.IsFavorite;
+                    article.NewsBlurLastLocalSaved = NewsBlurSavedState(article);
+                }
                 if (remoteTagsChanged && !localTagsChanged) article.NewsBlurLastTags = story.UserTags.ToList();
                 if (remoteTagsChanged && !localTagsChanged) article.NewsBlurLastLocalTags = story.UserTags.ToList();
             }
@@ -1267,12 +1277,14 @@ ContinueCommandHandling:
                 item.Article.NewsBlurLastTags = (item.Article.Tags ?? []).ToList();
                 item.Article.NewsBlurLastLocalStarred = item.Article.IsFavorite;
                 item.Article.NewsBlurLastLocalTags = (item.Article.Tags ?? []).ToList();
+                item.Article.NewsBlurLastLocalSaved = NewsBlurSavedState(item.Article);
             }
             foreach (var item in toUnstar)
             {
                 await connection.MarkStoryStarredAsync(sessionId, item.Hash, false);
                 item.Article.NewsBlurLastStarred = false;
                 item.Article.NewsBlurLastLocalStarred = item.Article.IsFavorite;
+                item.Article.NewsBlurLastLocalSaved = NewsBlurSavedState(item.Article);
             }
         }
         catch (Exception exception)
@@ -1317,7 +1329,31 @@ ContinueCommandHandling:
         (left ?? []).Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()).ToHashSet(StringComparer.CurrentCultureIgnoreCase)
             .SetEquals((right ?? []).Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()));
 
-    private static void SetNewsBlurBaseline(Article article, NewsBlurStory story)
+    private bool NewsBlurSavedState(Article article) => _settings.NewsBlurSavedStoryMode switch
+    {
+        "ReadLater" => article.ReadLater,
+        "Both" => article.IsFavorite || article.ReadLater,
+        _ => article.IsFavorite
+    };
+
+    private void ApplyNewsBlurSavedState(Article article, bool saved)
+    {
+        switch (_settings.NewsBlurSavedStoryMode)
+        {
+            case "ReadLater":
+                article.ReadLater = saved;
+                break;
+            case "Both":
+                article.IsFavorite = saved;
+                article.ReadLater = saved;
+                break;
+            default:
+                article.IsFavorite = saved;
+                break;
+        }
+    }
+
+    private void SetNewsBlurBaseline(Article article, NewsBlurStory story)
     {
         article.NewsBlurLastRead = story.IsRead;
         article.NewsBlurLastStarred = story.IsStarred;
@@ -1325,6 +1361,7 @@ ContinueCommandHandling:
         article.NewsBlurLastLocalRead = article.IsRead;
         article.NewsBlurLastLocalStarred = article.IsFavorite;
         article.NewsBlurLastLocalTags = (article.Tags ?? []).ToList();
+        article.NewsBlurLastLocalSaved = NewsBlurSavedState(article);
     }
     private async Task OpenSettingsAsync(SettingsWindow.SettingsSection section)
     {

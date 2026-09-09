@@ -18,6 +18,8 @@ public sealed class AppSettings
     public bool NewsBlurConnected { get; set; }
     public string? NewsBlurUsername { get; set; }
     public string? EncryptedNewsBlurSession { get; set; }
+    /// <summary>How NewsBlur Saved Stories (stars) map to local article states.</summary>
+    public string NewsBlurSavedStoryMode { get; set; } = "Favorite";
     public string LastFolder { get; set; } = "Toate folderele";
     public Guid? LastFeedId { get; set; }
     public string? LastArticleId { get; set; }

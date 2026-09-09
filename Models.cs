@@ -49,6 +49,8 @@ public sealed class Article
     public bool? NewsBlurLastLocalRead { get; set; }
     public bool? NewsBlurLastLocalStarred { get; set; }
     public List<string>? NewsBlurLastLocalTags { get; set; }
+    /// <summary>Last local Saved Stories value according to the user's mapping choice.</summary>
+    public bool? NewsBlurLastLocalSaved { get; set; }
     [JsonIgnore] public string SourceName { get; set; } = string.Empty;
     [JsonIgnore] public bool IncludeSourceInDisplay { get; set; }
     private string SourceAnnouncement => IncludeSourceInDisplay && !string.IsNullOrWhiteSpace(SourceName)
