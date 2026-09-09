@@ -74,6 +74,20 @@ Importul controlat al abonamentelor și folderelor NewsBlur este implementat loc
 
 Sincronizarea controlată a feedurilor, folderelor și articolelor lipsă este implementată local. Următoarele etape rămân sincronizarea automată în fundal, ștergerile sincronizate și rezolvarea avansată a conflictelor; acestea vor necesita verificare manuală și aprobare explicită separată.
 
+### Direcția aprobată pentru extinderea sincronizării NewsBlur
+
+Etapele se abordează pe rând; dacă două etape sunt suficient de independente, pot fi implementate în aceeași sesiune, cu verificări separate:
+
+1. **Colecțiile de articole salvate** — mapare configurabilă între `Saved Stories`/stelele NewsBlur și `Favorite` sau `Mai târziu` în Orizont RSS.
+2. **Etichete bidirecționale** — sincronizarea etichetelor articolelor și o regulă explicită pentru conflicte.
+3. **Feeduri și foldere complete** — redenumire și mutare în ambele direcții, cu bază locală și protecție la modificări concurente; ștergerea rămâne dezactivată implicit.
+4. **Vizualizări speciale** — liste virtuale pentru necitite, Saved Stories, River of News și articolele unui folder NewsBlur.
+5. **Text complet la cerere** — preluarea textului extins NewsBlur numai pentru articolul cerut, cu limitare și feedback accesibil.
+6. **Stări agregate** — citirea sau marcarea ca citite a unui folder ori a tuturor feedurilor și afișarea numărului de necitite.
+7. **Sincronizare automată** — pornire, interval configurabil, oprire sigură, reluare după erori și anunțuri JAWS/NVDA.
+
+Nu se sincronizează parole, chei API, notițe AI sau setări vocale. Acestea rămân locale. Niciuna dintre etapele de mai sus nu autorizează singură o distribuție publică; fiecare modificare necesită verificare și consemnare în `WORKLOG.md`.
+
 ## Capturi pentru pagina publică
 
 Galeria de previzualizări este activă în toate cele opt pagini GitHub Pages. Cele patru imagini PNG din `docs/assets/screenshots/` sunt generate offline din componente WPF, în limba engleză ca limbă internațională comună, și folosesc exclusiv date demonstrative; nu conțin fluxuri personale sau chei API. Textul alternativ și descrierile sunt localizate pentru fiecare limbă.

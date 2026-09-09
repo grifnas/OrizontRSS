@@ -560,3 +560,11 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Limitări documentate: „Mai târziu”, notițele AI, folderele goale, ștergerile sincronizate, sincronizarea automată în fundal și rezolvarea avansată a conflictelor rămân locale sau neimplementate.
 - Sursă tehnică: documentația oficială NewsBlur — <https://www.newsblur.com/api>.
 - Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages; distribuția publică nu este creată.
+
+## 2026-09-09 — Direcție aprobată pentru extinderea sincronizării NewsBlur
+
+- Decizie: următoarele funcții se implementează etapizat, nu implicit toate odată: Saved Stories/stele către Favorite sau „Mai târziu”, etichete bidirecționale, redenumire și mutare feeduri/foldere, vizualizări speciale, text complet la cerere, stări agregate și sincronizare automată.
+- Reguli: se păstrează confirmarea înainte de modificări remote, ștergerea rămâne dezactivată implicit, conflictele trebuie documentate și rezolvate explicit, iar fiecare intervenție se verifică și se notează în `WORKLOG.md`.
+- Date excluse: parolele, cheile API, notițele AI și setările vocale rămân locale.
+- Documentație actualizată: `docs/ROADMAP.md` și `docs/PROJECT-STATUS.md`.
+- Nu s-a modificat codul și nu s-a creat o distribuție nouă.
