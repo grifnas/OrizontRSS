@@ -32,6 +32,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - Localizarea maghiară (`hu-HU`) și italiană (`it-IT`) este implementată în aplicație, instalator, ghiduri și paginile GitHub Pages; verificarea automată pentru ambele limbi a trecut.
 - Exemplele de lucru pentru feeduri sunt implementate: un feed demonstrativ local, disponibil fără internet, și un feed RSS online oficial pentru fiecare dintre cele opt limbi. Feedurile online sunt adăugate numai după verificarea faptului că răspund cu articole; feedul local este exclus din actualizările de rețea.
 - Pagina GitHub Pages are acum metadate SEO localizate pentru toate cele opt limbi: descriere, canonical, `hreflang`, Open Graph, Twitter Card și JSON-LD pentru site și aplicație. Au fost adăugate `sitemap.xml` și `robots.txt`, cu URL-uri publice absolute.
+- Galeria publică folosește acum patru previzualizări demonstrative în limba engleză, aleasă ca limbă internațională comună; textul alternativ și descrierile rămân localizate pentru fiecare pagină.
 - Feedul Bistrițeanul a fost validat prin XML-ul primit, dar prototipul Android a primit 404. Nu se mai fac încercări speculative până la o decizie nouă și o metodă de diagnostic adecvată.
 
 ## Următorii pași propuși

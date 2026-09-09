@@ -9,4 +9,4 @@ Galeria publica va folosi numai capturi reale ale aplicatiei Orizont RSS, realiz
 - `context-menu.png` — un meniu contextual deschis intr-o lista de articole.
 - `settings.png` — setarile aplicatiei; campurile pentru chei trebuie sa fie goale sau mascate.
 
-Imaginile existente sunt previzualizări demonstrative generate offline, nu capturi ale profilului personal. Dacă vor fi înlocuite ulterior cu capturi reale, acestea trebuie să rămână PNG, clare și decupate la fereastra aplicației; galeria GitHub Pages folosește text alternativ și descrieri localizate în toate cele opt limbi.
+Imaginile existente sunt previzualizări demonstrative generate offline în limba engleză, nu capturi ale profilului personal. Engleza a fost aleasă ca limbă internațională comună pentru galerie; galeria GitHub Pages păstrează text alternativ și descrieri localizate în toate cele opt limbi. Dacă vor fi înlocuite ulterior cu capturi reale, acestea trebuie să rămână PNG, clare și decupate la fereastra aplicației.

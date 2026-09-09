@@ -25,6 +25,14 @@ Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se 
 - Verificări: toate cele opt pagini au câte un description, canonical, nouă hreflang, JSON-LD și opt metadate Open Graph; JSON-LD se parsează fără erori; sitemap-ul este XML valid; `git diff --check` fără erori.
 - Publicare: modificările sunt pregătite local; nu s-a făcut commit/push și nu s-a creat distribuție nouă.
 
+## 2026-09-09 — Capturi demonstrative în limba engleză
+
+- Scop: înlocuirea textului românesc din galeria publică cu o limbă internațională comună, conform aprobării utilizatorului.
+- Fișiere actualizate: `docs/assets/screenshots/main-window.png`, `reader.png`, `context-menu.png`, `settings.png`, `docs/assets/screenshots/README.md`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md`.
+- Comportament vizual: cele patru previzualizări păstrează dimensiunea 1440×882 și structura WPF demonstrativă, dar afișează interfața, meniul contextual, cititorul și setările în engleză. Datele sunt fictive și nu includ profilul personal.
+- Verificări: imaginile au fost regenerate offline și inspectate vizual; textul românesc și caracterele afișate greșit au fost eliminate; utilitarul temporar de generare a fost șters după folosire.
+- Distribuție: nu s-a creat o distribuție nouă.
+
 ## 2026-09-08 — Commit și push GitHub pentru modificările publice
 
 - Scop: publicarea automată a modificărilor aprobate de utilizator.
