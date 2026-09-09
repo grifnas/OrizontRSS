@@ -465,6 +465,15 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Comportament protejat: fluxul RSS local, cheile AI, feedurile, articolele și backupurile existente rămân neschimbate; nu s-a creat o distribuție publică și nu s-a modificat WinGet.
 - Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.
 
+## 2026-09-09 — Verificarea sesiunii NewsBlur și numărul de feeduri
+
+- Scop: eliminarea ambiguității după autentificare, deoarece sincronizarea abonamentelor nu este încă implementată.
+- Fișiere modificate: `NewsBlurConnection.cs`, `NewsBlurAuthWindow.xaml`, `NewsBlurAuthWindow.xaml.cs`, resursele `Resources/UiStrings*.resx`.
+- Funcții: după autentificare se verifică endpointul `/reader/feeds`; fereastra raportează dacă sesiunea este validă și câte feeduri a returnat NewsBlur. Pentru sesiunile existente există butonul „Verifică sesiunea NewsBlur”.
+- Verificări: build Release, CoreSmoke, LocalizationSmoke, publicare autonomă și `verify-distribution.ps1` trecute; avertismentul NU1900 nu a blocat buildul.
+- Comportament protejat: nu se descarcă încă feedurile în lista locală și nu se modifică articolele până la etapa separată de sincronizare.
+- Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.
+
 ## 2026-09-09 — Mesaje detaliate la autentificarea NewsBlur
 
 - Scop: corectarea feedbackului când NewsBlur returnează erori de autentificare.

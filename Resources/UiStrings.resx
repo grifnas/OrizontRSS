@@ -1272,4 +1272,10 @@ Detalii: {1}</value></data><data name="Gemini nu a răspuns în 45 de secunde. �
   <data name="NewsBlur a refuzat autentificarea. Verifică datele introduse." xml:space="preserve"><value>NewsBlur a refuzat autentificarea. Verifică datele introduse.</value></data>
   <data name="NewsBlur este conectat pentru {0}." xml:space="preserve"><value>NewsBlur este conectat pentru {0}.</value></data>
   <data name="utilizatorul curent" xml:space="preserve"><value>utilizatorul curent</value></data>
+  <data name="Verifică sesiunea NewsBlur" xml:space="preserve"><value>Verify NewsBlur session</value></data>
+  <data name="Sesiunea NewsBlur nu este disponibilă." xml:space="preserve"><value>The NewsBlur session is not available.</value></data>
+  <data name="Sesiunea NewsBlur nu mai este valabilă." xml:space="preserve"><value>The NewsBlur session is no longer valid.</value></data>
+  <data name="Sesiunea NewsBlur este validă." xml:space="preserve"><value>The NewsBlur session is valid.</value></data>
+  <data name="Sesiunea NewsBlur este validă. NewsBlur a raportat {0} feeduri." xml:space="preserve"><value>The NewsBlur session is valid. NewsBlur reported {0} feeds.</value></data>
+  <data name="Contul NewsBlur a fost creat și autentificat pentru {0}. Feeduri disponibile: {1}." xml:space="preserve"><value>The NewsBlur account was created and signed in as {0}. Available feeds: {1}.</value></data>
 </root>

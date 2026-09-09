@@ -14,6 +14,7 @@ public partial class NewsBlurAuthWindow : Window
         InitializeComponent();
         _settings = settings;
         LogoutButton.IsEnabled = settings.NewsBlurConnected && !string.IsNullOrWhiteSpace(settings.EncryptedNewsBlurSession);
+        CheckSessionButton.IsEnabled = LogoutButton.IsEnabled;
         if (settings.NewsBlurConnected && !string.IsNullOrWhiteSpace(settings.NewsBlurUsername))
             LoginStatus.Text = T("Cont NewsBlur conectat: {0}.", settings.NewsBlurUsername);
         Loaded += (_, _) => Username.Focus();
@@ -24,8 +25,11 @@ public partial class NewsBlurAuthWindow : Window
         await RunAsync(LoginButton, async () =>
         {
             var session = await _connection.LoginAsync(Username.Text, Password.Password);
+            var feedCount = await _connection.GetFeedCountAsync(session.SessionId);
             SaveSession(session);
-            LoginStatus.Text = T("Autentificarea NewsBlur a reușit pentru {0}.", session.Username);
+            LoginStatus.Text = feedCount is int count
+                ? T("Sesiunea NewsBlur este validă. NewsBlur a raportat {0} feeduri.", count)
+                : T("Autentificarea NewsBlur a reușit pentru {0}.", session.Username);
             DialogResult = true;
         }, LoginStatus);
     }
@@ -42,8 +46,11 @@ public partial class NewsBlurAuthWindow : Window
         {
             await _connection.SignupAsync(SignupUsername.Text, SignupEmail.Text, SignupPassword.Password);
             var session = await _connection.LoginAsync(SignupUsername.Text, SignupPassword.Password);
+            var feedCount = await _connection.GetFeedCountAsync(session.SessionId);
             SaveSession(session);
-            SignupStatus.Text = T("Contul NewsBlur a fost creat și autentificat pentru {0}.", session.Username);
+            SignupStatus.Text = feedCount is int count
+                ? T("Contul NewsBlur a fost creat și autentificat pentru {0}. Feeduri disponibile: {1}.", session.Username, count)
+                : T("Contul NewsBlur a fost creat și autentificat pentru {0}.", session.Username);
             DialogResult = true;
         }, SignupStatus);
     }
@@ -63,8 +70,21 @@ public partial class NewsBlurAuthWindow : Window
         _settings.NewsBlurUsername = null;
         _settings.EncryptedNewsBlurSession = null;
         LogoutButton.IsEnabled = false;
+        CheckSessionButton.IsEnabled = false;
         LoginStatus.Text = T("Contul NewsBlur a fost deconectat.");
         DialogResult = true;
+    }
+
+    private async void CheckSession_Click(object sender, RoutedEventArgs e)
+    {
+        await RunAsync(CheckSessionButton, async () =>
+        {
+            var sessionId = SecretProtector.Unprotect(_settings.EncryptedNewsBlurSession);
+            var feedCount = await _connection.GetFeedCountAsync(sessionId);
+            LoginStatus.Text = feedCount is int count
+                ? T("Sesiunea NewsBlur este validă. NewsBlur a raportat {0} feeduri.", count)
+                : T("Sesiunea NewsBlur este validă.");
+        }, LoginStatus);
     }
 
     private void OpenNewsBlur_Click(object sender, RoutedEventArgs e) => OpenUrl(NewsBlurConnection.ApiBaseUrl + "/login");

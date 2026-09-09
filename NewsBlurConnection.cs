@@ -50,6 +50,29 @@ public sealed class NewsBlurConnection
         EnsureSuccess(response.StatusCode, body, T("Deconectarea NewsBlur a eșuat."));
     }
 
+    public async Task<int?> GetFeedCountAsync(string sessionId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sessionId)) throw new InvalidOperationException(T("Sesiunea NewsBlur nu este disponibilă."));
+        using var handler = CreateHandler();
+        handler.CookieContainer.Add(new Uri(ApiBaseUrl), new Cookie("newsblur_sessionid", sessionId));
+        using var client = CreateClient(handler);
+        using var response = await client.GetAsync("/reader/feeds?flat=true", cancellationToken);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        EnsureSuccess(response.StatusCode, body, T("Sesiunea NewsBlur nu mai este valabilă."));
+        try
+        {
+            using var document = JsonDocument.Parse(body);
+            if (!document.RootElement.TryGetProperty("feeds", out var feeds)) return null;
+            return feeds.ValueKind switch
+            {
+                JsonValueKind.Object => feeds.EnumerateObject().Count(),
+                JsonValueKind.Array => feeds.GetArrayLength(),
+                _ => null
+            };
+        }
+        catch (JsonException) { return null; }
+    }
+
     private static HttpClientHandler CreateHandler() => new()
     {
         UseCookies = true,
