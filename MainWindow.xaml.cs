@@ -510,7 +510,6 @@ public partial class MainWindow : Window
               ?? priorItems.Take(Math.Max(0, anchorIndex)).Reverse().FirstOrDefault(article => Articles.Items.Contains(article));
 
         await RestoreArticleSelectionAsync([], primary, selectionRevision);
-        await _store.SaveAsync(_feeds);
         Say(primary is null ? ArticlePanelStatus() : F("{0} Înapoi la articolul: {1}.", ArticlePanelStatus(), primary.Title));
     }
     private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -887,6 +886,88 @@ ContinueCommandHandling:
         Say(_settings.NewsBlurConnected
             ? F("NewsBlur este conectat pentru {0}.", _settings.NewsBlurUsername ?? T("utilizatorul curent"))
             : T("Contul NewsBlur a fost deconectat."));
+    }
+    private async void NewsBlurSync_Click(object sender, RoutedEventArgs e)
+    {
+        if (RejectDataChangeDuringRefresh(T("sincronizarea abonamentelor NewsBlur"))) return;
+        if (!_settings.NewsBlurConnected || string.IsNullOrWhiteSpace(_settings.EncryptedNewsBlurSession))
+        {
+            Say(T("NewsBlur nu este conectat. Deschide Feeduri, Servicii externe, Autentificare NewsBlur."));
+            return;
+        }
+
+        string sessionId;
+        try { sessionId = SecretProtector.Unprotect(_settings.EncryptedNewsBlurSession); }
+        catch
+        {
+            Say(T("Sesiunea NewsBlur nu poate fi citită pentru acest cont Windows. Autentifică-te din nou."));
+            return;
+        }
+
+        Say(T("Se sincronizează abonamentele NewsBlur. Așteaptă."));
+        IReadOnlyList<NewsBlurSubscription> remote;
+        try { remote = await new NewsBlurConnection().GetSubscriptionsAsync(sessionId); }
+        catch (Exception exception)
+        {
+            Say(F("Sincronizarea NewsBlur a eșuat: {0}", Describe(exception)));
+            return;
+        }
+
+        var remoteSubscriptions = remote
+            .Where(subscription => Uri.TryCreate(subscription.Url, UriKind.Absolute, out _))
+            .GroupBy(subscription => DuplicateCleaner.FeedKey(subscription.Url), StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.First())
+            .ToList();
+        var existingByAddress = _feeds
+            .Where(feed => !string.IsNullOrWhiteSpace(DuplicateCleaner.FeedKey(feed.Url)))
+            .GroupBy(feed => DuplicateCleaner.FeedKey(feed.Url), StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
+        var additions = remoteSubscriptions
+            .Where(subscription => !existingByAddress.ContainsKey(DuplicateCleaner.FeedKey(subscription.Url)))
+            .ToList();
+        var updates = remoteSubscriptions
+            .Where(subscription => existingByAddress.TryGetValue(DuplicateCleaner.FeedKey(subscription.Url), out var local) &&
+                (!string.Equals(local.Name, subscription.Name, StringComparison.CurrentCulture) || !string.Equals(local.Folder, subscription.Folder, StringComparison.CurrentCultureIgnoreCase)))
+            .ToList();
+        var existingFolders = _feeds.Select(feed => feed.Folder).Where(folder => !string.IsNullOrWhiteSpace(folder)).ToHashSet(StringComparer.CurrentCultureIgnoreCase);
+        var newFolders = remoteSubscriptions.Select(subscription => subscription.Folder).Where(folder => !existingFolders.Contains(folder)).Distinct(StringComparer.CurrentCultureIgnoreCase).Count();
+
+        if (additions.Count == 0 && updates.Count == 0)
+        {
+            Say(T("Abonamentele locale sunt deja sincronizate cu NewsBlur. Nu s-a modificat nimic."));
+            return;
+        }
+
+        var summary = F("NewsBlur a raportat {0} abonamente. Vor fi adăugate {1} feeduri noi, actualizate {2} feeduri și create {3} foldere noi. Feedurile locale care lipsesc din NewsBlur vor fi păstrate. Continui?", remoteSubscriptions.Count, additions.Count, updates.Count, newFolders);
+        Say(F("Au fost găsite {0} feeduri noi și {1} feeduri de actualizat în NewsBlur. Se așteaptă confirmarea.", additions.Count, updates.Count));
+        if (MessageBox.Show(this, summary, T("Confirmă sincronizarea NewsBlur"), MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+        {
+            Say(T("Sincronizarea a fost anulată. Nu s-a modificat nimic."));
+            return;
+        }
+
+        foreach (var subscription in additions)
+            _feeds.Add(new Feed { Name = subscription.Name, Url = subscription.Url, Folder = subscription.Folder });
+        foreach (var subscription in updates)
+        {
+            var local = existingByAddress[DuplicateCleaner.FeedKey(subscription.Url)];
+            if (!string.IsNullOrWhiteSpace(subscription.Name)) local.Name = subscription.Name;
+            local.Folder = subscription.Folder;
+        }
+
+        try
+        {
+            await _store.SaveAsync(_feeds);
+        }
+        catch (Exception exception)
+        {
+            Say(F("Feedurile nu au putut fi salvate: {0}", Describe(exception)));
+            return;
+        }
+        RefreshFeedList(_feed);
+        RefreshTagFilter();
+        RefreshArticleList(_article, selectFirstWhenNoMatch: false);
+        Say(F("Sincronizare NewsBlur încheiată. Au fost adăugate {0} feeduri și actualizate {1}; feedurile locale au fost păstrate.", additions.Count, updates.Count));
     }
     private async Task OpenSettingsAsync(SettingsWindow.SettingsSection section)
     {

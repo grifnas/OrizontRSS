@@ -1,13 +1,15 @@
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using System.Xml.Linq;
 using CititorRSS.Jaws.Localization;
 
 namespace CititorRSS.Jaws;
 
 public sealed record NewsBlurSession(string Username, string SessionId);
+public sealed record NewsBlurSubscription(string Name, string Url, string Folder);
 
-/// <summary>Minimal, cookie-based NewsBlur authentication for the first sync phase.</summary>
+/// <summary>Cookie-based NewsBlur authentication and read-only subscription import.</summary>
 public sealed class NewsBlurConnection
 {
     public const string ApiBaseUrl = "https://www.newsblur.com";
@@ -71,6 +73,52 @@ public sealed class NewsBlurConnection
             };
         }
         catch (JsonException) { return null; }
+    }
+
+    public async Task<IReadOnlyList<NewsBlurSubscription>> GetSubscriptionsAsync(string sessionId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sessionId)) throw new InvalidOperationException(T("Sesiunea NewsBlur nu este disponibilă."));
+        using var handler = CreateHandler();
+        handler.CookieContainer.Add(new Uri(ApiBaseUrl), new Cookie("newsblur_sessionid", sessionId));
+        using var client = CreateClient(handler);
+        using var response = await client.GetAsync("/import/opml_export", cancellationToken);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        EnsureSuccess(response.StatusCode, body, T("Sincronizarea abonamentelor NewsBlur a eșuat."));
+        XDocument document;
+        try { document = XDocument.Parse(body); }
+        catch (Exception exception) when (exception is System.Xml.XmlException or InvalidOperationException)
+        {
+            throw new InvalidOperationException(T("NewsBlur nu a returnat un fișier OPML valid."), exception);
+        }
+
+        var subscriptions = new List<NewsBlurSubscription>();
+        foreach (var outline in document.Descendants().Where(element => element.Name.LocalName == "outline" && element.Parent?.Name.LocalName != "outline"))
+            CollectSubscriptions(outline, null, subscriptions);
+        return subscriptions
+            .Where(subscription => !string.IsNullOrWhiteSpace(subscription.Url))
+            .GroupBy(subscription => DuplicateCleaner.FeedKey(subscription.Url), StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.First())
+            .ToList();
+    }
+
+    private static void CollectSubscriptions(XElement outline, string? parentFolder, ICollection<NewsBlurSubscription> subscriptions)
+    {
+        var address = outline.Attribute("xmlUrl")?.Value?.Trim();
+        if (!string.IsNullOrWhiteSpace(address) && Uri.TryCreate(address, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https")
+        {
+            var name = outline.Attribute("text")?.Value?.Trim();
+            if (string.IsNullOrWhiteSpace(name)) name = outline.Attribute("title")?.Value?.Trim();
+            if (string.IsNullOrWhiteSpace(name)) name = address;
+            subscriptions.Add(new NewsBlurSubscription(name, address, string.IsNullOrWhiteSpace(parentFolder) ? "Neorganizate" : parentFolder));
+            return;
+        }
+
+        var folderName = outline.Attribute("text")?.Value?.Trim() ?? outline.Attribute("title")?.Value?.Trim();
+        var folder = string.IsNullOrWhiteSpace(folderName)
+            ? parentFolder
+            : string.IsNullOrWhiteSpace(parentFolder) ? folderName : $"{parentFolder} / {folderName}";
+        foreach (var child in outline.Elements().Where(element => element.Name.LocalName == "outline"))
+            CollectSubscriptions(child, folder, subscriptions);
     }
 
     private static HttpClientHandler CreateHandler() => new()

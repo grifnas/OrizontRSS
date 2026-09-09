@@ -39,6 +39,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - Feedul Bistrițeanul a fost validat prin XML-ul primit, dar prototipul Android a primit 404. Nu se mai fac încercări speculative până la o decizie nouă și o metodă de diagnostic adecvată.
 - Prima etapă NewsBlur este implementată local: fereastră accesibilă pentru autentificare cu utilizator/parolă, creare cont, deconectare și deschiderea site-ului oficial; sesiunea este protejată DPAPI, iar parola nu este salvată.
 - OAuth NewsBlur este pregătit doar ca flux explicativ. Google, Facebook și alți furnizori nu sunt activați până la primirea unui client ID și secret aprobat de NewsBlur și confirmarea furnizorilor acceptați.
+- Sincronizarea inițială NewsBlur este implementată local: abonamentele și folderele sunt preluate prin exportul OPML oficial, apoi utilizatorul primește un rezumat și confirmă adăugarea sau actualizarea. Feedurile locale care lipsesc din NewsBlur sunt păstrate, iar articolele și stările locale nu sunt modificate.
 
 ## Următorii pași propuși
 
@@ -54,7 +55,8 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - extinderea testelor automate pentru colecții mari de articole;
 - eventuală reluare a proiectului Android, numai după stabilirea unei strategii tehnice verificabile;
 - funcții noi pentru partajare, traducere și conversații AI, dacă sunt solicitate.
-- integrare viitoare, opțională, cu NewsBlur pentru abonamente, foldere și stări de articole; etapa rămâne neimplementată până la aprobarea expresă.
+- integrare viitoare, opțională, cu NewsBlur pentru stări de articole; importul inițial al abonamentelor și folderelor este deja implementat local, iar sincronizarea stărilor rămâne neimplementată.
+- sincronizare bidirecțională NewsBlur pentru articole, stări citit/necitit, favorite și etichete; etapa rămâne neimplementată.
 
 Ideile din această secțiune nu autorizează implementarea și nu schimbă funcționalitatea existentă.
 

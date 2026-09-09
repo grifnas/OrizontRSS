@@ -55,7 +55,7 @@ Implementarea va fi etapizată și nu începe automat:
 
 1. definirea unui adaptor separat pentru servicii externe, fără modificarea fluxului RSS local;
 2. conectare NewsBlur cu autentificare explicită și posibilitate de deconectare/revocare;
-3. import inițial al abonamentelor și folderelor;
+3. import inițial al abonamentelor și folderelor — implementat local la 9 septembrie 2026;
 4. sincronizare controlată a articolelor și a stărilor citit/necitit, favorit și etichete;
 5. limitarea cererilor, reluare prudentă după erori și mesaje accesibile pentru JAWS/NVDA;
 6. păstrarea OPML ca metodă de rezervă, astfel încât aplicația să rămână complet funcțională fără NewsBlur.
@@ -67,6 +67,12 @@ Integrarea bidirecțională va fi propusă pentru implementare numai după aprob
 Fereastra locală de autentificare este implementată și testată automat. Ea folosește endpointurile oficiale `/api/login`, `/api/signup` și `/api/logout`, păstrează numai sesiunea protejată pentru utilizatorul Windows curent și oferă o deconectare explicită. Fluxul OAuth cu Google, Facebook sau alți furnizori rămâne blocat până la primirea acreditărilor OAuth de la NewsBlur; nu se folosesc butoane care ar putea colecta parole sau tokenuri în afara fluxului aprobat.
 
 Aceste idei nu sunt angajamente de implementare și nu modifică funcționalitatea curentă.
+
+### Stadiul importului inițial
+
+Importul controlat al abonamentelor și folderelor NewsBlur este implementat local. Comanda este disponibilă în `Feeduri → Servicii externe → Sincronizează abonamentele NewsBlur`. Aplicația citește exportul OPML oficial, elimină duplicatele după adresă și afișează înainte de confirmare numărul de abonamente noi, feeduri actualizate și foldere noi. Operația nu șterge feeduri locale și nu modifică articolele, favoritele, lista „Mai târziu” sau etichetele.
+
+Următoarea etapă NewsBlur rămâne sincronizarea controlată a articolelor și stărilor, care va fi începută numai după o verificare manuală a importului inițial și o aprobare explicită separată.
 
 ## Capturi pentru pagina publică
 

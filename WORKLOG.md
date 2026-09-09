@@ -522,3 +522,13 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Corecție: cele două comenzi rămân permanent disponibile în submeniul `Actualizare`; când nu există o acțiune aplicabilă, handlerul anunță situația fără să modifice datele.
 - Verificări: build Release, CoreSmoke, `verify-localization.ps1 -RequireComplete`, publicare autonomă și `verify-distribution.ps1` trecute; avertismentul NU1900 nu a blocat buildul.
 - Executabil de test: `bin/Release/test-newsblur-menu-v2-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Sincronizare sigură a abonamentelor NewsBlur
+
+- Scop: preluarea abonamentelor și folderelor NewsBlur în regim controlat, fără ștergeri locale și fără import de articole sau stări.
+- Fișiere modificate: `NewsBlurConnection.cs`, `MainWindow.xaml`, `MainWindow.xaml.cs`, resursele `Resources/UiStrings*.resx`, `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md`.
+- Funcții: export OPML oficial NewsBlur, parser recursiv pentru foldere, eliminare duplicate după adresă, rezumat accesibil și confirmare înainte de modificare; feedurile locale absente din NewsBlur sunt păstrate, iar feedurile existente își pot actualiza numele și folderul.
+- Localizare: toate cele șapte fișiere de cultură au acum 911 chei, fără chei lipsă, valori goale, erori de format sau termeni protejați încălcați.
+- Verificări: build Release reușit; CoreSmoke trecut cu 26 verificări; verificarea localizării cu `-RequireComplete` trece pentru en-US, es-ES, fr-FR, de-DE, pt-BR, hu-HU și it-IT. Avertismentul NU1900 provine de la indisponibilitatea indexului NuGet și nu blochează buildul.
+- Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages.
+- Executabil de test: `bin/Release/test-newsblur-sync-v1-win-x64/Orizont.exe`.
