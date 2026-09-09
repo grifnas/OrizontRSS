@@ -489,3 +489,11 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Comportament: butonul „Verifică sesiunea NewsBlur” este activ permanent și anunță explicit lipsa sesiunii; după autentificare, sesiunea este salvată imediat, astfel încât să nu fie pierdută dacă verificarea secundară a numărului de feeduri nu răspunde.
 - Verificări: build Release, CoreSmoke, LocalizationSmoke, publicare autonomă și `verify-distribution.ps1` trecute; avertismentul NU1900 nu a blocat buildul.
 - Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Feedback vocal și clarificarea datelor NewsBlur
+
+- Scop: investigarea raportului că autentificarea și verificarea sesiunii nu oferă niciun feedback perceptibil.
+- Fișiere modificate: `NewsBlurAuthWindow.xaml`, `NewsBlurAuthWindow.xaml.cs`.
+- Corecții: mesajele de așteptare, succes, eroare și verificare sunt anunțate prin `StatusAnnouncer` și bare de stare live; butonul rămâne navigabil; câmpul de autentificare precizează că API-ul cere numele de utilizator, nu adresa de e-mail.
+- Verificări: build Release, CoreSmoke, LocalizationSmoke, publicare autonomă și `verify-distribution.ps1` trecute; avertismentul NU1900 nu a blocat buildul.
+- Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.

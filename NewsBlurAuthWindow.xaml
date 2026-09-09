@@ -5,12 +5,12 @@
     <TabControl Grid.Row="1" Margin="0,12,0,12">
       <TabItem Header="Autentificare">
         <StackPanel Margin="12">
-          <Label Content="Nume utilizator NewsBlur" Target="{Binding ElementName=Username}" /><TextBox x:Name="Username" AutomationProperties.Name="Nume utilizator NewsBlur" />
+          <Label Content="Nume utilizator NewsBlur" Target="{Binding ElementName=Username}" /><TextBox x:Name="Username" AutomationProperties.Name="Nume utilizator NewsBlur" AutomationProperties.HelpText="Introdu numele de utilizator NewsBlur, nu adresa de e-mail." />
           <Label Content="Parolă" Target="{Binding ElementName=Password}" /><PasswordBox x:Name="Password" AutomationProperties.Name="Parola NewsBlur" />
           <Button x:Name="LoginButton" Content="Autentifică-te" Click="Login_Click" Margin="0,12,0,0" />
           <Button x:Name="CheckSessionButton" Content="Verifică sesiunea NewsBlur" Click="CheckSession_Click" Margin="0,6,0,0" />
           <Button Content="Deschide NewsBlur în browser" Click="OpenNewsBlur_Click" Margin="0,6,0,0" />
-          <TextBlock x:Name="LoginStatus" Style="{StaticResource DialogStatusTextStyle}" AutomationProperties.LiveSetting="Polite" TextWrapping="Wrap" />
+          <StatusBar x:Name="LoginStatusBar" Focusable="False" IsTabStop="False" AutomationProperties.LiveSetting="Polite"><StatusBarItem><TextBlock x:Name="LoginStatus" Style="{StaticResource DialogStatusTextStyle}" AutomationProperties.LiveSetting="Polite" TextWrapping="Wrap" /></StatusBarItem></StatusBar>
         </StackPanel>
       </TabItem>
       <TabItem Header="Creează cont">
@@ -21,7 +21,7 @@
           <Label Content="Parolă" Target="{Binding ElementName=SignupPassword}" /><PasswordBox x:Name="SignupPassword" AutomationProperties.Name="Parola pentru cont nou" />
           <Label Content="Confirmă parola" Target="{Binding ElementName=SignupConfirmation}" /><PasswordBox x:Name="SignupConfirmation" AutomationProperties.Name="Confirmarea parolei pentru cont nou" />
           <Button x:Name="SignupButton" Content="Creează contul NewsBlur" Click="Signup_Click" Margin="0,12,0,0" />
-          <TextBlock x:Name="SignupStatus" Style="{StaticResource DialogStatusTextStyle}" AutomationProperties.LiveSetting="Polite" TextWrapping="Wrap" />
+          <StatusBar x:Name="SignupStatusBar" Focusable="False" IsTabStop="False" AutomationProperties.LiveSetting="Polite"><StatusBarItem><TextBlock x:Name="SignupStatus" Style="{StaticResource DialogStatusTextStyle}" AutomationProperties.LiveSetting="Polite" TextWrapping="Wrap" /></StatusBarItem></StatusBar>
         </StackPanel>
       </TabItem>
       <TabItem Header="OAuth">
