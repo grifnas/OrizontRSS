@@ -2476,4 +2476,43 @@ Details: {1}</value>
   <data name="Au fost adăugate {0} feeduri RSS pentru limba {1}." xml:space="preserve"><value>{0} RSS-Feed(s) für die Sprache {1} wurden hinzugefügt.</value></data>
   <data name="Au fost eliminate {0} feeduri demonstrative." xml:space="preserve"><value>{0} Demo-Feed(s) wurden entfernt.</value></data>
   <data name="Nu s-au putut salva feedurile demonstrative: {0}" xml:space="preserve"><value>Die Demo-Feeds konnten nicht gespeichert werden: {0}</value></data>
+  <data name="Conectează Orizont RSS la contul tău NewsBlur. Parola nu este salvată; se păstrează numai sesiunea protejată pentru contul Windows curent." xml:space="preserve"><value>Connect Orizont RSS to your NewsBlur account. Your password is not saved; only a protected session for the current Windows account is kept.</value></data>
+  <data name="Autentificare" xml:space="preserve"><value>Sign in</value></data>
+  <data name="Nume utilizator NewsBlur" xml:space="preserve"><value>NewsBlur username</value></data>
+  <data name="Parolă" xml:space="preserve"><value>Password</value></data>
+  <data name="Autentifică-te" xml:space="preserve"><value>Sign in</value></data>
+  <data name="Deschide NewsBlur în browser" xml:space="preserve"><value>Open NewsBlur in browser</value></data>
+  <data name="Creează cont" xml:space="preserve"><value>Create account</value></data>
+  <data name="Contul se creează pe serverul NewsBlur. Orizont RSS nu primește și nu păstrează parola după operație." xml:space="preserve"><value>The account is created on the NewsBlur server. Orizont RSS does not receive or keep the password after the operation.</value></data>
+  <data name="Nume utilizator NewsBlur pentru cont nou" xml:space="preserve"><value>NewsBlur username for new account</value></data>
+  <data name="Adresă de e-mail" xml:space="preserve"><value>Email address</value></data>
+  <data name="Adresa de e-mail pentru cont nou" xml:space="preserve"><value>Email address for new account</value></data>
+  <data name="Parola pentru cont nou" xml:space="preserve"><value>Password for new account</value></data>
+  <data name="Confirmă parola" xml:space="preserve"><value>Confirm password</value></data>
+  <data name="Confirmarea parolei pentru cont nou" xml:space="preserve"><value>Password confirmation for new account</value></data>
+  <data name="Creează contul NewsBlur" xml:space="preserve"><value>Create NewsBlur account</value></data>
+  <data name="OAuth" xml:space="preserve"><value>OAuth</value></data>
+  <data name="Autentificarea prin Google, Facebook sau alt furnizor trebuie făcută prin OAuth NewsBlur. API-ul NewsBlur cere ca aplicația să primească în prealabil un client ID și un secret de la administratorul serviciului." xml:space="preserve"><value>Sign-in with Google, Facebook, or another provider must use NewsBlur OAuth. The API requires the application to receive a client ID and secret from the service administrator first.</value></data>
+  <data name="Până la aprobarea clientului OAuth, butoanele furnizorilor nu sunt activate pentru a nu colecta sau expune date de autentificare." xml:space="preserve"><value>Until an OAuth client is approved, provider buttons remain disabled so the application does not collect or expose sign-in data.</value></data>
+  <data name="Deschide documentația OAuth NewsBlur" xml:space="preserve"><value>Open NewsBlur OAuth documentation</value></data>
+  <data name="După primirea clientului OAuth vom adăuga fluxul de browser cu redirecționare locală și butoane pentru furnizorii confirmați de NewsBlur." xml:space="preserve"><value>After receiving the OAuth client, we will add the browser flow with a local redirect and buttons for providers confirmed by NewsBlur.</value></data>
+  <data name="Deconectează NewsBlur" xml:space="preserve"><value>Sign out of NewsBlur</value></data>
+  <data name="Cont NewsBlur conectat: {0}." xml:space="preserve"><value>Connected NewsBlur account: {0}.</value></data>
+  <data name="Autentificarea NewsBlur a reușit pentru {0}." xml:space="preserve"><value>NewsBlur sign-in succeeded for {0}.</value></data>
+  <data name="Parolele nu coincid." xml:space="preserve"><value>The passwords do not match.</value></data>
+  <data name="Contul NewsBlur a fost creat și autentificat pentru {0}." xml:space="preserve"><value>The NewsBlur account was created and signed in as {0}.</value></data>
+  <data name="Deconectare NewsBlur" xml:space="preserve"><value>NewsBlur sign-out</value></data>
+  <data name="Contul NewsBlur a fost deconectat." xml:space="preserve"><value>The NewsBlur account was signed out.</value></data>
+  <data name="Se comunică cu NewsBlur. Așteaptă." xml:space="preserve"><value>Communicating with NewsBlur. Please wait.</value></data>
+  <data name="Numele de utilizator NewsBlur este obligatoriu." xml:space="preserve"><value>The NewsBlur username is required.</value></data>
+  <data name="Parola NewsBlur este obligatorie." xml:space="preserve"><value>The NewsBlur password is required.</value></data>
+  <data name="Autentificarea NewsBlur a eșuat." xml:space="preserve"><value>NewsBlur sign-in failed.</value></data>
+  <data name="NewsBlur nu a returnat sesiunea de autentificare." xml:space="preserve"><value>NewsBlur did not return a sign-in session.</value></data>
+  <data name="Adresa de e-mail este obligatorie." xml:space="preserve"><value>The email address is required.</value></data>
+  <data name="Crearea contului NewsBlur a eșuat." xml:space="preserve"><value>Creating the NewsBlur account failed.</value></data>
+  <data name="Deconectarea NewsBlur a eșuat." xml:space="preserve"><value>Signing out of NewsBlur failed.</value></data>
+  <data name="NewsBlur a refuzat autentificarea. Verifică datele introduse." xml:space="preserve"><value>NewsBlur rejected the sign-in. Check the entered details.</value></data>
+  <data name="NewsBlur este conectat pentru {0}." xml:space="preserve"><value>NewsBlur is connected for {0}.</value></data>
+  <data name="utilizatorul curent" xml:space="preserve"><value>the current user</value></data>
+  <data name="Autentificare NewsBlur" xml:space="preserve"><value>NewsBlur sign-in</value></data>
 </root>

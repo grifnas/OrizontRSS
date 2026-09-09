@@ -454,3 +454,13 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Notă de verificare: vechiul folder `final-1.5.3-win-x64` a fost respins de `verify-all.ps1` deoarece îi lipsesc hu-HU și it-IT; checkpoint-ul reconstruit este cel verificat și nu folosește acel folder vechi.
 - Rezultat: checkpoint local nepublic, pregătit pentru revenire; versiunea reală 1.5.4 se va construi numai după NewsBlur și actualizarea controlată a tuturor metadatelor.
 - Executabil de test/rollback: `bin/Release/checkpoint-pre-NewsBlur-1.5.4/OrizontSetup-1.5.3-rollback.exe`.
+
+## 2026-09-09 — Prima etapă de autentificare NewsBlur
+
+- Scop: adăugarea unei ferestre accesibile pentru autentificarea și crearea contului NewsBlur, fără a afecta fluxul RSS local.
+- Fișiere adăugate: `NewsBlurConnection.cs`, `NewsBlurAuthWindow.xaml`, `NewsBlurAuthWindow.xaml.cs`; fișiere actualizate: `AppSettings.cs`, `BackupPolicy.cs`, `MainWindow.xaml`, `MainWindow.xaml.cs`, resursele `Resources/UiStrings*.resx`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md`.
+- Funcții: autentificare cu utilizator și parolă, creare cont cu e-mail, deconectare, deschiderea site-ului NewsBlur în browser; parola nu este salvată, iar sesiunea este protejată cu DPAPI pentru contul Windows curent.
+- OAuth: panou explicativ și legătură către documentația oficială; Google, Facebook și alți furnizori nu sunt activați până la primirea unui client ID și secret aprobat de NewsBlur.
+- Verificări: build Release reușit; CoreSmoke, LocalizationSmoke, eSpeakSmoke și `verify-localization.ps1` trecute; publicare autonomă locală și `verify-distribution.ps1` trecute. Avertismentul NU1900 provine de la indisponibilitatea temporară a indexului NuGet și nu a blocat buildul.
+- Comportament protejat: fluxul RSS local, cheile AI, feedurile, articolele și backupurile existente rămân neschimbate; nu s-a creat o distribuție publică și nu s-a modificat WinGet.
+- Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.

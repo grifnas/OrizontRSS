@@ -18,6 +18,7 @@
           <Separator />
           <MenuItem Header="Importă OPML" Click="ImportOpml_Click" />
           <MenuItem Header="Exportă OPML" Click="ExportOpml_Click" />
+          <MenuItem Header="Autentificare NewsBlur" Click="NewsBlurAuth_Click" />
           <MenuItem Header="Verifică și curăță duplicatele" Click="CleanDuplicates_Click" />
           <Separator />
           <MenuItem Header="Creează copie de siguranță" Click="Backup_Click" />

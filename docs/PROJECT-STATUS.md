@@ -37,6 +37,8 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - Release-ul public `v1.5.3` este stabil, cu arhiva portabilă și `OrizontSetup.exe` încărcate; suma SHA-256 a arhivei locale corespunde manifestului WinGet și assetului public.
 - Manifestele WinGet locale trec validarea cu WinGet `1.29.290`. PR-ul oficial `microsoft/winget-pkgs#431971` este deschis cu cele patru fișiere pentru `Grifnas.OrizontRSS` 1.5.3; botul Microsoft solicită semnarea CLA, iar validările tehnice sunt încă în așteptare.
 - Feedul Bistrițeanul a fost validat prin XML-ul primit, dar prototipul Android a primit 404. Nu se mai fac încercări speculative până la o decizie nouă și o metodă de diagnostic adecvată.
+- Prima etapă NewsBlur este implementată local: fereastră accesibilă pentru autentificare cu utilizator/parolă, creare cont, deconectare și deschiderea site-ului oficial; sesiunea este protejată DPAPI, iar parola nu este salvată.
+- OAuth NewsBlur este pregătit doar ca flux explicativ. Google, Facebook și alți furnizori nu sunt activați până la primirea unui client ID și secret aprobat de NewsBlur și confirmarea furnizorilor acceptați.
 
 ## Următorii pași propuși
 

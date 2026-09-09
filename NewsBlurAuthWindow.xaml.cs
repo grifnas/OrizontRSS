@@ -1,0 +1,96 @@
+using System.Diagnostics;
+using System.Windows;
+using CititorRSS.Jaws.Localization;
+
+namespace CititorRSS.Jaws;
+
+public partial class NewsBlurAuthWindow : Window
+{
+    private readonly AppSettings _settings;
+    private readonly NewsBlurConnection _connection = new();
+
+    public NewsBlurAuthWindow(AppSettings settings)
+    {
+        InitializeComponent();
+        _settings = settings;
+        LogoutButton.IsEnabled = settings.NewsBlurConnected && !string.IsNullOrWhiteSpace(settings.EncryptedNewsBlurSession);
+        if (settings.NewsBlurConnected && !string.IsNullOrWhiteSpace(settings.NewsBlurUsername))
+            LoginStatus.Text = T("Cont NewsBlur conectat: {0}.", settings.NewsBlurUsername);
+        Loaded += (_, _) => Username.Focus();
+    }
+
+    private async void Login_Click(object sender, RoutedEventArgs e)
+    {
+        await RunAsync(LoginButton, async () =>
+        {
+            var session = await _connection.LoginAsync(Username.Text, Password.Password);
+            SaveSession(session);
+            LoginStatus.Text = T("Autentificarea NewsBlur a reușit pentru {0}.", session.Username);
+            DialogResult = true;
+        }, LoginStatus);
+    }
+
+    private async void Signup_Click(object sender, RoutedEventArgs e)
+    {
+        if (!string.Equals(SignupPassword.Password, SignupConfirmation.Password, StringComparison.Ordinal))
+        {
+            SignupStatus.Text = T("Parolele nu coincid.");
+            SignupConfirmation.Focus();
+            return;
+        }
+        await RunAsync(SignupButton, async () =>
+        {
+            await _connection.SignupAsync(SignupUsername.Text, SignupEmail.Text, SignupPassword.Password);
+            var session = await _connection.LoginAsync(SignupUsername.Text, SignupPassword.Password);
+            SaveSession(session);
+            SignupStatus.Text = T("Contul NewsBlur a fost creat și autentificat pentru {0}.", session.Username);
+            DialogResult = true;
+        }, SignupStatus);
+    }
+
+    private async void Logout_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var sessionId = SecretProtector.Unprotect(_settings.EncryptedNewsBlurSession);
+            await _connection.LogoutAsync(sessionId);
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(this, exception.Message, T("Deconectare NewsBlur"), MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        _settings.NewsBlurConnected = false;
+        _settings.NewsBlurUsername = null;
+        _settings.EncryptedNewsBlurSession = null;
+        LogoutButton.IsEnabled = false;
+        LoginStatus.Text = T("Contul NewsBlur a fost deconectat.");
+        DialogResult = true;
+    }
+
+    private void OpenNewsBlur_Click(object sender, RoutedEventArgs e) => OpenUrl(NewsBlurConnection.ApiBaseUrl + "/login");
+    private void OpenOAuthDocs_Click(object sender, RoutedEventArgs e) => OpenUrl(NewsBlurConnection.ApiBaseUrl + "/api#oauth");
+
+    private void SaveSession(NewsBlurSession session)
+    {
+        _settings.NewsBlurConnected = true;
+        _settings.NewsBlurUsername = session.Username;
+        _settings.EncryptedNewsBlurSession = SecretProtector.Protect(session.SessionId);
+    }
+
+    private async Task RunAsync(System.Windows.Controls.Button button, Func<Task> operation, System.Windows.Controls.TextBlock status)
+    {
+        button.IsEnabled = false;
+        status.Text = T("Se comunică cu NewsBlur. Așteaptă.");
+        try { await operation(); }
+        catch (Exception exception) { status.Text = exception.Message; }
+        finally { if (IsVisible) button.IsEnabled = true; }
+    }
+
+    private static void OpenUrl(string url)
+    {
+        try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
+        catch { }
+    }
+
+    private static string T(string source, params object?[] args) => UiText.Format(source, args);
+}

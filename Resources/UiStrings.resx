@@ -1233,4 +1233,43 @@ Detalii: {1}</value></data><data name="Gemini nu a răspuns în 45 de secunde. �
   <data name="Au fost adăugate {0} feeduri RSS pentru limba {1}." xml:space="preserve"><value>Au fost adăugate {0} feeduri RSS pentru limba {1}.</value></data>
   <data name="Au fost eliminate {0} feeduri demonstrative." xml:space="preserve"><value>Au fost eliminate {0} feeduri demonstrative.</value></data>
   <data name="Nu s-au putut salva feedurile demonstrative: {0}" xml:space="preserve"><value>Nu s-au putut salva feedurile demonstrative: {0}</value></data>
+  <data name="Autentificare NewsBlur" xml:space="preserve"><value>Autentificare NewsBlur</value></data>
+  <data name="Conectează Orizont RSS la contul tău NewsBlur. Parola nu este salvată; se păstrează numai sesiunea protejată pentru contul Windows curent." xml:space="preserve"><value>Conectează Orizont RSS la contul tău NewsBlur. Parola nu este salvată; se păstrează numai sesiunea protejată pentru contul Windows curent.</value></data>
+  <data name="Autentificare" xml:space="preserve"><value>Autentificare</value></data>
+  <data name="Nume utilizator NewsBlur" xml:space="preserve"><value>Nume utilizator NewsBlur</value></data>
+  <data name="Parolă" xml:space="preserve"><value>Parolă</value></data>
+  <data name="Autentifică-te" xml:space="preserve"><value>Autentifică-te</value></data>
+  <data name="Deschide NewsBlur în browser" xml:space="preserve"><value>Deschide NewsBlur în browser</value></data>
+  <data name="Creează cont" xml:space="preserve"><value>Creează cont</value></data>
+  <data name="Contul se creează pe serverul NewsBlur. Orizont RSS nu primește și nu păstrează parola după operație." xml:space="preserve"><value>Contul se creează pe serverul NewsBlur. Orizont RSS nu primește și nu păstrează parola după operație.</value></data>
+  <data name="Nume utilizator NewsBlur pentru cont nou" xml:space="preserve"><value>Nume utilizator NewsBlur pentru cont nou</value></data>
+  <data name="Adresă de e-mail" xml:space="preserve"><value>Adresă de e-mail</value></data>
+  <data name="Adresa de e-mail pentru cont nou" xml:space="preserve"><value>Adresa de e-mail pentru cont nou</value></data>
+  <data name="Parola pentru cont nou" xml:space="preserve"><value>Parola pentru cont nou</value></data>
+  <data name="Confirmă parola" xml:space="preserve"><value>Confirmă parola</value></data>
+  <data name="Confirmarea parolei pentru cont nou" xml:space="preserve"><value>Confirmarea parolei pentru cont nou</value></data>
+  <data name="Creează contul NewsBlur" xml:space="preserve"><value>Creează contul NewsBlur</value></data>
+  <data name="OAuth" xml:space="preserve"><value>OAuth</value></data>
+  <data name="Autentificarea prin Google, Facebook sau alt furnizor trebuie făcută prin OAuth NewsBlur. API-ul NewsBlur cere ca aplicația să primească în prealabil un client ID și un secret de la administratorul serviciului." xml:space="preserve"><value>Autentificarea prin Google, Facebook sau alt furnizor trebuie făcută prin OAuth NewsBlur. API-ul NewsBlur cere ca aplicația să primească în prealabil un client ID și un secret de la administratorul serviciului.</value></data>
+  <data name="Până la aprobarea clientului OAuth, butoanele furnizorilor nu sunt activate pentru a nu colecta sau expune date de autentificare." xml:space="preserve"><value>Până la aprobarea clientului OAuth, butoanele furnizorilor nu sunt activate pentru a nu colecta sau expune date de autentificare.</value></data>
+  <data name="Deschide documentația OAuth NewsBlur" xml:space="preserve"><value>Deschide documentația OAuth NewsBlur</value></data>
+  <data name="După primirea clientului OAuth vom adăuga fluxul de browser cu redirecționare locală și butoane pentru furnizorii confirmați de NewsBlur." xml:space="preserve"><value>După primirea clientului OAuth vom adăuga fluxul de browser cu redirecționare locală și butoane pentru furnizorii confirmați de NewsBlur.</value></data>
+  <data name="Deconectează NewsBlur" xml:space="preserve"><value>Deconectează NewsBlur</value></data>
+  <data name="Cont NewsBlur conectat: {0}." xml:space="preserve"><value>Cont NewsBlur conectat: {0}.</value></data>
+  <data name="Autentificarea NewsBlur a reușit pentru {0}." xml:space="preserve"><value>Autentificarea NewsBlur a reușit pentru {0}.</value></data>
+  <data name="Parolele nu coincid." xml:space="preserve"><value>Parolele nu coincid.</value></data>
+  <data name="Contul NewsBlur a fost creat și autentificat pentru {0}." xml:space="preserve"><value>Contul NewsBlur a fost creat și autentificat pentru {0}.</value></data>
+  <data name="Deconectare NewsBlur" xml:space="preserve"><value>Deconectare NewsBlur</value></data>
+  <data name="Contul NewsBlur a fost deconectat." xml:space="preserve"><value>Contul NewsBlur a fost deconectat.</value></data>
+  <data name="Se comunică cu NewsBlur. Așteaptă." xml:space="preserve"><value>Se comunică cu NewsBlur. Așteaptă.</value></data>
+  <data name="Numele de utilizator NewsBlur este obligatoriu." xml:space="preserve"><value>Numele de utilizator NewsBlur este obligatoriu.</value></data>
+  <data name="Parola NewsBlur este obligatorie." xml:space="preserve"><value>Parola NewsBlur este obligatorie.</value></data>
+  <data name="Autentificarea NewsBlur a eșuat." xml:space="preserve"><value>Autentificarea NewsBlur a eșuat.</value></data>
+  <data name="NewsBlur nu a returnat sesiunea de autentificare." xml:space="preserve"><value>NewsBlur nu a returnat sesiunea de autentificare.</value></data>
+  <data name="Adresa de e-mail este obligatorie." xml:space="preserve"><value>Adresa de e-mail este obligatorie.</value></data>
+  <data name="Crearea contului NewsBlur a eșuat." xml:space="preserve"><value>Crearea contului NewsBlur a eșuat.</value></data>
+  <data name="Deconectarea NewsBlur a eșuat." xml:space="preserve"><value>Deconectarea NewsBlur a eșuat.</value></data>
+  <data name="NewsBlur a refuzat autentificarea. Verifică datele introduse." xml:space="preserve"><value>NewsBlur a refuzat autentificarea. Verifică datele introduse.</value></data>
+  <data name="NewsBlur este conectat pentru {0}." xml:space="preserve"><value>NewsBlur este conectat pentru {0}.</value></data>
+  <data name="utilizatorul curent" xml:space="preserve"><value>utilizatorul curent</value></data>
 </root>

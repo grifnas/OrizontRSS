@@ -15,6 +15,9 @@ public sealed class AppSettings
     public string? EncryptedGeminiKey { get; set; }
     public bool DeepLEnabled { get; set; }
     public string? EncryptedDeepLKey { get; set; }
+    public bool NewsBlurConnected { get; set; }
+    public string? NewsBlurUsername { get; set; }
+    public string? EncryptedNewsBlurSession { get; set; }
     public string LastFolder { get; set; } = "Toate folderele";
     public Guid? LastFeedId { get; set; }
     public string? LastArticleId { get; set; }

@@ -62,6 +62,10 @@ Implementarea va fi etapizată și nu începe automat:
 
 Integrarea bidirecțională va fi propusă pentru implementare numai după aprobarea expresă a utilizatorului și după verificarea condițiilor actuale ale serviciului.
 
+### Stadiul primei etape
+
+Fereastra locală de autentificare este implementată și testată automat. Ea folosește endpointurile oficiale `/api/login`, `/api/signup` și `/api/logout`, păstrează numai sesiunea protejată pentru utilizatorul Windows curent și oferă o deconectare explicită. Fluxul OAuth cu Google, Facebook sau alți furnizori rămâne blocat până la primirea acreditărilor OAuth de la NewsBlur; nu se folosesc butoane care ar putea colecta parole sau tokenuri în afara fluxului aprobat.
+
 Aceste idei nu sunt angajamente de implementare și nu modifică funcționalitatea curentă.
 
 ## Capturi pentru pagina publică

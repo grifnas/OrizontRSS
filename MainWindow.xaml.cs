@@ -879,6 +879,15 @@ ContinueCommandHandling:
     {
         await OpenSettingsAsync(SettingsWindow.SettingsSection.Voice);
     }
+    private async void NewsBlurAuth_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new NewsBlurAuthWindow(_settings) { Owner = this };
+        if (dialog.ShowDialog() != true) return;
+        await _store.SaveSettingsAsync(_settings);
+        Say(_settings.NewsBlurConnected
+            ? F("NewsBlur este conectat pentru {0}.", _settings.NewsBlurUsername ?? T("utilizatorul curent"))
+            : T("Contul NewsBlur a fost deconectat."));
+    }
     private async Task OpenSettingsAsync(SettingsWindow.SettingsSection section)
     {
         var dialog = new SettingsWindow(_settings, section) { Owner = this };
