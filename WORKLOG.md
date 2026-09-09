@@ -543,3 +543,10 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: build Release reușit; CoreSmoke trecut cu 26 verificări; publicare autonomă win-x64 și `verify-distribution.ps1` trecute. Avertismentul NU1900 provine de la indisponibilitatea indexului NuGet și nu blochează buildul.
 - Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages.
 - Executabil de test: `bin/Release/test-newsblur-bidirectional-v1-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Corecție pentru baza locală a sincronizării NewsBlur
+
+- Scop: împiedicarea interpretării unei diferențe existente la prima asociere drept modificare locală nouă la rularea următoare.
+- Corecție: fiecare articol păstrează separat ultima stare locală și ultima stare remote confirmată; prima rulare nu suprascrie și nu trimite diferențele existente.
+- Verificări: build Release, CoreSmoke, publicare autonomă win-x64, `verify-distribution.ps1` și `git diff --check` trecute. Avertismentul NU1900 provine de la indisponibilitatea indexului NuGet.
+- Executabil de test: `bin/Release/test-newsblur-bidirectional-v2-win-x64/Orizont.exe`.

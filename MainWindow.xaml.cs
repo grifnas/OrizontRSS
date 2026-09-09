@@ -1040,7 +1040,8 @@ ContinueCommandHandling:
                 if (article is null) continue;
                 matched++;
                 article.NewsBlurStoryHash = story.StoryHash;
-                var hasBaseline = article.NewsBlurLastRead.HasValue && article.NewsBlurLastStarred.HasValue && article.NewsBlurLastTags is not null;
+                var hasBaseline = article.NewsBlurLastRead.HasValue && article.NewsBlurLastStarred.HasValue && article.NewsBlurLastTags is not null &&
+                    article.NewsBlurLastLocalRead.HasValue && article.NewsBlurLastLocalStarred.HasValue && article.NewsBlurLastLocalTags is not null;
                 if (!hasBaseline)
                 {
                     SetNewsBlurBaseline(article, story);
@@ -1048,14 +1049,14 @@ ContinueCommandHandling:
                     continue;
                 }
 
-                var localReadChanged = article.IsRead != article.NewsBlurLastRead!.Value;
-                var remoteReadChanged = story.IsRead != article.NewsBlurLastRead.Value;
+                var localReadChanged = article.IsRead != article.NewsBlurLastLocalRead!.Value;
+                var remoteReadChanged = story.IsRead != article.NewsBlurLastRead.GetValueOrDefault();
                 if (localReadChanged && remoteReadChanged) conflicts++;
                 else if (localReadChanged) (story.IsRead ? toRead : toUnread).Add((article, story.StoryHash));
                 else if (remoteReadChanged) { article.IsRead = story.IsRead; appliedRemote++; }
 
-                var localStarredChanged = article.IsFavorite != article.NewsBlurLastStarred!.Value;
-                var remoteStarredChanged = story.IsStarred != article.NewsBlurLastStarred.Value;
+                var localStarredChanged = article.IsFavorite != article.NewsBlurLastLocalStarred!.Value;
+                var remoteStarredChanged = story.IsStarred != article.NewsBlurLastStarred.GetValueOrDefault();
                 if (localStarredChanged && remoteStarredChanged) conflicts++;
                 else if (localStarredChanged)
                 {
@@ -1064,7 +1065,7 @@ ContinueCommandHandling:
                 }
                 else if (remoteStarredChanged) { article.IsFavorite = story.IsStarred; appliedRemote++; }
 
-                var localTagsChanged = !SameTags(article.Tags, article.NewsBlurLastTags!);
+                var localTagsChanged = !SameTags(article.Tags, article.NewsBlurLastLocalTags!);
                 var remoteTagsChanged = !SameTags(story.UserTags, article.NewsBlurLastTags!);
                 if (localTagsChanged && remoteTagsChanged) conflicts++;
                 else if (localTagsChanged && article.IsFavorite) toStar.Add((article, story.StoryHash));
@@ -1072,11 +1073,17 @@ ContinueCommandHandling:
                 else if (remoteTagsChanged) { article.Tags = story.UserTags.ToList(); appliedRemote++; }
 
                 if (!localReadChanged && !remoteReadChanged) article.NewsBlurLastRead = story.IsRead;
+                if (!localReadChanged && !remoteReadChanged) article.NewsBlurLastLocalRead = article.IsRead;
                 if (!localStarredChanged && !remoteStarredChanged) article.NewsBlurLastStarred = story.IsStarred;
+                if (!localStarredChanged && !remoteStarredChanged) article.NewsBlurLastLocalStarred = article.IsFavorite;
                 if (!localTagsChanged && !remoteTagsChanged) article.NewsBlurLastTags = story.UserTags.ToList();
+                if (!localTagsChanged && !remoteTagsChanged) article.NewsBlurLastLocalTags = (article.Tags ?? []).ToList();
                 if (remoteReadChanged && !localReadChanged) article.NewsBlurLastRead = story.IsRead;
+                if (remoteReadChanged && !localReadChanged) article.NewsBlurLastLocalRead = story.IsRead;
                 if (remoteStarredChanged && !localStarredChanged) article.NewsBlurLastStarred = story.IsStarred;
+                if (remoteStarredChanged && !localStarredChanged) article.NewsBlurLastLocalStarred = story.IsStarred;
                 if (remoteTagsChanged && !localTagsChanged) article.NewsBlurLastTags = story.UserTags.ToList();
+                if (remoteTagsChanged && !localTagsChanged) article.NewsBlurLastLocalTags = story.UserTags.ToList();
             }
         }
 
@@ -1089,19 +1096,22 @@ ContinueCommandHandling:
         try
         {
             await connection.MarkStoriesReadAsync(sessionId, toRead.Select(item => item.Hash), true);
-            foreach (var item in toRead) item.Article.NewsBlurLastRead = true;
+            foreach (var item in toRead) { item.Article.NewsBlurLastRead = true; item.Article.NewsBlurLastLocalRead = item.Article.IsRead; }
             await connection.MarkStoriesReadAsync(sessionId, toUnread.Select(item => item.Hash), false);
-            foreach (var item in toUnread) item.Article.NewsBlurLastRead = false;
+            foreach (var item in toUnread) { item.Article.NewsBlurLastRead = false; item.Article.NewsBlurLastLocalRead = item.Article.IsRead; }
             foreach (var item in toStar)
             {
                 await connection.MarkStoryStarredAsync(sessionId, item.Hash, true, item.Article.Tags);
                 item.Article.NewsBlurLastStarred = true;
                 item.Article.NewsBlurLastTags = (item.Article.Tags ?? []).ToList();
+                item.Article.NewsBlurLastLocalStarred = item.Article.IsFavorite;
+                item.Article.NewsBlurLastLocalTags = (item.Article.Tags ?? []).ToList();
             }
             foreach (var item in toUnstar)
             {
                 await connection.MarkStoryStarredAsync(sessionId, item.Hash, false);
                 item.Article.NewsBlurLastStarred = false;
+                item.Article.NewsBlurLastLocalStarred = item.Article.IsFavorite;
             }
         }
         catch (Exception exception)
@@ -1151,6 +1161,9 @@ ContinueCommandHandling:
         article.NewsBlurLastRead = story.IsRead;
         article.NewsBlurLastStarred = story.IsStarred;
         article.NewsBlurLastTags = story.UserTags.ToList();
+        article.NewsBlurLastLocalRead = article.IsRead;
+        article.NewsBlurLastLocalStarred = article.IsFavorite;
+        article.NewsBlurLastLocalTags = (article.Tags ?? []).ToList();
     }
     private async Task OpenSettingsAsync(SettingsWindow.SettingsSection section)
     {

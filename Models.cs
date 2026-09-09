@@ -46,6 +46,9 @@ public sealed class Article
     public bool? NewsBlurLastRead { get; set; }
     public bool? NewsBlurLastStarred { get; set; }
     public List<string>? NewsBlurLastTags { get; set; }
+    public bool? NewsBlurLastLocalRead { get; set; }
+    public bool? NewsBlurLastLocalStarred { get; set; }
+    public List<string>? NewsBlurLastLocalTags { get; set; }
     [JsonIgnore] public string SourceName { get; set; } = string.Empty;
     [JsonIgnore] public bool IncludeSourceInDisplay { get; set; }
     private string SourceAnnouncement => IncludeSourceInDisplay && !string.IsNullOrWhiteSpace(SourceName)

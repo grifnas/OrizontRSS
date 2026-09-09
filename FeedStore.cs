@@ -97,6 +97,7 @@ public sealed class FeedStore
                 article.AiNotes ??= [];
                 article.NewsBlurStoryHash = string.IsNullOrWhiteSpace(article.NewsBlurStoryHash) ? null : article.NewsBlurStoryHash.Trim();
                 article.NewsBlurLastTags ??= [];
+                article.NewsBlurLastLocalTags ??= [];
             }
         }
     }
