@@ -29,7 +29,7 @@ Nu se publică un singur pachet izolat. O nouă distribuție se creează numai l
 2. Verificarea manuală cu JAWS/NVDA a comenzilor pentru exemplele RSS: adăugare locală, verificare online, focalizare pe primul articol și eliminare cu confirmare.
 3. Verificarea instalatorului public descărcat direct de pe GitHub, inclusiv limbă, focus, bară de stare, pictogramă desktop, instalare și dezinstalare — disponibil public și verificat ca asset; retestarea manuală JAWS/NVDA rămâne criteriu separat.
 4. Retestarea WinGet prin instalatorul public, inclusiv instalare și dezinstalare în regim non-administrator — clientul local este disponibil, manifestul trece validarea, dar pachetul nu este încă în catalog.
-5. Trimiterea manifestului WinGet către depozitul oficial numai după închiderea verificărilor manuale și confirmarea identității publice — pas încă neefectuat.
+5. Manifestul WinGet a fost trimis prin PR-ul oficial `microsoft/winget-pkgs#431971`; în continuare se urmăresc validările Microsoft și este necesară semnarea CLA de către autor.
 6. Promovarea paginii publice și colectarea feedbackului inițial.
 7. Menținerea proiectului Windows fără schimbarea funcțiilor stabile; orice modificare nouă rămâne supusă regulilor din `AGENTS.md`.
 

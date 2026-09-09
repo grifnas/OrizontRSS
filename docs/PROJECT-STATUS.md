@@ -35,7 +35,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - Galeria publică folosește acum patru previzualizări demonstrative în limba engleză, aleasă ca limbă internațională comună; textul alternativ și descrierile rămân localizate pentru fiecare pagină.
 - Verificarea publică din 9 septembrie 2026 confirmă că pagina principală și toate cele opt pagini localizate se încarcă, afișează butonul pentru instalator și păstrează navigarea accesibilă; `robots.txt` și `sitemap.xml` sunt prezente și conțin adresele publice corecte.
 - Release-ul public `v1.5.3` este stabil, cu arhiva portabilă și `OrizontSetup.exe` încărcate; suma SHA-256 a arhivei locale corespunde manifestului WinGet și assetului public.
-- Manifestele WinGet locale trec validarea cu WinGet `1.29.290`, dar pachetul `Grifnas.OrizontRSS` nu este încă găsit în catalogul public. Trimiterea manifestului către depozitul oficial WinGet rămâne neefectuată.
+- Manifestele WinGet locale trec validarea cu WinGet `1.29.290`. PR-ul oficial `microsoft/winget-pkgs#431971` este deschis cu cele patru fișiere pentru `Grifnas.OrizontRSS` 1.5.3; botul Microsoft solicită semnarea CLA, iar validările tehnice sunt încă în așteptare.
 - Feedul Bistrițeanul a fost validat prin XML-ul primit, dar prototipul Android a primit 404. Nu se mai fac încercări speculative până la o decizie nouă și o metodă de diagnostic adecvată.
 
 ## Următorii pași propuși
