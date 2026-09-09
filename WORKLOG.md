@@ -464,3 +464,11 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: build Release reușit; CoreSmoke, LocalizationSmoke, eSpeakSmoke și `verify-localization.ps1` trecute; publicare autonomă locală și `verify-distribution.ps1` trecute. Avertismentul NU1900 provine de la indisponibilitatea temporară a indexului NuGet și nu a blocat buildul.
 - Comportament protejat: fluxul RSS local, cheile AI, feedurile, articolele și backupurile existente rămân neschimbate; nu s-a creat o distribuție publică și nu s-a modificat WinGet.
 - Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Mesaje detaliate la autentificarea NewsBlur
+
+- Scop: corectarea feedbackului când NewsBlur returnează erori de autentificare.
+- Fișier modificat: `NewsBlurConnection.cs`.
+- Corecție: răspunsurile API cu `errors` ca obiect JSON sunt acum interpretate și afișate cu numele câmpului și mesajul serverului, nu doar ca eroare generică.
+- Verificări: build Release, CoreSmoke, LocalizationSmoke, publicare autonomă și `verify-distribution.ps1` trecute; avertismentul NU1900 este numai de la indexul NuGet indisponibil.
+- Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.

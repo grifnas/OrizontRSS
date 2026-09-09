@@ -84,7 +84,14 @@ public sealed class NewsBlurConnection
         try
         {
             using var document = JsonDocument.Parse(body);
-            return document.RootElement.TryGetProperty("errors", out var errors) && errors.ValueKind == JsonValueKind.Array && errors.GetArrayLength() > 0;
+            if (!document.RootElement.TryGetProperty("errors", out var errors)) return false;
+            return errors.ValueKind switch
+            {
+                JsonValueKind.Array => errors.GetArrayLength() > 0,
+                JsonValueKind.Object => errors.EnumerateObject().Any(),
+                JsonValueKind.String => !string.IsNullOrWhiteSpace(errors.GetString()),
+                _ => false
+            };
         }
         catch (JsonException) { return false; }
     }
@@ -94,9 +101,9 @@ public sealed class NewsBlurConnection
         try
         {
             using var document = JsonDocument.Parse(body);
-            if (document.RootElement.TryGetProperty("errors", out var errors) && errors.ValueKind == JsonValueKind.Array)
+            if (document.RootElement.TryGetProperty("errors", out var errors))
             {
-                var messages = errors.EnumerateArray().Select(error => error.ValueKind == JsonValueKind.String ? error.GetString() : error.ToString()).Where(message => !string.IsNullOrWhiteSpace(message));
+                var messages = ErrorMessages(errors);
                 var text = string.Join("; ", messages);
                 if (!string.IsNullOrWhiteSpace(text)) return $"{fallback} {text}";
             }
@@ -105,6 +112,18 @@ public sealed class NewsBlurConnection
         }
         catch (JsonException) { }
         return fallback;
+    }
+
+    private static IEnumerable<string> ErrorMessages(JsonElement errors)
+    {
+        return errors.ValueKind switch
+        {
+            JsonValueKind.Array => errors.EnumerateArray().SelectMany(ErrorMessages),
+            JsonValueKind.Object => errors.EnumerateObject().SelectMany(property => ErrorMessages(property.Value).Select(message => $"{property.Name}: {message}")),
+            JsonValueKind.String when !string.IsNullOrWhiteSpace(errors.GetString()) => [errors.GetString()!],
+            JsonValueKind.Null or JsonValueKind.Undefined => [],
+            _ => [errors.ToString()]
+        };
     }
 
     private static void EnsureSuccess(HttpStatusCode status, string body, string fallback)
