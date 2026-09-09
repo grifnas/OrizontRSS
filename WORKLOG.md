@@ -444,3 +444,13 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Actualizare: prin credential helper-ul Git local au fost create și împinse cele patru fișiere în ramura `submission/orizont-rss-1.5.3`; validarea copiei din ramură a trecut. Deschiderea PR-ului prin API rămâne blocată cu HTTP 403, astfel încât PR-ul trebuie creat din interfața GitHub.
 - Rezultat final al etapei: PR-ul oficial `microsoft/winget-pkgs#431971` a fost creat și verificat prin API, cu titlul `Add Grifnas Orizont RSS 1.5.3`, 1 commit și 4 fișiere modificate. Botul Microsoft a aplicat etichetele `New-Package` și `Needs-CLA`; validările sunt încă în așteptare.
 - Actualizare: autorul a răspuns în PR cu `@microsoft-github-policy-service agree`; eticheta `Needs-CLA` a fost eliminată. PR-ul rămâne deschis, cu `New-Package`, iar statusul tehnic este încă `pending`.
+
+## 2026-09-09 — Checkpoint local înainte de NewsBlur
+
+- Scop: păstrarea unei copii locale de revenire înaintea implementării integrării NewsBlur, cu risc minim pentru publicarea existentă.
+- Fișiere și artefacte locale: `bin/Release/checkpoint-pre-NewsBlur-1.5.4/` conține portabilul reconstruit din sursa curentă, arhiva sursă Git și `OrizontSetup-1.5.3-rollback.exe`.
+- Decizie de siguranță: nu s-au modificat metadatele versiunii, Release-ul GitHub, manifestele WinGet sau URL-ul instalatorului. Instalatorul rămâne 1.5.3 deoarece bootstrapperul descarcă intenționat Release-ul public 1.5.3.
+- Verificări: publicarea autonomă win-x64 a reușit; distribuția portabilă locală trece `verify-distribution.ps1`; limbile en-US, es-ES, fr-FR, de-DE, pt-BR, hu-HU și it-IT sunt prezente; testele CoreSmoke, LocalizationSmoke și eSpeakSmoke au trecut în verificarea automată.
+- Notă de verificare: vechiul folder `final-1.5.3-win-x64` a fost respins de `verify-all.ps1` deoarece îi lipsesc hu-HU și it-IT; checkpoint-ul reconstruit este cel verificat și nu folosește acel folder vechi.
+- Rezultat: checkpoint local nepublic, pregătit pentru revenire; versiunea reală 1.5.4 se va construi numai după NewsBlur și actualizarea controlată a tuturor metadatelor.
+- Executabil de test/rollback: `bin/Release/checkpoint-pre-NewsBlur-1.5.4/OrizontSetup-1.5.3-rollback.exe`.
