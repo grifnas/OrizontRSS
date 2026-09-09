@@ -481,3 +481,11 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Corecție: răspunsurile API cu `errors` ca obiect JSON sunt acum interpretate și afișate cu numele câmpului și mesajul serverului, nu doar ca eroare generică.
 - Verificări: build Release, CoreSmoke, LocalizationSmoke, publicare autonomă și `verify-distribution.ps1` trecute; avertismentul NU1900 este numai de la indexul NuGet indisponibil.
 - Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Buton accesibil pentru verificarea sesiunii NewsBlur
+
+- Scop: butonul de verificare nu mai trebuie ascuns din navigarea JAWS atunci când nu există încă o sesiune.
+- Fișier modificat: `NewsBlurAuthWindow.xaml.cs`.
+- Comportament: butonul „Verifică sesiunea NewsBlur” este activ permanent și anunță explicit lipsa sesiunii; după autentificare, sesiunea este salvată imediat, astfel încât să nu fie pierdută dacă verificarea secundară a numărului de feeduri nu răspunde.
+- Verificări: build Release, CoreSmoke, LocalizationSmoke, publicare autonomă și `verify-distribution.ps1` trecute; avertismentul NU1900 nu a blocat buildul.
+- Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.
