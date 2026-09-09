@@ -85,6 +85,8 @@ public sealed class FeedStore
             feed.Url ??= string.Empty;
             feed.Folder = string.IsNullOrWhiteSpace(feed.Folder) ? "Neorganizate" : feed.Folder;
             feed.NewsBlurFeedId = string.IsNullOrWhiteSpace(feed.NewsBlurFeedId) ? null : feed.NewsBlurFeedId.Trim();
+            feed.NewsBlurLastName = string.IsNullOrWhiteSpace(feed.NewsBlurLastName) ? null : feed.NewsBlurLastName.Trim();
+            feed.NewsBlurLastFolder = string.IsNullOrWhiteSpace(feed.NewsBlurLastFolder) ? null : feed.NewsBlurLastFolder.Trim();
             feed.Articles ??= [];
             feed.Articles.RemoveAll(article => article is null);
             foreach (var article in feed.Articles)

@@ -28,6 +28,7 @@ public partial class MainWindow : Window
     private bool _suppressArticleSearch;
     private bool _suppressTagFilter;
     private bool _readNowView;
+    private string _newsBlurView = string.Empty;
     private List<Article>? _readerReturnItems;
     private Article? _readerReturnArticle;
     private bool _isClosingAfterSave;
@@ -266,6 +267,7 @@ public partial class MainWindow : Window
         }
         _folderAggregateView = false;
         _readNowView = false;
+        _newsBlurView = string.Empty;
         RefreshArticleList();
         _article = null;
         Reader.Clear();
@@ -374,7 +376,18 @@ public partial class MainWindow : Window
         Say("Se aduce textul complet de pe pagina articolului.");
         try
         {
-            var text = await _rss.LoadReadableContentAsync(article.Link);
+            string? text = null;
+            if (_settings.NewsBlurConnected && !string.IsNullOrWhiteSpace(_settings.EncryptedNewsBlurSession) && !string.IsNullOrWhiteSpace(article.NewsBlurStoryHash))
+            {
+                try
+                {
+                    var sessionId = SecretProtector.Unprotect(_settings.EncryptedNewsBlurSession);
+                    text = await new NewsBlurConnection().GetOriginalTextAsync(sessionId, article.NewsBlurStoryHash);
+                    if (!string.IsNullOrWhiteSpace(text)) Say("Textul complet a fost adus din NewsBlur.");
+                }
+                catch { text = null; }
+            }
+            text ??= await _rss.LoadReadableContentAsync(article.Link);
             if (text.Length < 150) throw new InvalidOperationException("Pagina nu a oferit suficient text pentru modul de citire.");
             article.FullContent = text;
             Reader.Text = text;
@@ -711,9 +724,11 @@ ContinueCommandHandling:
         {
             var folder = SelectedFolder();
             var feedCount = DisplayedFeeds(folder).Count();
+            if (_newsBlurView is "Saved" or "Unread" or "All")
+                context = F("Vizualizare NewsBlur: {0}. ", _newsBlurView == "Saved" ? T("articole salvate") : _newsBlurView == "Unread" ? T("articole necitite") : T("toate articolele"));
             context = folder == AllFoldersKey
-                ? F("Toate folderele: {0} feeduri. ", feedCount)
-                : F("Folder {0}: {1} feeduri. ", folder, feedCount);
+                ? context + F("Toate folderele: {0} feeduri. ", feedCount)
+                : context + F("Folder {0}: {1} feeduri. ", folder, feedCount);
         }
         return context + F("Panou Articole. {0} articole afișate: {1} necitite, {2} citite. {3}", displayed.Count, unread, displayed.Count - unread, ArticleFiltersStatusSentence());
     }
@@ -1036,6 +1051,9 @@ ContinueCommandHandling:
 
         var pushed = 0;
         var pushFailures = 0;
+        var pushedMetadata = 0;
+        var metadataApplied = 0;
+        var metadataConflicts = 0;
         var createdFolders = 0;
         var knownRemoteFolders = remoteByAddress.Values
             .Select(item => item.Folder)
@@ -1084,12 +1102,50 @@ ContinueCommandHandling:
             };
             _feeds.Add(imported);
         }
-        foreach (var pair in remoteMetadataChanges)
+        foreach (var pair in remoteByAddress)
         {
-            var local = localByAddress[pair.Key];
-            local.Name = string.IsNullOrWhiteSpace(pair.Value.Name) ? local.Name : pair.Value.Name;
-            local.Folder = string.IsNullOrWhiteSpace(pair.Value.Folder) ? "Neorganizate" : pair.Value.Folder;
+            if (!localByAddress.TryGetValue(pair.Key, out var local)) continue;
+            var remote = pair.Value;
             if (remoteInfoByAddress.TryGetValue(pair.Key, out var info)) local.NewsBlurFeedId = info.FeedId;
+            var hasBaseline = !string.IsNullOrWhiteSpace(local.NewsBlurLastName) && !string.IsNullOrWhiteSpace(local.NewsBlurLastFolder);
+            if (!hasBaseline)
+            {
+                local.Name = string.IsNullOrWhiteSpace(remote.Name) ? local.Name : remote.Name;
+                local.Folder = string.IsNullOrWhiteSpace(remote.Folder) ? "Neorganizate" : remote.Folder;
+                SetNewsBlurFeedBaseline(local, remote);
+                if (!string.Equals(local.Name, remote.Name, StringComparison.CurrentCulture) || !string.Equals(local.Folder, remote.Folder, StringComparison.CurrentCultureIgnoreCase)) metadataApplied++;
+                continue;
+            }
+            var localNameChanged = !string.Equals(local.Name, local.NewsBlurLastName, StringComparison.CurrentCulture);
+            var localFolderChanged = !string.Equals(local.Folder, local.NewsBlurLastFolder, StringComparison.CurrentCultureIgnoreCase);
+            var remoteNameChanged = !string.Equals(remote.Name, local.NewsBlurLastName, StringComparison.CurrentCulture);
+            var remoteFolderChanged = !string.Equals(remote.Folder, local.NewsBlurLastFolder, StringComparison.CurrentCultureIgnoreCase);
+            var localChanged = localNameChanged || localFolderChanged;
+            var remoteChanged = remoteNameChanged || remoteFolderChanged;
+            if (localChanged && remoteChanged)
+            {
+                metadataConflicts++;
+                continue;
+            }
+            if (localChanged)
+            {
+                try
+                {
+                    if (localNameChanged && !string.IsNullOrWhiteSpace(local.NewsBlurFeedId)) await connection.RenameFeedAsync(sessionId, local.NewsBlurFeedId, local.Name);
+                    if (localFolderChanged && !string.IsNullOrWhiteSpace(local.NewsBlurFeedId)) await connection.MoveFeedAsync(sessionId, local.NewsBlurFeedId, local.NewsBlurLastFolder, local.Folder);
+                    SetNewsBlurFeedBaseline(local, new NewsBlurSubscription(local.Name, local.Url, local.Folder));
+                    pushedMetadata++;
+                }
+                catch (Exception exception) { Say(F("Metadatele feedului {0} nu au putut fi trimise: {1}", local.Name, Describe(exception))); }
+            }
+            else if (remoteChanged)
+            {
+                local.Name = string.IsNullOrWhiteSpace(remote.Name) ? local.Name : remote.Name;
+                local.Folder = string.IsNullOrWhiteSpace(remote.Folder) ? "Neorganizate" : remote.Folder;
+                SetNewsBlurFeedBaseline(local, remote);
+                metadataApplied++;
+            }
+            else SetNewsBlurFeedBaseline(local, remote);
         }
         foreach (var pair in remoteByAddress)
             if (localByAddress.TryGetValue(pair.Key, out var local) && remoteInfoByAddress.TryGetValue(pair.Key, out var info))
@@ -1104,7 +1160,7 @@ ContinueCommandHandling:
         RefreshFeedList(_feed);
         RefreshTagFilter();
         RefreshArticleList(_article, selectFirstWhenNoMatch: false);
-        Say(F("Sincronizare feeduri și foldere încheiată. Trimise: {0}, eșuate: {1}, foldere create: {2}, importate local: {3}, actualizate local: {4}. Nu s-a șters nimic.", pushed, pushFailures, createdFolders, remoteOnly.Count, remoteMetadataChanges.Count));
+        Say(F("Sincronizare feeduri și foldere încheiată. Feeduri trimise: {0}, eșuate: {1}, foldere create: {2}, importate local: {3}, metadate trimise: {4}, metadate preluate: {5}, conflicte păstrate: {6}. Nu s-a șters nimic.", pushed, pushFailures, createdFolders, remoteOnly.Count, pushedMetadata, metadataApplied, metadataConflicts));
     }
 
     private async void NewsBlurStateSync_Click(object sender, RoutedEventArgs e)
@@ -1329,6 +1385,18 @@ ContinueCommandHandling:
         (left ?? []).Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()).ToHashSet(StringComparer.CurrentCultureIgnoreCase)
             .SetEquals((right ?? []).Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()));
 
+    private static void SetNewsBlurFeedBaseline(Feed feed, NewsBlurSubscription remote)
+    {
+        feed.NewsBlurLastName = remote.Name;
+        feed.NewsBlurLastFolder = remote.Folder;
+    }
+
+    private static void SetNewsBlurFeedBaseline(Feed feed, NewsBlurFeedInfo remote)
+    {
+        feed.NewsBlurLastName = remote.Name;
+        feed.NewsBlurLastFolder = remote.Folder;
+    }
+
     private bool NewsBlurSavedState(Article article) => _settings.NewsBlurSavedStoryMode switch
     {
         "ReadLater" => article.ReadLater,
@@ -1482,6 +1550,7 @@ ContinueCommandHandling:
         _suppressTagFilter = false;
         UpdateArticleFilterSummary();
         _readNowView = true;
+        _newsBlurView = string.Empty;
         ShowFolderAggregate();
         Articles.Focus();
         Say(F("Citește acum: {0} articole noi din ultimele {1} zile, favorite și articole pentru mai târziu.", Articles.Items.Count, Math.Max(1, _settings.ReadNowFavoriteDays)));
@@ -2347,6 +2416,9 @@ ContinueCommandHandling:
         }
         else if (_feed is not null) items = _feed.Articles;
         else { Articles.ItemsSource = null; return; }
+        if (_newsBlurView == "Saved") items = items.Where(article => !string.IsNullOrWhiteSpace(article.NewsBlurStoryHash) && NewsBlurSavedState(article));
+        else if (_newsBlurView == "Unread") items = items.Where(article => !string.IsNullOrWhiteSpace(article.NewsBlurStoryHash) && !article.IsRead);
+        else if (_newsBlurView == "All") items = items.Where(article => !string.IsNullOrWhiteSpace(article.NewsBlurStoryHash));
         if (filter == "Unread") items = items.Where(article => !article.IsRead);
         if (filter == "Favorites") items = items.Where(article => article.IsFavorite);
         if (filter == "ReadLater") items = items.Where(article => article.ReadLater);
@@ -2370,6 +2442,7 @@ ContinueCommandHandling:
     {
         if (_restoringSession || Articles is null || Status is null) return;
         _readNowView = false;
+        _newsBlurView = string.Empty;
         RefreshArticleList();
         Say("Filtru articole aplicat.");
     }
@@ -2377,9 +2450,71 @@ ContinueCommandHandling:
     {
         if (_restoringSession || Articles is null || Status is null) return;
         _readNowView = false;
+        _newsBlurView = string.Empty;
         RefreshArticleList();
         Say("Filtru perioadă articole aplicat.");
     }
+
+    private void PrepareNewsBlurView(string view, string announcement)
+    {
+        AttentionFilter.IsChecked = false;
+        _suppressFolderFilter = true;
+        SelectFolder(AllFoldersKey);
+        _suppressFolderFilter = false;
+        _readNowView = false;
+        _newsBlurView = view;
+        ArticleFilter.SelectedItem = ArticleFilter.Items.OfType<ComboBoxItem>().First(item => ComboKey(item) == "All");
+        ArticleTimeFilter.SelectedItem = ArticleTimeFilter.Items.OfType<ComboBoxItem>().First(item => ComboKey(item) == "Anytime");
+        RefreshTagFilter();
+        TagFilter.SelectedItem = "Toate etichetele";
+        UpdateArticleFilterSummary();
+        ShowFolderAggregate();
+        Articles.Focus();
+        Say(F("{0}: {1} articole.", announcement, Articles.Items.Count));
+    }
+
+    private void ShowNewsBlurSaved_Click(object sender, RoutedEventArgs e) => PrepareNewsBlurView("Saved", T("Articole salvate NewsBlur"));
+    private void ShowNewsBlurUnread_Click(object sender, RoutedEventArgs e) => PrepareNewsBlurView("Unread", T("Articole necitite NewsBlur"));
+    private void ShowNewsBlurAll_Click(object sender, RoutedEventArgs e) => PrepareNewsBlurView("All", T("Toate articolele NewsBlur"));
+
+    private async void MarkNewsBlurFolderRead_Click(object sender, RoutedEventArgs e)
+    {
+        if (RejectDataChangeDuringRefresh(T("marcarea folderului NewsBlur ca citit"))) return;
+        if (!_settings.NewsBlurConnected || string.IsNullOrWhiteSpace(_settings.EncryptedNewsBlurSession))
+        {
+            Say(T("NewsBlur nu este conectat. Deschide Feeduri, Servicii externe, Autentificare NewsBlur."));
+            return;
+        }
+        string sessionId;
+        try { sessionId = SecretProtector.Unprotect(_settings.EncryptedNewsBlurSession); }
+        catch { Say(T("Sesiunea NewsBlur nu poate fi citită pentru acest cont Windows. Autentifică-te din nou.")); return; }
+        var folder = SelectedFolder();
+        var targets = DisplayedFeeds(folder).Where(feed => !string.IsNullOrWhiteSpace(feed.NewsBlurFeedId)).ToList();
+        if (targets.Count == 0) { Say(T("Folderul selectat nu are feeduri NewsBlur asociate. Sincronizează mai întâi feedurile și folderele.")); return; }
+        var label = folder == AllFoldersKey ? T("toate folderele") : folder;
+        if (MessageBox.Show(this, F("Vor fi marcate ca citite toate articolele din {0} feeduri NewsBlur ale zonei {1}. Continui?", targets.Count, label), T("Confirmă marcarea ca citit"), MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+        {
+            Say(T("Operația a fost anulată. Nu s-a modificat nimic."));
+            return;
+        }
+        try
+        {
+            await new NewsBlurConnection().MarkFeedsReadAsync(sessionId, targets.Select(feed => feed.NewsBlurFeedId!));
+            foreach (var feed in targets)
+                foreach (var article in feed.Articles)
+                {
+                    article.IsRead = true;
+                    article.NewsBlurLastRead = true;
+                    article.NewsBlurLastLocalRead = true;
+                }
+            await _store.SaveAsync(_feeds);
+            _newsBlurView = string.Empty;
+            RefreshArticleList(_article, selectFirstWhenNoMatch: false);
+            Say(F("Au fost marcate ca citite articolele din {0} feeduri NewsBlur.", targets.Count));
+        }
+        catch (Exception exception) { Say(F("Feedurile NewsBlur nu au putut fi marcate ca citite: {0}", Describe(exception))); }
+    }
+
     private void ShowUnreadOverview_Click(object sender, RoutedEventArgs e)
     {
         AttentionFilter.IsChecked = false;
@@ -2387,6 +2522,7 @@ ContinueCommandHandling:
         SelectFolder(AllFoldersKey);
         _suppressFolderFilter = false;
         _readNowView = false;
+        _newsBlurView = string.Empty;
         ArticleFilter.SelectedItem = ArticleFilter.Items.OfType<ComboBoxItem>().First(item => item.Content?.ToString() == "Necitite");
         ArticleTimeFilter.SelectedItem = ArticleTimeFilter.Items.OfType<ComboBoxItem>().First(item => item.Content?.ToString() == "Oricând");
         RefreshTagFilter();
@@ -2608,6 +2744,7 @@ ContinueCommandHandling:
     private void FolderFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (_restoringSession || _suppressFolderFilter) return;
+        _newsBlurView = string.Empty;
         var folder = SelectedFolder();
         ShowFolderAggregate();
         var feedCount = DisplayedFeeds(folder).Count();

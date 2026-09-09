@@ -18,6 +18,9 @@ public sealed class Feed
     public bool IsDemo { get; set; }
     /// <summary>NewsBlur's numeric feed id, learned during an authenticated sync.</summary>
     public string? NewsBlurFeedId { get; set; }
+    /// <summary>Last NewsBlur feed name and folder acknowledged by a completed sync.</summary>
+    public string? NewsBlurLastName { get; set; }
+    public string? NewsBlurLastFolder { get; set; }
     public List<Article> Articles { get; set; } = [];
     public bool HasThreeMonthSilence => DateTimeOffset.Now - (LastArticleReceivedOn ?? LastSuccessfulUpdate ?? AddedOn) >= TimeSpan.FromDays(90);
     public bool NeedsAttention => ConsecutiveFailures >= 3 || HasThreeMonthSilence;

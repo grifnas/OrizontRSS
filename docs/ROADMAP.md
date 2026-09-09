@@ -80,10 +80,10 @@ Etapele se abordează pe rând; dacă două etape sunt suficient de independente
 
 1. **Colecțiile de articole salvate** — mapare configurabilă între `Saved Stories`/stelele NewsBlur și `Favorite`, `Mai târziu` sau ambele în Orizont RSS — implementat local la 9 septembrie 2026.
 2. **Etichete bidirecționale** — sincronizarea etichetelor articolelor și o regulă explicită pentru conflicte — implementat împreună cu etapa 1 la 9 septembrie 2026.
-3. **Feeduri și foldere complete** — redenumire și mutare în ambele direcții, cu bază locală și protecție la modificări concurente; ștergerea rămâne dezactivată implicit.
-4. **Vizualizări speciale** — liste virtuale pentru necitite, Saved Stories, River of News și articolele unui folder NewsBlur.
-5. **Text complet la cerere** — preluarea textului extins NewsBlur numai pentru articolul cerut, cu limitare și feedback accesibil.
-6. **Stări agregate** — citirea sau marcarea ca citite a unui folder ori a tuturor feedurilor și afișarea numărului de necitite.
+3. **Feeduri și foldere complete** — redenumire și mutare în ambele direcții, cu bază locală și protecție la modificări concurente; implementat local la 9 septembrie 2026, cu ștergerea dezactivată implicit.
+4. **Vizualizări speciale** — liste virtuale pentru necitite, Saved Stories și toate articolele NewsBlur; implementat local la 9 septembrie 2026. River of News rămâne o extindere ulterioară.
+5. **Text complet la cerere** — preluarea textului extins NewsBlur numai pentru articolul cerut, cu fallback RSS și feedback accesibil; implementat local la 9 septembrie 2026.
+6. **Stări agregate** — marcarea ca citite a folderului selectat sau a tuturor feedurilor NewsBlur; implementat local la 9 septembrie 2026.
 7. **Sincronizare automată** — pornire, interval configurabil, oprire sigură, reluare după erori și anunțuri JAWS/NVDA.
 
 Nu se sincronizează parole, chei API, notițe AI sau setări vocale. Acestea rămân locale. Niciuna dintre etapele de mai sus nu autorizează singură o distribuție publică; fiecare modificare necesită verificare și consemnare în `WORKLOG.md`.

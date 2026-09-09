@@ -43,6 +43,8 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - Sincronizarea bidirecțională a articolelor și stărilor este implementată local: articolele existente sunt asociate prin `story_hash`, adresă, identificator sau titlu și dată, iar articolele lipsă sunt importate din NewsBlur cu titlu, text disponibil, adresă, dată, starea citit și favorite și etichete. Prima rulare creează baza fără suprascrieri; rulările următoare pot prelua sau trimite citit/necitit, favorite și etichete. Conflictele sunt păstrate neschimbate; „Mai târziu”, notițele AI și ștergerile rămân locale.
 - Primele două etape ale direcției aprobate sunt implementate local: Saved Stories/stelele NewsBlur pot fi mapate configurabil către Favorite, „Mai târziu” sau ambele, iar etichetele sunt sincronizate împreună cu starea salvată. Alegerea se găsește în Setări aplicație → Sincronizare NewsBlur. Parolele, cheile API, notițele AI și setările vocale rămân locale.
 - Următoarele etape aprobate rămân: redenumirea și mutarea completă a feedurilor și folderelor, vizualizări speciale NewsBlur, text complet la cerere, stări agregate și apoi sincronizare automată.
+- Faza a doua este implementată local: redenumirea și mutarea feedurilor în ambele direcții folosesc o bază locală și păstrează conflictele neschimbate; există vizualizări pentru articole salvate, necitite și toate articolele NewsBlur, comandă pentru marcarea folderului selectat ca citit, iar textul complet poate fi cerut din NewsBlur înaintea fallbackului RSS.
+- Sincronizarea automată în fundal, ștergerile sincronizate și traducerile noi pentru mesajele fazei a doua rămân de finalizat înaintea unei distribuții; resursele vechi verificate au fost păstrate pentru a evita regresii.
 
 ## Următorii pași propuși
 

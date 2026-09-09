@@ -578,3 +578,14 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: build Release, CoreSmoke (26 verificări), `verify-distribution.ps1` și `git diff --check` trecute; avertismentul NU1900 provine de la indexul NuGet indisponibil și nu blochează buildul.
 - Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages; nu s-a creat o distribuție publică.
 - Executabil local de test: `bin/Release/test-newsblur-saved-tags-v1-files-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Sesiunea B: feeduri/foldere, vizualizări și stări agregate NewsBlur
+
+- Scop: continuarea fluxului aprobat cu metadate de feed, vizualizări virtuale, text complet și operații agregate.
+- Fișiere modificate: `Models.cs`, `FeedStore.cs`, `NewsBlurConnection.cs`, `MainWindow.xaml`, `MainWindow.xaml.cs`, `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md`.
+- Funcții: redenumirea și mutarea feedurilor pot fi trimise către NewsBlur când numai copia locală s-a schimbat; modificările remote sunt preluate local; modificările concurente sunt păstrate neschimbate. Au fost adăugate vizualizările Saved, Unread și All NewsBlur, comanda de marcare ca citit a folderului selectat și preluarea textului complet NewsBlur la cerere, cu fallback RSS.
+- Protecții: nu se șterge nimic; comenzile remote cer confirmare; articolele importate și stările lor sunt păstrate; sincronizarea automată în fundal nu a fost activată.
+- Localizare: fișierele resursă verificate anterior au fost restaurate după o generare automată care producea duplicate; mesajele noi folosesc temporar fallbackul sursă și vor fi traduse controlat înaintea unei distribuții.
+- Verificări: build Release, CoreSmoke (26 verificări), `verify-distribution.ps1` și `git diff --check` trecute; singurul avertisment este NU1900 pentru indexul NuGet indisponibil.
+- Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages; nu s-a creat distribuție publică.
+- Executabil local de test: `bin/Release/test-newsblur-phase2-v1-files-win-x64/Orizont.exe`.

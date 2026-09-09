@@ -158,6 +158,52 @@ public sealed class NewsBlurConnection
         await PostAccountChangeAsync(sessionId, "/reader/add_folder", values, T("Folderul nu a putut fi creat în NewsBlur."), cancellationToken);
     }
 
+    public async Task RenameFeedAsync(string sessionId, string feedId, string title, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(feedId) || string.IsNullOrWhiteSpace(title)) return;
+        await PostAccountChangeAsync(sessionId, "/reader/rename_feed",
+            [new("feed_id", feedId.Trim()), new("feed_title", title.Trim())],
+            T("Feedul nu a putut fi redenumit în NewsBlur."), cancellationToken);
+    }
+
+    public async Task MoveFeedAsync(string sessionId, string feedId, string? inFolder, string? toFolder, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(feedId)) return;
+        var values = new List<KeyValuePair<string, string>> { new("feed_id", feedId.Trim()) };
+        if (!string.IsNullOrWhiteSpace(inFolder) && !string.Equals(inFolder, "Neorganizate", StringComparison.CurrentCultureIgnoreCase)) values.Add(new("in_folder", inFolder.Trim()));
+        if (!string.IsNullOrWhiteSpace(toFolder) && !string.Equals(toFolder, "Neorganizate", StringComparison.CurrentCultureIgnoreCase)) values.Add(new("to_folder", toFolder.Trim()));
+        await PostAccountChangeAsync(sessionId, "/reader/move_feed_to_folder", values,
+            T("Feedul nu a putut fi mutat în NewsBlur."), cancellationToken);
+    }
+
+    public async Task MarkFeedsReadAsync(string sessionId, IEnumerable<string> feedIds, CancellationToken cancellationToken = default)
+    {
+        var ids = feedIds.Where(id => !string.IsNullOrWhiteSpace(id)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        if (ids.Count == 0) return;
+        var values = ids.Select(id => new KeyValuePair<string, string>("feed_id", id)).ToList();
+        await PostAccountChangeAsync(sessionId, "/reader/mark_feed_as_read", values,
+            T("Feedurile nu au putut fi marcate ca citite în NewsBlur."), cancellationToken);
+    }
+
+    public async Task<string?> GetOriginalTextAsync(string sessionId, string storyHash, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sessionId) || string.IsNullOrWhiteSpace(storyHash)) return null;
+        using var handler = CreateHandler();
+        handler.CookieContainer.Add(new Uri(ApiBaseUrl), new Cookie("newsblur_sessionid", sessionId));
+        using var client = CreateClient(handler);
+        var address = $"/rss_feeds/original_text?story_hash={Uri.EscapeDataString(storyHash)}";
+        using var response = await client.GetAsync(address, cancellationToken);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        EnsureSuccess(response.StatusCode, body, T("Textul complet NewsBlur nu a putut fi adus."));
+        try
+        {
+            using var document = JsonDocument.Parse(body);
+            var value = ReadString(document.RootElement, "story_content", "original_text", "content", "text");
+            return string.IsNullOrWhiteSpace(value) ? null : CleanStoryContent(value);
+        }
+        catch (JsonException) { return CleanStoryContent(body); }
+    }
+
     public async Task MarkStoriesReadAsync(string sessionId, IEnumerable<string> storyHashes, bool isRead, CancellationToken cancellationToken = default)
     {
         var hashes = storyHashes.Where(hash => !string.IsNullOrWhiteSpace(hash)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
