@@ -505,3 +505,12 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Corecție: clientul HTTP trimite acum un User-Agent Orizont RSS și solicită răspuns JSON; nu se schimbă parolele, cookie-urile sau datele locale.
 - Verificări: build Release, CoreSmoke, LocalizationSmoke, publicare autonomă și `verify-distribution.ps1` trecute; o rulare paralelă inițială a fost repetată separat după o coliziune temporară de fișiere de resurse.
 - Executabil de test: `bin/Release/test-newsblur-auth-v1-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Gruparea meniului principal Feeduri
+
+- Scop: reducerea aglomerării meniului `Feeduri` fără schimbarea comenzilor sau a scurtăturilor.
+- Fișiere modificate: `MainWindow.xaml`, resursele `Resources/UiStrings*.resx`.
+- Organizare: `Adaugă și descoperă`, `Feeduri demonstrative`, `Actualizare`, `Organizare`, `Import, export și copii de siguranță` și `Servicii externe`.
+- Verificări: `verify-localization.ps1 -RequireComplete`, build Release, CoreSmoke, publicare autonomă și `verify-distribution.ps1` trecute; avertismentul NU1900 nu a blocat buildul.
+- Comportament protejat: comenzile existente, scurtăturile, meniurile contextuale și fluxul local NewsBlur nu au fost schimbate.
+- Executabil de test: `bin/Release/test-newsblur-menu-v1-win-x64/Orizont.exe`.

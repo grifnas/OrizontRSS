@@ -9,29 +9,36 @@
       <TextBlock Text="Orizont RSS" Style="{StaticResource WindowTitleTextStyle}" />
       <Menu x:Name="MainMenu" IsTabStop="False" AutomationProperties.Name="Meniu principal">
         <MenuItem Header="_Feeduri">
-          <MenuItem Header="Adaugă feed" Click="Add_Click" />
-          <MenuItem Header="Găsește feeduri pe site" Click="DiscoverSite_Click" />
-          <Separator />
-          <MenuItem Header="Adaugă feed demonstrativ local" Click="AddLocalDemoFeed_Click" />
-          <MenuItem Header="Adaugă exemple RSS pentru limba interfeței" Click="AddLanguageSampleFeeds_Click" />
-          <MenuItem Header="Elimină feedurile demonstrative" Click="RemoveDemoFeeds_Click" />
-          <Separator />
-          <MenuItem Header="Importă OPML" Click="ImportOpml_Click" />
-          <MenuItem Header="Exportă OPML" Click="ExportOpml_Click" />
-          <MenuItem Header="Autentificare NewsBlur" Click="NewsBlurAuth_Click" />
-          <MenuItem Header="Verifică și curăță duplicatele" Click="CleanDuplicates_Click" />
-          <Separator />
-          <MenuItem Header="Creează copie de siguranță" Click="Backup_Click" />
-          <MenuItem Header="Restaurează copie de siguranță" Click="RestoreBackup_Click" />
-          <Separator />
-          <MenuItem Header="Actualizează feedul selectat" Click="Refresh_Click" />
-          <MenuItem Header="Actualizează toate feedurile" Click="RefreshAll_Click" />
-          <MenuItem x:Name="StopRefreshMenuItem" Header="Oprește actualizarea în curs" InputGestureText="Escape" IsEnabled="False" Click="StopRefresh_Click" />
-          <MenuItem x:Name="RetryFailedMenuItem" Header="Reîncearcă feedurile cu eroare" IsEnabled="False" Click="RetryFailed_Click" />
-          <Separator />
-          <MenuItem Header="Editează feedul selectat" Click="Edit_Click" />
-          <MenuItem Header="Șterge feedul selectat" InputGestureText="Delete" Click="Delete_Click" />
-          <MenuItem Header="Șterge folderul afișat" Click="DeleteFolder_Click" />
+          <MenuItem Header="Adaugă și descoperă">
+            <MenuItem Header="Adaugă feed" Click="Add_Click" />
+            <MenuItem Header="Găsește feeduri pe site" Click="DiscoverSite_Click" />
+          </MenuItem>
+          <MenuItem Header="Feeduri demonstrative">
+            <MenuItem Header="Adaugă feed demonstrativ local" Click="AddLocalDemoFeed_Click" />
+            <MenuItem Header="Adaugă exemple RSS pentru limba interfeței" Click="AddLanguageSampleFeeds_Click" />
+            <MenuItem Header="Elimină feedurile demonstrative" Click="RemoveDemoFeeds_Click" />
+          </MenuItem>
+          <MenuItem Header="Actualizare">
+            <MenuItem Header="Actualizează feedul selectat" Click="Refresh_Click" />
+            <MenuItem Header="Actualizează toate feedurile" Click="RefreshAll_Click" />
+            <MenuItem x:Name="StopRefreshMenuItem" Header="Oprește actualizarea în curs" InputGestureText="Escape" IsEnabled="False" Click="StopRefresh_Click" />
+            <MenuItem x:Name="RetryFailedMenuItem" Header="Reîncearcă feedurile cu eroare" IsEnabled="False" Click="RetryFailed_Click" />
+          </MenuItem>
+          <MenuItem Header="Organizare">
+            <MenuItem Header="Editează feedul selectat" Click="Edit_Click" />
+            <MenuItem Header="Șterge feedul selectat" InputGestureText="Delete" Click="Delete_Click" />
+            <MenuItem Header="Șterge folderul afișat" Click="DeleteFolder_Click" />
+            <MenuItem Header="Verifică și curăță duplicatele" Click="CleanDuplicates_Click" />
+          </MenuItem>
+          <MenuItem Header="Import, export și copii de siguranță">
+            <MenuItem Header="Importă OPML" Click="ImportOpml_Click" />
+            <MenuItem Header="Exportă OPML" Click="ExportOpml_Click" />
+            <MenuItem Header="Creează copie de siguranță" Click="Backup_Click" />
+            <MenuItem Header="Restaurează copie de siguranță" Click="RestoreBackup_Click" />
+          </MenuItem>
+          <MenuItem Header="Servicii externe">
+            <MenuItem Header="Autentificare NewsBlur" Click="NewsBlurAuth_Click" />
+          </MenuItem>
         </MenuItem>
         <MenuItem Header="_Căutare"><MenuItem Header="Citește acum" InputGestureText="Ctrl+4" Click="ReadNow_Click" /><MenuItem Header="Toate articolele necitite" InputGestureText="Ctrl+Shift+U" Click="ShowUnreadOverview_Click" /><MenuItem Header="Bibliotecă de notițe AI" Click="AiNoteLibrary_Click" /><Separator /><MenuItem Header="Caută în articole" InputGestureText="Ctrl+F / F3" Click="FocusArticleSearch_Click" /><MenuItem Header="Filtre articole" InputGestureText="Ctrl+Shift+F" Click="ArticleFilters_Click" /><Separator /><MenuItem Header="Caută feeduri după subiect" Click="DiscoverTopic_Click" /><MenuItem Header="Găsește feeduri pe site" Click="DiscoverSite_Click" /></MenuItem>
         <MenuItem Header="_Voce"><MenuItem Header="Citește selecția sau articolul" InputGestureText="F9 / Ctrl+Alt+V" Click="SpeakContent_Click" /><MenuItem Header="Citește de la cursor" Click="SpeakFromCursor_Click" /><MenuItem Header="Pauză sau continuă" InputGestureText="F9 / Ctrl+Alt+P" Click="PauseResumeSpeech_Click" /><MenuItem Header="Oprește citirea" InputGestureText="Escape / Ctrl+Alt+S" Click="StopSpeech_Click" /><Separator /><MenuItem Header="Setări voce" InputGestureText="Shift+F9" Click="VoiceSettings_Click" /></MenuItem>

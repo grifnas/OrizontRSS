@@ -2521,4 +2521,10 @@ Details: {1}</value>
   <data name="Sesiunea NewsBlur este validă." xml:space="preserve"><value>The NewsBlur session is valid.</value></data>
   <data name="Sesiunea NewsBlur este validă. NewsBlur a raportat {0} feeduri." xml:space="preserve"><value>The NewsBlur session is valid. NewsBlur reported {0} feeds.</value></data>
   <data name="Contul NewsBlur a fost creat și autentificat pentru {0}. Feeduri disponibile: {1}." xml:space="preserve"><value>The NewsBlur account was created and signed in as {0}. Available feeds: {1}.</value></data>
+  <data name="Adaugă și descoperă" xml:space="preserve"><value>Add and discover</value></data>
+  <data name="Feeduri demonstrative" xml:space="preserve"><value>Demonstration feeds</value></data>
+  <data name="Actualizare" xml:space="preserve"><value>Refresh</value></data>
+  <data name="Organizare" xml:space="preserve"><value>Organization</value></data>
+  <data name="Import, export și copii de siguranță" xml:space="preserve"><value>Import, export and backups</value></data>
+  <data name="Servicii externe" xml:space="preserve"><value>External services</value></data>
 </root>
