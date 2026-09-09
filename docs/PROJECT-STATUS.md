@@ -39,8 +39,8 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - Feedul Bistrițeanul a fost validat prin XML-ul primit, dar prototipul Android a primit 404. Nu se mai fac încercări speculative până la o decizie nouă și o metodă de diagnostic adecvată.
 - Prima etapă NewsBlur este implementată local: fereastră accesibilă pentru autentificare cu utilizator/parolă, creare cont, deconectare și deschiderea site-ului oficial; sesiunea este protejată DPAPI, iar parola nu este salvată.
 - OAuth NewsBlur este pregătit doar ca flux explicativ. Google, Facebook și alți furnizori nu sunt activați până la primirea unui client ID și secret aprobat de NewsBlur și confirmarea furnizorilor acceptați.
-- Sincronizarea inițială NewsBlur este implementată local: abonamentele și folderele sunt preluate prin exportul OPML oficial, apoi utilizatorul primește un rezumat și confirmă adăugarea sau actualizarea. Feedurile locale care lipsesc din NewsBlur sunt păstrate, iar articolele și stările locale nu sunt modificate.
-- Prima etapă de sincronizare bidirecțională a stărilor este implementată local: articolele existente sunt asociate prin `story_hash`, adresă, identificator sau titlu și dată; la prima rulare se creează baza locală, iar rulările următoare pot prelua sau trimite citit/necitit, favorite și etichete. Conflictele sunt păstrate neschimbate, iar „Mai târziu” și ștergerile nu sunt sincronizate.
+- Sincronizarea controlată NewsBlur pentru feeduri și foldere este implementată local în `Feeduri → Servicii externe → Sincronizează feedurile și folderele NewsBlur`: feedurile locale noi pot fi trimise după confirmare, feedurile remote noi sunt importate, iar numele și folderele remote au prioritate la conflicte. Nu se șterge nimic automat; folderele goale nu au echivalent în modelul local.
+- Sincronizarea bidirecțională a articolelor și stărilor este implementată local: articolele existente sunt asociate prin `story_hash`, adresă, identificator sau titlu și dată, iar articolele lipsă sunt importate din NewsBlur cu titlu, text disponibil, adresă, dată, starea citit și favorite și etichete. Prima rulare creează baza fără suprascrieri; rulările următoare pot prelua sau trimite citit/necitit, favorite și etichete. Conflictele sunt păstrate neschimbate; „Mai târziu”, notițele AI și ștergerile rămân locale.
 
 ## Următorii pași propuși
 
@@ -56,8 +56,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - extinderea testelor automate pentru colecții mari de articole;
 - eventuală reluare a proiectului Android, numai după stabilirea unei strategii tehnice verificabile;
 - funcții noi pentru partajare, traducere și conversații AI, dacă sunt solicitate.
-- integrare viitoare, opțională, cu NewsBlur pentru stări de articole; importul inițial al abonamentelor și folderelor este deja implementat local, iar sincronizarea stărilor rămâne neimplementată.
-- importul articolelor care nu există local, sincronizarea automată în fundal și sincronizarea ștergerilor/feedurilor; acestea rămân neimplementate.
+- sincronizarea automată în fundal, sincronizarea ștergerilor și rezolvarea avansată a conflictelor de redenumire/mutare; acestea rămân neimplementate.
 
 Ideile din această secțiune nu autorizează implementarea și nu schimbă funcționalitatea existentă.
 

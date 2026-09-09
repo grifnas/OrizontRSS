@@ -39,6 +39,7 @@
           <MenuItem Header="Servicii externe">
             <MenuItem Header="Autentificare NewsBlur" Click="NewsBlurAuth_Click" />
             <MenuItem Header="Sincronizează abonamentele NewsBlur" Click="NewsBlurSync_Click" />
+            <MenuItem Header="Sincronizează feedurile și folderele NewsBlur" Click="NewsBlurFeedSync_Click" />
             <MenuItem Header="Sincronizează articolele și stările NewsBlur" Click="NewsBlurStateSync_Click" />
           </MenuItem>
         </MenuItem>

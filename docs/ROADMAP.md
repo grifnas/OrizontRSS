@@ -56,7 +56,7 @@ Implementarea va fi etapizată și nu începe automat:
 1. definirea unui adaptor separat pentru servicii externe, fără modificarea fluxului RSS local;
 2. conectare NewsBlur cu autentificare explicită și posibilitate de deconectare/revocare;
 3. import inițial al abonamentelor și folderelor — implementat local la 9 septembrie 2026;
-4. sincronizare controlată a articolelor și a stărilor citit/necitit, favorit și etichete — prima etapă este implementată local la 9 septembrie 2026;
+4. sincronizare controlată a feedurilor, folderelor, articolelor și a stărilor citit/necitit, favorit și etichete — etapa de import bidirecțional controlat este implementată local la 9 septembrie 2026;
 5. limitarea cererilor, reluare prudentă după erori și mesaje accesibile pentru JAWS/NVDA;
 6. păstrarea OPML ca metodă de rezervă, astfel încât aplicația să rămână complet funcțională fără NewsBlur.
 
@@ -72,7 +72,7 @@ Aceste idei nu sunt angajamente de implementare și nu modifică funcționalitat
 
 Importul controlat al abonamentelor și folderelor NewsBlur este implementat local. Comanda este disponibilă în `Feeduri → Servicii externe → Sincronizează abonamentele NewsBlur`. Aplicația citește exportul OPML oficial, elimină duplicatele după adresă și afișează înainte de confirmare numărul de abonamente noi, feeduri actualizate și foldere noi. Operația nu șterge feeduri locale și nu modifică articolele, favoritele, lista „Mai târziu” sau etichetele.
 
-Prima etapă a sincronizării stărilor este implementată local. Următoarea etapă rămâne importul articolelor care nu există local și, ulterior, sincronizarea automată în fundal; acestea vor necesita verificare manuală și aprobare explicită separată.
+Sincronizarea controlată a feedurilor, folderelor și articolelor lipsă este implementată local. Următoarele etape rămân sincronizarea automată în fundal, ștergerile sincronizate și rezolvarea avansată a conflictelor; acestea vor necesita verificare manuală și aprobare explicită separată.
 
 ## Capturi pentru pagina publică
 

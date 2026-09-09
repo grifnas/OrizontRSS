@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using CititorRSS.Jaws.Localization;
 
@@ -9,9 +10,9 @@ namespace CititorRSS.Jaws;
 public sealed record NewsBlurSession(string Username, string SessionId);
 public sealed record NewsBlurSubscription(string Name, string Url, string Folder);
 public sealed record NewsBlurFeedInfo(string FeedId, string Name, string Url, string Folder);
-public sealed record NewsBlurStory(string StoryHash, string Title, string Link, DateTimeOffset? Published, bool IsRead, bool IsStarred, IReadOnlyList<string> UserTags);
+public sealed record NewsBlurStory(string StoryHash, string Title, string Link, DateTimeOffset? Published, bool IsRead, bool IsStarred, IReadOnlyList<string> UserTags, string Content);
 
-/// <summary>Cookie-based NewsBlur authentication and read-only subscription import.</summary>
+/// <summary>Cookie-based NewsBlur authentication and controlled subscription/story synchronization.</summary>
 public sealed class NewsBlurConnection
 {
     public const string ApiBaseUrl = "https://www.newsblur.com";
@@ -120,7 +121,7 @@ public sealed class NewsBlurConnection
         for (var page = 1; page <= Math.Max(1, maxPages); page++)
         {
             if (page > 1) await Task.Delay(80, cancellationToken);
-            var address = $"/reader/feed/{Uri.EscapeDataString(feedId)}?page={page}&order=newest&read_filter=all&include_hidden=false&include_story_content=false";
+            var address = $"/reader/feed/{Uri.EscapeDataString(feedId)}?page={page}&order=newest&read_filter=all&include_hidden=false&include_story_content=true";
             using var response = await client.GetAsync(address, cancellationToken);
             var body = await response.Content.ReadAsStringAsync(cancellationToken);
             EnsureSuccess(response.StatusCode, body, T("Sincronizarea articolelor NewsBlur a eșuat."));
@@ -136,6 +137,25 @@ public sealed class NewsBlurConnection
             .GroupBy(story => story.StoryHash, StringComparer.OrdinalIgnoreCase)
             .Select(group => group.First())
             .ToList();
+    }
+
+    /// <summary>Adds a feed to the authenticated NewsBlur account.</summary>
+    public async Task AddFeedAsync(string sessionId, string url, string? folder = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException(T("Adresa feedului este obligatorie."), nameof(url));
+        var values = new List<KeyValuePair<string, string>> { new("url", url.Trim()) };
+        if (!string.IsNullOrWhiteSpace(folder) && !string.Equals(folder.Trim(), "Neorganizate", StringComparison.CurrentCultureIgnoreCase))
+            values.Add(new("folder", folder.Trim()));
+        await PostAccountChangeAsync(sessionId, "/reader/add_url", values, T("Feedul nu a putut fi adăugat în NewsBlur."), cancellationToken);
+    }
+
+    /// <summary>Creates a NewsBlur folder. Empty folders have no local equivalent, but nested folders are supported.</summary>
+    public async Task AddFolderAsync(string sessionId, string folder, string? parentFolder = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(folder)) return;
+        var values = new List<KeyValuePair<string, string>> { new("folder", folder.Trim()) };
+        if (!string.IsNullOrWhiteSpace(parentFolder)) values.Add(new("parent_folder", parentFolder.Trim()));
+        await PostAccountChangeAsync(sessionId, "/reader/add_folder", values, T("Folderul nu a putut fi creat în NewsBlur."), cancellationToken);
     }
 
     public async Task MarkStoriesReadAsync(string sessionId, IEnumerable<string> storyHashes, bool isRead, CancellationToken cancellationToken = default)
@@ -245,8 +265,29 @@ public sealed class NewsBlurConnection
             var read = ReadBoolean(story, "read_status", "read");
             var starred = ReadBoolean(story, "starred", "is_starred");
             var tags = ReadTags(story);
-            return new NewsBlurStory(hash, title, link, published, read, starred, tags);
+            var content = CleanStoryContent(ReadString(story, "story_content", "content") ?? string.Empty);
+            return new NewsBlurStory(hash, title, link, published, read, starred, tags, content);
         }).ToList();
+    }
+
+    private async Task PostAccountChangeAsync(string sessionId, string endpoint, IEnumerable<KeyValuePair<string, string>> values, string fallback, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(sessionId)) throw new InvalidOperationException(T("Sesiunea NewsBlur nu este disponibilă."));
+        using var handler = CreateHandler();
+        handler.CookieContainer.Add(new Uri(ApiBaseUrl), new Cookie("newsblur_sessionid", sessionId));
+        using var client = CreateClient(handler);
+        using var response = await client.PostAsync(endpoint, new FormUrlEncodedContent(values), cancellationToken);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        EnsureSuccess(response.StatusCode, body, fallback);
+        if (HasErrors(body)) throw new InvalidOperationException(DescribeFailure(body, fallback));
+        await Task.Delay(80, cancellationToken);
+    }
+
+    private static string CleanStoryContent(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return string.Empty;
+        var withoutTags = Regex.Replace(value, "<[^>]+>", " ", RegexOptions.Singleline);
+        return WebUtility.HtmlDecode(Regex.Replace(withoutTags, "\\s+", " ")).Trim();
     }
 
     private static string? ReadString(JsonElement value, params string[] names)

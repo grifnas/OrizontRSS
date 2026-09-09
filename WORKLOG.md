@@ -550,3 +550,13 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Corecție: fiecare articol păstrează separat ultima stare locală și ultima stare remote confirmată; prima rulare nu suprascrie și nu trimite diferențele existente.
 - Verificări: build Release, CoreSmoke, publicare autonomă win-x64, `verify-distribution.ps1` și `git diff --check` trecute. Avertismentul NU1900 provine de la indisponibilitatea indexului NuGet.
 - Executabil de test: `bin/Release/test-newsblur-bidirectional-v2-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Sincronizare controlată a feedurilor, folderelor și articolelor lipsă NewsBlur
+
+- Scop: apropierea sincronizării NewsBlur de obiectivul utilizatorului de a accesa aceeași colecție de pe mai multe calculatoare.
+- Fișiere modificate: `NewsBlurConnection.cs`, `MainWindow.xaml`, `MainWindow.xaml.cs`, `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md`.
+- Funcții: comandă separată pentru feeduri și foldere; feedurile locale care nu există remote sunt trimise după confirmare, feedurile remote noi sunt importate local, iar numele/folderul remote au prioritate la diferențe. Nu se fac ștergeri automate.
+- Articole: endpointul NewsBlur este solicitat cu textul disponibil, iar sincronizarea stărilor importă articolele lipsă cu titlu, conținut, adresă, dată, citit/necitit, favorite și etichete. Articolele importate sunt păstrate la actualizările RSS ulterioare.
+- Limitări documentate: „Mai târziu”, notițele AI, folderele goale, ștergerile sincronizate, sincronizarea automată în fundal și rezolvarea avansată a conflictelor rămân locale sau neimplementate.
+- Sursă tehnică: documentația oficială NewsBlur — <https://www.newsblur.com/api>.
+- Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages; distribuția publică nu este creată.
