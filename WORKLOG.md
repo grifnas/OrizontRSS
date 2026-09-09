@@ -434,3 +434,9 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Documentație: `PROJECT-STATUS.md` separă realizatul, lucrul activ, pașii propuși și ideile neautorizate; `AGENTS.md` precizează separarea proiectului Windows de prototipuri și interzice ajustările speculative fără test reproductibil.
 - Verificări: citirea documentației existente și verificarea conținutului documentelor noi; nu s-a modificat codul și nu s-a creat distribuție.
 - Executabil de test: nu s-a construit în această intervenție.
+## 2026-09-09 — Pregătirea trimiterii manifestului WinGet
+
+- Scop: trimiterea setului multi-fișier `Grifnas.OrizontRSS` 1.5.3 către depozitul comunitar oficial `microsoft/winget-pkgs`.
+- Verificări: nu există un PR deschis pentru identificatorul și versiunea pachetului; validarea locală WinGet a trecut; URL-ul și hash-ul arhivei publice corespund.
+- Rezultat intermediar: WinGet `1.29.290` nu include comanda `submit`, iar integrarea GitHub are doar drept de citire pentru depozitul Microsoft. Browserul de lucru cere autentificare manuală înainte de fork și încărcarea celor patru fișiere YAML.
+- Următorul pas: după autentificarea manuală în GitHub, creare fork, încărcare exclusivă în `manifests/g/Grifnas/OrizontRSS/1.5.3/` și deschidere PR către `master`.
