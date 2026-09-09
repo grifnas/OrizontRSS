@@ -25,11 +25,11 @@ Nu se publică un singur pachet izolat. O nouă distribuție se creează numai l
 
 ## Următoarea etapă
 
-1. Publicarea modificărilor SEO pe ramura GitHub Pages și verificarea adreselor publice `sitemap.xml` și `robots.txt`.
+1. Publicarea modificărilor SEO pe ramura GitHub Pages și verificarea adreselor publice `sitemap.xml` și `robots.txt` — verificată la 9 septembrie 2026.
 2. Verificarea manuală cu JAWS/NVDA a comenzilor pentru exemplele RSS: adăugare locală, verificare online, focalizare pe primul articol și eliminare cu confirmare.
-3. Verificarea instalatorului public descărcat direct de pe GitHub, inclusiv limbă, focus, bară de stare, pictogramă desktop, instalare și dezinstalare.
-4. Retestarea WinGet prin instalatorul public, inclusiv instalare și dezinstalare în regim non-administrator.
-5. Trimiterea manifestului WinGet numai după aceste verificări și confirmarea identității publice.
+3. Verificarea instalatorului public descărcat direct de pe GitHub, inclusiv limbă, focus, bară de stare, pictogramă desktop, instalare și dezinstalare — disponibil public și verificat ca asset; retestarea manuală JAWS/NVDA rămâne criteriu separat.
+4. Retestarea WinGet prin instalatorul public, inclusiv instalare și dezinstalare în regim non-administrator — clientul local este disponibil, manifestul trece validarea, dar pachetul nu este încă în catalog.
+5. Trimiterea manifestului WinGet către depozitul oficial numai după închiderea verificărilor manuale și confirmarea identității publice — pas încă neefectuat.
 6. Promovarea paginii publice și colectarea feedbackului inițial.
 7. Menținerea proiectului Windows fără schimbarea funcțiilor stabile; orice modificare nouă rămâne supusă regulilor din `AGENTS.md`.
 
@@ -46,6 +46,21 @@ Nu se publică un singur pachet izolat. O nouă distribuție se creează numai l
 - furnizor de traducere alternativ, fără cheie, doar dacă poate fi folosit legal și stabil;
 - îmbunătățiri suplimentare pentru partajare și conversațiile AI;
 - extinderea testelor automate pentru scenarii cu colecții mari de articole.
+
+## Integrare viitoare cu NewsBlur
+
+NewsBlur este adăugat oficial pe roadmap ca furnizor opțional de sincronizare. API-ul oficial este REST, nu cere o cheie API separată, dar necesită autentificarea și consimțământul utilizatorului. Documentația de referință este disponibilă la <https://www.newsblur.com/api>.
+
+Implementarea va fi etapizată și nu începe automat:
+
+1. definirea unui adaptor separat pentru servicii externe, fără modificarea fluxului RSS local;
+2. conectare NewsBlur cu autentificare explicită și posibilitate de deconectare/revocare;
+3. import inițial al abonamentelor și folderelor;
+4. sincronizare controlată a articolelor și a stărilor citit/necitit, favorit și etichete;
+5. limitarea cererilor, reluare prudentă după erori și mesaje accesibile pentru JAWS/NVDA;
+6. păstrarea OPML ca metodă de rezervă, astfel încât aplicația să rămână complet funcțională fără NewsBlur.
+
+Integrarea bidirecțională va fi propusă pentru implementare numai după aprobarea expresă a utilizatorului și după verificarea condițiilor actuale ale serviciului.
 
 Aceste idei nu sunt angajamente de implementare și nu modifică funcționalitatea curentă.
 

@@ -1,6 +1,6 @@
 # Orizont RSS — stare și plan de proiect
 
-Ultima actualizare: 7 septembrie 2026
+Ultima actualizare: 9 septembrie 2026
 
 ## Scopul documentului
 
@@ -33,6 +33,9 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - Exemplele de lucru pentru feeduri sunt implementate: un feed demonstrativ local, disponibil fără internet, și un feed RSS online oficial pentru fiecare dintre cele opt limbi. Feedurile online sunt adăugate numai după verificarea faptului că răspund cu articole; feedul local este exclus din actualizările de rețea.
 - Pagina GitHub Pages are acum metadate SEO localizate pentru toate cele opt limbi: descriere, canonical, `hreflang`, Open Graph, Twitter Card și JSON-LD pentru site și aplicație. Au fost adăugate `sitemap.xml` și `robots.txt`, cu URL-uri publice absolute.
 - Galeria publică folosește acum patru previzualizări demonstrative în limba engleză, aleasă ca limbă internațională comună; textul alternativ și descrierile rămân localizate pentru fiecare pagină.
+- Verificarea publică din 9 septembrie 2026 confirmă că pagina principală și toate cele opt pagini localizate se încarcă, afișează butonul pentru instalator și păstrează navigarea accesibilă; `robots.txt` și `sitemap.xml` sunt prezente și conțin adresele publice corecte.
+- Release-ul public `v1.5.3` este stabil, cu arhiva portabilă și `OrizontSetup.exe` încărcate; suma SHA-256 a arhivei locale corespunde manifestului WinGet și assetului public.
+- Manifestele WinGet locale trec validarea cu WinGet `1.29.290`, dar pachetul `Grifnas.OrizontRSS` nu este încă găsit în catalogul public. Trimiterea manifestului către depozitul oficial WinGet rămâne neefectuată.
 - Feedul Bistrițeanul a fost validat prin XML-ul primit, dar prototipul Android a primit 404. Nu se mai fac încercări speculative până la o decizie nouă și o metodă de diagnostic adecvată.
 
 ## Următorii pași propuși
@@ -49,6 +52,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - extinderea testelor automate pentru colecții mari de articole;
 - eventuală reluare a proiectului Android, numai după stabilirea unei strategii tehnice verificabile;
 - funcții noi pentru partajare, traducere și conversații AI, dacă sunt solicitate.
+- integrare viitoare, opțională, cu NewsBlur pentru abonamente, foldere și stări de articole; etapa rămâne neimplementată până la aprobarea expresă.
 
 Ideile din această secțiune nu autorizează implementarea și nu schimbă funcționalitatea existentă.
 

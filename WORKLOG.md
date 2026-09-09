@@ -2,6 +2,27 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-09 — Verificare elemente publice și WinGet
+
+- Scop: verificarea paginii GitHub Pages, a Release-ului 1.5.3 și a pregătirii manifestului WinGet, fără creare de distribuție nouă.
+- Fișiere actualizate: `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md`, `WORKLOG.md`.
+- Pagina publică: pagina principală și toate cele opt pagini localizate s-au încărcat; fiecare afișează versiunea 1.5.3, linkul recomandat către `OrizontSetup.exe`, alternativa portabilă și structura accesibilă cu titluri, regiuni și texte alternative. `robots.txt` și `sitemap.xml` sunt prezente și coerente.
+- Release: API-ul GitHub confirmă Release stabil `v1.5.3`, cu arhiva Windows și `OrizontSetup.exe` încărcate. Hash-ul local al arhivei (`7536070499680C2C2859C69C181BB8B6689EFA510E51C8E61E01DBD4EB48F6EB`) corespunde manifestului și assetului public.
+- WinGet: clientul local este `1.29.290`; `winget validate --manifest packaging\\winget\\Grifnas.OrizontRSS\\1.5.3` a reușit. Căutarea exactă și căutarea după nume nu găsesc încă pachetul, deci manifestul nu este publicat în catalog și nu s-a creat un PR automat.
+- Comportament protejat: aplicația, instalatorul existent, release-ul 1.5.3 și datele utilizatorului nu au fost modificate.
+- Verificare manuală: instalarea/dezinstalarea au fost deja testate de utilizator; retestarea țintită JAWS/NVDA pentru instalator și verificarea instalării WinGet non-administrator rămân pași manuali.
+- Distribuție: nu s-a creat și nu s-a publicat o versiune nouă.
+- Executabil de test: nu s-a reconstruit; versiunea locală existentă rămâne `bin/Release/net8.0-windows/Orizont.exe`.
+
+## 2026-09-09 — NewsBlur adăugat pe roadmap
+
+- Scop: consemnarea unei integrări viitoare cu NewsBlur, fără schimbarea aplicației funcționale.
+- Fișiere actualizate: `docs/ROADMAP.md`, `docs/PROJECT-STATUS.md`, `WORKLOG.md`.
+- Plan consemnat: adaptor separat, autentificare și consimțământ explicit, import abonamente/foldere, sincronizare controlată a stărilor și păstrarea OPML ca rezervă.
+- Sursă tehnică: documentația API oficială NewsBlur — <https://www.newsblur.com/api>.
+- Verificări: `git diff --check` și inspecția documentelor; nu s-a modificat codul și nu s-a creat distribuție nouă.
+- Executabil de test: nu s-a reconstruit; pentru verificarea versiunii locale existente se poate folosi `bin/Release/net8.0-windows/Orizont.exe`.
+
 ## 2026-09-07 — Exemple RSS pentru testare în fiecare limbă
 
 - Scop: oferirea unui exemplu de lucru imediat pentru fiecare limbă a interfeței, la cererea utilizatorului.
