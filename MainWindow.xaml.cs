@@ -1619,7 +1619,7 @@ ContinueCommandHandling:
             T("Oprește actualizarea"), MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
         if (answer != MessageBoxResult.Yes) return;
         _refreshCancellation.Cancel();
-        StopRefreshMenuItem.IsEnabled = false;
+        StopRefreshMenuItem.IsEnabled = true;
         Say(F("S-a cerut oprirea actualizării. Procesate {0} din {1}; se întrerupe conexiunea curentă.", _refreshProcessed, _refreshTotal));
     }
 
@@ -1628,7 +1628,7 @@ ContinueCommandHandling:
         var failed = _lastFailedFeeds.Where(_feeds.Contains).Distinct().ToList();
         if (failed.Count == 0)
         {
-            RetryFailedMenuItem.IsEnabled = false;
+            RetryFailedMenuItem.IsEnabled = true;
             Say("Nu există feeduri cu eroare de reîncercat din ultima actualizare.");
             return;
         }
@@ -1666,7 +1666,7 @@ ContinueCommandHandling:
         _refreshProcessed = 0;
         _refreshTotal = feedsToUpdate.Count;
         StopRefreshMenuItem.IsEnabled = true;
-        RetryFailedMenuItem.IsEnabled = false;
+        RetryFailedMenuItem.IsEnabled = true;
         var articlePosition = Articles.Items.Count > 0 ? CaptureArticlePosition() : null;
         var timer = Stopwatch.StartNew();
         try
@@ -1747,7 +1747,7 @@ ContinueCommandHandling:
             }
             if (_refreshCancellation.IsCancellationRequested && _refreshProcessed < _refreshTotal) cancelled = true;
             _lastFailedFeeds = failedFeeds;
-            RetryFailedMenuItem.IsEnabled = failedFeeds.Count > 0;
+            RetryFailedMenuItem.IsEnabled = true;
             await _store.SaveAsync(_feeds);
             RefreshFeedList(selected);
             RefreshTagFilter();
@@ -1803,7 +1803,7 @@ ContinueCommandHandling:
         {
             timer.Stop();
             _isRefreshing = false;
-            StopRefreshMenuItem.IsEnabled = false;
+            StopRefreshMenuItem.IsEnabled = true;
             _refreshCancellation?.Dispose();
             _refreshCancellation = null;
             _refreshCompletion?.TrySetResult(true);

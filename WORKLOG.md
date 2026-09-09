@@ -514,3 +514,11 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: `verify-localization.ps1 -RequireComplete`, build Release, CoreSmoke, publicare autonomă și `verify-distribution.ps1` trecute; avertismentul NU1900 nu a blocat buildul.
 - Comportament protejat: comenzile existente, scurtăturile, meniurile contextuale și fluxul local NewsBlur nu au fost schimbate.
 - Executabil de test: `bin/Release/test-newsblur-menu-v1-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Comenzi de actualizare permanent navigabile
+
+- Scop: comenzile „Oprește actualizarea în curs” și „Reîncearcă feedurile cu eroare” erau dezactivate în starea obișnuită și puteau fi omise de JAWS.
+- Fișiere modificate: `MainWindow.xaml`, `MainWindow.xaml.cs`.
+- Corecție: cele două comenzi rămân permanent disponibile în submeniul `Actualizare`; când nu există o acțiune aplicabilă, handlerul anunță situația fără să modifice datele.
+- Verificări: build Release, CoreSmoke, `verify-localization.ps1 -RequireComplete`, publicare autonomă și `verify-distribution.ps1` trecute; avertismentul NU1900 nu a blocat buildul.
+- Executabil de test: `bin/Release/test-newsblur-menu-v2-win-x64/Orizont.exe`.

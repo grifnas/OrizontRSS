@@ -21,8 +21,8 @@
           <MenuItem Header="Actualizare">
             <MenuItem Header="Actualizează feedul selectat" Click="Refresh_Click" />
             <MenuItem Header="Actualizează toate feedurile" Click="RefreshAll_Click" />
-            <MenuItem x:Name="StopRefreshMenuItem" Header="Oprește actualizarea în curs" InputGestureText="Escape" IsEnabled="False" Click="StopRefresh_Click" />
-            <MenuItem x:Name="RetryFailedMenuItem" Header="Reîncearcă feedurile cu eroare" IsEnabled="False" Click="RetryFailed_Click" />
+            <MenuItem x:Name="StopRefreshMenuItem" Header="Oprește actualizarea în curs" InputGestureText="Escape" Click="StopRefresh_Click" />
+            <MenuItem x:Name="RetryFailedMenuItem" Header="Reîncearcă feedurile cu eroare" Click="RetryFailed_Click" />
           </MenuItem>
           <MenuItem Header="Organizare">
             <MenuItem Header="Editează feedul selectat" Click="Edit_Click" />
