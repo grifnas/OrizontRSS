@@ -438,5 +438,5 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 
 - Scop: trimiterea setului multi-fișier `Grifnas.OrizontRSS` 1.5.3 către depozitul comunitar oficial `microsoft/winget-pkgs`.
 - Verificări: nu există un PR deschis pentru identificatorul și versiunea pachetului; validarea locală WinGet a trecut; URL-ul și hash-ul arhivei publice corespund.
-- Rezultat intermediar: WinGet `1.29.290` nu include comanda `submit`, iar integrarea GitHub are doar drept de citire pentru depozitul Microsoft. Browserul de lucru cere autentificare manuală înainte de fork și încărcarea celor patru fișiere YAML.
+- Rezultat intermediar: WinGet `1.29.290` nu include comanda `submit`; deși fork-ul `grifnas/winget-pkgs` există și are drepturi de administrator pentru utilizator, integrarea GitHub a refuzat operațiile de scriere cu HTTP 403. Browserul de lucru cere autentificare manuală înainte de fork și încărcarea celor patru fișiere YAML.
 - Următorul pas: după autentificarea manuală în GitHub, creare fork, încărcare exclusivă în `manifests/g/Grifnas/OrizontRSS/1.5.3/` și deschidere PR către `master`.
