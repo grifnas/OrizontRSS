@@ -84,6 +84,7 @@ public sealed class FeedStore
             feed.Name ??= string.Empty;
             feed.Url ??= string.Empty;
             feed.Folder = string.IsNullOrWhiteSpace(feed.Folder) ? "Neorganizate" : feed.Folder;
+            feed.NewsBlurFeedId = string.IsNullOrWhiteSpace(feed.NewsBlurFeedId) ? null : feed.NewsBlurFeedId.Trim();
             feed.Articles ??= [];
             feed.Articles.RemoveAll(article => article is null);
             foreach (var article in feed.Articles)
@@ -94,6 +95,8 @@ public sealed class FeedStore
                 article.Link ??= string.Empty;
                 article.Tags ??= [];
                 article.AiNotes ??= [];
+                article.NewsBlurStoryHash = string.IsNullOrWhiteSpace(article.NewsBlurStoryHash) ? null : article.NewsBlurStoryHash.Trim();
+                article.NewsBlurLastTags ??= [];
             }
         }
     }

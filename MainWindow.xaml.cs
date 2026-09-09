@@ -969,6 +969,189 @@ ContinueCommandHandling:
         RefreshArticleList(_article, selectFirstWhenNoMatch: false);
         Say(F("Sincronizare NewsBlur încheiată. Au fost adăugate {0} feeduri și actualizate {1}; feedurile locale au fost păstrate.", additions.Count, updates.Count));
     }
+
+    private async void NewsBlurStateSync_Click(object sender, RoutedEventArgs e)
+    {
+        if (RejectDataChangeDuringRefresh(T("sincronizarea stărilor NewsBlur"))) return;
+        if (!_settings.NewsBlurConnected || string.IsNullOrWhiteSpace(_settings.EncryptedNewsBlurSession))
+        {
+            Say(T("NewsBlur nu este conectat. Deschide Feeduri, Servicii externe, Autentificare NewsBlur."));
+            return;
+        }
+
+        string sessionId;
+        try { sessionId = SecretProtector.Unprotect(_settings.EncryptedNewsBlurSession); }
+        catch
+        {
+            Say(T("Sesiunea NewsBlur nu poate fi citită pentru acest cont Windows. Autentifică-te din nou."));
+            return;
+        }
+
+        Say(T("Se sincronizează articolele și stările NewsBlur. Prima rulare stabilește baza fără să suprascrie stări."));
+        var connection = new NewsBlurConnection();
+        IReadOnlyList<NewsBlurFeedInfo> remoteFeeds;
+        try { remoteFeeds = await connection.GetFeedIndexAsync(sessionId); }
+        catch (Exception exception)
+        {
+            Say(F("Sincronizarea NewsBlur a eșuat: {0}", Describe(exception)));
+            return;
+        }
+
+        var remoteByUrl = remoteFeeds
+            .Where(feed => !string.IsNullOrWhiteSpace(feed.Url))
+            .GroupBy(feed => SyncAddressKey(feed.Url), StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
+        var toRead = new List<(Article Article, string Hash)>();
+        var toUnread = new List<(Article Article, string Hash)>();
+        var toStar = new List<(Article Article, string Hash)>();
+        var toUnstar = new List<(Article Article, string Hash)>();
+        var baselineCreated = 0;
+        var matched = 0;
+        var appliedRemote = 0;
+        var conflicts = 0;
+        var skippedTags = 0;
+
+        foreach (var feed in _feeds.Where(current => !DemoFeedCatalog.IsLocal(current)))
+        {
+            if (!remoteByUrl.TryGetValue(SyncAddressKey(feed.Url), out var remoteFeed)) continue;
+            feed.NewsBlurFeedId = remoteFeed.FeedId;
+            var localArticles = feed.Articles ?? [];
+            var byHash = localArticles.Where(article => !string.IsNullOrWhiteSpace(article.NewsBlurStoryHash))
+                .GroupBy(article => article.NewsBlurStoryHash!, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
+            var byLink = localArticles.Where(article => !string.IsNullOrWhiteSpace(article.Link))
+                .GroupBy(article => SyncAddressKey(article.Link), StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
+            var byId = localArticles.Where(article => !string.IsNullOrWhiteSpace(article.Id))
+                .GroupBy(article => article.Id, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
+            DateTimeOffset? oldest = localArticles.Count == 0 ? null : localArticles.Min(article => article.Published);
+            IReadOnlyList<NewsBlurStory> stories;
+            try { stories = await connection.GetStoriesAsync(sessionId, remoteFeed.FeedId, oldest, cancellationToken: default); }
+            catch (Exception exception)
+            {
+                Say(F("Sincronizarea feedului NewsBlur {0} a eșuat: {1}", feed.Name, Describe(exception)));
+                continue;
+            }
+
+            foreach (var story in stories)
+            {
+                var article = FindLocalArticle(story, byHash, byLink, byId, localArticles);
+                if (article is null) continue;
+                matched++;
+                article.NewsBlurStoryHash = story.StoryHash;
+                var hasBaseline = article.NewsBlurLastRead.HasValue && article.NewsBlurLastStarred.HasValue && article.NewsBlurLastTags is not null;
+                if (!hasBaseline)
+                {
+                    SetNewsBlurBaseline(article, story);
+                    baselineCreated++;
+                    continue;
+                }
+
+                var localReadChanged = article.IsRead != article.NewsBlurLastRead!.Value;
+                var remoteReadChanged = story.IsRead != article.NewsBlurLastRead.Value;
+                if (localReadChanged && remoteReadChanged) conflicts++;
+                else if (localReadChanged) (story.IsRead ? toRead : toUnread).Add((article, story.StoryHash));
+                else if (remoteReadChanged) { article.IsRead = story.IsRead; appliedRemote++; }
+
+                var localStarredChanged = article.IsFavorite != article.NewsBlurLastStarred!.Value;
+                var remoteStarredChanged = story.IsStarred != article.NewsBlurLastStarred.Value;
+                if (localStarredChanged && remoteStarredChanged) conflicts++;
+                else if (localStarredChanged)
+                {
+                    if (article.IsFavorite) toStar.Add((article, story.StoryHash));
+                    else toUnstar.Add((article, story.StoryHash));
+                }
+                else if (remoteStarredChanged) { article.IsFavorite = story.IsStarred; appliedRemote++; }
+
+                var localTagsChanged = !SameTags(article.Tags, article.NewsBlurLastTags!);
+                var remoteTagsChanged = !SameTags(story.UserTags, article.NewsBlurLastTags!);
+                if (localTagsChanged && remoteTagsChanged) conflicts++;
+                else if (localTagsChanged && article.IsFavorite) toStar.Add((article, story.StoryHash));
+                else if (localTagsChanged) skippedTags++;
+                else if (remoteTagsChanged) { article.Tags = story.UserTags.ToList(); appliedRemote++; }
+
+                if (!localReadChanged && !remoteReadChanged) article.NewsBlurLastRead = story.IsRead;
+                if (!localStarredChanged && !remoteStarredChanged) article.NewsBlurLastStarred = story.IsStarred;
+                if (!localTagsChanged && !remoteTagsChanged) article.NewsBlurLastTags = story.UserTags.ToList();
+                if (remoteReadChanged && !localReadChanged) article.NewsBlurLastRead = story.IsRead;
+                if (remoteStarredChanged && !localStarredChanged) article.NewsBlurLastStarred = story.IsStarred;
+                if (remoteTagsChanged && !localTagsChanged) article.NewsBlurLastTags = story.UserTags.ToList();
+            }
+        }
+
+        if (matched == 0)
+        {
+            Say(T("Nu au fost găsite articole locale care să poată fi asociate cu NewsBlur. Actualizează feedurile locale și încearcă din nou."));
+            return;
+        }
+
+        try
+        {
+            await connection.MarkStoriesReadAsync(sessionId, toRead.Select(item => item.Hash), true);
+            foreach (var item in toRead) item.Article.NewsBlurLastRead = true;
+            await connection.MarkStoriesReadAsync(sessionId, toUnread.Select(item => item.Hash), false);
+            foreach (var item in toUnread) item.Article.NewsBlurLastRead = false;
+            foreach (var item in toStar)
+            {
+                await connection.MarkStoryStarredAsync(sessionId, item.Hash, true, item.Article.Tags);
+                item.Article.NewsBlurLastStarred = true;
+                item.Article.NewsBlurLastTags = (item.Article.Tags ?? []).ToList();
+            }
+            foreach (var item in toUnstar)
+            {
+                await connection.MarkStoryStarredAsync(sessionId, item.Hash, false);
+                item.Article.NewsBlurLastStarred = false;
+            }
+        }
+        catch (Exception exception)
+        {
+            Say(F("Sincronizarea stărilor NewsBlur a eșuat: {0}", Describe(exception)));
+            return;
+        }
+
+        try
+        {
+            await _store.SaveAsync(_feeds);
+        }
+        catch (Exception exception)
+        {
+            Say(F("Feedurile nu au putut fi salvate: {0}", Describe(exception)));
+            return;
+        }
+        RefreshFeedList(_feed);
+        RefreshTagFilter();
+        RefreshArticleList(_article, selectFirstWhenNoMatch: false);
+        Say(F("Sincronizare bidirecțională încheiată. {0} articole asociate, {1} baze locale create, {2} stări preluate, {3} stări trimise, {4} conflicte păstrate neschimbate și {5} etichete amânate până la salvarea articolului.", matched, baselineCreated, appliedRemote, toRead.Count + toUnread.Count + toStar.Count + toUnstar.Count, conflicts, skippedTags));
+    }
+
+    private static string SyncAddressKey(string value)
+    {
+        if (Uri.TryCreate(value?.Trim(), UriKind.Absolute, out var uri))
+            return uri.GetLeftPart(UriPartial.Path).TrimEnd('/').ToLowerInvariant();
+        return (value ?? string.Empty).Trim().TrimEnd('/').ToLowerInvariant();
+    }
+
+    private static Article? FindLocalArticle(NewsBlurStory story, IReadOnlyDictionary<string, Article> byHash, IReadOnlyDictionary<string, Article> byLink, IReadOnlyDictionary<string, Article> byId, IReadOnlyList<Article> articles)
+    {
+        if (byHash.TryGetValue(story.StoryHash, out var byStoryHash)) return byStoryHash;
+        if (!string.IsNullOrWhiteSpace(story.Link) && byLink.TryGetValue(SyncAddressKey(story.Link), out var byStoryLink)) return byStoryLink;
+        if (!string.IsNullOrWhiteSpace(story.Link) && byId.TryGetValue(story.Link, out var byStoryId)) return byStoryId;
+        if (string.IsNullOrWhiteSpace(story.Title)) return null;
+        return articles.FirstOrDefault(article => string.Equals(article.Title.Trim(), story.Title.Trim(), StringComparison.CurrentCultureIgnoreCase) &&
+            (!story.Published.HasValue || Math.Abs((article.Published - story.Published.Value).TotalDays) <= 2));
+    }
+
+    private static bool SameTags(IEnumerable<string>? left, IEnumerable<string>? right) =>
+        (left ?? []).Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()).ToHashSet(StringComparer.CurrentCultureIgnoreCase)
+            .SetEquals((right ?? []).Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()));
+
+    private static void SetNewsBlurBaseline(Article article, NewsBlurStory story)
+    {
+        article.NewsBlurLastRead = story.IsRead;
+        article.NewsBlurLastStarred = story.IsStarred;
+        article.NewsBlurLastTags = story.UserTags.ToList();
+    }
     private async Task OpenSettingsAsync(SettingsWindow.SettingsSection section)
     {
         var dialog = new SettingsWindow(_settings, section) { Owner = this };

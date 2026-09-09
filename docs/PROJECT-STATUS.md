@@ -40,6 +40,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - Prima etapă NewsBlur este implementată local: fereastră accesibilă pentru autentificare cu utilizator/parolă, creare cont, deconectare și deschiderea site-ului oficial; sesiunea este protejată DPAPI, iar parola nu este salvată.
 - OAuth NewsBlur este pregătit doar ca flux explicativ. Google, Facebook și alți furnizori nu sunt activați până la primirea unui client ID și secret aprobat de NewsBlur și confirmarea furnizorilor acceptați.
 - Sincronizarea inițială NewsBlur este implementată local: abonamentele și folderele sunt preluate prin exportul OPML oficial, apoi utilizatorul primește un rezumat și confirmă adăugarea sau actualizarea. Feedurile locale care lipsesc din NewsBlur sunt păstrate, iar articolele și stările locale nu sunt modificate.
+- Prima etapă de sincronizare bidirecțională a stărilor este implementată local: articolele existente sunt asociate prin `story_hash`, adresă, identificator sau titlu și dată; la prima rulare se creează baza locală, iar rulările următoare pot prelua sau trimite citit/necitit, favorite și etichete. Conflictele sunt păstrate neschimbate, iar „Mai târziu” și ștergerile nu sunt sincronizate.
 
 ## Următorii pași propuși
 
@@ -56,7 +57,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - eventuală reluare a proiectului Android, numai după stabilirea unei strategii tehnice verificabile;
 - funcții noi pentru partajare, traducere și conversații AI, dacă sunt solicitate.
 - integrare viitoare, opțională, cu NewsBlur pentru stări de articole; importul inițial al abonamentelor și folderelor este deja implementat local, iar sincronizarea stărilor rămâne neimplementată.
-- sincronizare bidirecțională NewsBlur pentru articole, stări citit/necitit, favorite și etichete; etapa rămâne neimplementată.
+- importul articolelor care nu există local, sincronizarea automată în fundal și sincronizarea ștergerilor/feedurilor; acestea rămân neimplementate.
 
 Ideile din această secțiune nu autorizează implementarea și nu schimbă funcționalitatea existentă.
 

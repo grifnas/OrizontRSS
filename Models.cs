@@ -16,6 +16,8 @@ public sealed class Feed
     public DateTimeOffset? LastSuccessfulUpdate { get; set; }
     public DateTimeOffset? LastArticleReceivedOn { get; set; }
     public bool IsDemo { get; set; }
+    /// <summary>NewsBlur's numeric feed id, learned during an authenticated sync.</summary>
+    public string? NewsBlurFeedId { get; set; }
     public List<Article> Articles { get; set; } = [];
     public bool HasThreeMonthSilence => DateTimeOffset.Now - (LastArticleReceivedOn ?? LastSuccessfulUpdate ?? AddedOn) >= TimeSpan.FromDays(90);
     public bool NeedsAttention => ConsecutiveFailures >= 3 || HasThreeMonthSilence;
@@ -38,6 +40,12 @@ public sealed class Article
     public bool ReadLater { get; set; }
     public List<string> Tags { get; set; } = [];
     public List<AiNote> AiNotes { get; set; } = [];
+    /// <summary>Stable NewsBlur story hash used for bidirectional state sync.</summary>
+    public string? NewsBlurStoryHash { get; set; }
+    /// <summary>Last remote state acknowledged by a completed sync.</summary>
+    public bool? NewsBlurLastRead { get; set; }
+    public bool? NewsBlurLastStarred { get; set; }
+    public List<string>? NewsBlurLastTags { get; set; }
     [JsonIgnore] public string SourceName { get; set; } = string.Empty;
     [JsonIgnore] public bool IncludeSourceInDisplay { get; set; }
     private string SourceAnnouncement => IncludeSourceInDisplay && !string.IsNullOrWhiteSpace(SourceName)

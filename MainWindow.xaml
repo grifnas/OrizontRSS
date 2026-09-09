@@ -39,6 +39,7 @@
           <MenuItem Header="Servicii externe">
             <MenuItem Header="Autentificare NewsBlur" Click="NewsBlurAuth_Click" />
             <MenuItem Header="Sincronizează abonamentele NewsBlur" Click="NewsBlurSync_Click" />
+            <MenuItem Header="Sincronizează articolele și stările NewsBlur" Click="NewsBlurStateSync_Click" />
           </MenuItem>
         </MenuItem>
         <MenuItem Header="_Căutare"><MenuItem Header="Citește acum" InputGestureText="Ctrl+4" Click="ReadNow_Click" /><MenuItem Header="Toate articolele necitite" InputGestureText="Ctrl+Shift+U" Click="ShowUnreadOverview_Click" /><MenuItem Header="Bibliotecă de notițe AI" Click="AiNoteLibrary_Click" /><Separator /><MenuItem Header="Caută în articole" InputGestureText="Ctrl+F / F3" Click="FocusArticleSearch_Click" /><MenuItem Header="Filtre articole" InputGestureText="Ctrl+Shift+F" Click="ArticleFilters_Click" /><Separator /><MenuItem Header="Caută feeduri după subiect" Click="DiscoverTopic_Click" /><MenuItem Header="Găsește feeduri pe site" Click="DiscoverSite_Click" /></MenuItem>

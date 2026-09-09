@@ -8,6 +8,8 @@ namespace CititorRSS.Jaws;
 
 public sealed record NewsBlurSession(string Username, string SessionId);
 public sealed record NewsBlurSubscription(string Name, string Url, string Folder);
+public sealed record NewsBlurFeedInfo(string FeedId, string Name, string Url, string Folder);
+public sealed record NewsBlurStory(string StoryHash, string Title, string Link, DateTimeOffset? Published, bool IsRead, bool IsStarred, IReadOnlyList<string> UserTags);
 
 /// <summary>Cookie-based NewsBlur authentication and read-only subscription import.</summary>
 public sealed class NewsBlurConnection
@@ -75,6 +77,101 @@ public sealed class NewsBlurConnection
         catch (JsonException) { return null; }
     }
 
+    public async Task<IReadOnlyList<NewsBlurFeedInfo>> GetFeedIndexAsync(string sessionId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sessionId)) throw new InvalidOperationException(T("Sesiunea NewsBlur nu este disponibilă."));
+        using var handler = CreateHandler();
+        handler.CookieContainer.Add(new Uri(ApiBaseUrl), new Cookie("newsblur_sessionid", sessionId));
+        using var client = CreateClient(handler);
+        using var response = await client.GetAsync("/reader/feeds?flat=true", cancellationToken);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        EnsureSuccess(response.StatusCode, body, T("Sesiunea NewsBlur nu mai este valabilă."));
+        try
+        {
+            using var document = JsonDocument.Parse(body);
+            if (!document.RootElement.TryGetProperty("feeds", out var feeds) || feeds.ValueKind != JsonValueKind.Object) return [];
+            var folders = ReadFolderMap(document.RootElement);
+            return feeds.EnumerateObject()
+                .Select(property =>
+                {
+                    var value = property.Value;
+                    var url = ReadString(value, "feed_address", "feed_url", "feed_link");
+                    var name = ReadString(value, "feed_title", "title") ?? url ?? property.Name;
+                    var folder = ReadString(value, "folder") ?? (folders.TryGetValue(property.Name, out var mapped) ? mapped : "Neorganizate");
+                    return new NewsBlurFeedInfo(property.Name, name, url ?? string.Empty, folder);
+                })
+                .Where(feed => Uri.TryCreate(feed.Url, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https")
+                .ToList();
+        }
+        catch (JsonException exception)
+        {
+            throw new InvalidOperationException(T("NewsBlur nu a returnat un răspuns valid pentru feeduri."), exception);
+        }
+    }
+
+    public async Task<IReadOnlyList<NewsBlurStory>> GetStoriesAsync(string sessionId, string feedId, DateTimeOffset? oldestLocalArticle = null, int maxPages = 40, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sessionId)) throw new InvalidOperationException(T("Sesiunea NewsBlur nu este disponibilă."));
+        if (string.IsNullOrWhiteSpace(feedId)) return [];
+        using var handler = CreateHandler();
+        handler.CookieContainer.Add(new Uri(ApiBaseUrl), new Cookie("newsblur_sessionid", sessionId));
+        using var client = CreateClient(handler);
+        var stories = new List<NewsBlurStory>();
+        for (var page = 1; page <= Math.Max(1, maxPages); page++)
+        {
+            if (page > 1) await Task.Delay(80, cancellationToken);
+            var address = $"/reader/feed/{Uri.EscapeDataString(feedId)}?page={page}&order=newest&read_filter=all&include_hidden=false&include_story_content=false";
+            using var response = await client.GetAsync(address, cancellationToken);
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
+            EnsureSuccess(response.StatusCode, body, T("Sincronizarea articolelor NewsBlur a eșuat."));
+            IReadOnlyList<NewsBlurStory> pageStories;
+            try { pageStories = ParseStories(body); }
+            catch (JsonException exception) { throw new InvalidOperationException(T("NewsBlur nu a returnat articole într-un format valid."), exception); }
+            if (pageStories.Count == 0) break;
+            stories.AddRange(pageStories);
+            if (oldestLocalArticle.HasValue && pageStories.Min(story => story.Published ?? DateTimeOffset.MaxValue) < oldestLocalArticle.Value) break;
+        }
+        return stories
+            .Where(story => !string.IsNullOrWhiteSpace(story.StoryHash))
+            .GroupBy(story => story.StoryHash, StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.First())
+            .ToList();
+    }
+
+    public async Task MarkStoriesReadAsync(string sessionId, IEnumerable<string> storyHashes, bool isRead, CancellationToken cancellationToken = default)
+    {
+        var hashes = storyHashes.Where(hash => !string.IsNullOrWhiteSpace(hash)).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        if (hashes.Count == 0) return;
+        var endpoint = isRead ? "/reader/mark_story_hashes_as_read" : "/reader/mark_story_hash_as_unread";
+        await PostStoryHashesAsync(sessionId, endpoint, hashes, [], cancellationToken);
+    }
+
+    public async Task MarkStoryStarredAsync(string sessionId, string storyHash, bool isStarred, IEnumerable<string>? userTags = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(storyHash)) return;
+        var endpoint = isStarred ? "/reader/mark_story_hash_as_starred" : "/reader/mark_story_hash_as_unstarred";
+        var tags = isStarred ? (userTags ?? []).ToList() : [];
+        await PostStoryHashesAsync(sessionId, endpoint, [storyHash], tags, cancellationToken);
+    }
+
+    private async Task PostStoryHashesAsync(string sessionId, string endpoint, IReadOnlyList<string> hashes, IReadOnlyList<string> userTags, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(sessionId)) throw new InvalidOperationException(T("Sesiunea NewsBlur nu este disponibilă."));
+        using var handler = CreateHandler();
+        handler.CookieContainer.Add(new Uri(ApiBaseUrl), new Cookie("newsblur_sessionid", sessionId));
+        using var client = CreateClient(handler);
+        foreach (var batch in hashes.Chunk(50))
+        {
+            var values = batch.Select(hash => new KeyValuePair<string, string>("story_hash", hash)).ToList();
+            if (endpoint.EndsWith("starred", StringComparison.Ordinal) && userTags.Count > 0)
+                values.AddRange(userTags.Select(tag => new KeyValuePair<string, string>("user_tags[]", tag)));
+            using var response = await client.PostAsync(endpoint, new FormUrlEncodedContent(values), cancellationToken);
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
+            EnsureSuccess(response.StatusCode, body, T("Sincronizarea stărilor NewsBlur a eșuat."));
+            if (batch.Length < hashes.Count) await Task.Delay(80, cancellationToken);
+        }
+    }
+
     public async Task<IReadOnlyList<NewsBlurSubscription>> GetSubscriptionsAsync(string sessionId, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(sessionId)) throw new InvalidOperationException(T("Sesiunea NewsBlur nu este disponibilă."));
@@ -119,6 +216,80 @@ public sealed class NewsBlurConnection
             : string.IsNullOrWhiteSpace(parentFolder) ? folderName : $"{parentFolder} / {folderName}";
         foreach (var child in outline.Elements().Where(element => element.Name.LocalName == "outline"))
             CollectSubscriptions(child, folder, subscriptions);
+    }
+
+    private static Dictionary<string, string> ReadFolderMap(JsonElement root)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (!root.TryGetProperty("folders", out var folders) || folders.ValueKind != JsonValueKind.Object) return result;
+        foreach (var folder in folders.EnumerateObject())
+        {
+            if (folder.Value.ValueKind == JsonValueKind.Array)
+                foreach (var feedId in folder.Value.EnumerateArray())
+                    if (feedId.ValueKind == JsonValueKind.Number || feedId.ValueKind == JsonValueKind.String)
+                        result[feedId.ToString()] = folder.Name;
+        }
+        return result;
+    }
+
+    private static IReadOnlyList<NewsBlurStory> ParseStories(string body)
+    {
+        using var document = JsonDocument.Parse(body);
+        if (!document.RootElement.TryGetProperty("stories", out var stories) || stories.ValueKind != JsonValueKind.Array) return [];
+        return stories.EnumerateArray().Select(story =>
+        {
+            var hash = ReadString(story, "story_hash") ?? string.Empty;
+            var title = ReadString(story, "story_title", "title") ?? string.Empty;
+            var link = ReadString(story, "story_permalink", "story_link", "story_guid", "guid") ?? string.Empty;
+            var published = ReadDate(story, "story_timestamp", "story_date", "published");
+            var read = ReadBoolean(story, "read_status", "read");
+            var starred = ReadBoolean(story, "starred", "is_starred");
+            var tags = ReadTags(story);
+            return new NewsBlurStory(hash, title, link, published, read, starred, tags);
+        }).ToList();
+    }
+
+    private static string? ReadString(JsonElement value, params string[] names)
+    {
+        foreach (var name in names)
+            if (value.TryGetProperty(name, out var property) && property.ValueKind == JsonValueKind.String && !string.IsNullOrWhiteSpace(property.GetString()))
+                return property.GetString()!.Trim();
+        return null;
+    }
+
+    private static bool ReadBoolean(JsonElement value, params string[] names)
+    {
+        foreach (var name in names)
+        {
+            if (!value.TryGetProperty(name, out var property)) continue;
+            if (property.ValueKind == JsonValueKind.True) return true;
+            if (property.ValueKind == JsonValueKind.False) return false;
+            if (property.ValueKind == JsonValueKind.Number && property.TryGetInt32(out var number)) return number != 0;
+            if (property.ValueKind == JsonValueKind.String && int.TryParse(property.GetString(), out number)) return number != 0;
+        }
+        return false;
+    }
+
+    private static DateTimeOffset? ReadDate(JsonElement value, params string[] names)
+    {
+        foreach (var name in names)
+        {
+            if (!value.TryGetProperty(name, out var property)) continue;
+            if (property.ValueKind == JsonValueKind.Number && property.TryGetDouble(out var seconds))
+                return DateTimeOffset.UnixEpoch.AddSeconds(seconds).ToLocalTime();
+            if (property.ValueKind == JsonValueKind.String && DateTimeOffset.TryParse(property.GetString(), out var parsed)) return parsed;
+        }
+        return null;
+    }
+
+    private static IReadOnlyList<string> ReadTags(JsonElement value)
+    {
+        if (!value.TryGetProperty("user_tags", out var tags)) return [];
+        if (tags.ValueKind == JsonValueKind.Array)
+            return tags.EnumerateArray().Where(tag => tag.ValueKind == JsonValueKind.String).Select(tag => tag.GetString()!.Trim()).Where(tag => tag.Length > 0).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        if (tags.ValueKind == JsonValueKind.Object)
+            return tags.EnumerateObject().Select(property => property.Name.Trim()).Where(tag => tag.Length > 0).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        return [];
     }
 
     private static HttpClientHandler CreateHandler() => new()

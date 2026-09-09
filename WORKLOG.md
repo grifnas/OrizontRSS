@@ -532,3 +532,14 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: build Release reușit; CoreSmoke trecut cu 26 verificări; verificarea localizării cu `-RequireComplete` trece pentru en-US, es-ES, fr-FR, de-DE, pt-BR, hu-HU și it-IT. Avertismentul NU1900 provine de la indisponibilitatea indexului NuGet și nu blochează buildul.
 - Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages.
 - Executabil de test: `bin/Release/test-newsblur-sync-v1-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Prima etapă de sincronizare bidirecțională NewsBlur
+
+- Scop: sincronizarea controlată a stărilor articolelor existente între Orizont RSS și NewsBlur.
+- Fișiere modificate: `Models.cs`, `FeedStore.cs`, `NewsBlurConnection.cs`, `MainWindow.xaml`, `MainWindow.xaml.cs`, resursele `Resources/UiStrings*.resx`, `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md`.
+- Funcții: se rețin identificatorul feedului NewsBlur, `story_hash` și ultima stare confirmată; articolele sunt asociate prin hash, adresă, identificator sau titlu și dată. Rularea inițială creează baza fără suprascrieri, iar rulările următoare pot prelua sau trimite citit/necitit, favorite și etichete.
+- Protecții: conflictele nu sunt suprascrise automat; `Mai târziu`, ștergerile, importul de articole noi și sincronizarea automată în fundal rămân în afara etapei. Cererile sunt grupate și distanțate pentru a respecta recomandările API NewsBlur.
+- Localizare: toate cele șapte fișiere de cultură au acum 923 chei, fără chei lipsă sau în plus.
+- Verificări: build Release reușit; CoreSmoke trecut cu 26 verificări; publicare autonomă win-x64 și `verify-distribution.ps1` trecute. Avertismentul NU1900 provine de la indisponibilitatea indexului NuGet și nu blochează buildul.
+- Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages.
+- Executabil de test: `bin/Release/test-newsblur-bidirectional-v1-win-x64/Orizont.exe`.
