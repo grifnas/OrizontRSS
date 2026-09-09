@@ -18,6 +18,8 @@ public static class BackupPolicy
         NewsBlurUsername = null,
         EncryptedNewsBlurSession = null,
         NewsBlurSavedStoryMode = settings.NewsBlurSavedStoryMode,
+        NewsBlurAutoSyncEnabled = settings.NewsBlurAutoSyncEnabled,
+        NewsBlurAutoSyncMinutes = settings.NewsBlurAutoSyncMinutes,
         LastFolder = settings.LastFolder,
         LastFeedId = settings.LastFeedId,
         LastArticleId = settings.LastArticleId,

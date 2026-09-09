@@ -38,6 +38,8 @@ public partial class MainWindow : Window
     private bool _isRefreshing;
     private CancellationTokenSource? _refreshCancellation;
     private TaskCompletionSource<bool>? _refreshCompletion;
+    private DispatcherTimer? _newsBlurAutoSyncTimer;
+    private bool _newsBlurStateSyncRunning;
     private List<Feed> _lastFailedFeeds = [];
     private int _refreshProcessed;
     private int _refreshTotal;
@@ -84,6 +86,7 @@ public partial class MainWindow : Window
                 : F("Orizont RSS {0} este pregătit. S-au încărcat {1} feeduri. {2}", ProductVersion, _feeds.Count, ArticlePanelStatus()));
             _startupSucceeded = true;
             _startupCompletion.TrySetResult(true);
+            ConfigureNewsBlurAutoSync();
             if (_settings.UpdateAtStartup && _feeds.Count > 0)
                 await RefreshFeedsAsync(_feeds.Where(feed => !feed.NeedsAttention).ToList());
         }
@@ -105,6 +108,7 @@ public partial class MainWindow : Window
         e.Cancel = true;
         if (_closeInProgress) return;
         _closeInProgress = true;
+        _newsBlurAutoSyncTimer?.Stop();
         _speech?.Stop(reportState: false);
         IsEnabled = false;
         try
@@ -898,6 +902,7 @@ ContinueCommandHandling:
         var dialog = new NewsBlurAuthWindow(_settings) { Owner = this };
         if (dialog.ShowDialog() != true) return;
         await _store.SaveSettingsAsync(_settings);
+        ConfigureNewsBlurAutoSync();
         Say(_settings.NewsBlurConnected
             ? F("NewsBlur este conectat pentru {0}.", _settings.NewsBlurUsername ?? T("utilizatorul curent"))
             : T("Contul NewsBlur a fost deconectat."));
@@ -1165,6 +1170,27 @@ ContinueCommandHandling:
 
     private async void NewsBlurStateSync_Click(object sender, RoutedEventArgs e)
     {
+        try { await RunNewsBlurStateSyncAsync(false); }
+        catch (Exception exception) { Say(F("Sincronizarea stărilor NewsBlur a eșuat: {0}", Describe(exception))); }
+    }
+
+    private async void NewsBlurAutoSyncTimer_Tick(object? sender, EventArgs e)
+    {
+        if (!_settings.NewsBlurAutoSyncEnabled || !_settings.NewsBlurConnected || string.IsNullOrWhiteSpace(_settings.EncryptedNewsBlurSession)) return;
+        try { await RunNewsBlurStateSyncAsync(true); }
+        catch (Exception exception) { Say(F("Sincronizarea automată NewsBlur a eșuat: {0}", Describe(exception))); }
+    }
+
+    private async Task RunNewsBlurStateSyncAsync(bool fromAutoSync)
+    {
+        if (_newsBlurStateSyncRunning)
+        {
+            if (!fromAutoSync) Say(T("Sincronizarea stărilor NewsBlur este deja în curs."));
+            return;
+        }
+        _newsBlurStateSyncRunning = true;
+        try
+        {
         if (RejectDataChangeDuringRefresh(T("sincronizarea stărilor NewsBlur"))) return;
         if (!_settings.NewsBlurConnected || string.IsNullOrWhiteSpace(_settings.EncryptedNewsBlurSession))
         {
@@ -1362,6 +1388,11 @@ ContinueCommandHandling:
         RefreshTagFilter();
         RefreshArticleList(_article, selectFirstWhenNoMatch: false);
         Say(F("Sincronizare bidirecțională încheiată. {0} articole asociate, {1} importate din NewsBlur, {2} baze locale create, {3} stări preluate, {4} stări trimise, {5} conflicte păstrate neschimbate și {6} etichete amânate până la salvarea articolului.", matched, imported, baselineCreated, appliedRemote, toRead.Count + toUnread.Count + toStar.Count + toUnstar.Count, conflicts, skippedTags));
+        }
+        finally
+        {
+            _newsBlurStateSyncRunning = false;
+        }
     }
 
     private static string SyncAddressKey(string value)
@@ -1369,6 +1400,17 @@ ContinueCommandHandling:
         if (Uri.TryCreate(value?.Trim(), UriKind.Absolute, out var uri))
             return uri.GetLeftPart(UriPartial.Path).TrimEnd('/').ToLowerInvariant();
         return (value ?? string.Empty).Trim().TrimEnd('/').ToLowerInvariant();
+    }
+
+    private void ConfigureNewsBlurAutoSync()
+    {
+        _newsBlurAutoSyncTimer ??= new DispatcherTimer { Interval = TimeSpan.FromMinutes(30) };
+        _newsBlurAutoSyncTimer.Tick -= NewsBlurAutoSyncTimer_Tick;
+        _newsBlurAutoSyncTimer.Tick += NewsBlurAutoSyncTimer_Tick;
+        _newsBlurAutoSyncTimer.Interval = TimeSpan.FromMinutes(Math.Clamp(_settings.NewsBlurAutoSyncMinutes, 15, 180));
+        _newsBlurAutoSyncTimer.Stop();
+        if (_startupSucceeded && _settings.NewsBlurAutoSyncEnabled && _settings.NewsBlurConnected && !string.IsNullOrWhiteSpace(_settings.EncryptedNewsBlurSession))
+            _newsBlurAutoSyncTimer.Start();
     }
 
     private static Article? FindLocalArticle(NewsBlurStory story, IReadOnlyDictionary<string, Article> byHash, IReadOnlyDictionary<string, Article> byLink, IReadOnlyDictionary<string, Article> byId, IReadOnlyList<Article> articles)
@@ -1436,6 +1478,7 @@ ContinueCommandHandling:
         var dialog = new SettingsWindow(_settings, section) { Owner = this };
         if (dialog.ShowDialog() != true) return;
         await _store.SaveSettingsAsync(_settings);
+        ConfigureNewsBlurAutoSync();
         _speech?.Configure(SpeechConfigurationFromSettings(_settings));
         RefreshArticleList(selectFirstWhenNoMatch: false);
         if (section != SettingsWindow.SettingsSection.Application)
@@ -1945,6 +1988,7 @@ ContinueCommandHandling:
         settings.EspeakVoiceName = string.IsNullOrWhiteSpace(settings.EspeakVoiceName) ? "ro" : settings.EspeakVoiceName;
         settings.GeminiVoiceName = string.IsNullOrWhiteSpace(settings.GeminiVoiceName) ? "Charon" : settings.GeminiVoiceName;
         settings.EspeakPitch = Math.Clamp(settings.EspeakPitch, 0, 100);
+        settings.NewsBlurAutoSyncMinutes = settings.NewsBlurAutoSyncMinutes is 15 or 30 or 60 or 180 ? settings.NewsBlurAutoSyncMinutes : 30;
         settings.AiInstructions = string.IsNullOrWhiteSpace(settings.AiInstructions) ? "Răspunde în limba interfeței. Fii clar, concis și semnalează incertitudinile." : settings.AiInstructions;
         settings.LastFolder = string.IsNullOrWhiteSpace(settings.LastFolder) || settings.LastFolder == "Toate folderele" ? AllFoldersKey : settings.LastFolder;
         settings.LastArticleFilter = string.IsNullOrWhiteSpace(settings.LastArticleFilter) ? "Toate" : settings.LastArticleFilter;

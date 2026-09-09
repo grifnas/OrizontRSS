@@ -52,6 +52,11 @@ public partial class SettingsWindow : Window
         NewsBlurSavedStoryModeLabel.Content = T("Articolele salvate în NewsBlur se sincronizează ca");
         NewsBlurSavedStoryModeNotice.Text = T("Stelele NewsBlur sunt articole salvate. Alegerea se aplică la următoarea sincronizare și nu șterge articole locale.");
         AutomationProperties.SetName(NewsBlurSavedStoryMode, T("Maparea articolelor salvate NewsBlur"));
+        NewsBlurAutoSyncEnabled.Content = T("Activează sincronizarea automată NewsBlur");
+        AutomationProperties.SetName(NewsBlurAutoSyncEnabled, T("Activează sincronizarea automată NewsBlur"));
+        NewsBlurAutoSyncMinutesLabel.Content = T("Interval sincronizare automată");
+        AutomationProperties.SetName(NewsBlurAutoSyncMinutes, T("Interval sincronizare automată NewsBlur"));
+        NewsBlurAutoSyncNotice.Text = T("Sincronizarea automată preia articolele și stările. Feedurile și folderele se sincronizează numai la comandă, pentru a evita modificările structurale neașteptate.");
         AutomationProperties.SetName(TestSoundButton, T("Testează sunetul"));
         EspeakPitchLabel.Content = T("Înălțimea vocii eSpeak, de la 0 la 100");
         AutomationProperties.SetName(SpeechEngine, T("Motor vocal"));
@@ -70,6 +75,10 @@ public partial class SettingsWindow : Window
         NewsBlurSavedStoryMode.SelectedItem = NewsBlurSavedStoryMode.Items.Cast<ComboBoxItem>()
             .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), NormalizeNewsBlurSavedStoryMode(settings.NewsBlurSavedStoryMode), StringComparison.OrdinalIgnoreCase))
             ?? NewsBlurSavedStoryMode.Items[0];
+        NewsBlurAutoSyncEnabled.IsChecked = settings.NewsBlurAutoSyncEnabled;
+        NewsBlurAutoSyncMinutes.SelectedItem = NewsBlurAutoSyncMinutes.Items.Cast<ComboBoxItem>()
+            .FirstOrDefault(item => int.TryParse(item.Tag?.ToString(), out var minutes) && minutes == NormalizeNewsBlurAutoSyncMinutes(settings.NewsBlurAutoSyncMinutes))
+            ?? NewsBlurAutoSyncMinutes.Items[1];
         foreach (ComboBoxItem item in ReadNowFavoriteDays.Items) if (item.Tag?.ToString() == settings.ReadNowFavoriteDays.ToString()) { ReadNowFavoriteDays.SelectedItem = item; break; }
         if (ReadNowFavoriteDays.SelectedIndex < 0) ReadNowFavoriteDays.SelectedIndex = 2;
         StopSpeechWhenLeavingArticle.IsChecked = settings.StopSpeechWhenLeavingArticle;
@@ -133,6 +142,8 @@ public partial class SettingsWindow : Window
         Settings.SoundAlertOnErrors = SoundAlertOnErrors.IsChecked == true;
         Settings.HideRepeatedArticlesInGlobalViews = HideRepeatedArticles.IsChecked == true;
         Settings.NewsBlurSavedStoryMode = NormalizeNewsBlurSavedStoryMode((NewsBlurSavedStoryMode.SelectedItem as ComboBoxItem)?.Tag?.ToString());
+        Settings.NewsBlurAutoSyncEnabled = NewsBlurAutoSyncEnabled.IsChecked == true;
+        Settings.NewsBlurAutoSyncMinutes = NormalizeNewsBlurAutoSyncMinutes((NewsBlurAutoSyncMinutes.SelectedItem as ComboBoxItem)?.Tag?.ToString());
         Settings.ReadNowFavoriteDays = int.TryParse((ReadNowFavoriteDays.SelectedItem as ComboBoxItem)?.Tag?.ToString(), out var readNowDays) ? readNowDays : 7;
         SaveSpeechSettings();
         Settings.RetentionDays = int.TryParse((RetentionDays.SelectedItem as ComboBoxItem)?.Tag?.ToString(), out var days) ? days : 90;
@@ -155,6 +166,14 @@ public partial class SettingsWindow : Window
         "Both" => "Both",
         _ => "Favorite"
     };
+    private static int NormalizeNewsBlurAutoSyncMinutes(int value) => value switch
+    {
+        15 or 30 or 60 or 180 => value,
+        _ => 30
+    };
+    private static int NormalizeNewsBlurAutoSyncMinutes(string? value) => int.TryParse(value, out var minutes)
+        ? NormalizeNewsBlurAutoSyncMinutes(minutes)
+        : 30;
     private void SaveSpeechSettings()
     {
         Settings.SpeechEngine = SelectedSpeechEngine();

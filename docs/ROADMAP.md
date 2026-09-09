@@ -84,7 +84,7 @@ Etapele se abordează pe rând; dacă două etape sunt suficient de independente
 4. **Vizualizări speciale** — liste virtuale pentru necitite, Saved Stories și toate articolele NewsBlur; implementat local la 9 septembrie 2026. River of News rămâne o extindere ulterioară.
 5. **Text complet la cerere** — preluarea textului extins NewsBlur numai pentru articolul cerut, cu fallback RSS și feedback accesibil; implementat local la 9 septembrie 2026.
 6. **Stări agregate** — marcarea ca citite a folderului selectat sau a tuturor feedurilor NewsBlur; implementat local la 9 septembrie 2026.
-7. **Sincronizare automată** — pornire, interval configurabil, oprire sigură, reluare după erori și anunțuri JAWS/NVDA.
+7. **Sincronizare automată** — implementată local pentru articole și stări, cu activare și interval configurabil (15/30/60/180 de minute), oprire sigură la închiderea aplicației, protecție împotriva rulărilor simultane și anunțuri JAWS/NVDA. Feedurile și folderele rămân la sincronizare explicită; ștergerile sincronizate și traducerile noi pentru mesajele fazelor rămân în lucru.
 
 Nu se sincronizează parole, chei API, notițe AI sau setări vocale. Acestea rămân locale. Niciuna dintre etapele de mai sus nu autorizează singură o distribuție publică; fiecare modificare necesită verificare și consemnare în `WORKLOG.md`.
 

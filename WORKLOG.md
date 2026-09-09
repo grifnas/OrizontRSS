@@ -589,3 +589,14 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: build Release, CoreSmoke (26 verificări), `verify-distribution.ps1` și `git diff --check` trecute; singurul avertisment este NU1900 pentru indexul NuGet indisponibil.
 - Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages; nu s-a creat distribuție publică.
 - Executabil local de test: `bin/Release/test-newsblur-phase2-v1-files-win-x64/Orizont.exe`.
+
+## 2026-09-09 — Sesiunea C: sincronizare automată prudentă NewsBlur
+
+- Scop: sincronizarea automată în fundal a articolelor și stărilor, cu control explicit al utilizatorului.
+- Fișiere modificate: `AppSettings.cs`, `BackupPolicy.cs`, `SettingsWindow.xaml`, `SettingsWindow.xaml.cs`, `MainWindow.xaml.cs`, `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md`.
+- Funcții: în Setări aplicație → Sincronizare NewsBlur se poate activa sincronizarea automată și alege intervalul de 15, 30, 60 sau 180 de minute. Timerul pornește numai după încărcarea aplicației și existența unei sesiuni NewsBlur protejate, se oprește la închiderea ferestrei și nu permite rulări simultane.
+- Protecții: sincronizarea automată apelează numai sincronizarea bidirecțională a articolelor și stărilor; feedurile și folderele nu sunt modificate automat, nu se fac ștergeri și setarea rămâne dezactivată implicit. Erorile sunt anunțate în bara de stare fără a închide aplicația.
+- Localizare: mesajele noi folosesc cheia de traducere cu fallback sursă; completarea controlată a resurselor pentru toate limbile rămâne criteriu înaintea unei distribuții.
+- Verificări: build Release reușit; CoreSmoke trecut cu 26 verificări; avertismentul NU1900 provine de la indisponibilitatea indexului NuGet și nu blochează buildul. Verificarea manuală cu JAWS/NVDA a timerului rămâne necesară deoarece sincronizarea în fundal depinde de sesiunea NewsBlur a utilizatorului.
+- Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages; nu s-a creat distribuție publică.
+- Executabil local de test: `bin/Release/test-newsblur-autosync-v1-files-win-x64/Orizont.exe`.
