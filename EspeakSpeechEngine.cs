@@ -26,6 +26,8 @@ internal sealed class EspeakSpeechEngine : ISpeechEngine
     private int _rate;
     private int _volume = 100;
     private int _pitch = 50;
+    private int _inflection = 100;
+    private string? _fallbackNotice;
     private int _generation;
     private bool _paused;
     private bool _speaking;
@@ -73,12 +75,46 @@ internal sealed class EspeakSpeechEngine : ISpeechEngine
         }
     }
 
+    public IReadOnlyList<SpeechVoiceChoice> InstalledVariants()
+    {
+        if (!NativeFilesExist()) return [];
+        var directory = Path.Combine(EngineDirectory(), "espeak-ng-data", "voices", "!v");
+        if (!Directory.Exists(directory)) return [];
+
+        try
+        {
+            return Directory.EnumerateFiles(directory)
+                .Select(path =>
+                {
+                    var id = Path.GetFileName(path);
+                    var name = ReadVariantName(path);
+                    return new SpeechVoiceChoice(id, string.IsNullOrWhiteSpace(name) || string.Equals(name, id, StringComparison.OrdinalIgnoreCase)
+                        ? id
+                        : $"{name} ({id})");
+                })
+                .Where(voice => !string.IsNullOrWhiteSpace(voice.Id))
+                .OrderBy(voice => voice.DisplayName, StringComparer.CurrentCultureIgnoreCase)
+                .ToList();
+        }
+        catch { return []; }
+    }
+
     public bool Configure(SpeechConfiguration configuration)
     {
-        _voiceName = string.IsNullOrWhiteSpace(configuration.EspeakVoiceName) ? "ro" : configuration.EspeakVoiceName;
+        var baseVoice = string.IsNullOrWhiteSpace(configuration.EspeakVoiceName) ? "ro" : configuration.EspeakVoiceName.Trim();
+        var variant = configuration.EspeakVariant?.Trim();
+        if (string.IsNullOrWhiteSpace(variant) && baseVoice.Contains('+'))
+        {
+            var separator = baseVoice.IndexOf('+');
+            variant = baseVoice[(separator + 1)..];
+            baseVoice = baseVoice[..separator];
+        }
+        _voiceName = string.IsNullOrWhiteSpace(variant) ? baseVoice : $"{baseVoice}+{variant}";
         _rate = Math.Clamp(configuration.Rate, -10, 10);
         _volume = Math.Clamp(configuration.Volume, 0, 100);
         _pitch = Math.Clamp(configuration.EspeakPitch, 0, 100);
+        _inflection = Math.Clamp(configuration.EspeakInflection, 0, 100);
+        _fallbackNotice = null;
         return EnsureAvailable();
     }
 
@@ -147,11 +183,23 @@ internal sealed class EspeakSpeechEngine : ISpeechEngine
             try
             {
                 NativeMethods.espeak_SetSynthCallback(SynthCallback);
-                if (NativeMethods.espeak_SetVoiceByName(_voiceName) != 0 && NativeMethods.espeak_SetVoiceByName("ro") != 0)
-                    throw new InvalidOperationException(T("Vocea eSpeak selectată nu este disponibilă."));
+                if (NativeMethods.espeak_SetVoiceByName(_voiceName) != 0)
+                {
+                    var baseVoice = BaseVoiceName(_voiceName);
+                    if (!string.Equals(baseVoice, _voiceName, StringComparison.OrdinalIgnoreCase)
+                        && NativeMethods.espeak_SetVoiceByName(baseVoice) == 0)
+                    {
+                        _fallbackNotice = F("Varianta eSpeak {0} nu este disponibilă. Se folosește vocea de bază {1}.", VariantName(_voiceName), baseVoice);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(T("Vocea eSpeak selectată nu este disponibilă."));
+                    }
+                }
                 NativeMethods.espeak_SetParameter(1, Math.Clamp(175 + _rate * 15, 80, 450), 0);
                 NativeMethods.espeak_SetParameter(2, _volume, 0);
                 NativeMethods.espeak_SetParameter(3, _pitch, 0);
+                NativeMethods.espeak_SetParameter(4, _inflection, 0);
 
                 var utf8 = Encoding.UTF8.GetBytes(text + "\0");
                 var result = NativeMethods.espeak_Synth(utf8, (nuint)utf8.Length, 0, 1, 0, 1u | 0x1000u, IntPtr.Zero, IntPtr.Zero);
@@ -194,6 +242,11 @@ internal sealed class EspeakSpeechEngine : ISpeechEngine
             _player.Open(new Uri(_wavePath, UriKind.Absolute));
             _player.Play();
             _paused = false;
+            if (_fallbackNotice is { } fallbackNotice)
+            {
+                _fallbackNotice = null;
+                StateChanged?.Invoke(fallbackNotice);
+            }
             StateChanged?.Invoke(T("Citire vocală pornită cu eSpeak NG."));
         }
         catch (Exception exception)
@@ -272,6 +325,26 @@ internal sealed class EspeakSpeechEngine : ISpeechEngine
         Directory.Exists(Path.Combine(EngineDirectory(), "espeak-ng-data"));
 
     private static string EngineDirectory() => Path.Combine(AppContext.BaseDirectory, "SpeechEngines", "eSpeakNG");
+    private static string ReadVariantName(string path)
+    {
+        try
+        {
+            foreach (var line in File.ReadLines(path, Encoding.UTF8).Take(12))
+                if (line.StartsWith("name ", StringComparison.OrdinalIgnoreCase)) return line[5..].Trim();
+        }
+        catch { }
+        return Path.GetFileName(path);
+    }
+    private static string BaseVoiceName(string voiceName)
+    {
+        var separator = voiceName.IndexOf('+');
+        return separator > 0 ? voiceName[..separator] : voiceName;
+    }
+    private static string VariantName(string voiceName)
+    {
+        var separator = voiceName.IndexOf('+');
+        return separator >= 0 && separator + 1 < voiceName.Length ? voiceName[(separator + 1)..] : voiceName;
+    }
     private static string Utf8(IntPtr pointer) => pointer == IntPtr.Zero ? string.Empty : Marshal.PtrToStringUTF8(pointer) ?? string.Empty;
     private static string PrimaryLanguage(IntPtr pointer) => pointer == IntPtr.Zero || Marshal.ReadByte(pointer) == 0
         ? string.Empty

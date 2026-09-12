@@ -22,11 +22,19 @@
             </ComboBox>
             <Label x:Name="SpeechVoiceLabel" Content="Voce" Target="{Binding ElementName=SpeechVoice}" />
             <ComboBox x:Name="SpeechVoice" AutomationProperties.Name="Vocea motorului vocal" />
+            <StackPanel x:Name="EspeakVariantPanel">
+              <Label x:Name="EspeakVariantLabel" Content="Variantă vocală eSpeak NG" Target="{Binding ElementName=EspeakVariant}" />
+              <ComboBox x:Name="EspeakVariant" AutomationProperties.Name="Variantă vocală eSpeak NG" />
+            </StackPanel>
             <Label Content="Viteză, de la minus 10 la 10" Target="{Binding ElementName=SpeechRate}" />
             <ComboBox x:Name="SpeechRate" AutomationProperties.Name="Viteza vocii" />
             <StackPanel x:Name="EspeakPitchPanel">
               <Label x:Name="EspeakPitchLabel" Content="Înălțimea vocii eSpeak, de la 0 la 100" Target="{Binding ElementName=EspeakPitch}" />
               <ComboBox x:Name="EspeakPitch" AutomationProperties.Name="Înălțimea vocii eSpeak" />
+            </StackPanel>
+            <StackPanel x:Name="EspeakInflectionPanel">
+              <Label x:Name="EspeakInflectionLabel" Content="Intonația vocii eSpeak, de la 0 la 100" Target="{Binding ElementName=EspeakInflection}" />
+              <ComboBox x:Name="EspeakInflection" AutomationProperties.Name="Intonația vocii eSpeak" />
             </StackPanel>
             <TextBlock x:Name="GeminiSpeechNotice" Text="Gemini TTS este online. Textul citit este trimis la Google și poate consuma cota sau creditele API." Style="{StaticResource SecondaryTextStyle}" Margin="4,8,4,2" Visibility="Collapsed" />
             <Label Content="Volum" Target="{Binding ElementName=SpeechVolume}" />

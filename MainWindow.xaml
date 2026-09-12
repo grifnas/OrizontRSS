@@ -60,11 +60,14 @@
       <GroupBox x:Name="FeedPanel" Grid.Column="0" Header="Feeduri">
         <DockPanel>
           <StackPanel DockPanel.Dock="Top" Margin="4"><Label Content="Afișează folderul" Target="{Binding ElementName=FolderFilter}" /><ComboBox x:Name="FolderFilter" TabIndex="0" SelectionChanged="FolderFilter_SelectionChanged" AutomationProperties.Name="Filtru foldere" AutomationProperties.HelpText="Tab trece la Citește acum. Delete șterge folderul selectat și mută feedurile în Neorganizate." /><Button x:Name="ReadNowButton" TabIndex="1" Content="Citește acum" Click="ReadNow_Click" AutomationProperties.Name="Citește acum" AutomationProperties.HelpText="Arată necititele, articolele pentru mai târziu și favoritele din ultimele 7 zile." /><Button x:Name="AttentionToggleButton" TabIndex="2" Content="Feeduri care necesită atenție" Click="ToggleAttentionFilter_Click" AutomationProperties.Name="Afișează feedurile care necesită atenție" AutomationProperties.HelpText="Arată feedurile cu 3 erori consecutive sau fără articole de peste 90 de zile." /><TextBlock x:Name="FeedViewSummary" Text="Afișare: toate feedurile" Style="{StaticResource SecondaryTextStyle}" Margin="6,4,6,8" AutomationProperties.Name="Starea filtrării feedurilor" /><CheckBox x:Name="AttentionFilter" Visibility="Collapsed" IsTabStop="False" Checked="AttentionFilter_Changed" Unchecked="AttentionFilter_Changed" /></StackPanel>
-          <ListBox x:Name="Feeds" TabIndex="3" SelectionMode="Extended" SelectionChanged="Feeds_SelectionChanged" ContextMenuOpening="Feeds_ContextMenuOpening" AutomationProperties.Name="Feeduri, listă" AutomationProperties.HelpText="Folosește săgețile Sus și Jos pentru feeduri. Ctrl sau Shift cu săgețile selectează mai multe feeduri. Delete șterge feedurile selectate după confirmare. Tab trece la căutarea din Articole. F6 trece la Articole. Shift+F6 trece la Conținut articol. Ctrl+1 revine aici.">
-            <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}"><Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}" /></Style></ListBox.ItemContainerStyle>
-            <ListBox.ItemTemplate><DataTemplate><StackPanel><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" /><TextBlock Text="{Binding VisualDetails}" Style="{StaticResource SecondaryTextStyle}" Margin="0,2,0,0" /><TextBlock Text="{Binding VisualWarning}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,2,0,0" /></StackPanel></DataTemplate></ListBox.ItemTemplate>
-            <ListBox.ContextMenu><ContextMenu x:Name="FeedMenu"><MenuItem Header="Adaugă feed" Click="Add_Click" /><Separator /><MenuItem x:Name="RefreshFeedMenuItem" Header="Actualizează feedul" Click="Refresh_Click" /><MenuItem Header="Detalii despre starea feedului" Click="FeedDetails_Click" /><MenuItem x:Name="EditFeedMenuItem" Header="Editează feedul" Click="Edit_Click" /><MenuItem x:Name="DeleteFeedMenuItem" Header="Șterge feedurile selectate" InputGestureText="Delete" Click="Delete_Click" /></ContextMenu></ListBox.ContextMenu>
-          </ListBox>
+          <Grid>
+            <ListBox x:Name="Feeds" TabIndex="3" SelectionMode="Extended" SelectionChanged="Feeds_SelectionChanged" ContextMenuOpening="Feeds_ContextMenuOpening" AutomationProperties.Name="Feeduri, listă" AutomationProperties.HelpText="Folosește săgețile Sus și Jos pentru feeduri. Ctrl sau Shift cu săgețile selectează mai multe feeduri. Delete șterge feedurile selectate după confirmare. Tab trece la căutarea din Articole. F6 trece la Articole. Shift+F6 trece la Conținut articol. Ctrl+1 revine aici.">
+              <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}"><Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}" /></Style></ListBox.ItemContainerStyle>
+              <ListBox.ItemTemplate><DataTemplate><StackPanel><TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" /><TextBlock Text="{Binding VisualDetails}" Style="{StaticResource SecondaryTextStyle}" Margin="0,2,0,0" /><TextBlock Text="{Binding VisualWarning}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,2,0,0" /></StackPanel></DataTemplate></ListBox.ItemTemplate>
+              <ListBox.ContextMenu><ContextMenu x:Name="FeedMenu"><MenuItem Header="Adaugă feed" Click="Add_Click" /><Separator /><MenuItem x:Name="RefreshFeedMenuItem" Header="Actualizează feedul" Click="Refresh_Click" /><MenuItem Header="Detalii despre starea feedului" Click="FeedDetails_Click" /><MenuItem x:Name="EditFeedMenuItem" Header="Editează feedul" Click="Edit_Click" /><MenuItem x:Name="DeleteFeedMenuItem" Header="Șterge feedurile selectate" InputGestureText="Delete" Click="Delete_Click" /></ContextMenu></ListBox.ContextMenu>
+            </ListBox>
+            <TextBlock x:Name="FeedEmptyState" Visibility="Collapsed" Focusable="False" IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16" TextAlignment="Center" TextWrapping="Wrap" Style="{StaticResource SecondaryTextStyle}" AutomationProperties.LiveSetting="Polite" />
+          </Grid>
         </DockPanel>
       </GroupBox>
       <GridSplitter Grid.Column="1" Width="6" HorizontalAlignment="Stretch" Focusable="False" IsTabStop="False" />
@@ -80,11 +83,12 @@
             <ComboBox x:Name="ArticleTimeFilter" Visibility="Collapsed" IsTabStop="False"><ComboBoxItem Tag="Anytime" Content="Oricând" IsSelected="True" /><ComboBoxItem Tag="Today" Content="Astăzi" /><ComboBoxItem Tag="Last24Hours" Content="Ultimele 24 de ore" /><ComboBoxItem Tag="Last7Days" Content="Ultimele 7 zile" /><ComboBoxItem Tag="Last30Days" Content="Ultimele 30 de zile" /></ComboBox>
             <ComboBox x:Name="TagFilter" Visibility="Collapsed" IsTabStop="False" />
           </StackPanel>
-          <ListBox x:Name="Articles" TabIndex="8" SelectionMode="Extended" SelectionChanged="Articles_SelectionChanged" KeyDown="Articles_KeyDown" ContextMenuOpening="Articles_ContextMenuOpening" AutomationProperties.Name="Articole, listă" AutomationProperties.HelpText="Folosește săgețile Sus și Jos pentru articole. R marchează citit sau necitit. F adaugă sau elimină favorite. L adaugă sau elimină pentru mai târziu. Tab trece la Conținut articol. Ctrl sau Shift cu săgețile selectează mai multe articole. Ctrl+A selectează toate articolele. Enter deschide conținutul. F6 trece la Conținut articol. Shift+F6 trece la Feeduri. Ctrl+2 revine aici. Shift+F10 deschide acțiunile articolului.">
-            <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}"><Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}" /></Style></ListBox.ItemContainerStyle>
-            <ListBox.ItemTemplate><DataTemplate><StackPanel><TextBlock Text="{Binding Title}" TextWrapping="Wrap"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontWeight" Value="Normal" /><Style.Triggers><DataTrigger Binding="{Binding IsRead}" Value="False"><Setter Property="FontWeight" Value="SemiBold" /></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock><TextBlock Text="{Binding VisualDetails}" Style="{StaticResource SecondaryTextStyle}" Margin="0,2,0,0" /><TextBlock Text="{Binding VisualState}" TextWrapping="Wrap" Margin="0,2,0,0" /></StackPanel></DataTemplate></ListBox.ItemTemplate>
-            <ListBox.ContextMenu>
-              <ContextMenu x:Name="ArticleMenu" AutomationProperties.Name="Acțiuni articol">
+          <Grid>
+            <ListBox x:Name="Articles" TabIndex="8" SelectionMode="Extended" SelectionChanged="Articles_SelectionChanged" KeyDown="Articles_KeyDown" ContextMenuOpening="Articles_ContextMenuOpening" AutomationProperties.Name="Articole, listă" AutomationProperties.HelpText="Folosește săgețile Sus și Jos pentru articole. R marchează citit sau necitit. F adaugă sau elimină favorite. L adaugă sau elimină pentru mai târziu. Tab trece la Conținut articol. Ctrl sau Shift cu săgețile selectează mai multe articole. Ctrl+A selectează toate articolele. Enter deschide conținutul. F6 trece la Conținut articol. Shift+F6 trece la Feeduri. Ctrl+2 revine aici. Shift+F10 deschide acțiunile articolului.">
+              <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}"><Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}" /></Style></ListBox.ItemContainerStyle>
+              <ListBox.ItemTemplate><DataTemplate><StackPanel><TextBlock Text="{Binding Title}" TextWrapping="Wrap"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontWeight" Value="Normal" /><Style.Triggers><DataTrigger Binding="{Binding IsRead}" Value="False"><Setter Property="FontWeight" Value="SemiBold" /></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock><TextBlock Text="{Binding VisualDetails}" Style="{StaticResource SecondaryTextStyle}" Margin="0,2,0,0" /><TextBlock Text="{Binding VisualState}" TextWrapping="Wrap" Margin="0,2,0,0" /></StackPanel></DataTemplate></ListBox.ItemTemplate>
+              <ListBox.ContextMenu>
+                <ContextMenu x:Name="ArticleMenu" AutomationProperties.Name="Acțiuni articol">
                 <MenuItem Header="Articol">
                   <MenuItem Header="Deschide și citește" Click="ReadArticleMenu_Click" />
                   <MenuItem Header="Adu textul complet de pe site" Click="LoadFullArticle_Click" />
@@ -116,14 +120,17 @@
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Șterge articolele selectate" InputGestureText="Delete" Click="DeleteSelectedArticles_Click" />
-              </ContextMenu>
-            </ListBox.ContextMenu>
-          </ListBox>
+                </ContextMenu>
+              </ListBox.ContextMenu>
+            </ListBox>
+            <TextBlock x:Name="ArticleEmptyState" Visibility="Collapsed" Focusable="False" IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16" TextAlignment="Center" TextWrapping="Wrap" Style="{StaticResource SecondaryTextStyle}" AutomationProperties.LiveSetting="Polite" />
+          </Grid>
         </DockPanel>
       </GroupBox>
       <GridSplitter Grid.Column="3" Width="6" HorizontalAlignment="Stretch" Focusable="False" IsTabStop="False" />
       <GroupBox x:Name="ReaderPanel" Grid.Column="4" Header="Conținut articol">
-        <TextBox x:Name="Reader" TabIndex="9" IsReadOnly="True" IsReadOnlyCaretVisible="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontSize="16" KeyDown="Reader_KeyDown" ContextMenuOpening="Reader_ContextMenuOpening" AutomationProperties.Name="Conținut articol, editare numai în citire" AutomationProperties.HelpText="Folosește săgețile Sus și Jos pentru citire. Tab revine la filtrul de foldere. F6 trece la Feeduri. Shift+F6 trece la Articole. Ctrl+3 revine aici. Shift+F10 oferă copiere și distribuire. Escape revine la articole.">
+        <Grid>
+          <TextBox x:Name="Reader" TabIndex="9" IsReadOnly="True" IsReadOnlyCaretVisible="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" FontSize="16" KeyDown="Reader_KeyDown" TextChanged="Reader_TextChanged" ContextMenuOpening="Reader_ContextMenuOpening" AutomationProperties.Name="Conținut articol, editare numai în citire" AutomationProperties.HelpText="Folosește săgețile Sus și Jos pentru citire. Tab revine la filtrul de foldere. F6 trece la Feeduri. Shift+F6 trece la Articole. Ctrl+3 revine aici. Shift+F10 oferă copiere și distribuire. Escape revine la articole.">
           <TextBox.ContextMenu><ContextMenu AutomationProperties.Name="Comenzi conținut articol">
   <MenuItem Header="Articol">
     <MenuItem Header="Adu textul complet de pe site" Click="LoadFullArticle_Click" />
@@ -156,7 +163,9 @@
     <MenuItem x:Name="ContentWhatsAppMenuItem" Header="Distribuie prin WhatsApp" Click="ShareByWhatsApp_Click" />
   </MenuItem>
 </ContextMenu></TextBox.ContextMenu>
-        </TextBox>
+          </TextBox>
+          <TextBlock x:Name="ReaderEmptyState" Visibility="Collapsed" Focusable="False" IsHitTestVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24" TextAlignment="Center" TextWrapping="Wrap" Style="{StaticResource SecondaryTextStyle}" AutomationProperties.LiveSetting="Polite" />
+        </Grid>
       </GroupBox>
     </Grid>
     <StatusBar Grid.Row="2" x:Name="ApplicationStatusBar" Margin="0,10,0,0" Focusable="False" IsTabStop="False" AutomationProperties.LiveSetting="Polite">

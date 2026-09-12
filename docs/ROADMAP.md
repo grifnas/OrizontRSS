@@ -2,11 +2,17 @@
 
 ## Situația curentă
 
-Versiunea 1.5.3 este o versiune stabilizată. Funcțiile de bază pentru feeduri, articole, organizare, citire accesibilă, AI Gemini, traducere DeepL, voce, alerte sonore, meniu contextual AI, backup și localizare sunt implementate.
+Versiunea publică stabilă este 1.5.4. Release-ul include schimbările NewsBlur, accesibilitate și localizare verificate automat pentru toate cele opt limbi.
 
-Localizarea este disponibilă în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană. Verificarea automată curentă confirmă resurse complete și fără erori pentru toate cele opt limbi.
+Localizarea este disponibilă în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană. Mesajele adăugate în etapa NewsBlur au fost traduse, iar verificarea completă a tuturor resurselor a trecut pentru cele opt limbi.
 
-Distribuția 1.5.3 Windows x64 și arhiva sursă au fost verificate și sunt disponibile.
+La 12 septembrie 2026 au fost adăugate stări goale accesibile pentru listele Feeduri/Articole și zona Conținut articol. Textele diferențiază lipsa feedurilor, lipsa selecției și rezultatele absente după filtre; dispar când există conținut în panoul respectiv și au resurse pentru toate cele opt limbi. Anunțarea vizuală și UI Automation este implementată; validarea manuală cu JAWS/NVDA rămâne necesară.
+
+La 12 septembrie 2026 s-a corectat și schimbarea din „Citește acum” către un folder: selectarea folderului dezactivează vizualizarea agregată, astfel încât articolele și numărul vocal să provină doar din feedurile folderului.
+
+Distribuția 1.5.4 Windows x64, installerul offline și arhiva sursă au fost generate din aceeași stare a sursei și publicate împreună în GitHub Release.
+
+La 12 septembrie 2026, după curățarea reușită a duplicatelor, sincronizarea feedurilor/folderelor NewsBlur pornește automat dacă există o sesiune conectată. Feedurile suprapuse eliminate prin alegere explicită sunt puse în coada de dezabonare, iar adresa păstrată nu este atinsă; o curățare lansată dintr-o sincronizare o face pe aceasta să reia operația cu lista actualizată. Prima inițializare a unui profil nou rămâne unidirecțională și nu dezabonează remote.
 
 ## Workflow obligatoriu pentru orice versiune nouă
 
@@ -16,17 +22,17 @@ Pentru ca instalatorul și versiunea portabilă să conțină aceleași modific�
 2. Build, smoke tests și verificări manuale țintite cu JAWS/NVDA.
 3. Creșterea versiunii (de exemplu `1.5.3` → `1.5.4`).
 4. Construirea arhivei portabile Windows x64.
-5. Construirea instalatorului autonom din aceeași stare a sursei.
-6. Actualizarea în instalator a versiunii, adresei arhivei și hash-ului SHA-256.
-7. Încărcarea în același release GitHub a arhivei portabile și a `OrizontSetup.exe`.
-8. Actualizarea paginii GitHub Pages și verificarea linkurilor publice.
+5. Construirea instalatorului autonom din aceeași stare a sursei, cu arhiva și hash-ul SHA-256 încorporate.
+6. Verificarea versiunii installerului și a hash-ului înaintea extragerii; varianta 1.5.4 fără payload nu descarcă versiunea publică 1.5.3.
+7. Încărcarea arhivei portabile și a `OrizontSetup.exe` în GitHub numai după o cerere expresă separată de publicare.
+8. Actualizarea paginii GitHub Pages numai în cadrul aceleiași publicări aprobate.
 
 Nu se publică un singur pachet izolat. O nouă distribuție se creează numai la cererea expresă și după verificarea tuturor limbilor.
 
 ## Următoarea etapă
 
 1. Publicarea modificărilor SEO pe ramura GitHub Pages și verificarea adreselor publice `sitemap.xml` și `robots.txt` — verificată la 9 septembrie 2026.
-2. Verificarea manuală cu JAWS/NVDA a comenzilor pentru exemplele RSS: adăugare locală, verificare online, focalizare pe primul articol și eliminare cu confirmare.
+2. Verificarea manuală cu JAWS/NVDA a comenzilor pentru exemplele RSS: adăugarea locală și navigarea au fost confirmate de utilizator la 12 septembrie 2026, iar utilizatorul confirmă că feedul de test este deja în lista de surse. Testul online a identificat hostul HotNews vechi, care nu se rezolvă DNS; catalogul local folosește acum `https://hotnews.ro/feed`, adresă care răspunde cu tip de conținut RSS. Rămân de confirmat în aplicație actualizarea efectivă a feedului, focalizarea pe primul articol și eliminarea cu confirmare; nu este necesară adăugarea din nou a feedului de test.
 3. Verificarea instalatorului public descărcat direct de pe GitHub, inclusiv limbă, focus, bară de stare, pictogramă desktop, instalare și dezinstalare — disponibil public și verificat ca asset; retestarea manuală JAWS/NVDA rămâne criteriu separat.
 4. Retestarea WinGet prin instalatorul public, inclusiv instalare și dezinstalare în regim non-administrator — clientul local este disponibil, manifestul trece validarea, dar pachetul nu este încă în catalog.
 5. Manifestul WinGet a fost trimis prin PR-ul oficial `microsoft/winget-pkgs#431971`; în continuare se urmăresc validările Microsoft și este necesară semnarea CLA de către autor.
@@ -60,7 +66,7 @@ Implementarea va fi etapizată și nu începe automat:
 5. limitarea cererilor, reluare prudentă după erori și mesaje accesibile pentru JAWS/NVDA;
 6. păstrarea OPML ca metodă de rezervă, astfel încât aplicația să rămână complet funcțională fără NewsBlur.
 
-Integrarea bidirecțională va fi propusă pentru implementare numai după aprobarea expresă a utilizatorului și după verificarea condițiilor actuale ale serviciului.
+Integrarea bidirecțională a fost aprobată de utilizator. Modificările rămân etapizate, documentate și fără distribuție implicită.
 
 ### Stadiul primei etape
 
@@ -72,7 +78,13 @@ Aceste idei nu sunt angajamente de implementare și nu modifică funcționalitat
 
 Importul controlat al abonamentelor și folderelor NewsBlur este implementat local. Comanda este disponibilă în `Feeduri → Servicii externe → Sincronizează abonamentele NewsBlur`. Aplicația citește exportul OPML oficial, elimină duplicatele după adresă și afișează înainte de confirmare numărul de abonamente noi, feeduri actualizate și foldere noi. Operația nu șterge feeduri locale și nu modifică articolele, favoritele, lista „Mai târziu” sau etichetele.
 
-Sincronizarea controlată a feedurilor, folderelor și articolelor lipsă este implementată local. Următoarele etape rămân sincronizarea automată în fundal, ștergerile sincronizate și rezolvarea avansată a conflictelor; acestea vor necesita verificare manuală și aprobare explicită separată.
+Oglindirea bidirecțională a feedurilor și folderelor este implementată local. Prima conectare a unui profil nou rămâne un import confirmat, unidirecțional, din NewsBlur. După inițializare, structura se oglindește automat la pornire și la intervalul configurat dacă utilizatorul a activat sincronizarea automată; comanda manuală pornește aceeași operație imediat. Feedurile noi, redenumirile, mutările și editarea URL-ului (dezabonare veche + abonare nouă) se propagă în ambele direcții. O ștergere locală deja confirmată se trimite fără o a doua confirmare; dispariția remote este aplicată local și se va propaga celorlalte dispozitive la sincronizarea lor. Înainte de orice mutație, OPML și feed-index trebuie să fie valide și să conțină aceleași adrese normalizate; în lipsa concordanței nu se fac schimbări. Conflictele concurente de metadate nu deschid dialoguri în fundal și rămân amânate pentru rezolvare manuală. Folderele goale nu pot fi reprezentate local; ștergerea unui folder local mută feedurile în Neorganizate și nu apelează endpointul NewsBlur `delete_folder`.
+
+Retenția configurată rămâne o regulă locală Orizont: articolele obișnuite expirate sunt curățate după o încercare de actualizare chiar dacă aceasta a eșuat, iar importul NewsBlur ignoră articolele expirate pentru a nu le readuce în listele locale. Favoritele și articolele „Mai târziu”, inclusiv elementele salvate NewsBlur potrivit mapării alese, rămân protejate. NewsBlur nu primește cereri de ștergere individuală.
+
+Inițializarea pe un profil nou este unidirecțională din NewsBlur spre Orizont. Importul cere confirmare, păstrează feedurile locale care nu există remote și nu trimite date către NewsBlur; feedurile demonstrative sunt excluse. Marcajul reușitei se salvează local pentru contul curent și nu intră în backup, astfel încât un calculator nou să pornească prin import. După finalizare, sincronizările feedurilor/folderelor sunt bidirecționale; o instalare deja asociată este recunoscută pentru a evita reinițializarea după actualizarea aplicației. Sincronizarea stărilor nu pornește înaintea acestui pas.
+
+Ștergerea locală a unui folder mută feedurile în „Neorganizate”; la sincronizare, NewsBlur primește o mutare la nivel superior, nu dezabonare. Ștergerea unui feed din „Neorganizate” folosește în continuare coada explicit confirmată de dezabonare. Nu se apelează endpointul NewsBlur `delete_folder`, care dezabonează feedurile aflate în folder.
 
 ### Direcția aprobată pentru extinderea sincronizării NewsBlur
 
@@ -84,7 +96,12 @@ Etapele se abordează pe rând; dacă două etape sunt suficient de independente
 4. **Vizualizări speciale** — liste virtuale pentru necitite, Saved Stories și toate articolele NewsBlur; implementat local la 9 septembrie 2026. River of News rămâne o extindere ulterioară.
 5. **Text complet la cerere** — preluarea textului extins NewsBlur numai pentru articolul cerut, cu fallback RSS și feedback accesibil; implementat local la 9 septembrie 2026.
 6. **Stări agregate** — marcarea ca citite a folderului selectat sau a tuturor feedurilor NewsBlur; implementat local la 9 septembrie 2026.
-7. **Sincronizare automată** — implementată local pentru articole și stări, cu activare și interval configurabil (15/30/60/180 de minute), oprire sigură la închiderea aplicației, protecție împotriva rulărilor simultane și anunțuri JAWS/NVDA. Feedurile și folderele rămân la sincronizare explicită; ștergerile sincronizate și traducerile noi pentru mesajele fazelor rămân în lucru.
+7. **Sincronizare automată** — implementată pentru structura feedurilor/folderelor și pentru articole/stări: oglindirea structurii la pornire, apoi la intervalul configurabil (15/30/60/180 de minute) când opțiunea este activată. Sunt protejate rulările concurente, conflictele de metadate se amână în fundal, iar rezultatul se anunță prin bara de stare. Prima inițializare pe un profil nou rămâne confirmată.
+8. **Dezabonări sincronizate** — implementate bidirecțional: ștergerea locală confirmată pune feedul într-o coadă persistentă și se transmite la următoarea sincronizare; ștergerea făcută în NewsBlur elimină feedul și articolele sale locale. Oglindirea se execută și în fundal după inițializare. Ștergerea individuală a articolelor nu este documentată de API și rămâne locală.
+9. **Conflicte avansate** — implementate local la 12 septembrie 2026: editările independente de nume și folder se combină; când același câmp a fost schimbat diferit pe ambele părți, dialogul oferă păstrarea valorii locale, preluarea valorii NewsBlur sau amânarea acelui câmp. Amânarea nu schimbă valorile sau baza de sincronizare. Confirmările și conflictele folosesc o fereastră cu focalizare inițială pe textul explicativ, navigare la opțiuni prin Tab și alegere sigură implicită. Lista locală de feeduri duplicate este descrisă într-un dialog separat; curățarea nu începe fără alegere și confirmare distincte. Verificarea manuală JAWS/NVDA rămâne necesară.
+10. **Localizare înainte de distribuție** — traducerea și verificarea tuturor mesajelor noi în cele opt limbi; distribuția nu este autorizată prin această foaie de parcurs.
+11. **Inițializare și ștergere sigură pe mai multe calculatoare** — implementate la 12 septembrie 2026: profilul nou importă întâi din NewsBlur, apoi trece la bidirecțional; ștergerea unui folder mută feedurile la nivelul superior, iar ștergerea unui feed deja confirmată local se propagă remote.
+12. **NewsBlur ca sursă principală pentru articole** — implementat local la 12 septembrie 2026: actualizarea manuală, cea de la pornire și cea automată încearcă mai întâi NewsBlur; RSS direct este fallback doar pentru feedurile absente sau pentru care cererea de articole eșuează. Oglindirea abonamentelor/folderelor are acum verificări complete de snapshot înainte de mutații; noile fluxuri de ștergere și sincronizare automată structurală trebuie testate manual pe două dispozitive. Textele noi trebuie traduse în cele opt limbi înainte de distribuție.
 
 Nu se sincronizează parole, chei API, notițe AI sau setări vocale. Acestea rămân locale. Niciuna dintre etapele de mai sus nu autorizează singură o distribuție publică; fiecare modificare necesită verificare și consemnare în `WORKLOG.md`.
 

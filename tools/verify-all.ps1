@@ -24,7 +24,7 @@ try
     if ($LASTEXITCODE -ne 0) { throw "Localization verification failed." }
     powershell -ExecutionPolicy Bypass -File .\tools\verify-user-guides.ps1
     if ($LASTEXITCODE -ne 0) { throw "User guide verification failed." }
-    powershell -ExecutionPolicy Bypass -File .\tools\verify-distribution.ps1 -DistributionPath $DistributionPath -ExpectedFileVersion '1.5.3.0' -ExpectedProductVersion '1.5.3'
+    powershell -ExecutionPolicy Bypass -File .\tools\verify-distribution.ps1 -DistributionPath $DistributionPath -ExpectedFileVersion '1.5.4.0' -ExpectedProductVersion '1.5.4'
     if ($LASTEXITCODE -ne 0) { throw "Distribution verification failed." }
     Write-Output 'FULL VALIDATION PASSED.'
 }

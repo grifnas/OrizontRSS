@@ -17,7 +17,7 @@ public static class DemoFeedCatalog
     private static readonly IReadOnlyDictionary<string, DemoFeedDefinition> OnlineFeeds =
         new Dictionary<string, DemoFeedDefinition>(StringComparer.OrdinalIgnoreCase)
         {
-            ["ro-RO"] = new("ro-RO", "HotNews.ro — ultimele știri", "https://rss.hotnews.ro"),
+            ["ro-RO"] = new("ro-RO", "HotNews.ro — ultimele știri", "https://hotnews.ro/feed"),
             ["en-US"] = new("en-US", "BBC News — World", "https://feeds.bbci.co.uk/news/rss.xml"),
             ["es-ES"] = new("es-ES", "RTVE Noticias", "https://www.rtve.es/rss/temas_noticias.xml"),
             ["fr-FR"] = new("fr-FR", "Le Monde — À la une", "https://www.lemonde.fr/rss/une.xml"),

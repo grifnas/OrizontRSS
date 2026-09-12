@@ -2,6 +2,22 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-12 — Variante vocale eSpeak NG și setări extinse
+
+- Scop: adaptarea în Orizont RSS a variantelor și controalelor eSpeak NG din Orizont Interpret, fără preluarea rutării audio specifice acelei aplicații.
+- Cod și setări: selectorul separat al variantei eSpeak NG, reglajul intonației și fallback-ul anunțat către vocea de bază; preferințele noi se salvează în configurație și în backup fără a schimba SAPI5 sau Gemini.
+- Date/licență: adăugate variantele oficiale `ian`, `mike2` și `Reed` din eSpeak NG 1.52.0; proveniența și GPL-3.0-or-later sunt notate în `ThirdParty/eSpeakNG/UPSTREAM.md`.
+- Localizare: etichetele, mesajul de fallback și starea listării variantelor sunt traduse în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană.
+- Verificări: build Release fără erori sau avertismente; CoreSmoke trecut (56 verificări); LocalizationSmoke trecut pentru en-US, es-ES, fr-FR, de-DE, pt-BR, hu-HU și it-IT; 948/948 chei verificate pentru fiecare limbă secundară; eSpeakSmoke trecut cu 132 voci, 104 variante, vocea română și sinteza Ian/Mike2/Reed cu intonație la 22050 Hz. Backup-ul păstrează limba, varianta și intonația.
+- Verificare manuală: JAWS/NVDA trebuie să confirme focalizarea și anunțurile din Setări voce și să asculte vocile/variantele efective; nu a fost folosit profilul utilizatorului și nu s-au atins setări active.
+- Distribuție: nu s-a creat și nu s-a publicat o distribuție nouă.
+
+## 2026-09-12 — Confirmări manuale eSpeak și feedul de test
+
+- Confirmare utilizator: setările vocale funcționează, iar modificările rămân după închiderea aplicației.
+- Confirmare utilizator: feedul de test există deja în lista de surse; nu s-a adăugat încă o copie.
+- Foaia de parcurs a fost actualizată: pentru exemplele RSS rămân de confirmat actualizarea efectivă, focalizarea pe primul articol și ștergerea cu confirmare. Nu s-a creat o distribuție și nu s-a reconstruit executabilul, deoarece această intervenție actualizează doar documentația.
+
 ## 2026-09-09 — Verificare elemente publice și WinGet
 
 - Scop: verificarea paginii GitHub Pages, a Release-ului 1.5.3 și a pregătirii manifestului WinGet, fără creare de distribuție nouă.
@@ -600,3 +616,150 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: build Release reușit; CoreSmoke trecut cu 26 verificări; avertismentul NU1900 provine de la indisponibilitatea indexului NuGet și nu blochează buildul. Verificarea manuală cu JAWS/NVDA a timerului rămâne necesară deoarece sincronizarea în fundal depinde de sesiunea NewsBlur a utilizatorului.
 - Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages; nu s-a creat distribuție publică.
 - Executabil local de test: `bin/Release/test-newsblur-autosync-v1-files-win-x64/Orizont.exe`.
+
+## 2026-09-12 — Sincronizarea controlată a dezabonărilor NewsBlur
+
+- Scop: continuarea sincronizării între calculatoare fără a transforma ștergerile locale în modificări remote neașteptate.
+- Fișiere modificate: `Models.cs`, `AppSettings.cs`, `BackupPolicy.cs`, `NewsBlurConnection.cs`, `MainWindow.xaml.cs`, `tests/CoreSmoke/Program.cs`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`.
+- Funcții: ștergerea locală a unui feed asociat NewsBlur salvează o cerere de dezabonare persistentă; comanda explicită de sincronizare afișează numărul cererilor și cere confirmare înainte de apelarea endpointului NewsBlur `/reader/delete_feed`. Dacă un feed asociat lipsește din NewsBlur, utilizatorul poate alege între ștergerea copiei locale și articolelor ei, reabonare sau anulare. Coada este păstrată în backup fără sesiunea de autentificare.
+- Protecții: sincronizarea automată a articolelor/stărilor nu execută dezabonări; anularea nu aplică schimbări; eroarea remote păstrează cererea pentru reîncercare; comenzile locale de ștergere sunt blocate cât timp sincronizarea feedurilor rulează. Ștergerea articolelor individuale rămâne locală, deoarece API-ul NewsBlur documentează dezabonarea feedurilor, dar nu un endpoint de ștergere a unui articol. Ștergerea unui folder local doar mută feedurile în „Neorganizate”, deci nu declanșează dezabonarea.
+- Sursă tehnică: documentația oficială NewsBlur — <https://www.newsblur.com/api>.
+- Verificări: build Release reușit; CoreSmoke trecut cu 27 verificări; LocalizationSmoke trecut pentru cele șapte limbi secundare; verificarea resurselor și `git diff --check` trecute. Publicarea autonomă pentru Windows x64 a eșuat la restaurarea pachetelor, deoarece conexiunea TLS către `api.nuget.org` nu a putut autentifica accesul (NU1301); executabilul de build framework-dependent este disponibil. Modificarea nu a trimis nicio cerere de ștergere către contul NewsBlur; verificarea manuală cu JAWS/NVDA a noilor dialoguri rămâne necesară.
+- Localizare: textele noi folosesc fallbackul românesc; traducerea și verificarea lor în toate cele opt limbi sunt necesare înaintea unei distribuții.
+- Decizie de siguranță: nu s-au modificat versiunea publică, Release-ul GitHub, manifestele WinGet sau GitHub Pages; nu s-a creat distribuție publică.
+- Executabil local de test (framework-dependent, rezultat din build): `bin/Release/net8.0-windows/Orizont.exe`. Pentru rulare este necesar .NET 8 Desktop Runtime; publicarea autonomă pentru test poate fi refăcută după restabilirea accesului NuGet. Nu s-a creat o distribuție.
+
+## 2026-09-12 — Rezolvarea conflictelor de metadate NewsBlur
+
+- Scop: închiderea următorului punct din roadmap fără suprascriere automată a numelui sau folderului când valoarea s-a schimbat diferit în Orizont RSS și NewsBlur.
+- Fișiere modificate în această etapă: `Models.cs`, `MainWindow.xaml.cs`, `tests/CoreSmoke/Program.cs`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`. Modificările locale din etapa anterioară au fost păstrate.
+- Funcții: numele și folderul sunt comparate independent cu baza ultimei sincronizări. Modificările fără suprapunere se combină. Pentru fiecare câmp schimbat diferit pe ambele părți, dialogul oferă Da (păstrează local și trimite în NewsBlur), Nu (preia valoarea NewsBlur local) sau Anulează (amână doar acel câmp; celelalte operații continuă). Alegerea locală actualizează baza numai după reușita API; erorile păstrează conflictul pentru următoarea încercare. Feedurile fără ID NewsBlur nu sunt marcate ca sincronizate cu succes.
+- Protecții: alegerea implicită a dialogului este Anulează; închiderea dialogului este tratată tot ca amânare, nu ca acceptare locală. Nicio valoare concurentă nu este înlocuită fără alegerea utilizatorului. Sincronizarea automată a articolelor și stărilor nu este schimbată.
+- Verificări: build Release reușit fără avertismente; CoreSmoke trecut cu 31 de verificări, inclusiv clasificarea conflictelor diferite, convergente, insensibile la majuscule pentru foldere și a editărilor într-o singură parte. LocalizationSmoke a trecut pentru cele șapte limbi secundare; scriptul a confirmat 942 de chei existente per limbă fără lipsuri sau erori; `git diff --check` a trecut. Dialogul nou nu a fost verificat manual cu JAWS/NVDA.
+- Localizare: textele noi ale dialogului folosesc încă fallbackul românesc; trebuie traduse și verificate în cele opt limbi înainte de distribuție.
+- Decizie de siguranță: nu s-a folosit sesiunea reală NewsBlur, nu s-au modificat abonamente remote, versiunea publică, Release-ul GitHub, WinGet sau GitHub Pages; nu s-a creat distribuție.
+- Executabil local de test (framework-dependent): `bin/Release/net8.0-windows/Orizont.exe`; necesită .NET 8 Desktop Runtime. Publicarea autonomă de test rămâne afectată de eroarea de autentificare TLS NU1301 către NuGet consemnată la etapa anterioară.
+
+## 2026-09-12 — Inițializare NewsBlur pe dispozitive noi și mutarea feedurilor în Neorganizate
+
+- Scop: ca NewsBlur să fie puntea comună între calculatoare: un profil Orizont curat importă inițial din NewsBlur, apoi sincronizează bidirecțional; ștergerea folderului nu trebuie să dezaboneze feedurile.
+- Fișiere modificate în această etapă: `AppSettings.cs`, `BackupPolicy.cs`, `NewsBlurConnection.cs`, `MainWindow.xaml.cs`, `tests/CoreSmoke/Program.cs`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`. Modificările preexistente din arborele de lucru au fost păstrate.
+- Funcții: marcajul inițializării este păstrat local per cont și exclus din backup. Prima sincronizare confirmată importă abonamentele/folderele și metadatele NewsBlur, păstrează feedurile reale locale care nu există remote și nu scrie în NewsBlur; feedurile demonstrative nu sunt sincronizate. După salvarea cu succes, sincronizarea feedurilor/folderelor devine bidirecțională. Instalările deja legate la NewsBlur sunt recunoscute și nu sunt retrogradate la import inițial. Sincronizarea articolelor/stărilor este blocată până la inițializarea abonamentelor.
+- Organizare și ștergere: folderul local „Neorganizate” corespunde feedurilor NewsBlur de nivel superior. Ștergerea folderului mută feedurile prin `move_feed_to_folder` cu valorile goale cerute pentru destinația/sursa de nivel superior; nu se apelează `delete_folder`. Ștergerea feedului din „Neorganizate” rămâne dezabonare explicită din coada existentă, cu confirmare separată. Categoria „Neorganizate” nu poate fi ștearsă ca folder obișnuit.
+- Sursă tehnică: documentația oficială NewsBlur — <https://www.newsblur.com/api>; `move_feed_to_folder` acceptă nume de folder goale pentru nivelul superior, iar `delete_folder` dezabonează feedurile din folder.
+- Verificări: build Release reușit cu 0 avertismente și 0 erori; CoreSmoke trecut cu 44 verificări, inclusiv markerul per cont, migrarea instalărilor deja sincronizate, excluderea exemplelor și parametrii de mutare la nivel superior; LocalizationSmoke a trecut pentru cele șapte limbi secundare; `git diff --check` a trecut. Căutarea codului nu a găsit apeluri către `/reader/delete_folder`.
+- Limitări/verificare manuală: nu s-a folosit sesiunea reală NewsBlur și nu s-au modificat abonamente remote. Dialogurile și fluxul cu JAWS/NVDA nu au fost testate manual. Noile mesaje folosesc momentan fallbackul românesc și trebuie traduse/verificate în toate cele opt limbi înaintea unei distribuții.
+- Decizie de siguranță: versiunea, Release-ul GitHub, WinGet și GitHub Pages nu au fost modificate; nu s-a creat distribuție.
+- Executabil local de test (framework-dependent): `bin/Release/net8.0-windows/Orizont.exe`; necesită .NET 8 Desktop Runtime.
+
+## 2026-09-12 — Pregătirea publicării GitHub 1.5.4
+
+- Cerere expresă: publicarea Orizont RSS 1.5.4 pe GitHub, inclusiv sursa, pagina publică și Release-ul cu portabilul și installerul.
+- Verificarea ramurilor: `local/1.5.4-checkpoint` este cu 17 commituri înaintea lui `main`; `main` local corespunde lui `origin/main` (`7d25724`). Tagul `v1.5.4` nu există încă. Publicarea va fi fast-forward, fără force push.
+- Fișiere publice de versiune actualizate: `README.md`, `PUBLICATION.md`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și toate cele opt pagini `docs/index*.html`; paginile afișează acum 1.5.4, iar README-ul leagă direct instalatorul.
+- Validarea completă rerulată pe `bin/Release/final-1.5.4-win-x64`: FULL VALIDATION PASSED; build Release 0 avertismente/erori; CoreSmoke 59 verificări; LocalizationSmoke pentru toate cele opt limbi; eSpeak NG 132 voci și 104 variante; verificare strictă 954/954 texte per limbă cu zero erori; ghidurile toate prezente și structura validă; distribuția are versiunea 1.5.4.0/1.5.4 și 444 fișiere eSpeak.
+- Hash-uri locale confirmate: portabil `Orizont-RSS-1.5.4-win-x64.zip` SHA-256 `1B32F73D6426B39F3B81BCE6F0DEAEA6B4218543EBAC3CFB456DCD479FDEDF24`; installer `OrizontSetup-1.5.4.exe` SHA-256 `18AA82319575CC14E3082E3E8ECA97054C26EA0AB42E0AF381A057B941BC808B`. Arhiva sursă publicată va include paginile 1.5.4 actualizate; hash-ul va fi furnizat prin fișierul sidecar `.sha256`.
+- Verificare manuală: JAWS/NVDA pe interfața 1.5.4 și testul NewsBlur pe al doilea calculator nu au fost efectuate de această sesiune; nu sunt declarate drept verificate.
+- Stare externă la consemnare: publicarea GitHub nu a fost încă finalizată; pagina Releases solicită autentificarea proprietarului pentru atașarea fișierelor. Nicio dată locală sau remote NewsBlur nu a fost accesată ori modificată.
+
+## 2026-09-12 — Distribuția locală Orizont RSS 1.5.4
+
+- Cerere aprobată: creare locală pentru Windows x64 cu arhivă portabilă, installer și sursă; nu publicare GitHub. Release-ul public 1.5.3, Pages și manifestele WinGet au rămas neschimbate.
+- Comportamente protejate: inițializarea NewsBlur pe profil nou rămâne import unidirecțional; sincronizările ulterioare sunt bidirecționale; feedurile demonstrative sunt excluse; feedurile și articolele locale neasociate se păstrează; nu s-a pornit aplicația pe profilul utilizatorului și nu s-a folosit sesiunea NewsBlur reală.
+- Localizare: mesajele NewsBlur și celelalte resurse noi au fost completate în engleză, spaniolă, franceză, germană, portugheză braziliană, maghiară și italiană. Verificarea strictă a raportat 954/954 chei în fiecare limbă, fără lipsuri, chei suplimentare, texte goale, erori de substituenți/termeni/structură sau marcatori interni. Etichetele simbolice și `OAuth` au rămas intenționat comune.
+- Fișiere de versiune/documentație actualizate: `CititorRSS.Jaws.csproj`, `packaging/installer/OrizontSetup.csproj`, `packaging/installer/MainWindow.xaml.cs`, `packaging/installer/InstallerLanguage.cs`, `tests/LocalizationSmoke/Program.cs`, `tools/verify-all.ps1`, `tools/verify-distribution.ps1`, `BUILDING.md`, `CHANGELOG.md`, `RELEASE-NOTES-1.5.4.md`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`; resursele celor șapte limbi au fost actualizate. Schimbările preexistente în cod și documente au fost păstrate.
+- Installer: pachetul offline 1.5.4 încorporează arhiva portabilă și hash-ul SHA-256; hash-ul resursei extrase din assembly corespunde arhivei. Dacă lipsește payload-ul offline, installerul 1.5.4 nu descarcă accidental versiunea publică 1.5.3. Mărime installer: 247.188.504 bytes.
+- Verificări: build aplicație și installer fără avertismente/erori; CoreSmoke 59; LocalizationSmoke în ro-RO plus șapte limbi; EspeakSmoke 132 voci/104 variante; verificarea strictă a localizării și a ghidurilor; `verify-all.ps1` a raportat `FULL VALIDATION PASSED`; distribuția portabilă are versiunea fișierului 1.5.4.0, produs 1.5.4 și 444 fișiere eSpeak; `git diff --check` trecut. Restaurarea runtime-ului oficial .NET 8.0.31 a reușit după un eșec TLS inițial; auditul NuGet nu a fost dezactivat permanent.
+- Arhivă portabilă locală: `../Orizont-RSS-1.5.4-win-x64.zip`, 85.477.525 bytes, SHA-256 `1B32F73D6426B39F3B81BCE6F0DEAEA6B4218543EBAC3CFB456DCD479FDEDF24`.
+- Installer offline local: `../OrizontSetup-1.5.4.exe`, 247.188.504 bytes, SHA-256 `18AA82319575CC14E3082E3E8ECA97054C26EA0AB42E0AF381A057B941BC808B`.
+- Arhivă sursă locală: `../Orizont-RSS-1.5.4-source.zip`, cu sursa și documentația actuală, fără `.git`, directoare `bin/obj`, setări sau date personale; verificarea arhivei a confirmat fișierele-cheie și absența fișierelor de build/date locale. Hash-ul este în fișierul `.sha256` alăturat.
+- Verificare manuală: instalarea/dezinstalarea și traseele JAWS/NVDA nu au fost simulate automat, ca să nu schimbe profilul Windows sau să pretindă acceptare de către cititorul de ecran. Rămân testabile de utilizator.
+- Executabil autonom de test: `bin/Release/final-1.5.4-win-x64/Orizont.exe`.
+
+## 2026-09-12 — Corectarea adresei exemplului RSS HotNews
+
+- Scop: continuarea verificării manuale a exemplelor RSS din foaia de parcurs după ce utilizatorul a primit în JAWS mesajul că aplicația nu se poate conecta la serverul HotNews.
+- Fișiere modificate: `DemoFeedCatalog.cs`, `tests/CoreSmoke/Program.cs`, `docs/ROADMAP.md`, `docs/PROJECT-STATUS.md` și `WORKLOG.md`.
+- Diagnostic: catalogul folosea `https://rss.hotnews.ro`; rezolvarea DNS a eșuat cu „No such host is known”. Pagina HotNews care menționează această adresă este din 2008. Adresa `https://hotnews.ro/feed` de pe domeniul oficial a răspuns în verificarea web cu tipul `application/rss+xml`; descărcarea directă din mediul local nu a putut fi confirmată din cauza erorilor locale DNS/TLS.
+- Modificare: exemplul românesc indică acum `https://hotnews.ro/feed`. Nu s-au schimbat alte feeduri, feeduri personale, setări sau date NewsBlur.
+- Verificări: build Release reușit cu 0 avertismente și 0 erori; CoreSmoke trecut cu 45 de verificări; `git diff --check` trecut, cu avertismente informative LF→CRLF. Confirmarea că aplicația adaugă articolele de la noua adresă și verificarea focalizării/ștergerii rămân manuale cu JAWS.
+- Decizie de siguranță: nu s-a creat distribuție și nu s-a modificat versiunea publică.
+- Executabil local de test (framework-dependent): `bin/Release/net8.0-windows/Orizont.exe`; necesită .NET 8 Desktop Runtime.
+
+## 2026-09-12 — Aplicarea retenției locale în fluxurile RSS și NewsBlur
+
+- Scop: respectarea perioadei de păstrare configurate și împiedicarea reapariției în Orizont a articolelor NewsBlur expirate, fără ștergeri remote.
+- Fișiere modificate pentru această intervenție: `ArticleRetention.cs`, `MainWindow.xaml.cs`, `tests/CoreSmoke/Program.cs`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`. Modificările preexistente din arborele de lucru au fost păstrate.
+- Funcționare: după o rundă de actualizare RSS, Orizont curăță articolele obișnuite expirate chiar dacă unele feeduri au eșuat sau actualizarea a fost oprită; favoritele și „Mai târziu” se păstrează. La sincronizarea NewsBlur, curățarea locală se aplică înaintea cererilor, iar articolele remote expirate sunt ignorate la import. Stelele NewsBlur păstrează articolul potrivit mapării Favorite/Mai târziu configurate.
+- Protecții: nu se apelează API pentru ștergerea articolelor și nu se modifică sesiunea, abonamentele ori istoricul din NewsBlur. Feedurile, setările și datele locale existente nu au fost deschise sau modificate de un test live.
+- Verificări: `dotnet build CititorRSS.Jaws.csproj -c Release --no-restore` reușit cu 0 avertismente și 0 erori; CoreSmoke a trecut cu 47 verificări; `git diff --check` a trecut (doar avertismentele Git informative LF→CRLF pentru fișiere existente).
+- Verificare manuală: nu s-a folosit sesiunea NewsBlur reală și nu s-a simulat o indisponibilitate reală de feed; executabilul local este oferit utilizatorului pentru verificarea comportamentului cu datele sale. Schimbarea nu modifică interfața sau comenzile de tastatură.
+- Decizie de siguranță: nu s-a creat distribuție și nu s-au modificat versiunea publică, Release-ul GitHub, WinGet sau GitHub Pages. Mesajele noi folosesc fallbackul românesc și trebuie traduse/verificate în cele opt limbi înaintea unei distribuții.
+- Executabil local de test (framework-dependent): `bin/Release/net8.0-windows/Orizont.exe`; necesită .NET 8 Desktop Runtime.
+
+## 2026-09-12 — NewsBlur ca sursă principală pentru articole
+
+- Scop aprobat: Orizont RSS să folosească NewsBlur ca punte de articole între calculatoare, păstrând administrarea abonamentelor și a folderelor în Orizont și fără schimbări structurale automate.
+- Fișiere modificate în această etapă: `MainWindow.xaml.cs`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`. Modificările locale preexistente din proiect au fost păstrate.
+- Funcționare: actualizarea manuală a unui feed sau a tuturor, actualizarea la pornire și actualizarea automată configurată încearcă NewsBlur mai întâi. Articolele și stările continuă să folosească mecanismul bidirecțional existent. Se folosește RSS direct numai dacă feedul nu există în contul NewsBlur, cererea generală nu poate fi făcută sau cererea pentru acel feed eșuează; răspunsul valid fără articole nu este tratat drept eroare. Fără sesiune NewsBlur utilizabilă, aplicația păstrează actualizarea RSS existentă.
+- Protecții: un feed reușit prin NewsBlur își curăță contorul și mesajul de erori RSS anterioare, fără a șterge statutul de trei luni fără articole noi. Oprirea anulează cererea curentă, păstrează articolele deja primite și nu pornește fallback după anulare. Eșecul trimiterii unor stări nu aruncă articolele deja preluate. Alertele sonore existente sunt păstrate. Feedurile/folderele și dezabonările nu se sincronizează automat; acestea rămân pe comenzile explicite existente.
+- Verificări: `dotnet build CititorRSS.Jaws.csproj -c Release --no-restore` a reușit cu 0 avertismente și 0 erori; CoreSmoke a trecut cu 47 de verificări; LocalizationSmoke a trecut pentru `en-US`, `es-ES`, `fr-FR`, `de-DE`, `pt-BR`, `hu-HU` și `it-IT`. `git diff --check` a trecut; Git a emis doar avertismente informative că fișierele cu LF vor fi normalizate la CRLF.
+- Limitări: nu s-a deschis aplicația cu profilul utilizatorului, nu s-a apelat NewsBlur și nu s-au schimbat datele remote; astfel, JAWS 2026 și sesiunea NewsBlur reală trebuie verificate manual. Textele noi sunt în română până la traducerea controlată pentru celelalte limbi.
+- Decizie: nu s-a creat distribuție și nu s-au modificat versiunea publică, Release-ul GitHub, WinGet sau GitHub Pages.
+- Executabil local de test (framework-dependent): `bin/Release/net8.0-windows/Orizont.exe`; necesită .NET 8 Desktop Runtime.
+
+## 2026-09-12 — Oglindirea bidirecțională automată a structurii NewsBlur
+
+- Scop confirmat de utilizator: Orizont RSS și NewsBlur să oglindească abonamentele și organizarea, astfel încât modificările de pe un calculator să ajungă pe celelalte prin contul NewsBlur.
+- Fișiere modificate în această etapă: `Models.cs`, `NewsBlurConnection.cs`, `MainWindow.xaml.cs`, `SettingsWindow.xaml.cs`, `tests/CoreSmoke/Program.cs`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`. Modificările deja prezente în arborele de lucru au fost păstrate.
+- Funcționare: după importul inițial confirmat pe un profil nou, oglindirea structurală rulează la pornirea aplicației când există sesiune NewsBlur și la intervalul setat dacă sincronizarea automată este activată. Adăugările, redenumirile și mutările de feeduri/foldere se propagă; schimbarea locală a URL-ului devine dezabonarea vechiului feed plus adăugarea celui nou. Ștergerea locală deja confirmată se transmite la sincronizare fără o a doua confirmare. Ștergerea remote elimină feedul și articolele locale asociate, iar celelalte calculatoare o vor prelua la următoarea sincronizare.
+- Conflicte: editările independente se combină; conflictele simultane de nume/folder se amână în fundal și pot fi decise la o sincronizare manuală. După abonarea unui feed local nou, numele și folderul local sunt trimise la prima observare a feedului de către indexul NewsBlur, pentru a nu pierde eticheta locală.
+- Referință API: documentația oficială NewsBlur — <https://www.newsblur.com/api> (abonare, redenumire, mutare și dezabonare feed; `delete_folder` nu este folosit).
+- Protecții: înaintea oricărei mutații, exportul OPML și indexul `/reader/feeds?flat=true` trebuie să fie valide și să conțină aceleași adrese normalizate; la neconcordanță sincronizarea nu scrie și nu șterge nimic. Identitățile feedurilor asociate sunt verificate și duplicatele locale opresc oglindirea. Un folder local șters mută feedurile la nivelul superior, nu apelează endpointul NewsBlur `delete_folder`. Folderele complet goale nu pot fi oglindite, deoarece modelul local le deduce din feeduri.
+- Verificări: build Release trecut cu 0 avertismente și 0 erori; CoreSmoke trecut cu 54 verificări, inclusiv snapshoturi complete/incomplete, normalizarea adreselor și clasificarea ștergerilor remote; LocalizationSmoke trecut pentru cele șapte limbi secundare; `git diff --check` trecut (numai avertismentele Git informative LF→CRLF).
+- Verificare manuală rămasă: nu s-a folosit sesiunea reală NewsBlur și nu s-au modificat date remote. Noul flux trebuie testat de utilizator cu contul său și pe al doilea calculator; anunțurile/focalizarea necesită verificare țintită cu JAWS/NVDA. Mesajele noi folosesc fallbackul românesc și trebuie traduse în toate cele opt limbi înaintea unei distribuții.
+- Decizie de siguranță: nu s-a creat distribuție și nu s-au schimbat versiunea publică, Release-ul GitHub, WinGet sau GitHub Pages.
+- Executabil local de test (framework-dependent): `bin/Release/net8.0-windows/Orizont.exe`; necesită .NET 8 Desktop Runtime.
+
+## 2026-09-12 — Dialoguri accesibile pentru duplicate și decizii NewsBlur
+
+- Scop aprobat: la sincronizarea feedurilor/folderelor NewsBlur, utilizatorul să poată înțelege care adrese locale sunt duplicate și dialogurile de decizie să primească focalizare previzibilă.
+- Comportamente protejate: sincronizarea continuă să se oprească înaintea oricărei mutații când există duplicate locale sau snapshot NewsBlur nevalid; nu se comasează și nu se șterge nimic fără confirmare separată; sincronizarea nu este relansată automat după curățare.
+- Fișiere modificate pentru această intervenție: `MainWindow.xaml.cs`, `NewsBlurConnection.cs`, `NewsBlurDecisionWindow.xaml`, `NewsBlurDecisionWindow.xaml.cs`, `tests/CoreSmoke/Program.cs`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`. Schimbările preexistente și modificările din turele anterioare au fost păstrate.
+- Funcționare: oprirea pentru duplicate locale deschide acum o fereastră cu grupurile, numele, folderele și adresele normalizate. Utilizatorul poate anula sau poate deschide curățarea existentă, care cere confirmarea proprie; apoi sincronizarea trebuie pornită din nou. Duplicatele detectate în răspunsul NewsBlur sunt prezentate separat, fără a pretinde că pot fi șterse local de pe server. Confirmările sincronizării inițiale/manuale și rezolvările de conflict, precum și confirmările relevante din curățarea duplicatelor, folosesc dialoguri WPF cu focalizare explicită pe textul explicativ, Tab către opțiuni, Escape și opțiune sigură implicită.
+- Verificări automate: build Release reușit cu 0 avertismente și 0 erori; CoreSmoke trecut cu 55 de verificări, inclusiv gruparea duplicatelor normalizate; LocalizationSmoke trecut pentru cele șapte limbi secundare; `git diff --check` trecut. Avertismentele Git privind normalizarea LF→CRLF sunt informative.
+- Verificare manuală: nu a fost lansată aplicația pe profilul utilizatorului și nu s-a folosit o sesiune reală NewsBlur, pentru a evita pornirea sincronizării automate sau modificarea datelor remote. Confirmarea JAWS/NVDA pentru deschiderea dialogului, citirea textului și traseul Tab/Enter/Escape rămâne necesară.
+- Localizare: textele noi folosesc fallbackul românesc și trebuie traduse/verificate în toate cele opt limbi înaintea unei distribuții.
+- Decizie: nu s-a creat distribuție, nu s-au schimbat feeduri, setări, istoric sau date NewsBlur și nu s-a modificat release-ul public.
+- Executabil local de test (framework-dependent): `bin/Release/net8.0-windows/Orizont.exe`; necesită .NET 8 Desktop Runtime.
+## 2026-09-12 — Mesaje accesibile pentru panourile fără selecție sau conținut
+
+- Scop aprobat: panourile goale să explice clar când lipsește selecția unui feed/articol sau când lista nu are rezultate, fără să afișeze mesaj peste conținut real.
+- Comportamente protejate: nu s-au schimbat selecția implicită, navigarea cu tastele, filtrele, feedurile, articolele, setările sau sincronizarea NewsBlur; mesajele sunt suprapuse fără a primi focus și se ascund când panoul are elemente sau text.
+- Funcționare: lista Feeduri distinge lipsa tuturor feedurilor de o vizualizare fără feeduri; lista Articole distinge lipsa feedului selectat de filtre fără rezultate; cititorul anunță când nu este selectat un articol sau când conținutul selectat nu este afișat. Textele sunt regiuni live UI Automation, anunțate la schimbare când panoul respectiv are focus; mesajul rămâne în numele accesibil al controlului pentru navigarea ulterioară.
+- Fișiere modificate: `MainWindow.xaml`, `MainWindow.xaml.cs`, cele opt resurse `Resources/UiStrings*.resx`, `tests/LocalizationSmoke/Program.cs`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`.
+- Verificări: build Release trecut cu 0 avertismente și 0 erori; CoreSmoke trecut cu 56 de verificări; LocalizationSmoke trecut pentru `en-US`, `es-ES`, `fr-FR`, `de-DE`, `pt-BR`, `hu-HU` și `it-IT`, inclusiv cele șase texte noi; `git diff --check` trecut. Avertismentele Git LF→CRLF sunt informative.
+- Verificare manuală: nu s-a lansat aplicația pe profilul utilizatorului, deoarece pornirea poate declanșa sincronizarea NewsBlur; JAWS/NVDA trebuie folosite pentru confirmarea anunțului live și a numelor accesibile, fără a schimba navigarea.
+- Decizie: nu s-a creat distribuție și nu s-au modificat versiunea publică, GitHub, NewsBlur sau datele locale.
+- Executabil local de test (framework-dependent): `bin/Release/net8.0-windows/Orizont.exe`; necesită .NET 8 Desktop Runtime.
+## 2026-09-12 — Numărul de articole la selectarea unui folder
+
+- Simptom raportat: după selectarea unui folder, numărul de feeduri era corect, dar numărul de articole reflecta vizualizarea globală.
+- Cauză: la restaurarea sesiunii putea rămâne activ modul „Citește acum”; schimbarea folderului actualiza lista de feeduri, dar nu dezactiva acest mod, iar lista de articole continua să agregheze toate feedurile.
+- Corecție: schimbarea folderului dezactivează acum „Citește acum” înainte de reîncărcarea listei; articolele și numărul anunțat se calculează pentru folderul ales, cu filtrele existente păstrate.
+- Comportamente protejate: selectarea și numărul feedurilor, filtrele active, navigarea cu tastatura, funcționarea explicită a butonului „Citește acum” și starea feedurilor/articolelor locale nu sunt modificate.
+- Fișiere modificate: `MainWindow.xaml.cs`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`.
+- Verificări: build Release reușit cu 0 avertismente și 0 erori; CoreSmoke trecut cu 56 de verificări; LocalizationSmoke trecut pentru toate cele opt limbi; `git diff --check` trecut, cu avertismente informative de normalizare LF→CRLF. Verificarea manuală cu JAWS/NVDA rămâne necesară pentru anunțul numărului în folder.
+- Executabil local de test (framework-dependent): `bin/Release/net8.0-windows/Orizont.exe`; necesită .NET 8 Desktop Runtime.
+- Decizie: nu s-a creat distribuție și nu s-au schimbat feeduri, setări, versiunea publică sau date NewsBlur.
+
+## 2026-09-12 — Sincronizare NewsBlur după curățarea duplicatelor
+
+- Cerință confirmată: după fiecare curățare reușită, sincronizarea feedurilor și folderelor să ruleze automat pentru ca NewsBlur să nu reimporte feedurile suprapuse eliminate.
+- Comportamente păstrate: curățarea cere în continuare confirmarea existentă; o copie locală cu aceeași adresă normalizată ca feedul păstrat nu produce dezabonare; feedurile demonstrative sunt excluse; snapshoturile NewsBlur incomplete sau duplicate opresc mutațiile; inițializarea unui profil nou rămâne import unidirecțional.
+- Modificări: feedurile suprapuse eliminate sunt adăugate în coada persistentă de dezabonare, cu identificator NewsBlur dacă este cunoscut sau adresă pentru rezolvare la sincronizare. Sincronizarea post-curățare pornește automat când contul este conectat. Dacă instrumentul este deschis dintr-o sincronizare deja în curs, sincronizarea curentă se reia după curățare, fără concurență. În prima inițializare, adresele marcate pentru ștergere nu sunt reimportate local, dar NewsBlur nu este modificat până la o sincronizare bidirecțională ulterioară.
+- Fișiere modificate pentru această intervenție: `MainWindow.xaml.cs`, `NewsBlurConnection.cs`, `tests/CoreSmoke/Program.cs`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`. Schimbările preexistente din arborele de lucru au fost păstrate.
+- Verificări: build Release reușit fără avertismente și erori; CoreSmoke trecut cu 59 de verificări; LocalizationSmoke trecut pentru toate cele opt limbi; `git diff --check` trecut (doar avertismente Git informative despre normalizarea LF→CRLF).
+- Verificare manuală: nu a fost lansată aplicația pe profilul utilizatorului și nu a fost folosită sesiunea NewsBlur reală, pentru a nu modifica abonamente remote. JAWS/NVDA și confirmarea pe contul real rămân de verificat de utilizator.
+- Decizie: nu s-a creat distribuție și nu s-au schimbat feeduri locale, NewsBlur, versiunea publică, GitHub, WinGet sau GitHub Pages.
+- Executabil local de test (framework-dependent): `bin/Release/net8.0-windows/Orizont.exe`; necesită .NET 8 Desktop Runtime.

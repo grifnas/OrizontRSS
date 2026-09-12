@@ -50,10 +50,17 @@ Acest director nu trebuie inclus într-o distribuție sau într-un raport public
 Validarea completă, inclusiv testele automate pentru logică, 1.200 de articole, localizare, eSpeak NG, ghiduri și distribuție, se rulează astfel:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\verify-all.ps1 -DistributionPath .\bin\Release\final-win-x64
+powershell -ExecutionPolicy Bypass -File tools\verify-all.ps1 -DistributionPath .\bin\Release\final-1.5.4-win-x64
 ```
 
-Comanda verifică distribuția pentru versiunea 1.5.3.
+Comanda verifică distribuția locală pentru versiunea 1.5.4.
+
+Pentru installerul offline local, construiește mai întâi arhiva portabilă și fișierul
+`.sha256`, apoi publică proiectul `packaging\installer\OrizontSetup.csproj` cu
+proprietățile `OfflinePackageZip` și `OfflinePackageHash` setate la căile acestor
+fișiere. Ambele sunt incluse în installer, iar hash-ul este verificat înainte de
+extragere. Un installer 1.5.4 fără pachetul inclus se oprește; nu descarcă accidental
+versiunea publică anterioară 1.5.3.
 
 ## Verificarea localizării
 
@@ -81,6 +88,6 @@ Structura ghidurilor HTML, legăturile interne și scurtăturile protejate se ve
 powershell -ExecutionPolicy Bypass -File tools\verify-user-guides.ps1
 ```
 
-Distribuția trebuie să conțină ghidul român și fișierele `.en.html`, `.es.html`, `.fr.html`, `.de.html` și `.pt.html`. Aplicația deschide ghidul corespunzător limbii interfeței și revine la cel român dacă traducerea lipsește.
+Distribuția trebuie să conțină ghidul român și fișierele `.en.html`, `.es.html`, `.fr.html`, `.de.html`, `.pt.html`, `.hu.html` și `.it.html`. Aplicația deschide ghidul corespunzător limbii interfeței și revine la cel român dacă traducerea lipsește.
 
 În timpul dezvoltării, o traducere lipsă revine la textul românesc de bază; interfața nu afișează etichete goale.

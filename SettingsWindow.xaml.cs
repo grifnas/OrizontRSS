@@ -56,12 +56,16 @@ public partial class SettingsWindow : Window
         AutomationProperties.SetName(NewsBlurAutoSyncEnabled, T("Activează sincronizarea automată NewsBlur"));
         NewsBlurAutoSyncMinutesLabel.Content = T("Interval sincronizare automată");
         AutomationProperties.SetName(NewsBlurAutoSyncMinutes, T("Interval sincronizare automată NewsBlur"));
-        NewsBlurAutoSyncNotice.Text = T("Sincronizarea automată preia articolele și stările. Feedurile și folderele se sincronizează numai la comandă, pentru a evita modificările structurale neașteptate.");
+        NewsBlurAutoSyncNotice.Text = T("Sincronizarea automată oglindește abonamentele și folderele NewsBlur, apoi sincronizează articolele și stările. Are loc și la pornire când există o sesiune conectată. Ștergerile confirmate se propagă; conflictele simultane de nume sau folder așteaptă rezolvarea manuală.");
         AutomationProperties.SetName(TestSoundButton, T("Testează sunetul"));
         EspeakPitchLabel.Content = T("Înălțimea vocii eSpeak, de la 0 la 100");
         AutomationProperties.SetName(SpeechEngine, T("Motor vocal"));
         AutomationProperties.SetName(SpeechVoice, T("Vocea motorului vocal"));
         AutomationProperties.SetName(EspeakPitch, T("Înălțimea vocii eSpeak"));
+        EspeakVariantLabel.Content = T("Variantă vocală eSpeak NG");
+        AutomationProperties.SetName(EspeakVariant, T("Variantă vocală eSpeak NG"));
+        EspeakInflectionLabel.Content = T("Intonația vocii eSpeak, de la 0 la 100");
+        AutomationProperties.SetName(EspeakInflection, T("Intonația vocii eSpeak"));
         _initialLanguage = UiCulture.NormalizeSelection(settings.UiLanguage);
         foreach (var language in UiCulture.SupportedLanguages) UiLanguage.Items.Add(language);
         UiLanguage.SelectedItem = UiLanguage.Items.Cast<UiLanguage>().First(language => language.Code == _initialLanguage);
@@ -86,6 +90,8 @@ public partial class SettingsWindow : Window
         SpeechRate.SelectedItem = Math.Clamp(settings.SpeechRate, -10, 10);
         for (var pitch = 0; pitch <= 100; pitch += 10) EspeakPitch.Items.Add(pitch);
         EspeakPitch.SelectedItem = Math.Clamp((settings.EspeakPitch / 10) * 10, 0, 100);
+        for (var inflection = 0; inflection <= 100; inflection += 10) EspeakInflection.Items.Add(inflection);
+        EspeakInflection.SelectedItem = Math.Clamp((settings.EspeakInflection / 10) * 10, 0, 100);
         SpeechEngine.SelectedItem = SpeechEngine.Items.Cast<ComboBoxItem>()
             .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), SpeechEngineIds.Normalize(settings.SpeechEngine), StringComparison.OrdinalIgnoreCase))
             ?? SpeechEngine.Items[0];
@@ -182,6 +188,11 @@ public partial class SettingsWindow : Window
         else if (Settings.SpeechEngine == SpeechEngineIds.GeminiTts) Settings.GeminiVoiceName = voice?.Id ?? "Charon";
         else Settings.SpeechVoiceName = voice?.Id;
         Settings.EspeakPitch = EspeakPitch.SelectedItem is int pitch ? pitch : 50;
+        if (Settings.SpeechEngine == SpeechEngineIds.EspeakNg)
+        {
+            Settings.EspeakVariant = (EspeakVariant.SelectedItem as SpeechVoiceChoice)?.Id ?? string.Empty;
+            Settings.EspeakInflection = EspeakInflection.SelectedItem is int inflection ? inflection : 100;
+        }
         Settings.SpeechRate = SpeechRate.SelectedItem is int rate ? rate : 0;
         Settings.SpeechVolume = int.TryParse((SpeechVolume.SelectedItem as ComboBoxItem)?.Tag?.ToString(), out var volume) ? volume : 100;
         Settings.StopSpeechWhenLeavingArticle = StopSpeechWhenLeavingArticle.IsChecked == true;
@@ -205,7 +216,9 @@ public partial class SettingsWindow : Window
             volume,
             EspeakPitch.SelectedItem is int pitch ? pitch : 50,
             SelectedSpeechEngine() == SpeechEngineIds.GeminiTts ? voice?.Id : Settings.GeminiVoiceName,
-            ReadSavedGeminiKey());
+            ReadSavedGeminiKey(),
+            (EspeakVariant.SelectedItem as SpeechVoiceChoice)?.Id,
+            EspeakInflection.SelectedItem is int inflection ? inflection : 100);
         if (!_speech.Configure(configuration) || !_speech.Speak(T("Aceasta este vocea selectată pentru Orizont RSS.")))
         {
             SpeechStatus.Text = T("Vocea nu a putut fi testată.");
@@ -239,8 +252,20 @@ public partial class SettingsWindow : Window
 
         SpeechVoice.IsEnabled = SpeechVoice.Items.Count > 0;
         TestSpeechButton.IsEnabled = SpeechVoice.IsEnabled;
+        var isEspeak = engine == SpeechEngineIds.EspeakNg;
+        EspeakVariantPanel.Visibility = isEspeak ? Visibility.Visible : Visibility.Collapsed;
         EspeakPitchPanel.Visibility = engine == SpeechEngineIds.EspeakNg ? Visibility.Visible : Visibility.Collapsed;
+        EspeakInflectionPanel.Visibility = isEspeak ? Visibility.Visible : Visibility.Collapsed;
         GeminiSpeechNotice.Visibility = engine == SpeechEngineIds.GeminiTts ? Visibility.Visible : Visibility.Collapsed;
+        EspeakVariant.Items.Clear();
+        if (isEspeak)
+        {
+            EspeakVariant.Items.Add(new SpeechVoiceChoice(string.Empty, T("Vocea implicită a limbii")));
+            foreach (var variant in _speech.InstalledVariants(engine)) EspeakVariant.Items.Add(variant);
+            EspeakVariant.SelectedItem = EspeakVariant.Items.Cast<SpeechVoiceChoice>()
+                .FirstOrDefault(item => string.Equals(item.Id, Settings.EspeakVariant, StringComparison.OrdinalIgnoreCase))
+                ?? EspeakVariant.Items[0];
+        }
         SpeechVoiceLabel.Content = engine switch
         {
             SpeechEngineIds.EspeakNg => T("Voce eSpeak NG"),
@@ -255,7 +280,7 @@ public partial class SettingsWindow : Window
                 ?? SpeechVoice.Items[0];
             SpeechStatus.Text = engine switch
             {
-                SpeechEngineIds.EspeakNg => F("Au fost găsite {0} voci eSpeak NG incluse.", SpeechVoice.Items.Count),
+                SpeechEngineIds.EspeakNg => F("Au fost găsite {0} voci și {1} variante eSpeak NG incluse.", SpeechVoice.Items.Count, EspeakVariant.Items.Count - 1),
                 SpeechEngineIds.GeminiTts when string.IsNullOrWhiteSpace(ReadSavedGeminiKey()) => F("Sunt disponibile {0} voci Gemini. Pentru test este necesară o cheie API salvată.", SpeechVoice.Items.Count),
                 SpeechEngineIds.GeminiTts => F("Sunt disponibile {0} voci Gemini online.", SpeechVoice.Items.Count),
                 _ => F("Au fost găsite {0} voci SAPI5 instalate.", SpeechVoice.Items.Count)

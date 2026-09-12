@@ -4,6 +4,7 @@ using System.Text;
 var samples = 0;
 Native.SynthCallback callback = (wave, count, events) => { samples += Math.Max(0, count); return 0; };
 var engineDirectory = Path.Combine(AppContext.BaseDirectory, "SpeechEngines", "eSpeakNG");
+var variantDirectory = Path.Combine(engineDirectory, "espeak-ng-data", "voices", "!v");
 var sampleRate = Native.espeak_Initialize(1, 0, engineDirectory, 0);
 if (sampleRate <= 0) return Fail("Inițializarea eSpeak NG a eșuat.");
 Native.espeak_SetSynthCallback(callback);
@@ -24,14 +25,28 @@ for (var index = 0; ; index++)
     if (string.Equals(language, "ro", StringComparison.OrdinalIgnoreCase)) romanianListed = true;
 }
 if (!romanianListed) return Fail("Vocea română nu apare în lista vocilor eSpeak NG.");
+var variants = Directory.Exists(variantDirectory)
+    ? Directory.GetFiles(variantDirectory).Select(path => Path.GetFileName(path)!).ToHashSet(StringComparer.OrdinalIgnoreCase)
+    : new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+foreach (var required in new[] { "ian", "mike2", "Reed" })
+    if (!variants.Contains(required)) return Fail($"Varianta eSpeak {required} lipsește din datele incluse.");
 if (Native.espeak_SetVoiceByName("ro") != 0) return Fail("Vocea română eSpeak NG nu a fost găsită.");
 var text = Encoding.UTF8.GetBytes("Orizont RSS citește corect în limba română.\0");
 var result = Native.espeak_Synth(text, (nuint)text.Length, 0, 1, 0, 1u | 0x1000u, IntPtr.Zero, IntPtr.Zero);
 if (result != 0) return Fail($"Sinteza eSpeak NG a returnat eroarea {result}.");
 Native.espeak_Synchronize();
+foreach (var variant in new[] { "en+ian", "en+mike2", "en+Reed" })
+{
+    if (Native.espeak_SetVoiceByName(variant) != 0) return Fail($"Varianta eSpeak {variant} nu a putut fi încărcată.");
+    Native.espeak_SetParameter(4, 75, 0);
+    var variantText = Encoding.UTF8.GetBytes("Testing the selected eSpeak voice variant.\0");
+    var variantResult = Native.espeak_Synth(variantText, (nuint)variantText.Length, 0, 1, 0, 1u | 0x1000u, IntPtr.Zero, IntPtr.Zero);
+    if (variantResult != 0) return Fail($"Sinteza cu {variant} a returnat eroarea {variantResult}.");
+    Native.espeak_Synchronize();
+}
 GC.KeepAlive(callback);
 if (samples < sampleRate / 4) return Fail($"Au fost obținute prea puține eșantioane audio: {samples}.");
-Console.WriteLine($"OK: eSpeak NG, {voiceCount} voci, voce ro, {sampleRate} Hz, {samples} eșantioane.");
+Console.WriteLine($"OK: eSpeak NG, {voiceCount} voci, {variants.Count} variante, voce ro și variante Ian/Mike2/Reed sintetizate cu intonație, {sampleRate} Hz, {samples} eșantioane.");
 return 0;
 
 static int Fail(string message) { Console.Error.WriteLine(message); return 1; }
@@ -59,6 +74,8 @@ static class Native
     internal static extern int espeak_Initialize(int output, int bufferLength, string path, int options);
     [DllImport("libespeak-ng.dll", CallingConvention = CallingConvention.Cdecl)]
     internal static extern void espeak_SetSynthCallback(SynthCallback callback);
+    [DllImport("libespeak-ng.dll", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern int espeak_SetParameter(int parameter, int value, int relative);
     [DllImport("libespeak-ng.dll", CallingConvention = CallingConvention.Cdecl)]
     internal static extern IntPtr espeak_ListVoices(IntPtr voiceSpec);
     [DllImport("libespeak-ng.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]

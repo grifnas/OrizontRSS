@@ -7,6 +7,9 @@
 - Fișier inclus: `libespeak-ng.dll`, Windows x64
 - SHA-256 DLL: `E737572DF0A35A32B7BD444537C661C1C916B13B0B91351030C7F1D531307BEB`
 - Date incluse: directorul oficial `espeak-ng-data`
+- Variante vocale verificate față de sursa oficială eSpeak NG 1.52.0: `ian`, `mike2` și `Reed`, adăugate în `voices/!v` pentru a completa setul disponibil în Orizont Interpret.
+- Sursa variantelor: https://github.com/espeak-ng/espeak-ng/tree/1.52.0/espeak-ng-data/voices/%21v
+- Licență: GPL-3.0-or-later, conform licenței proiectului eSpeak NG; fișierele de date originale și licențele eSpeak NG sunt păstrate.
 
 Fișierele au fost extrase din pachetul oficial fără instalarea MSI. Executabilul `espeak-ng.exe` nu este inclus și nu este folosit de Orizont RSS. Biblioteca este apelată direct pentru sinteză, iar datele audio sunt redate local de aplicație.
 

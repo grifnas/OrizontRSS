@@ -21,6 +21,8 @@ public sealed class Feed
     /// <summary>Last NewsBlur feed name and folder acknowledged by a completed sync.</summary>
     public string? NewsBlurLastName { get; set; }
     public string? NewsBlurLastFolder { get; set; }
+    /// <summary>Local metadata must be sent after this feed has first been added to NewsBlur.</summary>
+    public bool NewsBlurPendingLocalMetadataSync { get; set; }
     public List<Article> Articles { get; set; } = [];
     public bool HasThreeMonthSilence => DateTimeOffset.Now - (LastArticleReceivedOn ?? LastSuccessfulUpdate ?? AddedOn) >= TimeSpan.FromDays(90);
     public bool NeedsAttention => ConsecutiveFailures >= 3 || HasThreeMonthSilence;
@@ -28,6 +30,22 @@ public sealed class Feed
     public string DisplayName => UiText.Format("{0}{1}{2}, folder: {3}, {4} articole", IsDemo ? UiText.Format("{0}: ", UiText.Translate("Exemplu demonstrativ")) : string.Empty, NeedsAttention ? UiText.Format("Necesită atenție: {0}. ", AttentionReason) : string.Empty, Name, Folder, Articles.Count);
     public string VisualDetails => UiText.Format("{0}Folder: {1} · {2} articole", IsDemo ? UiText.Format("{0} · ", UiText.Translate("Exemplu demonstrativ")) : string.Empty, Folder, Articles.Count);
     public string VisualWarning => NeedsAttention ? UiText.Format("Necesită atenție: {0}", AttentionReason) : string.Empty;
+}
+
+/// <summary>A locally confirmed feed deletion waiting for explicit NewsBlur synchronization.</summary>
+public sealed class NewsBlurPendingFeedDeletion
+{
+    public string FeedId { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Folder { get; set; } = "Neorganizate";
+    public DateTimeOffset QueuedAt { get; set; } = DateTimeOffset.UtcNow;
+}
+
+public static class NewsBlurMetadataConflictPolicy
+{
+    public static bool IsConflict(bool localChanged, bool remoteChanged, string? localValue, string? remoteValue, StringComparison comparison) =>
+        localChanged && remoteChanged && !string.Equals(localValue, remoteValue, comparison);
 }
 
 public sealed class Article

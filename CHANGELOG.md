@@ -2,6 +2,17 @@
 
 Toate modificările importante ale Orizont RSS sunt documentate în acest fișier.
 
+## 1.5.4 — 2026-09-12
+
+- sincronizare NewsBlur extinsă la feeduri, foldere, articole, stări citit/necitit, favorite și etichete, cu import unidirecțional la prima conectare a unui profil și sincronizare bidirecțională ulterior;
+- NewsBlur poate furniza articolele la pornire și la actualizare; fluxul RSS local rămâne disponibil ca rezervă, fără modificarea automată a feedurilor/folderelor pe această rută;
+- după curățarea duplicatelor locale, sincronizarea structurii NewsBlur pornește automat când există o sesiune conectată, fără a dezabona feedul păstrat cu aceeași adresă;
+- dialoguri de decizie pentru sincronizare și duplicate cu focalizare și navigare mai previzibile pentru tastatură și cititoare de ecran;
+- mesaje accesibile pentru panouri fără feed, fără articol selectat sau fără rezultate, afișate doar când nu există conținut real;
+- selecția unui folder dezactivează vederea agregată „Citește acum”, astfel încât articolele și numărătoarea să corespundă folderului selectat;
+- localizarea mesajelor noi completată pentru engleză, spaniolă, franceză, germană, portugheză braziliană, maghiară și italiană;
+- pachetul local include toate cele opt limbi și installerul offline verifică integritatea pachetului inclus prin SHA-256.
+
 ## 1.5.3 — 2026-09-05
 
 - adăugate alerte sonore configurabile pentru finalizarea actualizării, articole noi și erori de feed, cu buton de test și limitarea repetării fără articole noi;

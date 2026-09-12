@@ -22,7 +22,9 @@ public sealed record SpeechConfiguration(
     int Volume,
     int EspeakPitch = 50,
     string? GeminiVoiceName = null,
-    string? GeminiApiKey = null);
+    string? GeminiApiKey = null,
+    string? EspeakVariant = null,
+    int EspeakInflection = 100);
 
 public sealed record SpeechVoiceChoice(string Id, string DisplayName)
 {
@@ -37,6 +39,7 @@ internal interface ISpeechEngine : IDisposable
     bool IsSpeaking { get; }
     bool EnsureAvailable();
     IReadOnlyList<SpeechVoiceChoice> InstalledVoices();
+    IReadOnlyList<SpeechVoiceChoice> InstalledVariants() => [];
     bool Configure(SpeechConfiguration configuration);
     bool Speak(string text);
     bool PauseOrResume();

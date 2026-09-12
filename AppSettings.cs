@@ -18,10 +18,13 @@ public sealed class AppSettings
     public bool NewsBlurConnected { get; set; }
     public string? NewsBlurUsername { get; set; }
     public string? EncryptedNewsBlurSession { get; set; }
+    /// <summary>Local-device marker; a new device must bootstrap from NewsBlur before pushing local feeds.</summary>
+    public string? NewsBlurBootstrapCompletedUsername { get; set; }
     /// <summary>How NewsBlur Saved Stories (stars) map to local article states.</summary>
     public string NewsBlurSavedStoryMode { get; set; } = "Favorite";
     public bool NewsBlurAutoSyncEnabled { get; set; }
     public int NewsBlurAutoSyncMinutes { get; set; } = 30;
+    public List<NewsBlurPendingFeedDeletion> NewsBlurPendingFeedDeletions { get; set; } = [];
     public string LastFolder { get; set; } = "Toate folderele";
     public Guid? LastFeedId { get; set; }
     public string? LastArticleId { get; set; }
@@ -37,8 +40,10 @@ public sealed class AppSettings
     public string SpeechEngine { get; set; } = SpeechEngineIds.Sapi5;
     public string? SpeechVoiceName { get; set; }
     public string EspeakVoiceName { get; set; } = "ro";
+    public string EspeakVariant { get; set; } = string.Empty;
     public string GeminiVoiceName { get; set; } = "Charon";
     public int EspeakPitch { get; set; } = 50;
+    public int EspeakInflection { get; set; } = 100;
     public int SpeechRate { get; set; }
     public int SpeechVolume { get; set; } = 100;
     public bool StopSpeechWhenLeavingArticle { get; set; } = true;

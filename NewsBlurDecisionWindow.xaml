@@ -1,0 +1,12 @@
+<Window x:Class="CititorRSS.Jaws.NewsBlurDecisionWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Decizie NewsBlur" Width="700" MinWidth="560" MaxWidth="900" Height="430" MinHeight="300" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="CanResize">
+  <Grid Margin="24">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    <TextBlock Grid.Row="0" Text="Citește informațiile și alege o acțiune." Style="{StaticResource DialogIntroTextStyle}" AutomationProperties.Name="Instrucțiuni pentru dialogul de decizie" />
+    <TextBox Grid.Row="1" x:Name="DecisionText" Style="{StaticResource ReadOnlyDocumentStyle}" AutomationProperties.Name="Detaliile deciziei NewsBlur, numai citire" AutomationProperties.HelpText="Folosește săgețile pentru a citi textul. Apasă Tab pentru a ajunge la opțiuni. Escape alege opțiunea sigură și închide dialogul." />
+    <StackPanel Grid.Row="2" x:Name="OptionsPanel" Style="{StaticResource DialogButtonBarStyle}" AutomationProperties.Name="Opțiuni pentru decizia NewsBlur" />
+  </Grid>
+</Window>

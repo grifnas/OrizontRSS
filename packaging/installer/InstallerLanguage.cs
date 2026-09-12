@@ -35,7 +35,8 @@ public sealed record InstallerTexts(
     string FailedPrefix,
     string FolderRequired,
     string HashMismatch,
-    string MissingInstaller);
+    string MissingInstaller,
+    string PackageMissing);
 
 public static class InstallerLanguages
 {
@@ -48,7 +49,7 @@ public static class InstallerLanguages
             "Feedurile, articolele și setările existente nu sunt șterse; ele sunt păstrate în profilul Windows al utilizatorului.",
             "Instalează", "Se descarcă pachetul Orizont RSS...", "Se verifică integritatea pachetului...", "Se copiază fișierele aplicației...", "Se creează scurtăturile...", "Instalarea s-a finalizat cu succes.", "Pornește Orizont RSS", "Închide",
             "Dezinstalare Orizont RSS", "Aplicația și scurtăturile Orizont RSS vor fi eliminate.", "Feedurile, articolele și setările din profilul Windows nu sunt șterse.", "Dezinstalează",
-            "Confirmă dezinstalarea", "Sigur dorești să dezinstalezi Orizont RSS? Datele utilizatorului nu vor fi șterse.", "Folderul instalării nu mai există.", "Se elimină scurtăturile...", "Se finalizează dezinstalarea...", "Operația nu a reușit:", "Alege un folder pentru instalare.", "Hash-ul pachetului descărcat nu corespunde Release-ului oficial.", "Nu s-a putut determina instalatorul."),
+            "Confirmă dezinstalarea", "Sigur dorești să dezinstalezi Orizont RSS? Datele utilizatorului nu vor fi șterse.", "Folderul instalării nu mai există.", "Se elimină scurtăturile...", "Se finalizează dezinstalarea...", "Operația nu a reușit:", "Alege un folder pentru instalare.", "Hash-ul pachetului descărcat nu corespunde Release-ului oficial.", "Nu s-a putut determina instalatorul.", "Pachetul de instalare pentru această versiune lipsește."),
         new InstallerTexts(
             "en-US", "English", "Installer language", "Choose the installer language:", "Continue", "Cancel",
             "Install Orizont RSS", "Accessible installer for Orizont RSS. The application will be installed for the current user.",
@@ -56,7 +57,7 @@ public static class InstallerLanguages
             "Existing feeds, articles and settings are not deleted; they remain in the Windows user profile.",
             "Install", "Downloading the Orizont RSS package...", "Checking package integrity...", "Copying application files...", "Creating shortcuts...", "Installation completed successfully.", "Start Orizont RSS", "Close",
             "Uninstall Orizont RSS", "The Orizont RSS application and shortcuts will be removed.", "Feeds, articles and settings in the Windows user profile will not be deleted.", "Uninstall",
-            "Confirm uninstall", "Are you sure you want to uninstall Orizont RSS? User data will not be deleted.", "The installation folder no longer exists.", "Removing shortcuts...", "Finishing uninstall...", "The operation failed:", "Choose an installation folder.", "The downloaded package hash does not match the official Release.", "The installer path could not be determined."),
+            "Confirm uninstall", "Are you sure you want to uninstall Orizont RSS? User data will not be deleted.", "The installation folder no longer exists.", "Removing shortcuts...", "Finishing uninstall...", "The operation failed:", "Choose an installation folder.", "The downloaded package hash does not match the official Release.", "The installer path could not be determined.", "The installation package for this version is missing."),
         new InstallerTexts(
             "es-ES", "Español", "Idioma del instalador", "Elige el idioma del instalador:", "Continuar", "Cancelar",
             "Instalar Orizont RSS", "Instalador accesible de Orizont RSS. La aplicación se instalará para el usuario actual.",
@@ -64,7 +65,7 @@ public static class InstallerLanguages
             "Los feeds, artículos y configuraciones existentes no se eliminarán; permanecerán en el perfil de usuario de Windows.",
             "Instalar", "Descargando el paquete de Orizont RSS...", "Comprobando la integridad del paquete...", "Copiando los archivos de la aplicación...", "Creando accesos directos...", "La instalación se completó correctamente.", "Iniciar Orizont RSS", "Cerrar",
             "Desinstalar Orizont RSS", "Se eliminarán la aplicación y los accesos directos de Orizont RSS.", "Los feeds, artículos y configuraciones del perfil de Windows no se eliminarán.", "Desinstalar",
-            "Confirmar desinstalación", "¿Seguro que quieres desinstalar Orizont RSS? No se eliminarán los datos del usuario.", "La carpeta de instalación ya no existe.", "Eliminando accesos directos...", "Finalizando la desinstalación...", "La operación no se realizó:", "Elige una carpeta de instalación.", "El hash del paquete descargado no coincide con la versión oficial.", "No se pudo determinar el instalador."),
+            "Confirmar desinstalación", "¿Seguro que quieres desinstalar Orizont RSS? No se eliminarán los datos del usuario.", "La carpeta de instalación ya no existe.", "Eliminando accesos directos...", "Finalizando la desinstalación...", "La operación no se realizó:", "Elige una carpeta de instalación.", "El hash del paquete descargado no coincide con la versión oficial.", "No se pudo determinar el instalador.", "Falta el paquete de instalación de esta versión."),
         new InstallerTexts(
             "fr-FR", "Français", "Langue de l’installation", "Choisissez la langue de l’installation :", "Continuer", "Annuler",
             "Installer Orizont RSS", "Programme d’installation accessible d’Orizont RSS. L’application sera installée pour l’utilisateur actuel.",
@@ -72,7 +73,7 @@ public static class InstallerLanguages
             "Les flux, articles et paramètres existants ne seront pas supprimés ; ils restent dans le profil utilisateur Windows.",
             "Installer", "Téléchargement du paquet Orizont RSS...", "Vérification de l’intégrité du paquet...", "Copie des fichiers de l’application...", "Création des raccourcis...", "L’installation est terminée.", "Démarrer Orizont RSS", "Fermer",
             "Désinstaller Orizont RSS", "L’application et les raccourcis Orizont RSS seront supprimés.", "Les flux, articles et paramètres du profil Windows ne seront pas supprimés.", "Désinstaller",
-            "Confirmer la désinstallation", "Voulez-vous vraiment désinstaller Orizont RSS ? Les données utilisateur ne seront pas supprimées.", "Le dossier d’installation n’existe plus.", "Suppression des raccourcis...", "Finalisation de la désinstallation...", "L’opération a échoué :", "Choisissez un dossier d’installation.", "Le hachage du paquet téléchargé ne correspond pas à la version officielle.", "Le chemin de l’installateur est introuvable."),
+            "Confirmer la désinstallation", "Voulez-vous vraiment désinstaller Orizont RSS ? Les données utilisateur ne seront pas supprimées.", "Le dossier d’installation n’existe plus.", "Suppression des raccourcis...", "Finalisation de la désinstallation...", "L’opération a échoué :", "Choisissez un dossier d’installation.", "Le hachage du paquet téléchargé ne correspond pas à la version officielle.", "Le chemin de l’installateur est introuvable.", "Le paquet d’installation de cette version est manquant."),
         new InstallerTexts(
             "de-DE", "Deutsch", "Sprache des Installationsprogramms", "Wählen Sie die Sprache des Installationsprogramms:", "Weiter", "Abbrechen",
             "Orizont RSS installieren", "Barrierefreies Installationsprogramm für Orizont RSS. Die Anwendung wird für den aktuellen Benutzer installiert.",
@@ -80,7 +81,7 @@ public static class InstallerLanguages
             "Vorhandene Feeds, Artikel und Einstellungen werden nicht gelöscht; sie bleiben im Windows-Benutzerprofil erhalten.",
             "Installieren", "Orizont-RSS-Paket wird heruntergeladen...", "Paketintegrität wird geprüft...", "Anwendungsdateien werden kopiert...", "Verknüpfungen werden erstellt...", "Installation erfolgreich abgeschlossen.", "Orizont RSS starten", "Schließen",
             "Orizont RSS deinstallieren", "Die Orizont-RSS-Anwendung und Verknüpfungen werden entfernt.", "Feeds, Artikel und Einstellungen im Windows-Benutzerprofil werden nicht gelöscht.", "Deinstallieren",
-            "Deinstallation bestätigen", "Möchten Sie Orizont RSS wirklich deinstallieren? Benutzerdaten werden nicht gelöscht.", "Der Installationsordner ist nicht mehr vorhanden.", "Verknüpfungen werden entfernt...", "Deinstallation wird abgeschlossen...", "Der Vorgang ist fehlgeschlagen:", "Wählen Sie einen Installationsordner.", "Der Hash des heruntergeladenen Pakets stimmt nicht mit der offiziellen Version überein.", "Der Pfad des Installationsprogramms konnte nicht ermittelt werden."),
+            "Deinstallation bestätigen", "Möchten Sie Orizont RSS wirklich deinstallieren? Benutzerdaten werden nicht gelöscht.", "Der Installationsordner ist nicht mehr vorhanden.", "Verknüpfungen werden entfernt...", "Deinstallation wird abgeschlossen...", "Der Vorgang ist fehlgeschlagen:", "Wählen Sie einen Installationsordner.", "Der Hash des heruntergeladenen Pakets stimmt nicht mit der offiziellen Version überein.", "Der Pfad des Installationsprogramms konnte nicht ermittelt werden.", "Das Installationspaket für diese Version fehlt."),
         new InstallerTexts(
             "pt-BR", "Português", "Idioma do instalador", "Escolha o idioma do instalador:", "Continuar", "Cancelar",
             "Instalar o Orizont RSS", "Instalador acessível do Orizont RSS. O aplicativo será instalado para o usuário atual.",
@@ -88,7 +89,7 @@ public static class InstallerLanguages
             "Feeds, artigos e configurações existentes não serão excluídos; eles permanecem no perfil do usuário do Windows.",
             "Instalar", "Baixando o pacote do Orizont RSS...", "Verificando a integridade do pacote...", "Copiando os arquivos do aplicativo...", "Criando atalhos...", "A instalação foi concluída com sucesso.", "Iniciar o Orizont RSS", "Fechar",
             "Desinstalar o Orizont RSS", "O aplicativo e os atalhos do Orizont RSS serão removidos.", "Feeds, artigos e configurações do perfil do Windows não serão excluídos.", "Desinstalar",
-            "Confirmar desinstalação", "Tem certeza de que deseja desinstalar o Orizont RSS? Os dados do usuário não serão excluídos.", "A pasta de instalação não existe mais.", "Removendo atalhos...", "Finalizando a desinstalação...", "A operação falhou:", "Escolha uma pasta de instalação.", "O hash do pacote baixado não corresponde à versão oficial.", "Não foi possível determinar o instalador.")
+            "Confirmar desinstalação", "Tem certeza de que deseja desinstalar o Orizont RSS? Os dados do usuário não serão excluídos.", "A pasta de instalação não existe mais.", "Removendo atalhos...", "Finalizando a desinstalação...", "A operação falhou:", "Escolha uma pasta de instalação.", "O hash do pacote baixado não corresponde à versão oficial.", "Não foi possível determinar o instalador.", "O pacote de instalação desta versão está ausente.")
         ,new InstallerTexts(
             "hu-HU", "Magyar", "A telepítő nyelve", "Válaszd ki a telepítő nyelvét:", "Folytatás", "Mégse",
             "Orizont RSS telepítése", "Az Orizont RSS akadálymentes telepítője. Az alkalmazás az aktuális felhasználó számára lesz telepítve.",
@@ -96,7 +97,7 @@ public static class InstallerLanguages
             "A meglévő hírcsatornák, cikkek és beállítások nem törlődnek; a Windows felhasználói profiljában maradnak.",
             "Telepítés", "Az Orizont RSS csomag letöltése...", "A csomag sértetlenségének ellenőrzése...", "Az alkalmazás fájljainak másolása...", "Parancsikonok létrehozása...", "A telepítés sikeresen befejeződött.", "Orizont RSS indítása", "Bezárás",
             "Orizont RSS eltávolítása", "Az Orizont RSS alkalmazás és parancsikonjai eltávolításra kerülnek.", "A Windows felhasználói profiljában lévő hírcsatornák, cikkek és beállítások nem törlődnek.", "Eltávolítás",
-            "Eltávolítás megerősítése", "Biztosan eltávolítod az Orizont RSS-t? A felhasználói adatok nem törlődnek.", "A telepítési mappa már nem létezik.", "Parancsikonok eltávolítása...", "Az eltávolítás befejezése...", "A művelet sikertelen:", "Válassz telepítési mappát.", "A letöltött csomag hash-értéke nem egyezik a hivatalos kiadással.", "A telepítő elérési útja nem határozható meg."),
+            "Eltávolítás megerősítése", "Biztosan eltávolítod az Orizont RSS-t? A felhasználói adatok nem törlődnek.", "A telepítési mappa már nem létezik.", "Parancsikonok eltávolítása...", "Az eltávolítás befejezése...", "A művelet sikertelen:", "Válassz telepítési mappát.", "A letöltött csomag hash-értéke nem egyezik a hivatalos kiadással.", "A telepítő elérési útja nem határozható meg.", "Ehhez a verzióhoz hiányzik a telepítőcsomag."),
         new InstallerTexts(
             "it-IT", "Italiano", "Lingua del programma di installazione", "Scegli la lingua del programma di installazione:", "Continua", "Annulla",
             "Installa Orizont RSS", "Programma di installazione accessibile di Orizont RSS. L'applicazione verrà installata per l'utente corrente.",
@@ -104,7 +105,7 @@ public static class InstallerLanguages
             "I feed, gli articoli e le impostazioni esistenti non verranno eliminati; rimarranno nel profilo utente di Windows.",
             "Installa", "Download del pacchetto Orizont RSS...", "Verifica dell'integrità del pacchetto...", "Copia dei file dell'applicazione...", "Creazione dei collegamenti...", "Installazione completata correttamente.", "Avvia Orizont RSS", "Chiudi",
             "Disinstalla Orizont RSS", "L'applicazione e i collegamenti di Orizont RSS verranno rimossi.", "I feed, gli articoli e le impostazioni nel profilo utente di Windows non verranno eliminati.", "Disinstalla",
-            "Conferma disinstallazione", "Vuoi davvero disinstallare Orizont RSS? I dati dell'utente non verranno eliminati.", "La cartella di installazione non esiste più.", "Rimozione dei collegamenti...", "Completamento della disinstallazione...", "Operazione non riuscita:", "Scegli una cartella di installazione.", "L'hash del pacchetto scaricato non corrisponde alla release ufficiale.", "Impossibile determinare il percorso del programma di installazione.")
+            "Conferma disinstallazione", "Vuoi davvero disinstallare Orizont RSS? I dati dell'utente non verranno eliminati.", "La cartella di installazione non esiste più.", "Rimozione dei collegamenti...", "Completamento della disinstallazione...", "Operazione non riuscita:", "Scegli una cartella di installazione.", "L'hash del pacchetto scaricato non corrisponde alla release ufficiale.", "Impossibile determinare il percorso del programma di installazione.", "Manca il pacchetto di installazione per questa versione.")
     };
 
     public static InstallerTexts FromCode(string code) => All.FirstOrDefault(x => x.Code.Equals(code, StringComparison.OrdinalIgnoreCase)) ?? All[0];

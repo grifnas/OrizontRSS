@@ -12,6 +12,144 @@ public sealed record NewsBlurSubscription(string Name, string Url, string Folder
 public sealed record NewsBlurFeedInfo(string FeedId, string Name, string Url, string Folder);
 public sealed record NewsBlurStory(string StoryHash, string Title, string Link, DateTimeOffset? Published, bool IsRead, bool IsStarred, IReadOnlyList<string> UserTags, string Content);
 
+/// <summary>Fails closed unless OPML and NewsBlur's feed index describe the same complete subscription set.</summary>
+public static class NewsBlurFeedSnapshotPolicy
+{
+    public static string AddressKey(string? address) => DuplicateCleaner.FeedKey(address);
+
+    public static IReadOnlyList<IReadOnlyList<Feed>> FindDuplicateLocalFeeds(IEnumerable<Feed> feeds) =>
+        feeds.Where(feed => !string.IsNullOrWhiteSpace(AddressKey(feed.Url)))
+            .GroupBy(feed => AddressKey(feed.Url), StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() > 1)
+            .Select(group => (IReadOnlyList<Feed>)group.ToList())
+            .ToList();
+
+    public static IReadOnlyList<NewsBlurPendingFeedDeletion> CreateCleanupDeletions(
+        IEnumerable<Feed> removedFeeds,
+        IEnumerable<Feed> retainedFeeds)
+    {
+        var retainedAddresses = retainedFeeds
+            .Where(NewsBlurBootstrapPolicy.IsSyncEligible)
+            .Select(feed => AddressKey(feed.Url))
+            .Where(key => !string.IsNullOrWhiteSpace(key))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        return removedFeeds
+            .Where(NewsBlurBootstrapPolicy.IsSyncEligible)
+            .Where(feed => Uri.TryCreate(feed.Url, UriKind.Absolute, out var uri) && (uri.Scheme is "http" or "https"))
+            .Where(feed => !retainedAddresses.Contains(AddressKey(feed.Url)))
+            .GroupBy(feed => AddressKey(feed.Url), StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.First())
+            .Select(feed => new NewsBlurPendingFeedDeletion
+            {
+                FeedId = feed.NewsBlurFeedId ?? string.Empty,
+                Url = feed.Url,
+                Name = feed.Name,
+                Folder = feed.Folder
+            })
+            .ToList();
+    }
+
+    public static bool IsValidPendingDeletion(NewsBlurPendingFeedDeletion? pending) =>
+        pending is not null &&
+        (!string.IsNullOrWhiteSpace(pending.FeedId) ||
+         (Uri.TryCreate(pending.Url, UriKind.Absolute, out var uri) && (uri.Scheme is "http" or "https")));
+
+    public static bool IsRemoteDeletion(Feed localFeed, IReadOnlyCollection<NewsBlurFeedInfo> remoteFeeds)
+    {
+        if (!NewsBlurBootstrapPolicy.IsSyncEligible(localFeed) || string.IsNullOrWhiteSpace(localFeed.NewsBlurFeedId)) return false;
+        var addressKey = AddressKey(localFeed.Url);
+        return !remoteFeeds.Any(remote =>
+            string.Equals(remote.FeedId, localFeed.NewsBlurFeedId, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(AddressKey(remote.Url), addressKey, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public static bool IsComplete(
+        IReadOnlyCollection<NewsBlurSubscription> subscriptions,
+        IReadOnlyCollection<NewsBlurFeedInfo> feedIndex,
+        out string reason)
+    {
+        reason = string.Empty;
+        if (subscriptions.Any(item => !IsHttpAddress(item.Url)))
+        {
+            reason = "Lista OPML conține o adresă de feed invalidă.";
+            return false;
+        }
+        if (feedIndex.Any(item => string.IsNullOrWhiteSpace(item.FeedId) || !IsHttpAddress(item.Url)))
+        {
+            reason = "Indexul NewsBlur conține un feed fără identificator sau adresă validă.";
+            return false;
+        }
+
+        var subscriptionKeys = subscriptions.Select(item => AddressKey(item.Url)).ToList();
+        var feedKeys = feedIndex.Select(item => AddressKey(item.Url)).ToList();
+        if (subscriptionKeys.Distinct(StringComparer.OrdinalIgnoreCase).Count() != subscriptionKeys.Count ||
+            feedKeys.Distinct(StringComparer.OrdinalIgnoreCase).Count() != feedKeys.Count ||
+            feedIndex.Select(item => item.FeedId).Distinct(StringComparer.OrdinalIgnoreCase).Count() != feedIndex.Count)
+        {
+            reason = "Listele NewsBlur conțin adrese sau identificatori repetați.";
+            return false;
+        }
+
+        if (!subscriptionKeys.ToHashSet(StringComparer.OrdinalIgnoreCase).SetEquals(feedKeys))
+        {
+            reason = "Lista OPML și indexul NewsBlur nu conțin aceleași feeduri.";
+            return false;
+        }
+        return true;
+    }
+
+    private static bool IsHttpAddress(string? address) =>
+        Uri.TryCreate(address, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https";
+}
+
+/// <summary>Maps Orizont's unorganized category to NewsBlur's top-level feeds.</summary>
+public static class NewsBlurFolderMapping
+{
+    public const string UnorganizedFolder = "Neorganizate";
+
+    public static bool IsUnorganized(string? folder) =>
+        string.Equals(folder?.Trim(), UnorganizedFolder, StringComparison.OrdinalIgnoreCase);
+
+    public static bool IsNamedFolder(string? folder) =>
+        !string.IsNullOrWhiteSpace(folder) && !IsUnorganized(folder);
+
+    public static string ToNewsBlurFolder(string? folder) =>
+        IsUnorganized(folder) ? string.Empty : folder?.Trim() ?? string.Empty;
+
+    public static string FromNewsBlurFolder(string? folder) =>
+        string.IsNullOrWhiteSpace(folder) ? UnorganizedFolder : folder.Trim();
+
+    public static IReadOnlyList<KeyValuePair<string, string>> CreateMoveFeedParameters(string feedId, string? sourceFolder, string? targetFolder) =>
+    [
+        new("feed_id", feedId.Trim()),
+        // NewsBlur requires both folder parameters; an empty value means top level.
+        new("in_folder", ToNewsBlurFolder(sourceFolder)),
+        new("to_folder", ToNewsBlurFolder(targetFolder))
+    ];
+}
+
+public static class NewsBlurBootstrapPolicy
+{
+    public static bool RequiresInitialImport(string? accountUsername, string? completedUsername) =>
+        string.IsNullOrWhiteSpace(accountUsername) ||
+        !string.Equals(accountUsername.Trim(), completedUsername?.Trim(), StringComparison.OrdinalIgnoreCase);
+
+    public static bool IsSyncEligible(Feed feed) => !DemoFeedCatalog.IsDemo(feed);
+
+    public static bool HasExistingRemoteLink(IEnumerable<Feed> localFeeds, IEnumerable<NewsBlurFeedInfo> remoteFeeds)
+    {
+        var remoteIds = remoteFeeds
+            .Where(feed => !string.IsNullOrWhiteSpace(feed.FeedId))
+            .Select(feed => feed.FeedId)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return localFeeds.Any(feed =>
+            IsSyncEligible(feed) &&
+            !string.IsNullOrWhiteSpace(feed.NewsBlurFeedId) &&
+            remoteIds.Contains(feed.NewsBlurFeedId));
+    }
+}
+
 /// <summary>Cookie-based NewsBlur authentication and controlled subscription/story synchronization.</summary>
 public sealed class NewsBlurConnection
 {
@@ -90,19 +228,24 @@ public sealed class NewsBlurConnection
         try
         {
             using var document = JsonDocument.Parse(body);
-            if (!document.RootElement.TryGetProperty("feeds", out var feeds) || feeds.ValueKind != JsonValueKind.Object) return [];
+            if (!document.RootElement.TryGetProperty("feeds", out var feeds) || feeds.ValueKind != JsonValueKind.Object)
+                throw new InvalidOperationException(T("NewsBlur nu a returnat un index complet pentru feeduri."));
             var folders = ReadFolderMap(document.RootElement);
-            return feeds.EnumerateObject()
+            var result = feeds.EnumerateObject()
                 .Select(property =>
                 {
                     var value = property.Value;
                     var url = ReadString(value, "feed_address", "feed_url", "feed_link");
                     var name = ReadString(value, "feed_title", "title") ?? url ?? property.Name;
-                    var folder = ReadString(value, "folder") ?? (folders.TryGetValue(property.Name, out var mapped) ? mapped : "Neorganizate");
+                    var folder = NewsBlurFolderMapping.FromNewsBlurFolder(
+                        ReadString(value, "folder") ?? (folders.TryGetValue(property.Name, out var mapped) ? mapped : null));
                     return new NewsBlurFeedInfo(property.Name, name, url ?? string.Empty, folder);
                 })
-                .Where(feed => Uri.TryCreate(feed.Url, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https")
                 .ToList();
+            if (result.Any(feed => string.IsNullOrWhiteSpace(feed.FeedId) ||
+                !Uri.TryCreate(feed.Url, UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https")))
+                throw new InvalidOperationException(T("NewsBlur a returnat un index incomplet pentru feeduri."));
+            return result;
         }
         catch (JsonException exception)
         {
@@ -144,17 +287,18 @@ public sealed class NewsBlurConnection
     {
         if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException(T("Adresa feedului este obligatorie."), nameof(url));
         var values = new List<KeyValuePair<string, string>> { new("url", url.Trim()) };
-        if (!string.IsNullOrWhiteSpace(folder) && !string.Equals(folder.Trim(), "Neorganizate", StringComparison.CurrentCultureIgnoreCase))
-            values.Add(new("folder", folder.Trim()));
+        var remoteFolder = NewsBlurFolderMapping.ToNewsBlurFolder(folder);
+        if (!string.IsNullOrWhiteSpace(remoteFolder)) values.Add(new("folder", remoteFolder));
         await PostAccountChangeAsync(sessionId, "/reader/add_url", values, T("Feedul nu a putut fi adăugat în NewsBlur."), cancellationToken);
     }
 
     /// <summary>Creates a NewsBlur folder. Empty folders have no local equivalent, but nested folders are supported.</summary>
     public async Task AddFolderAsync(string sessionId, string folder, string? parentFolder = null, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(folder)) return;
+        if (!NewsBlurFolderMapping.IsNamedFolder(folder)) return;
         var values = new List<KeyValuePair<string, string>> { new("folder", folder.Trim()) };
-        if (!string.IsNullOrWhiteSpace(parentFolder)) values.Add(new("parent_folder", parentFolder.Trim()));
+        var remoteParent = NewsBlurFolderMapping.ToNewsBlurFolder(parentFolder);
+        if (!string.IsNullOrWhiteSpace(remoteParent)) values.Add(new("parent_folder", remoteParent));
         await PostAccountChangeAsync(sessionId, "/reader/add_folder", values, T("Folderul nu a putut fi creat în NewsBlur."), cancellationToken);
     }
 
@@ -169,11 +313,20 @@ public sealed class NewsBlurConnection
     public async Task MoveFeedAsync(string sessionId, string feedId, string? inFolder, string? toFolder, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(feedId)) return;
-        var values = new List<KeyValuePair<string, string>> { new("feed_id", feedId.Trim()) };
-        if (!string.IsNullOrWhiteSpace(inFolder) && !string.Equals(inFolder, "Neorganizate", StringComparison.CurrentCultureIgnoreCase)) values.Add(new("in_folder", inFolder.Trim()));
-        if (!string.IsNullOrWhiteSpace(toFolder) && !string.Equals(toFolder, "Neorganizate", StringComparison.CurrentCultureIgnoreCase)) values.Add(new("to_folder", toFolder.Trim()));
+        var values = NewsBlurFolderMapping.CreateMoveFeedParameters(feedId, inFolder, toFolder);
         await PostAccountChangeAsync(sessionId, "/reader/move_feed_to_folder", values,
             T("Feedul nu a putut fi mutat în NewsBlur."), cancellationToken);
+    }
+
+    /// <summary>Unsubscribes a feed after the user's local delete or URL-replacement action has been confirmed.</summary>
+    public async Task DeleteFeedAsync(string sessionId, string feedId, string? inFolder, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(feedId)) return;
+        var values = new List<KeyValuePair<string, string>> { new("feed_id", feedId.Trim()) };
+        var remoteFolder = NewsBlurFolderMapping.ToNewsBlurFolder(inFolder);
+        if (!string.IsNullOrWhiteSpace(remoteFolder)) values.Add(new("in_folder", remoteFolder));
+        await PostAccountChangeAsync(sessionId, "/reader/delete_feed", values,
+            T("Feedul nu a putut fi dezabonat din NewsBlur."), cancellationToken);
     }
 
     public async Task MarkFeedsReadAsync(string sessionId, IEnumerable<string> feedIds, CancellationToken cancellationToken = default)
@@ -254,6 +407,10 @@ public sealed class NewsBlurConnection
             throw new InvalidOperationException(T("NewsBlur nu a returnat un fișier OPML valid."), exception);
         }
 
+        if (!string.Equals(document.Root?.Name.LocalName, "opml", StringComparison.OrdinalIgnoreCase) ||
+            !document.Descendants().Any(element => string.Equals(element.Name.LocalName, "body", StringComparison.OrdinalIgnoreCase)))
+            throw new InvalidOperationException(T("NewsBlur nu a returnat un fișier OPML valid."));
+
         var subscriptions = new List<NewsBlurSubscription>();
         foreach (var outline in document.Descendants().Where(element => element.Name.LocalName == "outline" && element.Parent?.Name.LocalName != "outline"))
             CollectSubscriptions(outline, null, subscriptions);
@@ -272,7 +429,7 @@ public sealed class NewsBlurConnection
             var name = outline.Attribute("text")?.Value?.Trim();
             if (string.IsNullOrWhiteSpace(name)) name = outline.Attribute("title")?.Value?.Trim();
             if (string.IsNullOrWhiteSpace(name)) name = address;
-            subscriptions.Add(new NewsBlurSubscription(name, address, string.IsNullOrWhiteSpace(parentFolder) ? "Neorganizate" : parentFolder));
+            subscriptions.Add(new NewsBlurSubscription(name, address, NewsBlurFolderMapping.FromNewsBlurFolder(parentFolder)));
             return;
         }
 

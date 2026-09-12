@@ -1,58 +1,47 @@
-# Plan de publicare — Orizont RSS
+# Publicarea Orizont RSS — versiunea 1.5.4
 
-Acest document descrie pregătirea pentru publicarea proiectului. Nu conține chei API,
+Acest document consemnează pachetele și verificările release-ului. Nu conține chei API,
 date ale utilizatorilor sau feeduri personale.
 
 ## Starea versiunii
 
-- versiune stabilă: `1.5.3`;
+- versiune stabilă: `1.5.4`;
 - platformă: Windows x64;
-- pachet binar: `Orizont-RSS-1.5.3-win-x64.zip`;
-- arhivă sursă: `Orizont-RSS-1.5.3-source.zip`;
+- pachet binar: `Orizont-RSS-1.5.4-win-x64.zip`;
+- installer offline: `OrizontSetup.exe`;
+- arhivă sursă: `Orizont-RSS-1.5.4-source.zip`;
 - licență: GPL-3.0-or-later;
-- limbi: română, engleză, spaniolă, franceză, germană și portugheză.
+- limbi: română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană.
 
-## Etapa 1 — depozit GitHub public
+## Depozit GitHub public
 
-1. Creează sau alege contul GitHub care va fi autorul public al proiectului.
-2. Creează un depozit public, de exemplu `orizont-rss`.
-3. Linkurile publice folosesc depozitul real `grifnas/OrizontRSS`.
-4. Publică sursa, documentația, licența și notificările terțe.
-5. Activează Issues și Discussions numai dacă dorești să primești feedback direct în GitHub.
-6. Adaugă topicurile: `rss`, `accessibility`, `screen-reader`, `jaws`, `nvda`, `windows`, `wpf`, `romanian`.
+Depozitul public este `grifnas/OrizontRSS`; sursa, documentația, licența și notificările
+terțe sunt publicate acolo. Pagina de prezentare este
+<https://grifnas.github.io/OrizontRSS/>.
 
-## Etapa 2 — primul Release
+## Release 1.5.4
 
-Creează tagul `v1.5.3` și atașează la Release următoarele fișiere:
+Release-ul stabil folosește tagul `v1.5.4` și conține:
 
-- `Orizont-RSS-1.5.3-win-x64.zip`;
-- `Orizont-RSS-1.5.3-win-x64.zip.sha256`;
-- `Orizont-RSS-1.5.3-source.zip`;
-- `Orizont-RSS-1.5.3-source.zip.sha256`;
-- `RELEASE-NOTES-1.5.3.md`.
+- `Orizont-RSS-1.5.4-win-x64.zip` și fișierul său `.sha256`;
+- `OrizontSetup.exe` și fișierul său `.sha256`;
+- `Orizont-RSS-1.5.4-source.zip` și fișierul său `.sha256`;
+- `RELEASE-NOTES-1.5.4.md`.
 
-Descrierea Release-ului trebuie să precizeze că versiunea este autonomă pentru Windows
-x64, că utilizatorul își furnizează propriile chei API și că datele aplicației rămân în
-profilul local Windows.
+Pachetul portabil și installerul sunt autonome pentru Windows x64. Cheile API sunt
+opționale și furnizate de utilizator; datele aplicației rămân în profilul local Windows.
 
-## Etapa 3 — GitHub Pages
+## GitHub Pages
 
-Pagina din `docs/index.html` este un punct de pornire accesibil pentru prezentare și
-descărcare. În setările depozitului se selectează publicarea din ramura principală,
-directorul `/docs`.
+Pagina din `docs/index.html` este punctul de pornire pentru prezentare și descărcare;
+publicarea este configurată din ramura principală și directorul `/docs`. Sunt disponibile
+opt limbi și linkul stabil către installerul `OrizontSetup.exe`.
 
-Înainte de activare trebuie completate:
+## WinGet
 
-- numele contului și al depozitului în linkurile de descărcare;
-- adresa de contact pentru probleme;
-- eventualele capturi de ecran și o demonstrație audio, dacă sunt disponibile.
-
-## Etapa 4 — WinGet
-
-După ce Release-ul are URL stabil și instalarea a fost verificată pe un Windows curat,
-se pregătește manifestul pentru depozitul `microsoft/winget-pkgs`. Identificatorul
-publisherului și al pachetului se aleg numai după stabilirea contului GitHub și a
-identității publice a aplicației.
+Manifestul pentru `Grifnas.OrizontRSS` a fost trimis prin PR-ul
+`microsoft/winget-pkgs#431971`; integrarea în catalog și verificările Microsoft sunt
+urmărite separat de acest Release.
 
 ## Etapa 5 — Microsoft Store
 
@@ -63,13 +52,13 @@ gestionate de Store.
 ## Checklist înainte de publicare
 
 - [ ] nu există `settings.json`, `feeds.json`, backupuri, jurnale sau chei API în sursă;
-- [ ] toate cele șase limbi sunt complete și verificate;
+- [x] toate cele opt limbi sunt complete și verificate automat;
 - [ ] ghidurile HTML și notele de lansare sunt actualizate;
 - [ ] testele automate sunt trecute;
-- [ ] executabilul a fost testat manual cu JAWS și NVDA;
+- [ ] verificarea manuală cu JAWS/NVDA și testul pe un al doilea calculator rămân de confirmat separat;
 - [ ] hash-urile SHA-256 corespund arhivelor publicate;
 - [ ] licența GPL și notificările terțe sunt incluse;
 - [ ] pagina publică explică cerințele, confidențialitatea și modul de raportare a problemelor.
 
-Publicarea externă necesită autentificarea proprietarului contului GitHub și confirmarea
-adresei finale a depozitului.
+Verificarea manuală JAWS/NVDA pentru interacțiunile NewsBlur din 1.5.4 și confirmarea
+sincronizării pe al doilea calculator rămân de efectuat; nu sunt declarate drept trecute.

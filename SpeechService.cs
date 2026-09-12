@@ -24,6 +24,12 @@ public sealed class SpeechService : IDisposable
         return Activate(engineId ?? _activeEngineId).InstalledVoices();
     }
 
+    public IReadOnlyList<SpeechVoiceChoice> InstalledVariants(string? engineId = null)
+    {
+        if (_disposed) return [];
+        return Activate(engineId ?? _activeEngineId).InstalledVariants();
+    }
+
     public bool Configure(SpeechConfiguration configuration)
     {
         if (_disposed) return false;

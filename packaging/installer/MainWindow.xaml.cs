@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Automation;
@@ -11,9 +12,11 @@ namespace OrizontSetup;
 
 public partial class MainWindow : Window
 {
-    private const string Version = "1.5.3";
+    private static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.5.3";
     private const string DownloadUrl = "https://github.com/grifnas/OrizontRSS/releases/download/v1.5.3/Orizont-RSS-1.5.3-win-x64.zip";
     private const string ExpectedSha256 = "7536070499680C2C2859C69C181BB8B6689EFA510E51C8E61E01DBD4EB48F6EB";
+    private const string EmbeddedPackageResource = "OrizontSetup.EmbeddedPackage.zip";
+    private const string EmbeddedPackageHashResource = "OrizontSetup.EmbeddedPackage.sha256";
     private readonly bool _uninstallMode;
     private readonly InstallerTexts _texts;
     private int _lastAnnouncedProgress = -1;
@@ -101,9 +104,74 @@ public partial class MainWindow : Window
 
         Directory.CreateDirectory(destination);
         var tempZip = Path.Combine(Path.GetTempPath(), $"Orizont-RSS-{Version}.zip");
-        SetStatus(_texts.Downloading);
         ProgressBar.Value = 0;
 
+        using var embeddedPackage = Assembly.GetExecutingAssembly().GetManifestResourceStream(EmbeddedPackageResource);
+        if (embeddedPackage is null)
+        {
+            if (!Version.Equals("1.5.3", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(_texts.PackageMissing);
+            }
+
+            await DownloadPackageAsync(tempZip);
+        }
+        else
+        {
+            SetStatus(_texts.Copying);
+            try
+            {
+                await using var output = File.Create(tempZip);
+                await embeddedPackage.CopyToAsync(output);
+                ProgressBar.Value = 80;
+            }
+            catch
+            {
+                if (File.Exists(tempZip)) File.Delete(tempZip);
+                throw;
+            }
+        }
+
+        SetStatus(_texts.Verifying);
+        var expectedHash = await GetExpectedPackageHashAsync(Assembly.GetExecutingAssembly(), embeddedPackage is not null);
+        await using (var hashStream = File.OpenRead(tempZip))
+        {
+            var hash = Convert.ToHexString(await SHA256.HashDataAsync(hashStream));
+            if (!hash.Equals(expectedHash, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidDataException(_texts.HashMismatch);
+            }
+        }
+
+        SetStatus(_texts.Copying);
+        ZipFile.ExtractToDirectory(tempZip, destination, overwriteFiles: true);
+        var selfPath = Environment.ProcessPath;
+        if (!string.IsNullOrWhiteSpace(selfPath))
+        {
+            File.Copy(selfPath, Path.Combine(destination, "OrizontSetup.exe"), overwrite: true);
+        }
+
+        SetStatus(_texts.CreatingShortcuts);
+        CreateShortcuts(destination, DesktopShortcutCheckBox.IsChecked == true);
+        ProgressBar.Value = 100;
+        SetStatus(_texts.Completed);
+        PrimaryButton.Content = _texts.StartButton;
+        PrimaryButton.SetValue(AutomationProperties.NameProperty, _texts.StartButton);
+        PrimaryButton.IsEnabled = true;
+        PrimaryButton.Click -= PrimaryButton_Click;
+        PrimaryButton.Click += (_, _) =>
+        {
+            Process.Start(new ProcessStartInfo(Path.Combine(destination, "Orizont.exe")) { UseShellExecute = true });
+            Close();
+        };
+        CancelButton.Content = _texts.CloseButton;
+        CancelButton.IsEnabled = true;
+        File.Delete(tempZip);
+    }
+
+    private async Task DownloadPackageAsync(string tempZip)
+    {
+        SetStatus(_texts.Downloading);
         try
         {
             using var client = new HttpClient { Timeout = TimeSpan.FromMinutes(10) };
@@ -137,41 +205,26 @@ public partial class MainWindow : Window
             if (File.Exists(tempZip)) File.Delete(tempZip);
             throw;
         }
+    }
 
-        SetStatus(_texts.Verifying);
-        await using (var hashStream = File.OpenRead(tempZip))
+    private async Task<string> GetExpectedPackageHashAsync(Assembly assembly, bool embeddedPackage)
+    {
+        using var hashStream = assembly.GetManifestResourceStream(EmbeddedPackageHashResource);
+        if (hashStream is null)
         {
-            var hash = Convert.ToHexString(await SHA256.HashDataAsync(hashStream));
-            if (!hash.Equals(ExpectedSha256, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new InvalidDataException(_texts.HashMismatch);
-            }
+            if (embeddedPackage) throw new InvalidDataException(_texts.PackageMissing);
+            return ExpectedSha256;
         }
 
-        SetStatus(_texts.Copying);
-        ZipFile.ExtractToDirectory(tempZip, destination, overwriteFiles: true);
-        var selfPath = Environment.ProcessPath;
-        if (!string.IsNullOrWhiteSpace(selfPath))
+        using var reader = new StreamReader(hashStream);
+        var line = await reader.ReadLineAsync();
+        var hash = line?.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+        if (hash is null || hash.Length != 64 || !hash.All(Uri.IsHexDigit))
         {
-            File.Copy(selfPath, Path.Combine(destination, "OrizontSetup.exe"), overwrite: true);
+            throw new InvalidDataException(_texts.HashMismatch);
         }
 
-        SetStatus(_texts.CreatingShortcuts);
-        CreateShortcuts(destination, DesktopShortcutCheckBox.IsChecked == true);
-        ProgressBar.Value = 100;
-        SetStatus(_texts.Completed);
-        PrimaryButton.Content = _texts.StartButton;
-        PrimaryButton.SetValue(AutomationProperties.NameProperty, _texts.StartButton);
-        PrimaryButton.IsEnabled = true;
-        PrimaryButton.Click -= PrimaryButton_Click;
-        PrimaryButton.Click += (_, _) =>
-        {
-            Process.Start(new ProcessStartInfo(Path.Combine(destination, "Orizont.exe")) { UseShellExecute = true });
-            Close();
-        };
-        CancelButton.Content = _texts.CloseButton;
-        CancelButton.IsEnabled = true;
-        File.Delete(tempZip);
+        return hash;
     }
 
     private async Task UninstallAsync()

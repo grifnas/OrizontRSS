@@ -7,10 +7,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>Orizont</AssemblyName>
     <RootNamespace>CititorRSS.Jaws</RootNamespace>
-    <Version>1.5.3</Version>
-    <AssemblyVersion>1.5.3.0</AssemblyVersion>
-    <FileVersion>1.5.3.0</FileVersion>
-    <InformationalVersion>1.5.3</InformationalVersion>
+    <Version>1.5.4</Version>
+    <AssemblyVersion>1.5.4.0</AssemblyVersion>
+    <FileVersion>1.5.4.0</FileVersion>
+    <InformationalVersion>1.5.4</InformationalVersion>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <ApplicationIcon>Assets\OrizontRSS.ico</ApplicationIcon>
     <Title>Orizont RSS</Title>
     <Product>Orizont RSS</Product>
@@ -34,7 +35,7 @@
     <Content Include="ACKNOWLEDGEMENTS.md" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="CHANGELOG.md" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="RELEASE-NOTES-1.5.3.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="RELEASE-NOTES-1.5.4.md" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Licenses\**\*" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="ThirdParty\eSpeakNG\libespeak-ng.dll">
       <Link>libespeak-ng.dll</Link>
