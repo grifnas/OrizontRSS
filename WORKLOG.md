@@ -2,6 +2,16 @@
 
 Acest jurnal păstrează trasabilitatea modificărilor efective din proiect. Se notează acțiunile asupra fișierelor, nu raționamentul intern al agentului.
 
+## 2026-09-12 — Actualizarea paginilor publice la versiunea 1.5.4
+
+- Motiv: după publicarea release-ului `v1.5.4`, utilizatorul a observat că pagina de prezentare anunța încă versiunea 1.5.3.
+- Modificări: toate cele opt pagini localizate din `docs/index*.html` afișează acum 1.5.4 în titlul secțiunii de descărcare, subsol și metadatele JSON-LD `softwareVersion`. Linkurile de instalare și descărcare rămân direcționate către release-ul latest. `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md` reflectă release-ul public și assets verificate.
+- Comportamente păstrate: nu s-au modificat codul aplicației, linkurile, versiunile installerului/portabilului, feedurile, setările, datele NewsBlur sau arhivele de distribuție.
+- Verificări: toate cele opt pagini trec verificarea statică pentru absența lui 1.5.3, `softwareVersion` 1.5.4 și păstrarea linkurilor; `git diff --check` a trecut. Avertismentele LF→CRLF sunt informative.
+- Publicarea a fost inițial blocată de indisponibilitatea acreditărilor în sesiunea Codex și de permisiunile read-only ale conectorului GitHub. Utilizatorul a confirmat apoi că Git Credential Manager era deja conectat; accesul la ramura `main` a fost verificat din nou prin Git.
+- Rezultat: schimbările au fost comise și împinse pe `main`; pagina live a fost verificată pentru versiunea 1.5.4. `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md` au fost actualizate pentru a consemna publicarea.
+- Nu s-a creat un executabil și nu s-a creat o distribuție nouă; schimbarea privește numai paginile și documentația publică.
+
 ## 2026-09-12 — Variante vocale eSpeak NG și setări extinse
 
 - Scop: adaptarea în Orizont RSS a variantelor și controalelor eSpeak NG din Orizont Interpret, fără preluarea rutării audio specifice acelei aplicații.

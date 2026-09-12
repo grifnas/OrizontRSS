@@ -8,7 +8,8 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 
 ## Realizat
 
-- Sursa și tagul `v1.5.4` sunt publicate pe GitHub; Release-ul cu portabilul și installerul nu este încă atașat. Ultima versiune descărcabilă rămâne 1.5.3.
+- Sursa, tagul `v1.5.4` și Release-ul public sunt publicate pe GitHub. Sunt atașate cele șase assets: installer, arhivă portabilă, arhivă sursă și fișierele lor SHA-256; hash-urile asseturilor corespund fișierelor pregătite local.
+- Pagina GitHub Pages este actualizată și publicată pentru versiunea 1.5.4 în română și în celelalte șapte limbi, inclusiv în metadatele SEO.
 - Sunt implementate feedurile RSS, folderele, actualizarea, filtrele, favoritele, lista „Mai târziu”, etichetele și curățarea duplicatelor.
 - Sunt implementate cititorul integrat accesibil, citirea vocală, căutarea, copierea, partajarea, backupul și restaurarea.
 - Setările eSpeak NG oferă acum toate cele 104 variante incluse (inclusiv Ian, Mike2 și Reed), selectarea separată a limbii și reglarea înălțimii/intonației; alegerea variantei se păstrează și în backup.
@@ -27,11 +28,10 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 
 ## În lucru acum
 
-- Sursa și tagul `v1.5.4` au fost împinse fast-forward în `grifnas/OrizontRSS`. Release-ul cu arhiva Windows și `OrizontSetup.exe` așteaptă atașarea asseturilor; GitHub Pages păstrează versiunea 1.5.3 până atunci.
 - Workflow-ul GitHub Actions compilează separat aplicația și instalatorul; sursele instalatorului nu mai intră accidental în proiectul aplicației principale.
 - URL-ul principal GitHub Pages detectează limba preferată a browserului și redirecționează automat către una dintre cele opt pagini; pentru limbile nesuportate folosește engleza, iar paginile accesate explicit rămân stabile.
 - Toate paginile publice precizează transparent că Orizont RSS a fost creat de Grigore Frișan în colaborare cu OpenAI Codex și oferă legătură către documentul complet de contribuții.
-- Instalatorul autonom `OrizontSetup.exe` pentru Windows x64 include acum alegerea inițială a limbii (cu limba Windows preselectată), opțiune pentru pictogramă pe desktop și bară de stare live; instalarea și dezinstalarea completă au fost testate manual, iar retestarea acestor funcții noi cu JAWS/NVDA rămâne necesară înainte de publicarea lui.
+- Instalatorul autonom `OrizontSetup.exe` pentru Windows x64 include alegerea inițială a limbii (cu limba Windows preselectată), opțiune pentru pictogramă pe desktop și bară de stare live. Release-ul 1.5.4 este public; retestarea acestei versiuni cu JAWS/NVDA rămâne recomandată pentru confirmarea accesibilității installerului actual.
 - Verificarea manuală raportată de utilizator pentru bara de stare și facilitățile Orizont este în regulă; testarea manuală a noilor modificări 1.5.4 cu JAWS/NVDA și pe al doilea calculator rămâne de confirmat.
 - Experimentul Android `OrizontRSSAndroid` este separat de proiectul Windows și este pus pe pauză.
 - Localizarea maghiară (`hu-HU`) și italiană (`it-IT`) este implementată în aplicație, instalator, ghiduri și paginile GitHub Pages; verificarea automată pentru ambele limbi a trecut.
@@ -40,7 +40,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 - Pagina GitHub Pages are acum metadate SEO localizate pentru toate cele opt limbi: descriere, canonical, `hreflang`, Open Graph, Twitter Card și JSON-LD pentru site și aplicație. Au fost adăugate `sitemap.xml` și `robots.txt`, cu URL-uri publice absolute.
 - Galeria publică folosește acum patru previzualizări demonstrative în limba engleză, aleasă ca limbă internațională comună; textul alternativ și descrierile rămân localizate pentru fiecare pagină.
 - Verificarea publică din 9 septembrie 2026 confirmă că pagina principală și toate cele opt pagini localizate se încarcă, afișează butonul pentru instalator și păstrează navigarea accesibilă; `robots.txt` și `sitemap.xml` sunt prezente și conțin adresele publice corecte.
-- Release-ul public `v1.5.3` este stabil, cu arhiva portabilă și `OrizontSetup.exe` încărcate; suma SHA-256 a arhivei locale corespunde manifestului WinGet și assetului public.
+- Release-ul `v1.5.3` rămâne versiunea istorică anterioară; hash-ul arhivei sale portabile corespunde manifestului WinGet și assetului public de atunci.
 - Manifestele WinGet locale trec validarea cu WinGet `1.29.290`. PR-ul oficial `microsoft/winget-pkgs#431971` este deschis cu cele patru fișiere pentru `Grifnas.OrizontRSS` 1.5.3; botul Microsoft solicită semnarea CLA, iar validările tehnice sunt încă în așteptare.
 - Feedul Bistrițeanul a fost validat prin XML-ul primit, dar prototipul Android a primit 404. Nu se mai fac încercări speculative până la o decizie nouă și o metodă de diagnostic adecvată.
 - Prima etapă NewsBlur este implementată local: fereastră accesibilă pentru autentificare cu utilizator/parolă, creare cont, deconectare și deschiderea site-ului oficial; sesiunea este protejată DPAPI, iar parola nu este salvată.

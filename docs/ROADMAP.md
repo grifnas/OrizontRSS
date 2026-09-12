@@ -2,7 +2,7 @@
 
 ## Situația curentă
 
-Ultima versiune descărcabilă publică este 1.5.3. Sursa și tagul `v1.5.4` au fost publicate; Release-ul cu installerul și arhiva portabilă este în curs de atașare. Până atunci, GitHub Pages indică versiunea 1.5.3.
+Ultima versiune descărcabilă publică este 1.5.4. Release-ul `v1.5.4` este public și include installerul, arhiva portabilă, arhiva sursă și cele trei fișiere SHA-256; hash-urile afișate de GitHub corespund fișierelor pregătite local. Toate cele opt pagini GitHub Pages au fost actualizate la 1.5.4 și publicate pe `main`.
 
 Localizarea este disponibilă în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană. Mesajele adăugate în etapa NewsBlur au fost traduse, iar verificarea completă a tuturor resurselor a trecut pentru cele opt limbi.
 
