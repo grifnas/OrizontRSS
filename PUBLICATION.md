@@ -5,7 +5,8 @@ date ale utilizatorilor sau feeduri personale.
 
 ## Starea versiunii
 
-- versiune stabilă: `1.5.4`;
+- versiune stabilă descărcabilă: `1.5.3`;
+- versiune-sursă pregătită: `1.5.4` (tag publicat; Release-ul cu binarele este în curs);
 - platformă: Windows x64;
 - pachet binar: `Orizont-RSS-1.5.4-win-x64.zip`;
 - installer offline: `OrizontSetup.exe`;
@@ -19,9 +20,9 @@ Depozitul public este `grifnas/OrizontRSS`; sursa, documentația, licența și n
 terțe sunt publicate acolo. Pagina de prezentare este
 <https://grifnas.github.io/OrizontRSS/>.
 
-## Release 1.5.4
+## Pachetul pregătit pentru Release 1.5.4
 
-Release-ul stabil folosește tagul `v1.5.4` și conține:
+După autentificarea proprietarului, Release-ul `v1.5.4` va conține:
 
 - `Orizont-RSS-1.5.4-win-x64.zip` și fișierul său `.sha256`;
 - `OrizontSetup.exe` și fișierul său `.sha256`;
@@ -62,3 +63,5 @@ gestionate de Store.
 
 Verificarea manuală JAWS/NVDA pentru interacțiunile NewsBlur din 1.5.4 și confirmarea
 sincronizării pe al doilea calculator rămân de efectuat; nu sunt declarate drept trecute.
+Înaintea finalizării Release-ului, API-ul GitHub a confirmat că tagul există, dar
+Release-ul și asseturile binare încă nu sunt publicate.

@@ -8,7 +8,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 
 ## Realizat
 
-- Orizont RSS pentru Windows 1.5.4 este publicat pe GitHub, cu cod-sursă, release și pagina de prezentare actualizată.
+- Sursa și tagul `v1.5.4` sunt publicate pe GitHub; Release-ul cu portabilul și installerul nu este încă atașat. Ultima versiune descărcabilă rămâne 1.5.3.
 - Sunt implementate feedurile RSS, folderele, actualizarea, filtrele, favoritele, lista „Mai târziu”, etichetele și curățarea duplicatelor.
 - Sunt implementate cititorul integrat accesibil, citirea vocală, căutarea, copierea, partajarea, backupul și restaurarea.
 - Setările eSpeak NG oferă acum toate cele 104 variante incluse (inclusiv Ian, Mike2 și Reed), selectarea separată a limbii și reglarea înălțimii/intonației; alegerea variantei se păstrează și în backup.
@@ -27,7 +27,7 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 
 ## În lucru acum
 
-- Publicarea publică este activă: sursa, tagul `v1.5.4`, Release-ul stabil, arhiva Windows și instalatorul `OrizontSetup.exe` sunt publicate în `grifnas/OrizontRSS`; pagina GitHub Pages multilingvă funcționează la `https://grifnas.github.io/OrizontRSS/` și oferă buton direct pentru instalator, cu arhiva portabilă ca alternativă.
+- Sursa și tagul `v1.5.4` au fost împinse fast-forward în `grifnas/OrizontRSS`. Release-ul cu arhiva Windows și `OrizontSetup.exe` așteaptă atașarea asseturilor; GitHub Pages păstrează versiunea 1.5.3 până atunci.
 - Workflow-ul GitHub Actions compilează separat aplicația și instalatorul; sursele instalatorului nu mai intră accidental în proiectul aplicației principale.
 - URL-ul principal GitHub Pages detectează limba preferată a browserului și redirecționează automat către una dintre cele opt pagini; pentru limbile nesuportate folosește engleza, iar paginile accesate explicit rămân stabile.
 - Toate paginile publice precizează transparent că Orizont RSS a fost creat de Grigore Frișan în colaborare cu OpenAI Codex și oferă legătură către documentul complet de contribuții.

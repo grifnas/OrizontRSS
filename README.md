@@ -7,9 +7,9 @@ Aplicația a fost inițiată și este coordonată de **Grigore Frișan**. Dezvol
 ## Pagina publică și descărcare
 
 - [Pagina publică Orizont RSS](https://grifnas.github.io/OrizontRSS/), disponibilă în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană;
-- [Release-ul stabil 1.5.4 pentru Windows x64](https://github.com/grifnas/OrizontRSS/releases/tag/v1.5.4);
+- [Ultimul Release stabil pentru Windows x64](https://github.com/grifnas/OrizontRSS/releases/latest);
 - [Descarcă instalatorul autonom pentru Windows x64](https://github.com/grifnas/OrizontRSS/releases/latest/download/OrizontSetup.exe);
-- [Descarcă ultima versiune](https://github.com/grifnas/OrizontRSS/releases/latest);
+- [Codul-sursă al versiunii 1.5.4](https://github.com/grifnas/OrizontRSS/tree/v1.5.4);
 - [Codul-sursă și documentația](https://github.com/grifnas/OrizontRSS).
 
 ### Instalare rapidă

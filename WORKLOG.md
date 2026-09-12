@@ -662,6 +662,15 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare manuală: JAWS/NVDA pe interfața 1.5.4 și testul NewsBlur pe al doilea calculator nu au fost efectuate de această sesiune; nu sunt declarate drept verificate.
 - Stare externă la consemnare: publicarea GitHub nu a fost încă finalizată; pagina Releases solicită autentificarea proprietarului pentru atașarea fișierelor. Nicio dată locală sau remote NewsBlur nu a fost accesată ori modificată.
 
+## 2026-09-12 — Publicarea sursei și a tagului 1.5.4
+
+- Commitul `54d941498785bdcd3521e344b2d6c968bbfd7244` a fost împins fast-forward pe `main`; tagul `v1.5.4` pointează la același commit. Nu s-a folosit force push.
+- Verificare publică: refs-urile GitHub confirmă `main` și `v1.5.4`; endpointul Release-by-tag răspunde 404, deci există sursa/tagul și arhivele GitHub generate automat, dar nu există încă Release cu pachetele binare.
+- Pachetele atașabile sunt pregătite în `../release-assets-1.5.4/`: installer `OrizontSetup.exe`, portabilul, arhiva sursă curentă, notele de lansare și fișierele SHA-256. Arhiva sursă are 605 intrări și nicio intrare interzisă.
+- Browserul GitHub a redirecționat către autentificarea Google. Autentificarea nu a fost automatizată; sunt necesare conectarea manuală și continuarea publicării Release-ului.
+- Până când asseturile Release sunt publicate, GitHub Pages și eticheta de versiune descărcabilă rămân la 1.5.3, pentru ca linkul installerului să nu indice greșit versiunea.
+- Testarea manuală JAWS/NVDA și confirmarea pe al doilea calculator rămân neefectuate; niciuna nu este declarată ca trecută.
+
 ## 2026-09-12 — Distribuția locală Orizont RSS 1.5.4
 
 - Cerere aprobată: creare locală pentru Windows x64 cu arhivă portabilă, installer și sursă; nu publicare GitHub. Release-ul public 1.5.3, Pages și manifestele WinGet au rămas neschimbate.

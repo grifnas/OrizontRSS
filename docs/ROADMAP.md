@@ -2,7 +2,7 @@
 
 ## Situația curentă
 
-Versiunea publică stabilă este 1.5.4. Release-ul include schimbările NewsBlur, accesibilitate și localizare verificate automat pentru toate cele opt limbi.
+Ultima versiune descărcabilă publică este 1.5.3. Sursa și tagul `v1.5.4` au fost publicate; Release-ul cu installerul și arhiva portabilă este în curs de atașare. Până atunci, GitHub Pages indică versiunea 1.5.3.
 
 Localizarea este disponibilă în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană. Mesajele adăugate în etapa NewsBlur au fost traduse, iar verificarea completă a tuturor resurselor a trecut pentru cele opt limbi.
 
@@ -10,7 +10,7 @@ La 12 septembrie 2026 au fost adăugate stări goale accesibile pentru listele F
 
 La 12 septembrie 2026 s-a corectat și schimbarea din „Citește acum” către un folder: selectarea folderului dezactivează vizualizarea agregată, astfel încât articolele și numărul vocal să provină doar din feedurile folderului.
 
-Distribuția 1.5.4 Windows x64, installerul offline și arhiva sursă au fost generate din aceeași stare a sursei și publicate împreună în GitHub Release.
+Distribuția 1.5.4 Windows x64, installerul offline și arhiva sursă au fost generate și verificate din aceeași stare a sursei. Asseturile sunt pregătite local pentru Release.
 
 La 12 septembrie 2026, după curățarea reușită a duplicatelor, sincronizarea feedurilor/folderelor NewsBlur pornește automat dacă există o sesiune conectată. Feedurile suprapuse eliminate prin alegere explicită sunt puse în coada de dezabonare, iar adresa păstrată nu este atinsă; o curățare lansată dintr-o sincronizare o face pe aceasta să reia operația cu lista actualizată. Prima inițializare a unui profil nou rămâne unidirecțională și nu dezabonează remote.
 
