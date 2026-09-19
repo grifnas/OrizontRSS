@@ -2,7 +2,7 @@
 
 Ultima actualizare: 19 septembrie 2026
 
-- La 19 septembrie 2026 a fost creată distribuția completă pentru versiunea 1.6.0: arhiva portabilă autonomă Windows x64 (`bin/Release/Orizont-RSS-1.6.0-win-x64.zip`, 84,98 MB, SHA-256 `980737f0b0a28f32267f5c28018df5ca60c05e04788c632abe1d3ef9d0059030`), installerul offline cu pachetul inclus (`bin/Release/OrizontSetup-1.6.0.exe`, 231,37 MB, SHA-256 `f0f95ef55926e82f20ce8f5a9b3ec5f2c7f07254b8d94b2df185a576ea546ee9`) și arhiva sursei (`bin/Release/Orizont-RSS-1.6.0-source.zip`, 12,57 MB, SHA-256 `40dd07a0d4b254ddda85a37b96d36976ae3cb7e60f1c0c700b8779f5575714d6`). Toate verificările de conformitate (`verify-distribution.ps1`, `verify-user-guides.ps1`, `verify-text-encoding.ps1`, `CoreSmoke`, `EspeakSmoke`) au trecut cu succes. Buildul este pregătit pentru promovarea pe GitHub.
+- La 19 septembrie 2026 a fost publicată versiunea 1.6.0 pe GitHub: codul sursă și tagul oficial `v1.6.0` au fost trimise pe `main`, Release-ul public `v1.6.0` a fost creat și conține toate cele 8 fișiere atașate (`OrizontSetup-1.6.0.exe`, `OrizontSetup.exe`, `Orizont-RSS-1.6.0-win-x64.zip`, `Orizont-RSS-1.6.0-source.zip` și sumele lor SHA-256), iar paginile de prezentare GitHub Pages în toate cele 8 limbi au fost actualizate și verificate live la versiunea 1.6.0. Distribuția completă este oficială.
 
 ## Scopul documentului
 
@@ -30,8 +30,8 @@ Acest document păstrează separat ceea ce este deja realizat, ceea ce este în 
 
 - Rezultatele alertelor după cuvinte-cheie fixează explicit numele UI Automation pe fiecare rând și oferă text simplu prin `ToString()`, astfel încât obiectul intern să nu fie anunțat în locul titlului. Corecția răspunde raportării JAWS „Keyword alert item”; confirmarea manuală după rebuild rămâne necesară.
 
-- Sursa, tagul `v1.5.4` și Release-ul public sunt publicate pe GitHub. Sunt atașate cele șase assets pregătite manual: installer, arhivă portabilă, arhivă sursă și fișierele lor SHA-256; GitHub mai afișează separat cele două arhive automate ale sursei. Hash-urile asseturilor pregătite corespund fișierelor locale.
-- Pagina GitHub Pages este actualizată și publicată pentru versiunea 1.5.4 în română și în celelalte șapte limbi, inclusiv în metadatele SEO. La 13 septembrie 2026, linkul portabil a fost corectat în toate cele opt limbi pentru descărcarea directă a arhivei ZIP; commitul `7606912` este publicat pe `main`, iar pagina live a fost verificată.
+- Sursa, tagul `v1.6.0` și Release-ul public sunt publicate pe GitHub. Sunt atașate cele opt assets pregătite: installerul specific `OrizontSetup-1.6.0.exe`, `OrizontSetup.exe`, arhiva portabilă `Orizont-RSS-1.6.0-win-x64.zip`, arhiva sursă `Orizont-RSS-1.6.0-source.zip` și fișierele lor SHA-256; GitHub mai afișează separat cele două arhive automate ale sursei. Hash-urile asseturilor pregătite corespund fișierelor locale.
+- Pagina GitHub Pages este actualizată și publicată pentru versiunea 1.6.0 în română și în celelalte șapte limbi, inclusiv în metadatele SEO, cu linkurile de descărcare directă către noul pachet portabil și noul instalator. Pagina live a fost verificată.
 - Sunt implementate feedurile RSS, folderele, actualizarea, filtrele, favoritele, lista „Mai târziu”, etichetele și curățarea duplicatelor.
 - Sunt implementate cititorul integrat accesibil, citirea vocală, căutarea, copierea, partajarea, backupul și restaurarea.
 - Partajarea prin e-mail și WhatsApp folosește acum un footer transparent și localizat: menționează că textul a fost preluat prin Orizont RSS, include linkul către pagina de prezentare și păstrează URL-ul sursei originale. Pentru textele traduse, footerul menționează serviciul efectiv folosit (DeepL sau Google Translate). Fereastra rezultatului Google Translate oferă și ea butoane de partajare pentru textul tradus; conținutul original rămâne neschimbat.

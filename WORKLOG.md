@@ -1,5 +1,20 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-09-19 — Publicarea oficială Orizont RSS 1.6.0 pe GitHub și GitHub Pages
+
+- Scop: publicarea versiunii 1.6.0 pe GitHub, trimiterea codului și a tagului oficial, crearea Release-ului public GitHub cu toate fișierele de distribuție și actualizarea paginii statice GitHub Pages.
+- Acțiuni efectuate:
+  - Commit realizat pe ramura `main` (`ffee4d4`): include actualizarea automată din GitHub Releases, descoperirea de feeduri pe teme cu catalog local, reorganizarea meniului Căutare în 3 submeniuri, ordinea de citire optimizată a articolelor pentru JAWS/NVDA, structurarea modulară a codului (`Views/`, `Models/`, `Services/`, `Storage/`, `Common/`), mutarea ghidurilor de utilizare în `docs/user-guides/` și actualizarea tuturor celor 8 pagini GitHub Pages.
+  - Tag oficial creat și trimis: `v1.6.0`.
+  - GitHub Release creat pentru tagul `v1.6.0` (`https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.0`):
+    - `OrizontSetup-1.6.0.exe` (231,37 MB) și `OrizontSetup-1.6.0.exe.sha256`.
+    - `OrizontSetup.exe` (231,37 MB) și `OrizontSetup.exe.sha256` (pentru linkul permanent de descărcare directă din GitHub Pages).
+    - `Orizont-RSS-1.6.0-win-x64.zip` (84,98 MB) și `Orizont-RSS-1.6.0-win-x64.zip.sha256`.
+    - `Orizont-RSS-1.6.0-source.zip` (12,57 MB) și `Orizont-RSS-1.6.0-source.zip.sha256`.
+  - Pagina GitHub Pages verificată live: versiunea 1.6.0 este publicată și activă pe toate cele 8 limbi, cu linkurile directe funcționale către noile kituri.
+- Fișiere atinse: `docs/index*.html`, `WORKLOG.md`, `docs/PROJECT-STATUS.md`.
+- Executabil local de test: `file:///c:/Users/grigo/Documents/ChatGPT/New%20project/Orizont%20RSS/bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+
 ## 2026-09-19 — Construirea și verificarea distribuției complete Orizont RSS 1.6.0
 
 - Scop: construirea pachetelor de distribuție 1.6.0 (arhivă portabilă, installer offline și arhivă sursă) la cererea expresă a utilizatorului, incluzând toate funcționalitățile noi (actualizare automată de pe GitHub, ghiduri în docs/user-guides, reorganizare meniu Căutare, ordinea de citire a articolelor).
