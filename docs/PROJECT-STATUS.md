@@ -2,7 +2,7 @@
 
 Ultima actualizare: 19 septembrie 2026
 
-- La 19 septembrie 2026 a fost publicată versiunea 1.6.0 pe GitHub: codul sursă și tagul oficial `v1.6.0` au fost trimise pe `main`, Release-ul public `v1.6.0` a fost creat și conține toate cele 8 fișiere atașate (`OrizontSetup-1.6.0.exe`, `OrizontSetup.exe`, `Orizont-RSS-1.6.0-win-x64.zip`, `Orizont-RSS-1.6.0-source.zip` și sumele lor SHA-256), iar paginile de prezentare GitHub Pages în toate cele 8 limbi au fost actualizate și verificate live la versiunea 1.6.0. Kitul instalabil include acum toate bibliotecile native WPF prin `IncludeNativeLibrariesForSelfExtract` (SHA-256 `b558c41063676d7e3607c9241f1883f545953db8af3e5c0ca01fd67091ecf7da`), fiind testat end-to-end la descărcare și rulare. Distribuția completă este oficială.
+- La 19 septembrie 2026 a fost publicată versiunea 1.6.0 pe GitHub: codul sursă și tagul oficial `v1.6.0` au fost trimise pe `main`, Release-ul public `v1.6.0` a fost creat și conține toate cele 8 fișiere atașate (`OrizontSetup-1.6.0.exe`, `OrizontSetup.exe`, `Orizont-RSS-1.6.0-win-x64.zip`, `Orizont-RSS-1.6.0-source.zip` și sumele lor SHA-256), iar paginile de prezentare GitHub Pages în toate cele 8 limbi au fost actualizate și verificate live la versiunea 1.6.0. Kitul instalabil include acum toate bibliotecile native WPF prin `IncludeNativeLibrariesForSelfExtract` (SHA-256 `b558c41063676d7e3607c9241f1883f545953db8af3e5c0ca01fd67091ecf7da`), fiind testat end-to-end și confirmat funcțional de utilizator. Distribuția completă este oficială.
 
 ## Scopul documentului
 

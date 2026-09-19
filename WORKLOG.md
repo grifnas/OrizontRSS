@@ -9,6 +9,7 @@
   - Reconstruit kitul autonom complet: `bin/Release/OrizontSetup-1.6.0.exe` și `bin/Release/OrizontSetup.exe` (250,82 MB), cu noua sumă SHA-256 `b558c41063676d7e3607c9241f1883f545953db8af3e5c0ca01fd67091ecf7da`.
   - Actualizat release-ul public `v1.6.0` pe GitHub prin `gh release upload --clobber` pentru kitul instalabil și sumele SHA-256.
   - Testare completă: descărcat de pe GitHub într-un director gol și rulat; procesul s-a deschis imediat fără erori în logurile Windows sau .NET.
+  - Confirmare utilizator: utilizatorul a confirmat descărcarea și deschiderea cu succes a noului kit de instalare.
 - Fișiere atinse: `packaging/installer/OrizontSetup.csproj`, `WORKLOG.md`, `docs/PROJECT-STATUS.md`.
 - Executabil local de test: `file:///c:/Users/grigo/Documents/ChatGPT/New%20project/Orizont%20RSS/bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
 
