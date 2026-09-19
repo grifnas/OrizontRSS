@@ -1,5 +1,17 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-09-19 — Corectarea kitului de instalare OrizontSetup (includere biblioteci native WPF)
+
+- Problemă: la lansarea `OrizontSetup.exe` descărcat de pe GitHub, procesul se termina brusc cu `System.DllNotFoundException` în `SetWindowLongPtrWndProc` din cauza absenței bibliotecilor native WPF (`PresentationNative_cor3.dll`, `wpfgfx_cor3.dll`, `vcruntime140_cor3.dll` etc.) din interiorul executabilului unic.
+- Cauză: configurarea `PublishSingleFile` nu includea directiva `IncludeNativeLibrariesForSelfExtract=true`, determinând .NET SDK să lase DLL-urile native în folderul de publicare în loc să le împacheteze în `.exe`.
+- Remediere:
+  - `packaging/installer/OrizontSetup.csproj`: adăugat direct în `<PropertyGroup>` directivele permanente `<PublishSingleFile>true</PublishSingleFile>`, `<SelfContained>true</SelfContained>`, `<RuntimeIdentifier>win-x64</RuntimeIdentifier>`, `<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>`, `<DebugType>none</DebugType>` și `<DebugSymbols>false</DebugSymbols>`.
+  - Reconstruit kitul autonom complet: `bin/Release/OrizontSetup-1.6.0.exe` și `bin/Release/OrizontSetup.exe` (250,82 MB), cu noua sumă SHA-256 `b558c41063676d7e3607c9241f1883f545953db8af3e5c0ca01fd67091ecf7da`.
+  - Actualizat release-ul public `v1.6.0` pe GitHub prin `gh release upload --clobber` pentru kitul instalabil și sumele SHA-256.
+  - Testare completă: descărcat de pe GitHub într-un director gol și rulat; procesul s-a deschis imediat fără erori în logurile Windows sau .NET.
+- Fișiere atinse: `packaging/installer/OrizontSetup.csproj`, `WORKLOG.md`, `docs/PROJECT-STATUS.md`.
+- Executabil local de test: `file:///c:/Users/grigo/Documents/ChatGPT/New%20project/Orizont%20RSS/bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+
 ## 2026-09-19 — Publicarea oficială Orizont RSS 1.6.0 pe GitHub și GitHub Pages
 
 - Scop: publicarea versiunii 1.6.0 pe GitHub, trimiterea codului și a tagului oficial, crearea Release-ului public GitHub cu toate fișierele de distribuție și actualizarea paginii statice GitHub Pages.

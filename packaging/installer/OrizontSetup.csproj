@@ -18,6 +18,12 @@
     <Authors>Grigore Frișan</Authors>
     <Company>Grigore Frișan</Company>
     <Description>Instalator accesibil pentru Orizont RSS</Description>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="..\..\Assets\OrizontRSS.ico" Link="OrizontRSS.ico" />
