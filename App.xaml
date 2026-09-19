@@ -1,12 +1,23 @@
 <Application x:Class="CititorRSS.Jaws.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <Application.Resources>
-    <!-- Orizont folosește pensulele Windows pentru a respecta automat Contrast ridicat. -->
+    <!-- Orizont folosește resurse semantice; modul Windows automat preia pensulele sistemului. -->
+    <!-- Valorile inițiale sunt înlocuite de ColorThemeManager după încărcarea setărilor. -->
+    <SolidColorBrush x:Key="ThemeWindowBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="ThemeWindowTextBrush" Color="#000000" />
+    <SolidColorBrush x:Key="ThemeControlBrush" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="ThemeControlTextBrush" Color="#000000" />
+    <SolidColorBrush x:Key="ThemeBorderBrush" Color="#000000" />
+    <SolidColorBrush x:Key="ThemeMenuBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="ThemeMenuTextBrush" Color="#000000" />
+    <SolidColorBrush x:Key="ThemeHighlightBrush" Color="#000080" />
+    <SolidColorBrush x:Key="ThemeHighlightTextBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="ThemeSecondaryTextBrush" Color="#000000" />
     <Style x:Key="AccessibleFocusVisualStyle" TargetType="Control">
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate>
             <Rectangle Margin="2" SnapsToDevicePixels="True"
-                       Stroke="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                       Stroke="{DynamicResource ThemeHighlightBrush}"
                        StrokeThickness="2" StrokeDashArray="2,1" />
           </ControlTemplate>
         </Setter.Value>
@@ -16,19 +27,19 @@
     <Style x:Key="WindowTitleTextStyle" TargetType="TextBlock">
       <Setter Property="FontSize" Value="24" />
       <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeWindowTextBrush}" />
       <Setter Property="Margin" Value="4,0,4,8" />
     </Style>
 
     <Style x:Key="SectionTitleTextStyle" TargetType="TextBlock">
       <Setter Property="FontSize" Value="20" />
       <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeWindowTextBrush}" />
       <Setter Property="Margin" Value="4,4,4,12" />
     </Style>
 
     <Style x:Key="SecondaryTextStyle" TargetType="TextBlock">
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeSecondaryTextBrush}" />
       <Setter Property="TextWrapping" Value="Wrap" />
       <Setter Property="Margin" Value="4,6,4,8" />
     </Style>
@@ -45,8 +56,8 @@
       <Setter Property="Padding" Value="8,6" />
       <Setter Property="MinHeight" Value="34" />
       <Setter Property="TextWrapping" Value="Wrap" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeControlTextBrush}" />
+      <Setter Property="Background" Value="{DynamicResource ThemeControlBrush}" />
     </Style>
 
     <Style x:Key="DialogButtonBarStyle" TargetType="StackPanel">
@@ -67,8 +78,8 @@
     </Style>
 
     <Style TargetType="Window">
-      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+      <Setter Property="Background" Value="{DynamicResource ThemeWindowBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeWindowTextBrush}" />
       <Setter Property="FontFamily" Value="Segoe UI" />
       <Setter Property="FontSize" Value="14" />
       <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
@@ -80,9 +91,9 @@
       <Setter Property="Padding" Value="12,7" />
       <Setter Property="MinHeight" Value="36" />
       <Setter Property="MinWidth" Value="76" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeControlTextBrush}" />
+      <Setter Property="Background" Value="{DynamicResource ThemeControlBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="FocusVisualStyle" Value="{StaticResource AccessibleFocusVisualStyle}" />
     </Style>
@@ -91,11 +102,11 @@
       <Setter Property="Margin" Value="4" />
       <Setter Property="Padding" Value="7" />
       <Setter Property="MinHeight" Value="34" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
-      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeWindowTextBrush}" />
+      <Setter Property="Background" Value="{DynamicResource ThemeWindowBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="CaretBrush" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+      <Setter Property="CaretBrush" Value="{DynamicResource ThemeWindowTextBrush}" />
       <Setter Property="FocusVisualStyle" Value="{StaticResource AccessibleFocusVisualStyle}" />
     </Style>
 
@@ -103,9 +114,9 @@
       <Setter Property="Margin" Value="4" />
       <Setter Property="Padding" Value="7" />
       <Setter Property="MinHeight" Value="34" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
-      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeWindowTextBrush}" />
+      <Setter Property="Background" Value="{DynamicResource ThemeWindowBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}" />
       <Setter Property="FocusVisualStyle" Value="{StaticResource AccessibleFocusVisualStyle}" />
     </Style>
 
@@ -113,31 +124,31 @@
       <Setter Property="Margin" Value="4" />
       <Setter Property="Padding" Value="6,4" />
       <Setter Property="MinHeight" Value="34" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
-      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeWindowTextBrush}" />
+      <Setter Property="Background" Value="{DynamicResource ThemeWindowBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}" />
       <Setter Property="FocusVisualStyle" Value="{StaticResource AccessibleFocusVisualStyle}" />
     </Style>
 
     <Style TargetType="CheckBox">
       <Setter Property="Margin" Value="6,7" />
       <Setter Property="Padding" Value="2" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeWindowTextBrush}" />
       <Setter Property="FocusVisualStyle" Value="{StaticResource AccessibleFocusVisualStyle}" />
     </Style>
 
     <Style TargetType="Label">
       <Setter Property="Margin" Value="4,5,4,0" />
       <Setter Property="Padding" Value="2" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeWindowTextBrush}" />
     </Style>
 
     <Style TargetType="ListBox">
       <Setter Property="Margin" Value="4" />
       <Setter Property="Padding" Value="2" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
-      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeWindowTextBrush}" />
+      <Setter Property="Background" Value="{DynamicResource ThemeWindowBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
       <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
@@ -154,27 +165,27 @@
     <Style TargetType="GroupBox">
       <Setter Property="Margin" Value="4" />
       <Setter Property="Padding" Value="6" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}" />
-      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeWindowTextBrush}" />
+      <Setter Property="Background" Value="{DynamicResource ThemeWindowBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}" />
     </Style>
 
     <Style TargetType="Menu">
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}" />
-      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeMenuTextBrush}" />
+      <Setter Property="Background" Value="{DynamicResource ThemeMenuBrush}" />
       <Setter Property="Padding" Value="2" />
     </Style>
 
     <Style TargetType="MenuItem">
       <Setter Property="Padding" Value="8,5" />
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeMenuTextBrush}" />
       <Setter Property="FocusVisualStyle" Value="{StaticResource AccessibleFocusVisualStyle}" />
     </Style>
 
     <Style TargetType="StatusBar">
-      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+      <Setter Property="Foreground" Value="{DynamicResource ThemeControlTextBrush}" />
+      <Setter Property="Background" Value="{DynamicResource ThemeControlBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderBrush}" />
       <Setter Property="BorderThickness" Value="1" />
       <Setter Property="MinHeight" Value="32" />
       <Setter Property="Padding" Value="6,3" />
@@ -186,7 +197,7 @@
     </Style>
 
     <Style TargetType="GridSplitter">
-      <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" />
+      <Setter Property="Background" Value="{DynamicResource ThemeBorderBrush}" />
     </Style>
   </Application.Resources>
 </Application>

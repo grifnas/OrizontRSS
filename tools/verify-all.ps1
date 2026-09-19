@@ -14,6 +14,8 @@ try
 {
     dotnet build .\CititorRSS.Jaws.csproj --configuration Release --ignore-failed-sources
     if ($LASTEXITCODE -ne 0) { throw "Application build failed." }
+    dotnet build .\packaging\installer\OrizontSetup.csproj --configuration Release --ignore-failed-sources
+    if ($LASTEXITCODE -ne 0) { throw "Installer build failed." }
     dotnet run --project .\tests\CoreSmoke\CoreSmoke.csproj --configuration Release
     if ($LASTEXITCODE -ne 0) { throw "Core smoke test failed." }
     dotnet run --project .\tests\LocalizationSmoke\LocalizationSmoke.csproj --configuration Release --no-restore
@@ -24,7 +26,9 @@ try
     if ($LASTEXITCODE -ne 0) { throw "Localization verification failed." }
     powershell -ExecutionPolicy Bypass -File .\tools\verify-user-guides.ps1
     if ($LASTEXITCODE -ne 0) { throw "User guide verification failed." }
-    powershell -ExecutionPolicy Bypass -File .\tools\verify-distribution.ps1 -DistributionPath $DistributionPath -ExpectedFileVersion '1.5.4.0' -ExpectedProductVersion '1.5.4'
+    powershell -ExecutionPolicy Bypass -File .\tools\verify-text-encoding.ps1
+    if ($LASTEXITCODE -ne 0) { throw "Text encoding verification failed." }
+    powershell -ExecutionPolicy Bypass -File .\tools\verify-distribution.ps1 -DistributionPath $DistributionPath -ExpectedFileVersion '1.6.0.0' -ExpectedProductVersion '1.6.0'
     if ($LASTEXITCODE -ne 0) { throw "Distribution verification failed." }
     Write-Output 'FULL VALIDATION PASSED.'
 }

@@ -20,6 +20,18 @@ Acest fișier conține regulile cerute de utilizator. Trebuie consultat înainte
 14. Ține separat proiectul Windows de experimentele Android sau de alte prototipuri. Un experiment pus pe pauză nu se reia și nu se extinde fără confirmarea utilizatorului.
 15. Pentru probleme de rețea sau compatibilitate, nu face serii de ajustări speculative. Izolează problema printr-un test reproductibil și raportează ce informație lipsește înainte de a continua.
 16. După revenirea la un proiect, citește `docs\PROJECT-STATUS.md` și continuă de la starea consemnată acolo; nu inventa o etapă nouă și nu repeta etape închise.
+17. Când utilizatorul cere o acțiune, rezolvă punctual acțiunea respectivă fără a scana tot proiectul. Scanarea totală se face numai la cererea expresă a utilizatorului sau cu avertisment prealabil, dacă se impune.
+
+## Flux verificat — publicarea paginii GitHub Pages
+
+Pentru actualizări ale paginii statice, fără modificări în aplicație:
+
+1. Actualizează toate cele opt fișiere `docs/index*.html`: versiunea din titlul descărcării, subsol și metadatele JSON-LD `softwareVersion`. Păstrează linkurile către asseturile `releases/latest`.
+2. Validează toate cele opt limbi, absența versiunii vechi, păstrarea linkului către installer și `git diff --check`; consemnează schimbarea în `WORKLOG.md` și starea în `docs/PROJECT-STATUS.md`/`docs/ROADMAP.md`.
+3. Dacă integrarea GitHub poate doar citi sau shell-ul Codex nu poate folosi sesiunea GCM Windows a utilizatorului, nu cere și nu copia tokenul. Pregătește commitul local și cere utilizatorului să ruleze push-ul din PowerShell-ul obișnuit, unde GCM este conectat.
+4. Dacă acel shell raportează `detected dubious ownership`, folosește pentru o singură comandă calea exactă indicată de Git, fără excepție globală largă: `git -c "safe.directory=<calea exactă>" -C "<calea exactă>" push origin HEAD:main`.
+5. Confirmă publicarea comparând SHA-ul local cu `refs/heads/main` și deschizând pagina GitHub Pages live pentru a verifica versiunea anunțată. Mesajul „100% / done” din JAWS este un indiciu util, dar verificarea remote și a paginii rămâne necesară.
+6. Pentru această lucrare exclusiv statică nu se construiește aplicația și nu se creează distribuție nouă.
 
 ## Reguli noi
 

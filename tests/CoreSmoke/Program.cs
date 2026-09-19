@@ -83,6 +83,13 @@ Check(moveToRoot.Single(item => item.Key == "in_folder").Value == "Știri" && mo
 var moveFromRoot = NewsBlurFolderMapping.CreateMoveFeedParameters("42", "Neorganizate", "Știri");
 Check(moveFromRoot.Single(item => item.Key == "in_folder").Value == string.Empty && moveFromRoot.Single(item => item.Key == "to_folder").Value == "Știri", "mutarea unui feed neorganizat într-un folder folosește nivelul superior ca sursă");
 
+var topicCatalog = CititorRSS.Jaws.Services.Rss.TopicFeedSearchService.GetCatalog();
+Check(topicCatalog.Categories.Count > 0, "catalogul de feeduri pe categorii conține categorii definite");
+var techResults = CititorRSS.Jaws.Services.Rss.TopicFeedSearchService.SearchCatalog("tehnologie", null);
+Check(techResults.Count > 0, "căutarea în catalogul local returnează feeduri pentru 'tehnologie'");
+var newsCategoryResults = CititorRSS.Jaws.Services.Rss.TopicFeedSearchService.SearchCatalog(null, "Știri & Actualitate");
+Check(newsCategoryResults.Count > 0, "filtrul pe categorie returnează feedurile din Știri & Actualitate");
+
 var cutoff = now.AddDays(-90);
 var old = new Article { Id = "old", Published = now.AddDays(-100) };
 var favoriteOld = new Article { Id = "favorite", Published = now.AddDays(-100), IsFavorite = true };

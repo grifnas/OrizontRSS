@@ -23,14 +23,14 @@ $requiredFiles = @(
     'libespeak-ng.dll',
     'SpeechEngines\eSpeakNG\espeak-ng-data\ro_dict',
     'Licenses\eSpeakNG\COPYING',
-    'Ghid-utilizator-Orizont-RSS.html',
-    'Ghid-utilizator-Orizont-RSS.en.html',
-    'Ghid-utilizator-Orizont-RSS.es.html',
-    'Ghid-utilizator-Orizont-RSS.fr.html',
-    'Ghid-utilizator-Orizont-RSS.de.html',
-    'Ghid-utilizator-Orizont-RSS.pt.html',
-    'Ghid-utilizator-Orizont-RSS.hu.html',
-    'Ghid-utilizator-Orizont-RSS.it.html',
+    'docs\user-guides\Ghid-utilizator-Orizont-RSS.html',
+    'docs\user-guides\Ghid-utilizator-Orizont-RSS.en.html',
+    'docs\user-guides\Ghid-utilizator-Orizont-RSS.es.html',
+    'docs\user-guides\Ghid-utilizator-Orizont-RSS.fr.html',
+    'docs\user-guides\Ghid-utilizator-Orizont-RSS.de.html',
+    'docs\user-guides\Ghid-utilizator-Orizont-RSS.pt.html',
+    'docs\user-guides\Ghid-utilizator-Orizont-RSS.hu.html',
+    'docs\user-guides\Ghid-utilizator-Orizont-RSS.it.html',
     'en-US\Orizont.resources.dll',
     'es-ES\Orizont.resources.dll',
     'fr-FR\Orizont.resources.dll',
@@ -38,7 +38,7 @@ $requiredFiles = @(
     'pt-BR\Orizont.resources.dll',
     'hu-HU\Orizont.resources.dll',
     'it-IT\Orizont.resources.dll',
-    'RELEASE-NOTES-1.5.4.md'
+    'RELEASE-NOTES-1.6.0.md'
 )
 
 $missing = @($requiredFiles | Where-Object { -not (Test-Path -LiteralPath (Join-Path $path $_) -PathType Leaf) })

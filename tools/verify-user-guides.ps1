@@ -2,7 +2,8 @@ param()
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
-$sourcePath = Join-Path $projectRoot 'Ghid-utilizator-Orizont-RSS.html'
+$guidesFolder = Join-Path $projectRoot 'docs\user-guides'
+$sourcePath = Join-Path $guidesFolder 'Ghid-utilizator-Orizont-RSS.html'
 $source = Get-Content -LiteralPath $sourcePath -Raw -Encoding utf8
 $failed = $false
 
@@ -19,7 +20,7 @@ $sourceHeadings = [regex]::Matches($source, '<h[1-6]\b').Count
 
 foreach ($language in 'en', 'es', 'fr', 'de', 'pt', 'hu', 'it')
 {
-    $path = Join-Path $projectRoot "Ghid-utilizator-Orizont-RSS.$language.html"
+    $path = Join-Path $guidesFolder "Ghid-utilizator-Orizont-RSS.$language.html"
     if (-not (Test-Path -LiteralPath $path))
     {
         [pscustomobject]@{Language=$language;Exists=$false;Structure='missing';Markers='n/a'}

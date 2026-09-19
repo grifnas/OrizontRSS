@@ -11,6 +11,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using CititorRSS.Jaws.Localization;
+using CititorRSS.Jaws.Services.Update;
+using CititorRSS.Jaws.Views;
 
 namespace CititorRSS.Jaws;
 
@@ -65,6 +67,26 @@ public partial class MainWindow : Window
     private const int MaximumStatusEntries = 500;
     private static string ProductVersion => AppVersionInfo.DisplayVersion;
     private const string AllFoldersKey = "{ORZONT:ALL_FOLDERS}";
+    private static bool TryGetFeedInitial(Key key, out char initial)
+    {
+        if (key >= Key.A && key <= Key.Z)
+        {
+            initial = (char)('A' + (key - Key.A));
+            return true;
+        }
+        if (key >= Key.D0 && key <= Key.D9)
+        {
+            initial = (char)('0' + (key - Key.D0));
+            return true;
+        }
+        if (key >= Key.NumPad0 && key <= Key.NumPad9)
+        {
+            initial = (char)('0' + (key - Key.NumPad0));
+            return true;
+        }
+        initial = '\0';
+        return false;
+    }
     public MainWindow()
     {
         InitializeComponent();
@@ -112,6 +134,10 @@ public partial class MainWindow : Window
                     ? _feeds.ToList()
                     : _feeds.Where(feed => !feed.NeedsAttention).ToList();
                 await RefreshFeedsAsync(startupFeeds);
+            }
+            if (_settings.CheckAppUpdatesAtStartup)
+            {
+                _ = CheckAppUpdatesAsync(automatic: true);
             }
         }
         catch (Exception exception)
@@ -335,12 +361,66 @@ public partial class MainWindow : Window
         _article = Articles.SelectedItem as Article;
         Reader.Text = _article?.FullContent ?? _article?.Content ?? string.Empty;
         UpdateEmptyStateMessages();
-        if (_article is not null) Say(F("{0} Articol selectat: {1}.{2}", ArticlePanelStatus(), _article.Title, !string.IsNullOrWhiteSpace(_article.FullContent) ? UiText.Translate(" Text complet disponibil.") : string.Empty));
     }
 
     private void Reader_TextChanged(object sender, TextChangedEventArgs e) => UpdateEmptyStateMessages();
+    private void ListBox_PreviewKeyDown_EdgeEarcon(object sender, KeyEventArgs e)
+    {
+        if (sender is not ListBox listBox) return;
+        if (listBox.Items.Count == 0) return;
+        if (ReferenceEquals(listBox, Feeds)
+            && (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Windows)) == ModifierKeys.None
+            && TryGetFeedInitial(e.Key, out var initial))
+        {
+            var feeds = Feeds.Items.OfType<Feed>().ToList();
+            var index = FeedListNavigation.FindNextByInitial(feeds, initial, Feeds.SelectedIndex);
+            if (index >= 0)
+            {
+                Feeds.SelectedIndex = index;
+                Feeds.ScrollIntoView(Feeds.SelectedItem);
+                Feeds.UpdateLayout();
+                if (Feeds.ItemContainerGenerator.ContainerFromIndex(index) is ListBoxItem row)
+                {
+                    row.Focus();
+                    Keyboard.Focus(row);
+                }
+                if (Feeds.SelectedItem is Feed selectedFeed)
+                    Say(F("Feed selectat: {0}. {1} articole.", selectedFeed.Name, selectedFeed.Articles.Count));
+                e.Handled = true;
+            }
+            return;
+        }
+        if (ReferenceEquals(listBox, Articles)
+            && (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Windows)) == ModifierKeys.None
+            && TryGetFeedInitial(e.Key, out var articleInitial))
+        {
+            var articles = Articles.Items.OfType<Article>().ToList();
+            var index = FeedListNavigation.FindNextArticleByInitial(articles, articleInitial, Articles.SelectedIndex);
+            if (index >= 0)
+            {
+                Articles.SelectedIndex = index;
+                Articles.ScrollIntoView(Articles.SelectedItem);
+                Articles.UpdateLayout();
+                if (Articles.ItemContainerGenerator.ContainerFromIndex(index) is ListBoxItem row)
+                {
+                    row.Focus();
+                    Keyboard.Focus(row);
+                }
+                e.Handled = true;
+            }
+            return;
+        }
+        if (e.Key == Key.Up && listBox.SelectedIndex == 0) SoundAlertService.PlayListEnd();
+        else if (e.Key == Key.Down && listBox.SelectedIndex == listBox.Items.Count - 1) SoundAlertService.PlayListEnd();
+    }
     private async void Articles_KeyDown(object sender, KeyEventArgs e)
     {
+        if (e.Key == Key.Escape)
+        {
+            FocusFeeds();
+            e.Handled = true;
+            return;
+        }
         if (e.Key == Key.Enter)
         {
             FocusReader();
@@ -462,6 +542,88 @@ public partial class MainWindow : Window
             MessageBox.Show(this, F("DeepL nu a putut traduce articolul: {0}", Describe(exception)), T("Traducere cu DeepL"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
+    private async void GoogleTranslate_Click(object sender, RoutedEventArgs e)
+    {
+        if (_article is null) { Say(T("Alege mai întâi un articol pentru traducere.")); return; }
+        var sourceText = !string.IsNullOrWhiteSpace(Reader.Text) ? Reader.Text : !string.IsNullOrWhiteSpace(_article.FullContent) ? _article.FullContent : _article.Content;
+        if (string.IsNullOrWhiteSpace(sourceText))
+        {
+            MessageBox.Show(this, T("Articolul nu conține text pentru traducere."), T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        var confirmation = MessageBox.Show(
+            this,
+            T("Google Translate folosește un serviciu online neoficial care se poate schimba sau limita. Textul integral al articolului va fi trimis către Google. Continui?"),
+            T("Traducere Google Translate"),
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning,
+            MessageBoxResult.No);
+        if (confirmation != MessageBoxResult.Yes)
+        {
+            Say(T("Traducerea Google Translate a fost anulată."));
+            return;
+        }
+
+        Say(T("Se traduce articolul cu Google Translate. Așteaptă."));
+        try
+        {
+            var source = await ArticleTranslationSource.ResolveAsync(_article.FullContent, sourceText, () => _rss.LoadReadableContentAsync(_article.Link), _article.Title);
+            if (string.IsNullOrWhiteSpace(source))
+            {
+                MessageBox.Show(this, T("Articolul nu conține text pentru traducere."), T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+            var targetLang = GoogleTranslateConnection.ResolveTargetLanguage(_settings.GoogleTranslateTargetLanguage);
+            var sourceLang = GoogleTranslateConnection.NormalizeSourceLanguage(_settings.GoogleTranslateSourceLanguage);
+            var translated = await new GoogleTranslateConnection().TranslateAsync(source, targetLang, sourceLang);
+
+            var resultWindow = new ArticleTranslationWindow(translated, _article.Title, _article.Link, "Google Translate") { Owner = this };
+            resultWindow.ShowDialog();
+            Say(T("Traducerea Google Translate s-a încheiat. Rezultatul este într-o fereastră separată."));
+        }
+        catch (Exception ex)
+        {
+            Say(F("Google Translate nu a putut traduce articolul: {0}", Describe(ex)));
+            MessageBox.Show(this, F("Google Translate nu a putut traduce articolul: {0}", Describe(ex)), T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+    private void SearchStoredArticlesByKeywords_Click(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(_settings.KeywordAlerts))
+        {
+            Say(T("Configurează mai întâi cuvintele-cheie în Setări aplicație."));
+            return;
+        }
+
+        var matches = KeywordArticleMatcher.FindMatchesInFeeds(_feeds, _settings.KeywordAlerts);
+        if (matches.Count == 0)
+        {
+            Say(F("Nu s-au găsit articole existente care să corespundă cuvintelor-cheie: {0}.", _settings.KeywordAlerts));
+            return;
+        }
+
+        var dialog = new KeywordArticleAlertWindow(
+            matches,
+            async article =>
+            {
+                article.ReadLater = true;
+                await _store.SaveAsync(_feeds);
+                return true;
+            },
+            isArchiveSearch: true)
+        {
+            Owner = this
+        };
+
+        dialog.ShowDialog();
+        if (dialog.ArticleToOpen is not null)
+        {
+            _article = dialog.ArticleToOpen;
+            Reader.Text = _article.Content;
+            FocusReader();
+        }
+    }
     private async void OpenArticleInBrowser_Click(object sender, RoutedEventArgs e)
     {
         if (_article is null || string.IsNullOrWhiteSpace(_article.Link)) { Say("Articolul nu are o adresă care poate fi deschisă."); return; }
@@ -561,7 +723,19 @@ public partial class MainWindow : Window
               ?? priorItems.Take(Math.Max(0, anchorIndex)).Reverse().FirstOrDefault(article => Articles.Items.Contains(article));
 
         await RestoreArticleSelectionAsync([], primary, selectionRevision);
-        Say(primary is null ? ArticlePanelStatus() : F("{0} Înapoi la articolul: {1}.", ArticlePanelStatus(), primary.Title));
+        if (primary is not null)
+        {
+            var flags = new List<string>();
+            if (primary.IsFavorite) flags.Add(T("Favorit"));
+            if (primary.ReadLater) flags.Add(T("De citit mai târziu"));
+            if (!string.IsNullOrWhiteSpace(primary.FullContent)) flags.Add(T("Text complet disponibil"));
+            var prefix = flags.Count > 0 ? string.Join(". ", flags) + ". " : string.Empty;
+            Say(F("Înapoi la lista de articole. {0}{1}", prefix, ArticlePanelStatus()));
+        }
+        else
+        {
+            Say(F("Înapoi la lista de articole. {0}", ArticlePanelStatus()));
+        }
     }
     private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
     {
@@ -702,8 +876,18 @@ ContinueCommandHandling:
     }
     private void FocusFeeds()
     {
-        Feeds.Focus();
         if (Feeds.SelectedItem is null && Feeds.Items.Count > 0) Feeds.SelectedIndex = 0;
+        Feeds.Focus();
+        if (Feeds.SelectedIndex >= 0)
+        {
+            Feeds.ScrollIntoView(Feeds.SelectedItem);
+            Feeds.UpdateLayout();
+            if (Feeds.ItemContainerGenerator.ContainerFromIndex(Feeds.SelectedIndex) is ListBoxItem row)
+            {
+                row.Focus();
+                Keyboard.Focus(row);
+            }
+        }
         var selected = Feeds.SelectedItem as Feed;
         Say(selected is null
             ? F("Panou Feeduri. {0} feeduri afișate.", Feeds.Items.Count)
@@ -731,10 +915,32 @@ ContinueCommandHandling:
     }
     private void FocusArticles()
     {
-        Articles.Focus();
         if (Articles.SelectedItem is null && Articles.Items.Count > 0) Articles.SelectedIndex = 0;
+        Articles.Focus();
+        if (Articles.SelectedIndex >= 0)
+        {
+            Articles.ScrollIntoView(Articles.SelectedItem);
+            Articles.UpdateLayout();
+            if (Articles.ItemContainerGenerator.ContainerFromIndex(Articles.SelectedIndex) is ListBoxItem row)
+            {
+                row.Focus();
+                Keyboard.Focus(row);
+            }
+        }
         var selected = Articles.SelectedItem as Article;
-        Say(selected is null ? ArticlePanelStatus() : F("{0} Articol selectat: {1}.", ArticlePanelStatus(), selected.Title));
+        if (selected is not null)
+        {
+            var flags = new List<string>();
+            if (selected.IsFavorite) flags.Add(T("Favorit"));
+            if (selected.ReadLater) flags.Add(T("De citit mai târziu"));
+            if (!string.IsNullOrWhiteSpace(selected.FullContent)) flags.Add(T("Text complet disponibil"));
+            var prefix = flags.Count > 0 ? string.Join(". ", flags) + ". " : string.Empty;
+            Say(F("{0}{1}", prefix, ArticlePanelStatus()));
+        }
+        else
+        {
+            Say(ArticlePanelStatus());
+        }
     }
     private void FocusReader()
     {
@@ -767,6 +973,13 @@ ContinueCommandHandling:
             context = folder == AllFoldersKey
                 ? context + F("Toate folderele: {0} feeduri. ", feedCount)
                 : context + F("Folder {0}: {1} feeduri. ", folder, feedCount);
+        }
+        else if (Feeds?.SelectedItem is Feed selectedFeed)
+        {
+            var folder = SelectedFolder();
+            context = folder == AllFoldersKey
+                ? F("Feed: {0}. ", selectedFeed.Name)
+                : F("Folder {0}, Feed: {1}. ", folder, selectedFeed.Name);
         }
         return context + F("Panou Articole. {0} articole afișate: {1} necitite, {2} citite. {3}", displayed.Count, unread, displayed.Count - unread, ArticleFiltersStatusSentence());
     }
@@ -2293,6 +2506,25 @@ ContinueCommandHandling:
     {
         new StatusHistoryWindow(_statusHistory, () => _statusHistory.Clear()) { Owner = this }.ShowDialog();
     }
+    private async void CheckAppUpdates_Click(object sender, RoutedEventArgs e)
+    {
+        await CheckAppUpdatesAsync(automatic: false);
+    }
+    private async Task CheckAppUpdatesAsync(bool automatic)
+    {
+        if (!automatic) Say(T("Se verifică dacă există o nouă versiune a aplicației Orizont RSS pe GitHub..."));
+        var updateInfo = await UpdateCheckerService.CheckForUpdatesAsync();
+        if (updateInfo.HasUpdate)
+        {
+            Say(F("Este disponibilă o nouă versiune a aplicației ({0}).", updateInfo.LatestVersion));
+            new UpdateAvailableWindow(updateInfo) { Owner = this }.ShowDialog();
+        }
+        else if (!automatic)
+        {
+            Say(F("Folosești deja cea mai recentă versiune Orizont RSS ({0}).", AppVersionInfo.DisplayVersion));
+            MessageBox.Show(this, F("Folosești deja cea mai recentă versiune Orizont RSS ({0}).", AppVersionInfo.DisplayVersion), T("Aplicație la zi"), MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
     private void CopyVersionInfo_Click(object sender, RoutedEventArgs e)
     {
         Clipboard.SetText(VersionInformation());
@@ -3332,6 +3564,7 @@ ContinueCommandHandling:
             foreach (var article in feed.Articles)
             {
                 article.SourceName = feed.Name;
+                article.FolderName = feed.Folder;
                 article.IncludeSourceInDisplay = includeSource;
             }
         }
@@ -3372,9 +3605,13 @@ ContinueCommandHandling:
         if (timeFilter == "Last30Days") items = items.Where(article => article.Published >= now.AddDays(-30));
         var query = ArticleSearch?.Text.Trim() ?? string.Empty;
         if (!string.IsNullOrWhiteSpace(query)) items = items.Where(article => CititorRSS.Jaws.ArticleSearch.Matches(article, query));
-        if (_settings.HideRepeatedArticlesInGlobalViews && (_folderAggregateView || _readNowView))
-            items = DuplicateCleaner.DistinctForDisplay(items);
-        Articles.ItemsSource = items.OrderByDescending(article => article.Published).ToList();
+        var articleList = items.OrderByDescending(article => article.Published).ToList();
+        for (int i = 0; i < articleList.Count; i++)
+        {
+            articleList[i].DisplayIndex = i + 1;
+            articleList[i].DisplayTotal = articleList.Count;
+        }
+        Articles.ItemsSource = articleList;
         if (select is not null && Articles.Items.Contains(select)) Articles.SelectedItem = select;
         else if (Articles.Items.Count > 0 && selectFirstWhenNoMatch) Articles.SelectedIndex = preferredIndex >= 0 ? Math.Min(preferredIndex, Articles.Items.Count - 1) : 0;
         UpdateEmptyStateMessages();

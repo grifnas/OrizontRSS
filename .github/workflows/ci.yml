@@ -19,6 +19,8 @@ jobs:
           dotnet-version: 8.0.x
       - name: Compilează aplicația
         run: dotnet build .\CititorRSS.Jaws.csproj --configuration Release --ignore-failed-sources
+      - name: Compilează instalatorul
+        run: dotnet build .\packaging\installer\OrizontSetup.csproj --configuration Release --ignore-failed-sources
       - name: CoreSmoke
         run: dotnet run --project .\tests\CoreSmoke\CoreSmoke.csproj --configuration Release
       - name: LocalizationSmoke
@@ -29,3 +31,5 @@ jobs:
         run: powershell -ExecutionPolicy Bypass -File .\tools\verify-localization.ps1 -RequireComplete
       - name: Verifică ghidurile
         run: powershell -ExecutionPolicy Bypass -File .\tools\verify-user-guides.ps1
+      - name: Verifică integritatea textelor
+        run: powershell -ExecutionPolicy Bypass -File .\tools\verify-text-encoding.ps1

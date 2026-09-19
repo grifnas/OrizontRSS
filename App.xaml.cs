@@ -17,6 +17,7 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         UiCulture.Apply(FeedStore.LoadUiLanguageForStartup());
+        ColorThemeManager.Apply(ColorThemeManager.Windows);
         base.OnStartup(e);
         var window = new MainWindow();
         MainWindow = window;

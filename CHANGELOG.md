@@ -2,6 +2,13 @@
 
 Toate modificările importante ale Orizont RSS sunt documentate în acest fișier.
 
+# 1.6.0 — compilare locală de test
+
+- River of News și navigare audio cu earcons pentru listele Feeduri și Articole;
+- alerte accesibile după cuvinte-cheie și îmbunătățiri de focalizare;
+- asociere mai sigură a dezabonărilor NewsBlur pentru adrese canonice;
+- această versiune este locală și nu a fost publicată încă.
+
 ## 1.5.4 — 2026-09-12
 
 - sincronizare NewsBlur extinsă la feeduri, foldere, articole, stări citit/necitit, favorite și etichete, cu import unidirecțional la prima conectare a unui profil și sincronizare bidirecțională ulterior;

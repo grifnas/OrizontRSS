@@ -1,0 +1,70 @@
+{
+  "categories": [
+    {
+      "id": "news",
+      "name": "Știri & Actualitate",
+      "feeds": [
+        { "name": "HotNews.ro", "url": "https://hotnews.ro/feed", "category": "Știri & Actualitate", "description": "Știri de ultimă oră, politică, economie și actualitate.", "language": "ro" },
+        { "name": "Digi24", "url": "https://www.digi24.ro/rss", "category": "Știri & Actualitate", "description": "Informații, știri din România și din lume.", "language": "ro" },
+        { "name": "Mediafax", "url": "https://www.mediafax.ro/rss", "category": "Știri & Actualitate", "description": "Agenție de știri din România.", "language": "ro" },
+        { "name": "Adevarul", "url": "https://adevarul.ro/rss", "category": "Știri & Actualitate", "description": "Știri, analize și reportaje naționale.", "language": "ro" },
+        { "name": "BBC News - World", "url": "http://feeds.bbci.co.uk/news/world/rss.xml", "category": "Știri & Actualitate", "description": "World news from the BBC.", "language": "en" },
+        { "name": "Reuters - World News", "url": "https://www.reutersagency.com/feed/?best-topics=world-news&post_type=best", "category": "Știri & Actualitate", "description": "International coverage from Reuters.", "language": "en" },
+        { "name": "Euronews (RO)", "url": "https://ro.euronews.com/rss", "category": "Știri & Actualitate", "description": "Știri europene și internaționale în română.", "language": "ro" }
+      ]
+    },
+    {
+      "id": "tech",
+      "name": "Tehnologie & IT",
+      "feeds": [
+        { "name": "Zone IT", "url": "https://zonait.ro/feed/", "category": "Tehnologie & IT", "description": "Recenzii hardware, gadgeturi, jocuri și tehnologie.", "language": "ro" },
+        { "name": "Go4IT", "url": "https://www.go4it.ro/feed/", "category": "Tehnologie & IT", "description": "Știri din IT, telefoane, computing și componente.", "language": "ro" },
+        { "name": "Ars Technica", "url": "https://feeds.arstechnica.com/arstechnica/index", "category": "Tehnologie & IT", "description": "Original tech news, reviews, and analysis.", "language": "en" },
+        { "name": "TechCrunch", "url": "https://techcrunch.com/feed/", "category": "Tehnologie & IT", "description": "Startup and technology news.", "language": "en" },
+        { "name": "The Verge", "url": "https://www.theverge.com/rss/index.xml", "category": "Tehnologie & IT", "description": "Technology, science, art, and culture.", "language": "en" },
+        { "name": "Hacker News", "url": "https://news.ycombinator.com/rss", "category": "Tehnologie & IT", "description": "Computer science and entrepreneurship news.", "language": "en" }
+      ]
+    },
+    {
+      "id": "science",
+      "name": "Știință & Spațiu",
+      "feeds": [
+        { "name": "Descoperă.ro", "url": "https://www.descopera.ro/feed", "category": "Știință & Spațiu", "description": "Știință, natură, istorie și explorare.", "language": "ro" },
+        { "name": "Mindcraft Stories", "url": "https://mindcraftstories.ro/feed/", "category": "Știință & Spațiu", "description": "Publicație de știință și tehnologie din România.", "language": "ro" },
+        { "name": "NASA Breaking News", "url": "https://www.nasa.gov/news-release/feed/", "category": "Știință & Spațiu", "description": "Official space exploration and astronomy news.", "language": "en" },
+        { "name": "Phys.org", "url": "https://phys.org/rss-feed/", "category": "Știință & Spațiu", "description": "Science news in physics, space, earth, biology.", "language": "en" },
+        { "name": "Scientific American", "url": "http://rss.sciam.com/ScientificAmerican-Global", "category": "Știință & Spațiu", "description": "Science research, technology, and health.", "language": "en" }
+      ]
+    },
+    {
+      "id": "economy",
+      "name": "Economie & Finanțe",
+      "feeds": [
+        { "name": "Ziarul Financiar", "url": "https://www.zf.ro/rss", "category": "Economie & Finanțe", "description": "Știri economice, afaceri, burse și piețe.", "language": "ro" },
+        { "name": "Economedia", "url": "https://economedia.ro/feed", "category": "Economie & Finanțe", "description": "Analize economice, companii și macroeconomie.", "language": "ro" },
+        { "name": "Profit.ro", "url": "https://www.profit.ro/rss", "category": "Economie & Finanțe", "description": "Știri financiare, fiscalitate și antreprenoriat.", "language": "ro" },
+        { "name": "Financial Times", "url": "https://www.ft.com/rss/home/uk", "category": "Economie & Finanțe", "description": "Global business, finance and economic news.", "language": "en" },
+        { "name": "Bloomberg Markets", "url": "https://www.bloomberg.com/feeds/sitemap_news.xml", "category": "Economie & Finanțe", "description": "Global financial market news.", "language": "en" }
+      ]
+    },
+    {
+      "id": "culture",
+      "name": "Cultură & Carte",
+      "feeds": [
+        { "name": "Dilema", "url": "https://dilema.ro/feed", "category": "Cultură & Carte", "description": "Săptămânal de cultură, idei și societate.", "language": "ro" },
+        { "name": "Bookaholic", "url": "https://www.bookaholic.ro/feed", "category": "Cultură & Carte", "description": "Recenzii de cărți, interviuri și evenimente literare.", "language": "ro" },
+        { "name": "LiterNet", "url": "https://www.liternet.ro/rss", "category": "Cultură & Carte", "description": "Editură și revistă culturală independentă.", "language": "ro" },
+        { "name": " Observator Cultural", "url": "https://www.observatorcultural.ro/feed/", "category": "Cultură & Carte", "description": "Revistă de informație și analiză culturală.", "language": "ro" }
+      ]
+    },
+    {
+      "id": "sport",
+      "name": "Sport & Stil de viață",
+      "feeds": [
+        { "name": "Gazeta Sporturilor", "url": "https://www.gsp.ro/rss.xml", "category": "Sport & Stil de viață", "description": "Știri sportive, fotbal, tenis și competiții.", "language": "ro" },
+        { "name": "ProSport", "url": "https://www.prosport.ro/feed", "category": "Sport & Stil de viață", "description": "Informații și rezultate sportive din România.", "language": "ro" },
+        { "name": "BBC Sport", "url": "http://feeds.bbci.co.uk/sport/rss.xml", "category": "Sport & Stil de viață", "description": "World sports news and results.", "language": "en" }
+      ]
+    }
+  ]
+}

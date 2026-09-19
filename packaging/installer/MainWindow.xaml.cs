@@ -12,9 +12,9 @@ namespace OrizontSetup;
 
 public partial class MainWindow : Window
 {
-    private static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.5.3";
-    private const string DownloadUrl = "https://github.com/grifnas/OrizontRSS/releases/download/v1.5.3/Orizont-RSS-1.5.3-win-x64.zip";
-    private const string ExpectedSha256 = "7536070499680C2C2859C69C181BB8B6689EFA510E51C8E61E01DBD4EB48F6EB";
+    private static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.6.0";
+    private const string DownloadUrl = "https://github.com/grifnas/OrizontRSS/releases/download/v1.6.0/Orizont-RSS-1.6.0-win-x64.zip";
+    private const string ExpectedSha256 = "BC4E0313350B25F26D7ACC301721DA81D10C845040A399A8F91AB8AEA61C3B08";
     private const string EmbeddedPackageResource = "OrizontSetup.EmbeddedPackage.zip";
     private const string EmbeddedPackageHashResource = "OrizontSetup.EmbeddedPackage.sha256";
     private readonly bool _uninstallMode;
@@ -109,7 +109,7 @@ public partial class MainWindow : Window
         using var embeddedPackage = Assembly.GetExecutingAssembly().GetManifestResourceStream(EmbeddedPackageResource);
         if (embeddedPackage is null)
         {
-            if (!Version.Equals("1.5.3", StringComparison.Ordinal))
+            if (!Version.Equals("1.6.0", StringComparison.Ordinal))
             {
                 throw new InvalidOperationException(_texts.PackageMissing);
             }

@@ -28,6 +28,10 @@ public static class UiLocalizer
             var help = AutomationProperties.GetHelpText(element);
             if (!string.IsNullOrEmpty(help)) AutomationProperties.SetHelpText(element, UiText.Translate(help));
             if (element.ToolTip is string toolTip) element.ToolTip = UiText.Translate(toolTip);
+            // ContextMenu is hosted in a separate popup and is not reliably part of
+            // the window's logical tree. Localize it explicitly so keyboard menus
+            // do not remain in Romanian when the rest of the window is translated.
+            if (element.ContextMenu is ContextMenu contextMenu) ApplyRecursive(contextMenu, visited);
         }
 
         if (current is ItemsControl itemsControl)

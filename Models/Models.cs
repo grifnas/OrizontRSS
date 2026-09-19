@@ -1,0 +1,137 @@
+using System.Globalization;
+using System.Text.Json.Serialization;
+using CititorRSS.Jaws.Localization;
+
+namespace CititorRSS.Jaws;
+
+public sealed class Feed
+{
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Name { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public string Folder { get; set; } = "Neorganizate";
+    public int ConsecutiveFailures { get; set; }
+    public string? LastError { get; set; }
+    public DateTimeOffset AddedOn { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset? LastSuccessfulUpdate { get; set; }
+    public DateTimeOffset? LastArticleReceivedOn { get; set; }
+    public bool IsDemo { get; set; }
+    /// <summary>NewsBlur's numeric feed id, learned during an authenticated sync.</summary>
+    public string? NewsBlurFeedId { get; set; }
+    /// <summary>Last NewsBlur feed name and folder acknowledged by a completed sync.</summary>
+    public string? NewsBlurLastName { get; set; }
+    public string? NewsBlurLastFolder { get; set; }
+    /// <summary>Local metadata must be sent after this feed has first been added to NewsBlur.</summary>
+    public bool NewsBlurPendingLocalMetadataSync { get; set; }
+    public List<Article> Articles { get; set; } = [];
+    public bool HasThreeMonthSilence => DateTimeOffset.Now - (LastArticleReceivedOn ?? LastSuccessfulUpdate ?? AddedOn) >= TimeSpan.FromDays(90);
+    public bool NeedsAttention => ConsecutiveFailures >= 3 || HasThreeMonthSilence;
+    public string AttentionReason => ConsecutiveFailures >= 3 ? UiText.Translate("după 3 erori consecutive") : UiText.Translate("nu a primit articole de peste 3 luni");
+    public string DisplayName => UiText.Format("{0}{1}{2}, folder: {3}, {4} articole", IsDemo ? UiText.Format("{0}: ", UiText.Translate("Exemplu demonstrativ")) : string.Empty, NeedsAttention ? UiText.Format("Necesită atenție: {0}. ", AttentionReason) : string.Empty, Name, Folder, Articles.Count);
+    public string VisualDetails => UiText.Format("{0}Folder: {1} · {2} articole", IsDemo ? UiText.Format("{0} · ", UiText.Translate("Exemplu demonstrativ")) : string.Empty, Folder, Articles.Count);
+    public string VisualWarning => NeedsAttention ? UiText.Format("Necesită atenție: {0}", AttentionReason) : string.Empty;
+}
+
+/// <summary>A locally confirmed feed deletion waiting for explicit NewsBlur synchronization.</summary>
+public sealed class NewsBlurPendingFeedDeletion
+{
+    public string FeedId { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Folder { get; set; } = "Neorganizate";
+    public DateTimeOffset QueuedAt { get; set; } = DateTimeOffset.UtcNow;
+}
+
+public static class NewsBlurMetadataConflictPolicy
+{
+    public static bool IsConflict(bool localChanged, bool remoteChanged, string? localValue, string? remoteValue, StringComparison comparison) =>
+        localChanged && remoteChanged && !string.Equals(localValue, remoteValue, comparison);
+}
+
+public sealed class Article
+{
+    public string Id { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+    public string? FullContent { get; set; }
+    public string Link { get; set; } = string.Empty;
+    public DateTimeOffset Published { get; set; } = DateTimeOffset.Now;
+    public bool IsRead { get; set; }
+    public bool IsFavorite { get; set; }
+    public bool ReadLater { get; set; }
+    public List<string> Tags { get; set; } = [];
+    public List<AiNote> AiNotes { get; set; } = [];
+    /// <summary>Stable NewsBlur story hash used for bidirectional state sync.</summary>
+    public string? NewsBlurStoryHash { get; set; }
+    /// <summary>Last remote state acknowledged by a completed sync.</summary>
+    public bool? NewsBlurLastRead { get; set; }
+    public bool? NewsBlurLastStarred { get; set; }
+    public List<string>? NewsBlurLastTags { get; set; }
+    public bool? NewsBlurLastLocalRead { get; set; }
+    public bool? NewsBlurLastLocalStarred { get; set; }
+    public List<string>? NewsBlurLastLocalTags { get; set; }
+    /// <summary>Last local Saved Stories value according to the user's mapping choice.</summary>
+    public bool? NewsBlurLastLocalSaved { get; set; }
+    [JsonIgnore] public string SourceName { get; set; } = string.Empty;
+    [JsonIgnore] public string FolderName { get; set; } = string.Empty;
+    [JsonIgnore] public bool IncludeSourceInDisplay { get; set; }
+    private string SourceAnnouncement => IncludeSourceInDisplay && !string.IsNullOrWhiteSpace(SourceName)
+        ? UiText.Format("Sursa: {0}. ", SourceName)
+        : string.Empty;
+    [JsonIgnore] public int DisplayIndex { get; set; }
+    [JsonIgnore] public int DisplayTotal { get; set; }
+    public string PositionSummary => DisplayIndex > 0 && DisplayTotal > 0
+        ? $"{DisplayIndex} din {DisplayTotal}"
+        : string.Empty;
+    public string StatusTitlePosition => string.Join(". ", new[] { StatusSummary, Title, PositionSummary }.Where(s => !string.IsNullOrWhiteSpace(s)));
+    public string StatusSummary => string.Join(", ", new[] {
+        IsRead ? UiText.Translate("Citit") : UiText.Translate("Necitit"),
+        IsFavorite ? UiText.Translate("Favorit. ").TrimEnd(' ', '.') : null,
+        ReadLater ? UiText.Translate("De citit mai târziu. ").TrimEnd(' ', '.') : null
+    }.Where(s => !string.IsNullOrEmpty(s)));
+    public string DisplayName
+    {
+        get
+        {
+            var parts = new List<string>();
+            var statusItems = new List<string>
+            {
+                IsRead ? UiText.Translate("Citit") : UiText.Translate("Necitit")
+            };
+            if (IsFavorite) statusItems.Add(UiText.Translate("Favorit"));
+            if (ReadLater) statusItems.Add(UiText.Translate("De citit mai târziu"));
+            parts.Add(string.Join(". ", statusItems));
+
+            if (!string.IsNullOrWhiteSpace(Title))
+            {
+                parts.Add(Title.TrimEnd('.'));
+            }
+
+            if (!string.IsNullOrWhiteSpace(PositionSummary))
+            {
+                parts.Add(PositionSummary);
+            }
+
+            if (Tags?.Count > 0)
+            {
+                parts.Add(UiText.Format("Etichete: {0}", string.Join(", ", Tags)));
+            }
+            if (IncludeSourceInDisplay && !string.IsNullOrWhiteSpace(SourceName))
+            {
+                parts.Add(UiText.Format("Sursa: {0}", SourceName));
+            }
+            parts.Add(Published.ToString("dd MMMM yyyy, HH:mm", CultureInfo.CurrentCulture));
+
+            return string.Join(". ", parts) + ".";
+        }
+    }
+    public string VisualDetails => $"{(IncludeSourceInDisplay && !string.IsNullOrWhiteSpace(SourceName) ? UiText.Format("Sursa: {0} · ", SourceName) : string.Empty)}{Published.ToString("dd MMM yyyy, HH:mm", CultureInfo.CurrentCulture)}{(Tags?.Count > 0 ? $" · {string.Join(", ", Tags)}" : string.Empty)}";
+    public string VisualState => $"{(IsRead ? UiText.Translate("Citit") : UiText.Translate("Necitit"))}{(IsFavorite ? UiText.Translate(" · Favorit") : string.Empty)}{(ReadLater ? UiText.Translate(" · Mai târziu") : string.Empty)}";
+}
+
+public sealed class AiNote
+{
+    public string Title { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
+}

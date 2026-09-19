@@ -1,6 +1,6 @@
 # Orizont RSS 1.5.4 — sincronizare NewsBlur și accesibilitate
 
-Această distribuție locală Windows x64 reunește modificările realizate după versiunea publică 1.5.3. Release-ul public GitHub rămâne 1.5.3; această pregătire nu publică și nu înlocuiește nimic online.
+Orizont RSS 1.5.4 este o lansare stabilă publică ce aduce sincronizarea completă NewsBlur, noi variante vocale și îmbunătățiri de accesibilitate.
 
 ## Noutăți
 
