@@ -28,7 +28,7 @@ public sealed class DeepLConnection
     public async Task<string> TranslateAsync(string key, string text, string targetLanguage, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(text)) return string.Empty;
-        if (string.IsNullOrWhiteSpace(targetLanguage)) throw new ArgumentException("Limba țintă lipsește.", nameof(targetLanguage));
+        if (string.IsNullOrWhiteSpace(targetLanguage)) throw new ArgumentException(T("Limba țintă lipsește."));
         using var client = CreateClient(key);
         var chunks = SplitText(text);
         var translated = new List<string>(chunks.Count);

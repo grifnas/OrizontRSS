@@ -41,6 +41,9 @@ public static class FeedListNavigation
     public static int FindNextByInitial(IReadOnlyList<Feed> feeds, char initial, int selectedIndex) =>
         FindNext(feeds, initial, selectedIndex, feed => feed.Name);
 
+    public static int FindNextByInitial(IReadOnlyList<string> names, char initial, int selectedIndex) =>
+        FindNext(names, initial, selectedIndex, name => name);
+
     public static int FindNextArticleByInitial(IReadOnlyList<Article> articles, char initial, int selectedIndex) =>
         FindNext(articles, initial, selectedIndex, article => article.Title);
 }

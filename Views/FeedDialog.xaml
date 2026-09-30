@@ -8,6 +8,13 @@
     <TextBox x:Name="UrlBox" AutomationProperties.Name="Adresă RSS sau Atom" />
     <Label Content="Folder tematic" Target="{Binding ElementName=FolderBox}" />
     <ComboBox x:Name="FolderBox" SelectionChanged="FolderBox_SelectionChanged" AutomationProperties.Name="Folder tematic" AutomationProperties.HelpText="Alege un folder existent sau opțiunea Creează folder nou." />
+    <Label x:Name="ArticleOpenModeLabel" Content="La deschiderea articolului" Target="{Binding ElementName=ArticleOpenMode}" Margin="0,8,0,0" />
+    <ComboBox x:Name="ArticleOpenMode" AutomationProperties.Name="La deschiderea articolului">
+      <ComboBoxItem Content="Folosește setarea generală" Tag="Default" />
+      <ComboBoxItem Content="Mod standard în fereastra principală" Tag="Standard" />
+      <ComboBoxItem Content="Cititor Orizont" Tag="Orizont" />
+    </ComboBox>
+    <TextBlock x:Name="ArticleOpenModeNotice" Text="Alege unde se deschid articolele acestui feed când apeși Enter sau alegi Deschide și citește." Style="{StaticResource SecondaryTextStyle}" Margin="4,4,4,0" TextWrapping="Wrap" />
     <TextBlock Text="La sfârșitul listei de foldere poți alege Creează folder nou. Adresa trebuie să înceapă cu https:// sau http://." Style="{StaticResource SecondaryTextStyle}" Margin="4,8,4,4" />
     <StackPanel Style="{StaticResource DialogButtonBarStyle}"><Button Content="Anulează" IsCancel="True" /><Button x:Name="SaveButton" Content="Adaugă" IsDefault="True" Click="Save_Click" /></StackPanel>
   </StackPanel>

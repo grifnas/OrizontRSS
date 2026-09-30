@@ -2,12 +2,15 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Threading;
+using CititorRSS.Jaws.Services;
 using CititorRSS.Jaws.Localization;
 
 namespace CititorRSS.Jaws;
 
 public partial class App : Application
 {
+    private SingleInstanceGuard? _singleInstanceGuard;
+
     public App()
     {
         DispatcherUnhandledException += OnDispatcherUnhandledException;
@@ -16,6 +19,19 @@ public partial class App : Application
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        _singleInstanceGuard = SingleInstanceGuard.TryAcquire(@"Local\OrizontRSS.SingleInstance");
+        if (_singleInstanceGuard is null)
+        {
+            UiCulture.Apply(UiCulture.Automatic);
+            MessageBox.Show(
+                UiText.Translate("Orizont RSS este deja deschis. Este permisă o singură instanță. Folosește combinația Alt+Tab pentru a reveni la fereastra deja deschisă."),
+                "Orizont RSS",
+                MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            Shutdown(1);
+            return;
+        }
+
         UiCulture.Apply(FeedStore.LoadUiLanguageForStartup());
         ColorThemeManager.Apply(ColorThemeManager.Windows);
         base.OnStartup(e);
@@ -23,6 +39,14 @@ public partial class App : Application
         MainWindow = window;
         window.Show();
     }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        _singleInstanceGuard?.Dispose();
+        _singleInstanceGuard = null;
+        base.OnExit(e);
+    }
+
 
     private static void OnWindowLoaded(object sender, RoutedEventArgs e)
     {

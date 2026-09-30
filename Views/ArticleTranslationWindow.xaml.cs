@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Windows;
 using CititorRSS.Jaws.Localization;
+using CititorRSS.Jaws.Services.Content;
 
 namespace CititorRSS.Jaws;
 
@@ -9,21 +10,26 @@ public partial class ArticleTranslationWindow : Window
     private readonly string _articleTitle;
     private readonly string _articleLink;
     private readonly string _translationProvider;
+    private readonly string _originalText;
+    private readonly string _translationLanguage;
 
     public ArticleTranslationWindow(string translatedText)
-        : this(translatedText, string.Empty, string.Empty, "Google Translate")
+        : this(translatedText, string.Empty, string.Empty, "Google Translate", string.Empty, null)
     {
     }
 
-    public ArticleTranslationWindow(string translatedText, string articleTitle, string articleLink, string translationProvider)
+    public ArticleTranslationWindow(string translatedText, string articleTitle, string articleLink, string translationProvider, string? originalText = null, string? translationLanguage = null)
     {
         InitializeComponent();
         _articleTitle = articleTitle;
         _articleLink = articleLink;
         _translationProvider = translationProvider;
+        _originalText = originalText ?? string.Empty;
+        _translationLanguage = translationLanguage ?? ArticleDistributionContext.LanguageNameForCode(null);
         Title = T("Traducerea articolului");
         EmailButton.Content = T("Distribuie prin e-mail");
         WhatsAppButton.Content = T("Distribuie prin WhatsApp");
+        CopyButton.Content = T("Copiază articolul complet");
         CloseButton.Content = T("Închide");
         TranslatedText.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, T("Traducerea articolului"));
         TranslatedText.Text = translatedText;
@@ -38,18 +44,33 @@ public partial class ArticleTranslationWindow : Window
     private string T(string text) => UiText.Translate(text);
     private string F(string text, params object?[] arguments) => UiText.Format(text, arguments);
 
-    private string ShareText() => ArticleSharing.BuildShareText(
+    private ArticleDistributionContext DistributionContext() => new(
         _articleTitle,
+        _originalText,
         TranslatedText.Text,
         _articleLink,
-        F("Traducere automată realizată prin {0}.", _translationProvider),
-        T("Conținut preluat prin Orizont RSS:"),
-        T("Sursa articolului:"));
+        _translationProvider,
+        _translationLanguage);
+
+    private string ShareText()
+    {
+        var context = DistributionContext();
+        var note = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        return ArticleSharing.BuildShareText(context, note, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
+    }
+
+    private void CopyTranslation_Click(object sender, RoutedEventArgs e)
+    {
+        Clipboard.SetText(ShareText());
+        MessageBox.Show(this, T("Articolul complet a fost copiat în clipboard."), T("Copiere și distribuire"), MessageBoxButton.OK, MessageBoxImage.Information);
+    }
 
     private void ShareByEmail_Click(object sender, RoutedEventArgs e)
     {
         var shareText = ShareText();
-        var footer = ArticleSharing.BuildFooter(T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"), _articleLink, F("Traducere automată realizată prin {0}.", _translationProvider));
+        var context = DistributionContext();
+        var note = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        var footer = ArticleSharing.BuildFooter(context, note, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
         var body = ArticleSharing.LimitForUri(shareText, ArticleSharing.EmailBodyLimit, footer);
         var truncated = !string.Equals(body, shareText, StringComparison.Ordinal);
         if (truncated) Clipboard.SetText(shareText);
@@ -70,7 +91,9 @@ public partial class ArticleTranslationWindow : Window
     private void ShareByWhatsApp_Click(object sender, RoutedEventArgs e)
     {
         var fullShareText = ShareText();
-        var footer = ArticleSharing.BuildFooter(T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"), _articleLink, F("Traducere automată realizată prin {0}.", _translationProvider));
+        var context = DistributionContext();
+        var note = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        var footer = ArticleSharing.BuildFooter(context, note, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
         var shareText = ArticleSharing.LimitForUri(fullShareText, ArticleSharing.WhatsAppBodyLimit, footer);
         var truncated = !string.Equals(shareText, fullShareText, StringComparison.Ordinal);
         if (truncated) Clipboard.SetText(fullShareText);

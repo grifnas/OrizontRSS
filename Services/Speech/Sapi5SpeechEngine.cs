@@ -140,7 +140,7 @@ internal sealed class Sapi5SpeechEngine : ISpeechEngine
         catch
         {
             ResetLostVoice();
-            StateChanged?.Invoke(T("Motorul SAPI5 nu mai răspunde. Pornește din nou citirea cu Ctrl+Alt+V; motorul va fi reinițializat automat."));
+            StateChanged?.Invoke(T("Motorul SAPI5 nu mai răspunde. Pornește din nou citirea cu F9; motorul va fi reinițializat automat."));
             return false;
         }
     }

@@ -27,6 +27,11 @@ $baseKeys = @($baseMap.Keys)
 $cultures = 'en-US', 'es-ES', 'fr-FR', 'de-DE', 'pt-BR', 'hu-HU', 'it-IT'
 $failed = $baseResult.Duplicates -gt 0
 $protectedTerms = 'Orizont', 'RSS', 'OPML', 'SAPI5', 'Gemini', 'Ctrl', 'Shift', 'Alt', 'https://', 'http://'
+$protectedTermVariants = @{
+    Ctrl = @('Ctrl', 'Strg', 'Contrôle', 'Control')
+    Shift = @('Shift', 'Maj', 'Umschalt', 'Mayús', 'Maiusc')
+    Alt = @('Alt')
+}
 $mojibakePattern = '(?:Ã[^\x00-\x7F]|Â[^\x00-\x7F]|Äƒ|È™|È›|â€[\p{L}\p{N}\p{P}\p{S}]|â†[\p{L}\p{N}\p{P}\p{S}]|â€¦|ï¿½|\uFFFD)'
 $obsoleteKeys = @(
     'FereastrÄƒ',
@@ -35,9 +40,6 @@ $obsoleteKeys = @(
     'Deschide SetÄƒri voce.',
     'Fereastra a fost maximizatÄƒ.',
     'Fereastra a fost restabilitÄƒ.',
-    'River of News: Toate nouta?ile din {0} feeduri. {1} articole afi?ate, cronologic.',
-    'Notificări Toast pentru cuvinte-cheie',
-    'Notificări Windows (Toast) pentru cuvinte-cheie',
     'Istoric stare și erori — Orizont RSS 1.3',
     'Orizont RSS 1.3'
 )
@@ -138,7 +140,11 @@ foreach ($culture in $cultures)
                 $targetCount = [regex]::Matches($target, '(?<!\p{L})Orizont(?!\p{L})').Count
                 if ($sourceCount -ne $targetCount) { $termErrors++ }
             }
-            elseif (-not $target.Contains($term)) { $termErrors++ }
+            else
+            {
+                $variants = if ($protectedTermVariants.ContainsKey($term)) { $protectedTermVariants[$term] } else { @($term) }
+                if (-not ($variants | Where-Object { $target.Contains($_) })) { $termErrors++ }
+            }
         }
     }
 

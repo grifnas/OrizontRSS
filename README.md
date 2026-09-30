@@ -41,7 +41,7 @@ Pachetul Windows este autonom și nu necesită instalarea separată a .NET Runti
 - citire prin vocile locale SAPI5 și eSpeak NG sau prin cele 30 de voci online Gemini TTS;
 - ajutor accesibil cu `F1` și ghiduri HTML cu titluri în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană;
 - control complet din tastatură și restaurarea focalizării după citirea unui articol;
-- scurtături documentate pentru panouri (`F6`), căutare (`Ctrl+F` și `F3`), citire vocală (`F9` / `Ctrl+Alt+V`), control vocal (`Ctrl+Alt+P`, `Ctrl+Alt+S`) și maximizare/restaurare (`F11`);
+- scurtături documentate pentru panouri (`F6`), căutare (`Ctrl+F` și `F3`), citire vocală (`F9` pentru citire/pauză/continuare, `Escape` pentru oprire), setări voce (`Shift+F9`) și maximizare/restaurare (`F11`);
 - interfață în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană, cu alegere automată după limba Windows sau selecție explicită în Setări.
 
 Resursele interfeței și ghidurile HTML sunt verificate automat pentru toate cele opt limbi înaintea unei distribuții.

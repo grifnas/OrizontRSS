@@ -17,7 +17,7 @@ $pattern = '(?:UiText\.(?:Translate|Format)|\bT|\bF|\bSay)\(\s*"((?:\\.|[^"\\])*
 $found = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal)
 foreach ($file in Get-ChildItem -LiteralPath $projectRoot -Filter '*.cs' -Recurse)
 {
-    if ($file.FullName -match '\\(?:bin|obj|Publicare[^\\]*)\\') { continue }
+    if ($file.FullName -match '\\(?:bin|obj|tests|packaging|Publicare[^\\]*)\\') { continue }
     $source = Get-Content -LiteralPath $file.FullName -Raw -Encoding utf8
     foreach ($match in [regex]::Matches($source, $pattern))
     {

@@ -7,5 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\CititorRSS.Jaws.csproj" />
+    <Compile Include="..\..\packaging\installer\InstallerLanguage.cs" Link="InstallerLanguage.cs" />
   </ItemGroup>
 </Project>

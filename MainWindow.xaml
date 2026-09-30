@@ -52,7 +52,6 @@
         <MenuItem Header="_Căutare">
           <MenuItem Header="Căutare și filtrare articole">
             <MenuItem Header="Caută în articole" InputGestureText="Ctrl+F / F3" Click="FocusArticleSearch_Click" />
-            <MenuItem Header="Caută în articolele existente după cuvinte-cheie" Click="SearchStoredArticlesByKeywords_Click" />
             <MenuItem Header="Filtre articole" InputGestureText="Ctrl+Shift+F" Click="ArticleFilters_Click" />
           </MenuItem>
           <MenuItem Header="Descoperire feeduri noi">
@@ -65,8 +64,8 @@
             <MenuItem Header="Bibliotecă de notițe AI" Click="AiNoteLibrary_Click" />
           </MenuItem>
         </MenuItem>
-        <MenuItem Header="_Voce"><MenuItem Header="Citește selecția sau articolul" InputGestureText="F9 / Ctrl+Alt+V" Click="SpeakContent_Click" /><MenuItem Header="Citește de la cursor" Click="SpeakFromCursor_Click" /><MenuItem Header="Pauză sau continuă" InputGestureText="F9 / Ctrl+Alt+P" Click="PauseResumeSpeech_Click" /><MenuItem Header="Oprește citirea" InputGestureText="Escape / Ctrl+Alt+S" Click="StopSpeech_Click" /><Separator /><MenuItem Header="Setări voce" InputGestureText="Shift+F9" Click="VoiceSettings_Click" /></MenuItem>
-        <MenuItem Header="_Setări"><MenuItem Header="Setări aplicație" Click="Settings_Click" /><MenuItem Header="Setări voci" Click="VoiceSettings_Click" /><MenuItem Header="Setări Inteligență artificială" Click="AiSettings_Click" /></MenuItem>
+        <MenuItem Header="_Voce"><MenuItem Header="Citește selecția sau articolul" InputGestureText="F9" Click="SpeakContent_Click" /><MenuItem Header="Citește de la cursor" Click="SpeakFromCursor_Click" /><MenuItem Header="Pauză sau continuă" InputGestureText="F9" Click="PauseResumeSpeech_Click" /><MenuItem Header="Oprește citirea" InputGestureText="Escape" Click="StopSpeech_Click" /><Separator /><MenuItem Header="Setări voce" InputGestureText="Shift+F9" Click="VoiceSettings_Click" /></MenuItem>
+        <MenuItem Header="_Setări"><MenuItem Header="Configurare scurtături" Click="ShortcutSettings_Click" /><MenuItem Header="Setări aplicație" Click="Settings_Click" /><MenuItem Header="Reguli automate" Click="ArticleRules_Click" /><MenuItem Header="Setări voci" Click="VoiceSettings_Click" /><MenuItem Header="Setări Inteligență artificială" Click="AiSettings_Click" /></MenuItem>
         <MenuItem Header="_Ajutor"><MenuItem Header="Ajutor și scurtături" InputGestureText="F1" Click="Help_Click" /><MenuItem Header="Ghidul complet al utilizatorului" Click="OpenUserGuide_Click" /><MenuItem Header="Istoric stare și erori" InputGestureText="Ctrl+Shift+H" Click="StatusHistory_Click" /><Separator /><MenuItem Header="Verifică actualizări aplicație..." Click="CheckAppUpdates_Click" /><MenuItem Header="Deschide licența open-source" Click="OpenLicense_Click" /><MenuItem Header="Copiază informațiile despre versiune" Click="CopyVersionInfo_Click" /><MenuItem Header="Despre Orizont RSS" Click="About_Click" /></MenuItem>
       </Menu>
     </StackPanel>
@@ -74,7 +73,7 @@
       <Grid.ColumnDefinitions><ColumnDefinition Width="260" MinWidth="200" /><ColumnDefinition Width="6" /><ColumnDefinition Width="350" MinWidth="250" /><ColumnDefinition Width="6" /><ColumnDefinition Width="*" MinWidth="300" /></Grid.ColumnDefinitions>
       <GroupBox x:Name="FeedPanel" Grid.Column="0" Header="Feeduri">
         <DockPanel>
-          <StackPanel DockPanel.Dock="Top" Margin="4"><Label Content="Afișează folderul" Target="{Binding ElementName=FolderFilter}" /><ComboBox x:Name="FolderFilter" TabIndex="0" SelectionChanged="FolderFilter_SelectionChanged" AutomationProperties.Name="Filtru foldere" AutomationProperties.HelpText="Tab trece la Citește acum. Delete șterge folderul selectat și mută feedurile în Neorganizate." /><Button x:Name="ReadNowButton" TabIndex="1" Content="Citește acum" Click="ReadNow_Click" AutomationProperties.Name="Citește acum" AutomationProperties.HelpText="Arată necititele, articolele pentru mai târziu și favoritele din ultimele 7 zile." /><Button x:Name="AttentionToggleButton" TabIndex="2" Content="Feeduri care necesită atenție" Click="ToggleAttentionFilter_Click" AutomationProperties.Name="Afișează feedurile care necesită atenție" AutomationProperties.HelpText="Arată feedurile cu 3 erori consecutive sau fără articole de peste 90 de zile." /><TextBlock x:Name="FeedViewSummary" Text="Afișare: toate feedurile" Style="{StaticResource SecondaryTextStyle}" Margin="6,4,6,8" AutomationProperties.Name="Starea filtrării feedurilor" /><CheckBox x:Name="AttentionFilter" Visibility="Collapsed" IsTabStop="False" Checked="AttentionFilter_Changed" Unchecked="AttentionFilter_Changed" /></StackPanel>
+          <StackPanel DockPanel.Dock="Top" Margin="4"><Label Content="Afișează folderul" Target="{Binding ElementName=FolderFilter}" /><ComboBox x:Name="FolderFilter" TabIndex="0" SelectionChanged="FolderFilter_SelectionChanged" PreviewKeyDown="FolderFilter_PreviewKeyDown" AutomationProperties.Name="Filtru foldere" AutomationProperties.HelpText="Tab trece la Citește acum. Tastează litera sau cifra pentru a ajunge la următorul folder care începe cu ea. Delete șterge folderul selectat și mută feedurile în Neorganizate." /><Button x:Name="ReadNowButton" TabIndex="1" Content="Citește acum" Click="ReadNow_Click" AutomationProperties.Name="Citește acum" AutomationProperties.HelpText="Arată necititele, articolele pentru mai târziu și favoritele din ultimele 7 zile." /><Button x:Name="AttentionToggleButton" TabIndex="2" Content="Feeduri care necesită atenție" Click="ToggleAttentionFilter_Click" AutomationProperties.Name="Afișează feedurile care necesită atenție" AutomationProperties.HelpText="Arată feedurile cu 3 erori consecutive sau fără articole de peste 90 de zile." /><TextBlock x:Name="FeedViewSummary" Text="Afișare: toate feedurile" Style="{StaticResource SecondaryTextStyle}" Margin="6,4,6,8" AutomationProperties.Name="Starea filtrării feedurilor" /><CheckBox x:Name="AttentionFilter" Visibility="Collapsed" IsTabStop="False" Checked="AttentionFilter_Changed" Unchecked="AttentionFilter_Changed" /></StackPanel>
           <Grid>
             <ListBox x:Name="Feeds" TabIndex="3" SelectionMode="Extended" SelectionChanged="Feeds_SelectionChanged" PreviewKeyDown="ListBox_PreviewKeyDown_EdgeEarcon" ContextMenuOpening="Feeds_ContextMenuOpening" AutomationProperties.Name="Feeduri, listă" AutomationProperties.HelpText="Folosește săgețile Sus și Jos pentru feeduri. Ctrl sau Shift cu săgețile selectează mai multe feeduri. Delete șterge feedurile selectate după confirmare. Tab trece la căutarea din Articole. F6 trece la Articole. Shift+F6 trece la Conținut articol. Ctrl+1 revine aici.">
               <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}"><Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}" /></Style></ListBox.ItemContainerStyle>
@@ -99,7 +98,7 @@
             <ComboBox x:Name="TagFilter" Visibility="Collapsed" IsTabStop="False" />
           </StackPanel>
           <Grid>
-            <ListBox x:Name="Articles" TabIndex="8" SelectionMode="Extended" SelectionChanged="Articles_SelectionChanged" KeyDown="Articles_KeyDown" PreviewKeyDown="ListBox_PreviewKeyDown_EdgeEarcon" ContextMenuOpening="Articles_ContextMenuOpening" AutomationProperties.Name="Articole, listă" AutomationProperties.HelpText="Folosește săgețile Sus și Jos pentru articole. R marchează citit sau necitit. F adaugă sau elimină favorite. L adaugă sau elimină pentru mai târziu. Tab trece la Conținut articol. Ctrl sau Shift cu săgețile selectează mai multe articole. Ctrl+A selectează toate articolele. Enter deschide conținutul. F6 trece la Conținut articol. Shift+F6 trece la Feeduri. Ctrl+2 revine aici. Shift+F10 deschide acțiunile articolului.">
+            <ListBox x:Name="Articles" TabIndex="8" SelectionMode="Extended" SelectionChanged="Articles_SelectionChanged" KeyDown="Articles_KeyDown" PreviewKeyDown="ListBox_PreviewKeyDown_EdgeEarcon" ContextMenuOpening="Articles_ContextMenuOpening" AutomationProperties.Name="Articole, listă">
               <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}"><Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}" /></Style></ListBox.ItemContainerStyle>
               <ListBox.ItemTemplate><DataTemplate><StackPanel><TextBlock Text="{Binding VisualState}" Style="{StaticResource SecondaryTextStyle}" Margin="0,0,0,2" /><TextBlock Text="{Binding Title}" TextWrapping="Wrap"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="FontWeight" Value="Normal" /><Style.Triggers><DataTrigger Binding="{Binding IsRead}" Value="False"><Setter Property="FontWeight" Value="SemiBold" /></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock><TextBlock Text="{Binding VisualDetails}" Style="{StaticResource SecondaryTextStyle}" Margin="0,2,0,0" /></StackPanel></DataTemplate></ListBox.ItemTemplate>
               <ListBox.ContextMenu>
@@ -110,6 +109,10 @@
                   <MenuItem x:Name="ArticleReaderModeMenuItem" Header="Deschide articolul în cititorul Orizont" Click="OpenArticleInBrowser_Click" AutomationProperties.HelpText="Deschide articolul curățat de reclame și elemente inutile în cititorul integrat Orizont." />
                   <MenuItem x:Name="ArticleBrowserReaderModeMenuItem" Header="Deschide articolul în modul Citire al browserului" Click="OpenBrowserReadingMode_Click" AutomationProperties.HelpText="Deschide articolul în modul Citire Microsoft Edge, dacă pagina este compatibilă." />
                   <MenuItem x:Name="ArticleOriginalBrowserMenuItem" Header="Deschide pagina originală în browser" Click="OpenOriginalArticleInBrowser_Click" />
+                </MenuItem>
+                <MenuItem Header="Salvează articolul">
+                  <MenuItem Header="Salvează ca TXT" Click="SaveArticleAsTxt_Click" />
+                  <MenuItem Header="Salvează ca RTF" Click="SaveArticleAsRtf_Click" />
                 </MenuItem>
                 <MenuItem Header="AI și traducere">
                   <MenuItem Header="Întreabă AI despre articol">
@@ -154,6 +157,10 @@
     <MenuItem x:Name="ContentBrowserReaderModeMenuItem" Header="Deschide articolul în modul Citire al browserului" Click="OpenBrowserReadingMode_Click" AutomationProperties.HelpText="Deschide articolul în modul Citire Microsoft Edge, dacă pagina este compatibilă." />
     <MenuItem x:Name="ContentOriginalBrowserMenuItem" Header="Deschide pagina originală în browser" Click="OpenOriginalArticleInBrowser_Click" />
   </MenuItem>
+  <MenuItem Header="Salvează articolul">
+    <MenuItem Header="Salvează ca TXT" Click="SaveArticleAsTxt_Click" />
+    <MenuItem Header="Salvează ca RTF" Click="SaveArticleAsRtf_Click" />
+  </MenuItem>
   <MenuItem Header="AI și traducere">
     <MenuItem Header="Întreabă AI despre articol">
       <MenuItem Header="Rezuma articolul" Click="AiSummarize_Click" />
@@ -167,10 +174,10 @@
     <MenuItem Header="Afișează notițele AI salvate" Click="ShowAiNotes_Click" />
   </MenuItem>
   <MenuItem Header="Citire vocală">
-    <MenuItem Header="Citește selecția sau articolul cu voce" InputGestureText="F9 / Ctrl+Alt+V" Click="SpeakContent_Click" />
+    <MenuItem Header="Citește selecția sau articolul cu voce" InputGestureText="F9" Click="SpeakContent_Click" />
     <MenuItem Header="Citește cu voce de la cursor" Click="SpeakFromCursor_Click" />
-    <MenuItem Header="Pauză sau continuă citirea vocală" InputGestureText="F9 / Ctrl+Alt+P" Click="PauseResumeSpeech_Click" />
-    <MenuItem Header="Oprește citirea vocală" InputGestureText="Escape / Ctrl+Alt+S" Click="StopSpeech_Click" />
+    <MenuItem Header="Pauză sau continuă citirea vocală" InputGestureText="F9" Click="PauseResumeSpeech_Click" />
+    <MenuItem Header="Oprește citirea vocală" InputGestureText="Escape" Click="StopSpeech_Click" />
   </MenuItem>
   <MenuItem Header="Copiere și distribuire">
     <MenuItem Header="Copiază selecția" Click="CopySelection_Click" />

@@ -1,4 +1,6 @@
 using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Controls;
 using CititorRSS.Jaws.Localization;
 
 namespace CititorRSS.Jaws;
@@ -10,9 +12,12 @@ public partial class FeedDialog : Window
     public string FeedName => NameBox.Text.Trim();
     public string FeedUrl => UrlBox.Text.Trim();
     public string FolderName => FolderBox.SelectedItem is FolderChoice choice && !choice.IsCreate ? choice.Name : "Neorganizate";
+    public string SelectedArticleOpenMode => ArticleOpenModeIds.Normalize((ArticleOpenMode.SelectedItem as ComboBoxItem)?.Tag?.ToString());
     public FeedDialog()
     {
         InitializeComponent();
+        ApplyText();
+        ArticleOpenMode.SelectedIndex = 0;
         SetFolders([]);
         Loaded += (_, _) => NameBox.Focus();
     }
@@ -20,6 +25,7 @@ public partial class FeedDialog : Window
     {
         Title = T("Editează feed"); Heading.Text = T("Editează feedul RSS"); SaveButton.Content = T("Salvează");
         NameBox.Text = feed.Name; UrlBox.Text = feed.Url; FolderBox.Text = feed.Folder;
+        SelectArticleOpenMode(feed.ArticleOpenMode);
     }
     public void SetValues(string name, string url, string folder)
     {
@@ -66,6 +72,23 @@ public partial class FeedDialog : Window
     {
         FolderBox.SelectedItem = FolderBox.Items.OfType<FolderChoice>().FirstOrDefault(item => !item.IsCreate && string.Equals(item.Name, folder, StringComparison.CurrentCultureIgnoreCase))
             ?? FolderBox.Items.OfType<FolderChoice>().First(item => !item.IsCreate && item.Name == "Neorganizate");
+    }
+    private void SelectArticleOpenMode(string? mode)
+    {
+        var normalized = ArticleOpenModeIds.Normalize(mode);
+        ArticleOpenMode.SelectedItem = ArticleOpenMode.Items.OfType<ComboBoxItem>().FirstOrDefault(item => string.Equals(item.Tag?.ToString(), normalized, StringComparison.OrdinalIgnoreCase))
+            ?? ArticleOpenMode.Items[0];
+    }
+    private void ApplyText()
+    {
+        Title = T("Adaugă feed");
+        Heading.Text = T("Adaugă un feed RSS");
+        ArticleOpenModeLabel.Content = T("La deschiderea articolului");
+        AutomationProperties.SetName(ArticleOpenMode, T("La deschiderea articolului"));
+        ArticleOpenMode.Items[0] = new ComboBoxItem { Content = T("Folosește setarea generală"), Tag = ArticleOpenModeIds.Default };
+        ArticleOpenMode.Items[1] = new ComboBoxItem { Content = T("Mod standard în fereastra principală"), Tag = ArticleOpenModeIds.Standard };
+        ArticleOpenMode.Items[2] = new ComboBoxItem { Content = T("Cititor Orizont"), Tag = ArticleOpenModeIds.Orizont };
+        ArticleOpenModeNotice.Text = T("Alege unde se deschid articolele acestui feed când apeși Enter sau alegi Deschide și citește.");
     }
     private static string T(string source) => UiText.Translate(source);
     private sealed record FolderChoice(string Name, bool IsCreate)

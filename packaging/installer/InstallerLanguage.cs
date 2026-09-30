@@ -36,7 +36,44 @@ public sealed record InstallerTexts(
     string FolderRequired,
     string HashMismatch,
     string MissingInstaller,
-    string PackageMissing);
+    string PackageMissing)
+{
+    public string UninstallShortcutName => Code switch
+    {
+        "en-US" => "Uninstall Orizont RSS",
+        "es-ES" => "Desinstalar Orizont RSS",
+        "fr-FR" => "Désinstaller Orizont RSS",
+        "de-DE" => "Orizont RSS deinstallieren",
+        "pt-BR" => "Desinstalar o Orizont RSS",
+        "hu-HU" => "Orizont RSS eltávolítása",
+        "it-IT" => "Disinstalla Orizont RSS",
+        _ => "Dezinstalează Orizont RSS"
+    };
+
+    public string WindowsScriptHostUnavailable => Code switch
+    {
+        "en-US" => "Windows Script Host is unavailable.",
+        "es-ES" => "Windows Script Host no está disponible.",
+        "fr-FR" => "Windows Script Host n’est pas disponible.",
+        "de-DE" => "Windows Script Host ist nicht verfügbar.",
+        "pt-BR" => "O Windows Script Host não está disponível.",
+        "hu-HU" => "A Windows Script Host nem érhető el.",
+        "it-IT" => "Windows Script Host non è disponibile.",
+        _ => "Windows Script Host nu este disponibil."
+    };
+
+    public string ShortcutCreationFailed => Code switch
+    {
+        "en-US" => "The shortcut could not be created.",
+        "es-ES" => "No se pudo crear el acceso directo.",
+        "fr-FR" => "Impossible de créer le raccourci.",
+        "de-DE" => "Die Verknüpfung konnte nicht erstellt werden.",
+        "pt-BR" => "Não foi possível criar o atalho.",
+        "hu-HU" => "Nem sikerült létrehozni a parancsikont.",
+        "it-IT" => "Impossibile creare il collegamento.",
+        _ => "Nu s-a putut crea scurtătura."
+    };
+}
 
 public static class InstallerLanguages
 {
@@ -109,6 +146,11 @@ public static class InstallerLanguages
     };
 
     public static InstallerTexts FromCode(string code) => All.FirstOrDefault(x => x.Code.Equals(code, StringComparison.OrdinalIgnoreCase)) ?? All[0];
+
+    public static IReadOnlyList<string> UninstallShortcutNames { get; } = All
+        .Select(texts => $"{texts.UninstallShortcutName}.lnk")
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .ToArray();
 
     public static string ResolveCode(string? cultureName)
     {

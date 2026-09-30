@@ -14,10 +14,11 @@
              AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
              FontSize="18" AutomationProperties.Name="Text tradus cu Google Translate"
              AutomationProperties.HelpText="Folosește săgețile pentru a citi traducerea. Escape închide fereastra și revine la articol." />
-    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+    <WrapPanel Grid.Row="2" HorizontalAlignment="Right" Margin="0,12,0,0">
       <Button x:Name="EmailButton" Content="Distribuie prin e-mail" Click="ShareByEmail_Click" MinWidth="170" Margin="0,0,8,0" />
       <Button x:Name="WhatsAppButton" Content="Distribuie prin WhatsApp" Click="ShareByWhatsApp_Click" MinWidth="190" Margin="0,0,8,0" />
+      <Button x:Name="CopyButton" Content="Copiază articolul complet" Click="CopyTranslation_Click" MinWidth="190" Margin="0,0,8,0" />
       <Button x:Name="CloseButton" Content="Închide" IsCancel="True" MinWidth="110" />
-    </StackPanel>
+    </WrapPanel>
   </Grid>
 </Window>

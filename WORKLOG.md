@@ -1,5 +1,521 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-09-30 — Fixarea surselor într-un punct local de revenire
+
+- La solicitarea utilizatorului privind repararea situației și păstrarea lucrărilor, verificat registrul Git: 102 intrări inițiale, inclusiv fișiere noi încă neurmărite; acestea reprezintă mai multe sesiuni. Codul A09, resursele A07 și testele A11 sunt prezente în proiect.
+- Pregătit commit local al stării acumulate și eticheta `checkpoint-local-2026-09-30`; fără push. Inventarul fișierelor noi conține surse, teste, documentație și manifeste. Verificarea limitată pentru forme uzuale de chei nu a găsit potriviri; aceasta nu constituie audit complet de secrete. Artefactele bin/obj și profilul personal sunt excluse.
+- Adăugat `docs/RECOVERY-2026-09-30.md`, actualizate PROJECT-STATUS și ROADMAP. Înregistrat hashul bibliotecii compilate Orizont.dll; hashul apphostului Orizont.exe nu identifică singur codul aplicației.
+- Corectată interpretarea diagnosticului: dependența de .NET nu explică singură dialogul repetat când runtime-ul este instalat. Pornirea copiei autonome rămâne neconfirmată; nu au fost rulate din nou suitele pentru această intervenție exclusiv documentară și de versionare.
+- Verificarea diferenței pregătite pentru commit a găsit două linii goale suplimentare la sfârșitul fișierelor noi `tests/ShortcutsSmoke/Program.cs` și `ShortcutsSmoke.csproj`. Sunt păstrate în checkpoint pentru fidelitatea stării; nu sunt erori de compilare. Aceste fișiere neurmărite anterior nu erau acoperite de verificarea simplă `git diff --check`.
+
+## 2026-09-28 — Salvare TXT/RTF disponibilă în Cititor Orizont
+
+- Adăugat submeniul „Salvează articolul” cu opțiunile TXT și RTF atât în meniul contextual (`Shift+F10`), cât și în meniul de sus „Cititor”. Comenzile funcționează în modurile Text și WebReader prin aceeași acțiune.
+- Salvarea folosește folderul deja configurat în Setări → Setări aplicație, păstrează textul afișat și atribuirea traducerii, plus linkul către Orizont RSS și URL-ul sursei; succesul/eșecul este anunțat în bara de stare.
+- Verificări: WorkflowSmoke 136/136 (meniuri, localizarea engleză, salvarea TXT/RTF din cititor și footer), CoreSmoke 127/127, LocalizationSmoke 1.390 resurse / 1.265 referințe UI; build Release 0 erori, avertisment NU1900 privind imposibilitatea accesării indexului de vulnerabilități NuGet.
+- Confirmarea cu cititorul de ecran pentru găsirea comenzilor, anunțul căii și conținutul fișierelor rămâne necesară. Fără distribuție, release, commit sau push.
+- Executabil local de test: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+
+## 2026-09-28 — Punctul 8/A08: extinderea testelor pentru traducere, export și proveniență
+
+- Utilizatorul a observat corect că punctul 7 este ultimul închis complet; punctul 8 era implementat, dar acceptarea manuală era numai parțială. ROADMAP și PROJECT-STATUS au fost clarificate ca să nu echivaleze „implementat” cu „închis”.
+- `tests/WorkflowSmoke/Program.cs` verifică acum contextele de distribuire pentru fereastra principală și Cititor Orizont, textul complet partajat din fereastra Google Translate, documentele AI traduse cu furnizor/limbă și răspunsurile AI obișnuite fără etichetă de traducere falsă.
+- Rezultate: WorkflowSmoke 131/131; CoreSmoke 127/127; build Release în folderul permanent 0 erori, avertisment NU1900 pentru indisponibilitatea indexului de vulnerabilități NuGet. Testele sunt sintetice: fără profil, rețea, clipboard sau lansarea aplicațiilor externe.
+- Utilizatorul a confirmat practic că „Copiază articolul complet” din Cititor Orizont include linkul paginii aplicației și sursa articolului. Modul cititorului și cititorul de ecran folosit nu au fost precizate.
+- Confirmarea practică rămâne parțială. Sunt încă necesare scenarii în modurile Text/WebReader, răspuns AI, export TXT/RTF și e-mail/WhatsApp, inclusiv situația textelor lungi; punctul 8 nu este închis. Următorul test manual propus: export TXT și verificarea subsolului în fișier.
+- Executabilul local de test rămâne `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Fără distribuție, release, commit sau push.
+
+## 2026-09-28 — Punctul A02: raport de pornire și acord pentru verificarea contului curent
+
+- Utilizatorul a relatat că la fiecare pornire aude „Oglindire NewsBlur x din y”; deci în configurația actuală este activă oglindirea NewsBlur la pornire. La această pornire s-a auzit separat și „actualizare încheiată”; nu se confundă cu oglindirea NewsBlur.
+- Utilizatorul a precizat că intervalul de sincronizare periodică este 30 de minute și a autorizat explicit testarea A02 pe contul NewsBlur curent, acceptând efectele sincronizării. Acordul general din 28 septembrie acoperă și confirmările din aplicație care sunt clar legate de test, fără reconfirmare; dacă țintele ori efectul ies din scenariu sau sunt ambigue, testul se oprește. Intervalul periodic rămâne neschimbat.
+- Planul inițial izola o singură setare, dar utilizatorul a raportat că a debifat toate opțiunile care țin de NewsBlur. După repornire, utilizatorul a confirmat că feedurile nu se mai oglindesc: oprirea completă a NewsBlur la pornire este confirmată practic. Apoi, cu numai sincronizarea feedurilor/folderelor activă, utilizatorul a primit „Oglindire NewsBlur, 56 reușite, 2 cu eroare”; aceasta confirmă că oglindirea structurală pornește, iar cele două erori nu pot fi diagnosticate din contor singur. Cu numai sincronizarea articolelor/stărilor activă, utilizatorul confirmă sincronizarea articolelor, dar nu auzea informații despre stări. Inspecția codului a găsit două probleme de anunț: rezumatul inițial omitea contorii stărilor, iar actualizarea RSS ulterioară suprascria mesajul NewsBlur. Rezumatul bidirecțional localizat este acum păstrat și anunțat după terminarea fallback-ului RSS. Utilizatorul confirmă că soluția funcționează și că anunțul despre stări ajunge acum prin cititorul de ecran. Build Release în locația permanentă: 0 erori, avertisment NU1900 pentru indisponibilitatea indexului de vulnerabilități NuGet; CoreSmoke 127/127, WorkflowSmoke 125/125 și LocalizationSmoke 1.390 resurse / 1.265 șiruri în opt limbi au trecut. Verificarea codării a găsit zero mojibake. Rămâne verificarea unui transfer real de stare; confirmarea anunțului nu dovedește singură propagarea stării între Orizont și NewsBlur. Fără distribuție.
+- Doar documentația actualizată (`docs/ROADMAP.md`, `docs/PROJECT-STATUS.md`, `docs/MANUAL-REGRESSION-CHECKLIST.md`, `WORKLOG.md`). La prima consemnare nu se modificaseră setările și nu se pornise manual o sincronizare; utilizatorul a schimbat ulterior setările în interfața aplicației. Computer-use nu expune fereastra nativă în acest mediu, așadar următoarea schimbare de bifă trebuie efectuată de utilizator în interfața accesibilă. Fără build/distribuție.
+
+## 2026-09-28 — Autorizație generală pentru lucrările Orizont RSS
+
+- Utilizatorul a autorizat să nu i se mai ceară acordul pentru fiecare acțiune obișnuită strict legată de aplicația Orizont RSS, inclusiv testele de sincronizare cu contul NewsBlur curent. Autorizația este consemnată în `AGENTS.md`.
+- Acordul acoperă confirmările și efectele obișnuite ale testelor clar încadrate în scenariul Orizont RSS; nu se extinde la alte proiecte/sisteme sau operații cu ținte ori efecte ambigue. Fără distribuție/release fără cerere expresă.
+- Nicio acțiune de sincronizare nouă sau modificare a setărilor nu a avut loc la această consemnare. Fără build/distribuție.
+
+## 2026-09-28 — Confirmare practică A01: identitatea articolului
+
+- După scenariul recomandat cu JAWS, utilizatorul a confirmat că selecția unui articol nou în timpul încărcării nu îi transferă conținutul/sursa/starea articolului anterior și că reîncărcarea Cititorului Orizont rămâne asociată articolului deschis inițial. A01 este închis local.
+- Următorul punct practic este A02 — verificarea bifelor de sincronizare la pornire. Inițial s-a recomandat un profil de test; la 28 septembrie utilizatorul a autorizat explicit, pentru această sesiune, verificarea pe contul curent și a acceptat efectele sincronizării. Detaliile acordului și limitele sunt consemnate în intrarea A02 de mai sus.
+- Doar documentație actualizată: `docs/ROADMAP.md`, `docs/PROJECT-STATUS.md`, `docs/MANUAL-REGRESSION-CHECKLIST.md` și `WORKLOG.md`. Fără modificări de cod, rebuild, teste automate, distribuție, release, commit sau push; executabilul local existent rămâne neschimbat.
+
+## 27 septembrie 2026 — Confirmare JAWS pentru punctul 7
+
+După testarea cerută a răspunsurilor AI pornite atât din fereastra principală, cât și din Cititor Orizont, utilizatorul a confirmat: „functioneaza.” Înregistrată acceptarea practică pentru ambele trasee, inclusiv F9 pentru pornire/pauză/continuare și Escape pentru oprire. Punctul 7 este închis local; confirmarea nu este extinsă la NVDA.
+
+Nu s-a modificat codul și nu a fost necesară recompilarea; rămâne executabilul local de test produs anterior: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Nu s-a creat distribuție.
+
+## 27 septembrie 2026 — Punctul 7: vocea răspunsurilor AI din Cititor Orizont
+
+Remediată cauza confirmată A06: răspunsul AI cerut din Cititor Orizont deschidea `AiResponseWindow` fără `SpeechService`, deci comenzile de citire vocală nu puteau folosi motorul/vocea configurate. Fereastra este creată acum cu instanța comună primită de Cititor Orizont. Serviciul vocal a devenit parametru obligatoriu, iar constructorul refuză explicit `null`; traseul din fereastra principală continuă să transmită aceeași instanță. F9 configurabil și Escape pentru oprire au rămas neschimbate.
+
+`WorkflowSmoke` adaugă verificări pentru serviciul comun în traseul Cititor Orizont → răspuns AI și pentru respingerea serviciului absent. Teste: WorkflowSmoke **119/119**; Quick complet prin `tools/verify-source.ps1 -Mode Quick -NoRestore` a trecut — CoreSmoke 120/120, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 47, LocalizationSmoke 1.389/1.266, eSpeak 132/104 și validatorii Quick. Compilarea aplicației Release: 0 erori; avertisment NU1900 pentru indexul online de vulnerabilități NuGet indisponibil. Nu s-au folosit chei API, profil personal, rețea sau ferestre vizibile în teste; nu s-a construit installer și nu s-a creat distribuție.
+
+Executabil local de test: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Rămâne testul practic cerut în checklist cu JAWS, în răspunsul AI pornit din lista principală și din Cititor Orizont; nu declarăm accesibilitatea confirmată doar din testele automate.
+
+## 27 septembrie 2026 — Confirmare utilizator: actualizatorul funcționează
+
+Utilizatorul a confirmat: „folosesc ultima versiune, deci functioneaza.” Înregistrată confirmarea funcționalității actualizatorului în versiunea curentă și închis local punctul 6 al foii de parcurs. Confirmarea nu este extinsă la instalarea reală a unui release: nu s-a descărcat și nu s-a lansat instalatorul.
+
+## 27 septembrie 2026 — Punctul 6: actualizator cu integritate și salvare înainte de instalare
+
+Corectat fluxul actualizărilor fără a crea distribuție și fără a descărca/instala un release real. `UpdateCheckerService` acceptă numai perechea de asseturi exactă instalator–`.sha256`, nu mai poate selecta sidecarul ca executabil și nu mai folosește pagina GitHub drept fallback de download. Verifică HTTP, limita de 512 MiB, lungimea completă, SHA-256 constant-time și antetul PE; checksumul este citit cu limită strictă de 8 KiB. Descărcarea validată este păstrată temporar și curățată la anulare/eșec/ieșirea procesului installer.
+
+Dialogul de actualizare descarcă și verifică, dar nu pornește instalatorul. După confirmare, fereastra principală așteaptă sincronizările active, capturează sesiunea, salvează feedurile și setările și numai apoi lansează fișierul verificat. Dacă salvarea ori pornirea eșuează, aplicația rămâne deschisă, instalatorul nu este lansat în cazul eșecului salvării și fișierul temporar este eliberat. Verificarea manuală raportează distinct eroarea HTTP/rețea față de versiunea la zi; verificarea automată anunță eroarea în bara de stare.
+
+Localizare nouă în toate cele opt limbi pentru eroarea verificării, eșecul salvării, eșecul pornirii, succesul pregătirii și anulare. CoreSmoke conține 13 verificări sintetice pentru ordinea asseturilor, lipsa instalatorului, HTTP 403/503, etichetă de versiune absentă, versiune la zi, hash/PE corecte, hash greșit, transfer incomplet, curățarea fișierelor și oprirea lansării la eșecul salvării. CoreSmoke **120/120**; WorkflowSmoke **117/117** (testele updaterului au fost ținute în CoreSmoke pentru a nu amesteca IO cu dispatcherul WPF); LocalizationSmoke **1.389 resurse / 1.266 șiruri**. `tools/verify-source.ps1 -Mode Full -NoRestore`: toate suitele și validatorii au trecut; aplicația și installerul au compilat fără erori. Avertismentul `NU1900` arată că indexul online NuGet nu a putut fi accesat, nu o eroare de build.
+
+Executabil local de test: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Rămâne verificarea manuală țintită cu JAWS/NVDA pentru anunțul rezultatului la zi/eroare și focusul dialogului. Nu s-a folosit profil personal, nu s-a accesat rețeaua în testele updaterului, nu s-a pornit un installer real și nu s-a făcut distribuție, commit sau push.
+
+Controale finale după actualizarea documentelor: `verify-text-encoding.ps1` raportează zero mojibake; `git diff --check` iese cu cod 0 și fără erori de whitespace. Git afișează doar avertismentele existente că unele fișiere LF pot fi convertite în CRLF; normalizarea `.gitattributes` rămâne amânată separat, conform foii de parcurs.
+## 27 septembrie 2026 — Punctul 4: o singură instanță și protecția profilului
+
+La alegerea utilizatorului a fost implementată politica de o singură instanță. `Services/SingleInstanceGuard.cs` deține un mutex numit per sesiune Windows pe durata procesului. Controlul se face la începutul `App.OnStartup`, înainte de încărcarea limbii din FeedStore sau deschiderea MainWindow. La a doua lansare nu se deschide profilul: apare un MessageBox localizat după limba Windows, care spune că aplicația este deja deschisă și indică Alt+Tab pentru revenire. Închiderea normală eliberează mutexul; terminarea anormală îl abandonează, iar următorul proces îl poate prelua.
+
+`WorkflowSmoke` verifică sintetic că prima instanță obține mutexul, un al doilea thread/proces concurent este refuzat și după eliberare o nouă instanță îl poate obține: **117/117** verificări totale. Mesajul a fost adăugat în toate cele opt resurse UI. Checklistul manual adaugă a doua lansare sub JAWS/NVDA, Enter, revenirea la prima instanță și pornirea după închidere. Nu a fost lansată aplicația peste profilul real; testul cu două procese reale și cititor de ecran este lăsat utilizatorului.
+
+Fișiere: `App.xaml.cs`, `Services/SingleInstanceGuard.cs`, `Resources/UiStrings*.resx`, `tests/WorkflowSmoke/Program.cs`, `docs/MANUAL-REGRESSION-CHECKLIST.md`, `docs/ROADMAP.md`, `docs/PROJECT-STATUS.md`. Validarea Full a trecut: CoreSmoke 107, WorkflowSmoke 117, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 47, LocalizationSmoke 1.383 resurse/1.260 șiruri, eSpeak 132 voci/104 variante, ScaleSmoke 12/50.000, validatorii de localizare/ghiduri/encodare/pagini și runnerul 28/28. Buildurile aplicației și proiectului installer au 0 erori; avertisment NU1900 semnalează inaccesibilitatea indexului online de vulnerabilități NuGet, nu un eșec de compilare. `git diff --check` nu a raportat erori de whitespace; avertismentele LF/CRLF sunt cele existente și nu au fost normalizate. Executabilul local standard: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Nu s-a creat distribuție, nu s-a folosit profilul personal și nu s-a făcut commit/push. Verificarea reală cu două lansări și JAWS/NVDA rămâne deschisă.
+
+Test manual parțial raportat de utilizator, 27 septembrie 2026: dialogul celei de-a doua porniri este anunțat în engleză când Windows este în engleză și prezintă butonul unic `OK`. După închiderea lui, prima fereastră a rămas deschisă cu articolele folderului selectat vizibile. Nu s-a confirmat încă o comandă de navigare/interacțiune după revenire, iar cititorul de ecran folosit nu a fost specificat.
+
+## 27 septembrie 2026 — Punctul 5: backup fidel și reaplicarea preferințelor
+
+Completată `Storage/BackupPolicy.cs` cu preferințele nesensibile omise: verificarea actualizărilor la pornire, alertele sonore și opțiunile lor, cele două sincronizări NewsBlur la pornire, modul Cititor Orizont și modul implicit de deschidere a articolului. `NewsBlurAutoSyncEnabled` era deja inclus. Cheile API și acreditările/sesiunea NewsBlur continuă să fie excluse.
+
+După restaurare, `MainWindow.ApplyRestoredRuntimeSettings()` reaplică scurtăturile, indicațiile meniului, tema, motorul vocal și timerul de sincronizare periodică. `WorkflowSmoke` verifică proprietățile prin serializare JSON și deserializare sintetică, excluderea secretelor și reaplicarea setărilor runtime: **114/114**. Rularea finală `tools/verify-source.ps1 -Mode Full -NoRestore` a trecut după extinderea testului: CoreSmoke 107, WorkflowSmoke 114, RulesSmoke 42, ShortcutsSmoke 95, OpenAiSmoke 47, LocalizationSmoke 1.382 resurse/1.259 șiruri, eSpeak 132 voci/104 variante, ScaleSmoke 12/50.000, validatorii de localizare/ghiduri/encodare/pagini și orchestratorul 28/28. Buildurile aplicației și instalatorului: 0 erori; avertisment NU1900 deoarece indexul online de vulnerabilități NuGet nu a putut fi accesat.
+
+Limite: nu s-a importat un backup real, nu s-a folosit profilul utilizatorului și nu s-a verificat manual dialogul de restaurare sau JAWS. Punctul 5 este verificat automat pentru date sintetice; verificarea manuală prin UI într-un profil de test rămâne recomandată. Executabil local recompilat: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Fără distribuție, instalare, commit sau push.
+
+La momentul intervenției pentru punctul 5, punctul 4 nu fusese încă modificat; a fost abordat separat în intrarea imediat următoare a jurnalului.
+
+## 27 septembrie 2026 — Sesiunea 1: teste comune, identitatea articolului, pornire NewsBlur
+
+Autorizare: utilizatorul a cerut începerea primei sesiuni, punctele 1–3. Comportamente protejate: actualizare manuală/periodică, logica NewsBlur de oglindire/dezabonare, scurtături, meniuri, voce, footer, profil și locația permanentă a compilării. Nu s-au remediat anticipat constatările A03–A09/A11–A12 în afara celor necesare acestei sesiuni.
+
+Au fost separate operațiile externe ale comenzilor de articol prin `Services/Content/ArticleCommandPorts.cs` și `MainWindow.ArticleCommands.cs`, cu aceleași servicii reale în producție; `Properties/AssemblyInfo.cs` permite testului WorkflowSmoke acces intern. Evenimentele UI apelează metode Task testabile în MainWindow. Descărcarea, DeepL, Google și cititorul capturează articolul; callbackul de reîncărcare capturează adresa lui. O revizie de cerere/selecție împiedică afișarea rezultatelor vechi, inclusiv A–B–A, cereri inversate și după salvare. Rezultatele devenite nerelevante nu deschid ferestre și nu mută focusul. Mesajele și iconițele erorilor curente sunt păstrate.
+
+`MainWindow.Startup.cs` conține orchestrarea de pornire testabilă: cele două bife NewsBlur sunt independente de opțiunea periodică; dacă sincronizarea articolelor NewsBlur este oprită, actualizarea generală de pornire, când este bifată, folosește RSS direct. Lista de feeduri se obține după eventuala oglindire. Închiderea între etape împiedică începerea următoarei operații, iar timerul periodic se configurează după etapele de pornire.
+
+`tests/WorkflowSmoke` execută comenzile reale cu articole sintetice și callbackuri în locul rețelei, stocării și dialogurilor. Prima probă a infrastructurii a întâlnit limitarea DPAPI a mediului; testul folosește acum un callback sintetic și nu cere acces la chei sau profil. Cu logica inițială au fost reproduse 26 de eșecuri din 71 de verificări. După remediere: 71/71, apoi 86/86 după extinderea scenariilor. Cele 64 de combinații ale bifelor sunt incluse. Nu au fost arătate ferestre sau accesate date personale.
+
+`tools/verify-source.ps1` este intrarea comună local/CI/verify-all. Include toate cele opt suite, validatorii și modurile Quick/Full; nu produce distribuții. `tools/test-validation-runner.ps1` verifică inventarul și oprirea imediată la erori prin procese simulate. Au fost actualizate `.github/workflows/ci.yml`, `tools/verify-all.ps1`, BUILDING și checklistul manual. Rularea Full cu dependențele deja restaurate a trecut: CoreSmoke 107, WorkflowSmoke 86, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 47, LocalizationSmoke 1.382/1.259, eSpeak 132 voci/104 variante, ScaleSmoke 12/50.000 articole, localizare strictă, ghiduri, codare, pagini locale. Testul orchestratorului a fost extins ulterior și reverificat separat pentru inventarul tuturor proiectelor și legătura CI/verify-all. Compilări Release fără erori, avertismente NU1900; nu se declară audit NuGet reușit.
+
+Progres consemnat în ROADMAP și PROJECT-STATUS: punctul 1 închis pentru infrastructură, punctele 2 și 3 implementate/verificate automat și în așteptarea verificării practice JAWS/pornire. Testul final al orchestratorului: 28/28. Executabil: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Fără distribuție, instalare, commit, push sau experiment nou pe profilul utilizatorului. Verificarea CI pe GitHub nu a fost executată, doar configurația locală a fost actualizată.
+
+## 27 septembrie 2026 — Parcurs de consolidare în 12 puncte
+
+La cererea utilizatorului, constatările auditului au fost transformate într-o listă ordonată de lucrări în docs/ROADMAP.md, cu criterii de acceptare pentru fiecare punct, stări de progres și condiții de izolare/verificare manuală. docs/PROJECT-STATUS.md consemnează 0/12 închise, toate neîncepute, și următorul pas propus. Acest jurnal consemnează intervenția documentară. Raportul de audit rămâne neschimbat, ca bază a planului.
+
+Nu s-a modificat codul, nu s-au executat teste funcționale noi și nu s-au folosit date personale. Verificarea acestei intervenții: diff --check pentru cele trei documente și controlul celor 12 puncte, al mapării unice A01–A12 și al stării neîncepute. Nu este necesară recompilarea pentru această modificare documentară; nu a fost creat un executabil nou, o distribuție sau o publicare.
+
+## 27 septembrie 2026 — Audit sever, fără remedieri funcționale
+
+La cererea utilizatorului, auditate codul, localizările, protecția datelor, sincronizarea, actualizarea, testele și documentele de lucru. Raport: `docs/AUDIT-2026-09-27.md`, cu 12 constatări prioritizate, dovezi, limite și propuneri. Probleme importante: identitatea articolului după operații asincrone, bife NewsBlur neconsultate la pornire, protecția insuficientă între instanțe, fluxul actualizării, preferințe omise din backup, serviciu vocal absent în răspunsul AI din cititor și texte care ocolesc localizarea. Nu sunt declarate reparate.
+
+Rulate succesiv CoreSmoke 107, RulesSmoke 42, ShortcutsSmoke 95, ScaleSmoke 12/50.000 articole, AiProviderSmoke 47, LocalizationSmoke 1.382 resurse/1.259 referințe și eSpeakSmoke: toate trecute. Validator strict de localizare, ghiduri, codarea textelor inventariate și pagini publice locale: trecute. Probe sintetice în memorie au reprodus pierderea unor preferințe în backup și etichetele românești din exportul en-US. Instalatorul nu avea fișierul de dependențe pentru --no-restore; buildul cu restore a reușit, 0 erori și 2 NU1900. Auditul vulnerabilităților NuGet nu este validat. Git diff --check fără erori. Fără acces la profilul personal, teste live AI/NewsBlur, verificare JAWS nouă, instalare, distribuție, commit sau push. Modificate numai documentele; codul funcțional și schimbările preexistente sunt păstrate.
+
+## 26 septembrie 2026 — Normalizarea Git amânată
+
+La cererea utilizatorului, normalizarea completă a liniilor LF/CRLF prin `.gitattributes` rămâne o sarcină viitoare, fără termen fix. Va fi executată numai când arborele de lucru este curat, într-o intervenție separată, cu revizuirea diferențelor și retestare înainte de orice commit sau publicare.
+
+## 26 septembrie 2026 — Curățare tehnică, test la scară și audit promoțional
+
+Pentru etapa sigură din foaia de parcurs au fost finalizate verificări locale, fără acces la datele utilizatorului și fără publicare. A fost adăugat `.gitattributes` pentru normalizarea controlată a textelor și marcarea fișierelor binare. Renormalizarea în masă nu a fost executată: arborele de lucru conține modificări în curs, iar această operație va fi făcută ulterior într-un commit separat, curat și revizuit.
+
+A fost adăugat `tests/ScaleSmoke`, un test sintetic fără rețea, care verifică 50.000 de articole în 100 de feeduri, ordonarea/navigarea, retenția, protejarea articolelor importante, eliminarea duplicatelor și serializarea. Rezultat: 12 verificări trecute, fără date personale. A fost adăugat și `tools/verify-public-pages.ps1`; auditul celor 8 pagini publice localizate, al linkurilor de descărcare, metadatelor SEO, capturilor, `robots.txt` și sitemap-ului a trecut. A fost corectată și formularea promoțională spaniolă care mai menționa alertele după cuvinte-cheie, funcție eliminată.
+
+Validatorul strict de localizare acceptă acum denumirile standard localizate pentru modificatorii de tastatură (`Maj`, `Strg` și `Umschalt`), fără schimbarea textelor interfeței. Rezultatul final: toate cele 7 culturi × 1.320 de chei au trecut, fără chei lipsă, extra, mojibake sau erori de termeni. Build-ul Release și toate smoke testele relevante au trecut; testul eSpeak a trecut după restaurarea dependențelor. Nu s-a creat distribuție, nu s-a făcut push și nu s-au modificat profilul sau datele utilizatorului.
+
+## 26 septembrie 2026 — Scurtături configurabile promovate în versiunea de lucru
+
+La aprobarea utilizatorului, implementarea validată în copia Orizont RSS-experiment-scurtaturi a fost integrată în versiunea de lucru. Sunt disponibile 21 de comenzi configurabile prin Setări → Configurare scurtături și în meniul Setări; valorile se salvează în AppSettings și în copiile de siguranță, se normalizează la încărcare, iar meniurile și ajutorul afișează configurația curentă. Rutarea acoperă fereastra principală, lista articolelor, Cititor Orizont și conversația AI, fără hook global. Tastele standard de navigare rămân protejate.
+
+Comenzile vocale redundante Ctrl+Alt+V, Ctrl+Alt+P și Ctrl+Alt+S nu mai sunt rutate sau afișate în interfața curentă; rămân F9 pentru citire/pauză/continuare, Shift+F9 pentru setările vocale și Escape pentru oprire. Calea stabilă pentru profilul utilizatorului, exporturi și WebView2 a fost păstrată; nu au fost copiate ExperimentData, bin/obj sau date personale. Verificări: build Release fără erori/avertismente; ShortcutsSmoke 95, CoreSmoke 103, RulesSmoke 42, LocalizationSmoke 1.320 resurse și 1.224 referințe. Validarea JAWS făcută în experiment trebuie repetată pe executabilul stabil înainte de orice distribuție. Nu s-a creat distribuție și nu s-a publicat nimic.
+
+## 26 septembrie 2026 — Validare manuală JAWS în versiunea de lucru
+
+Utilizatorul a verificat executabilul stabil cu JAWS și a confirmat funcționarea conform așteptărilor pentru configuratorul și persistența scurtăturilor, navigarea și comenzile din lista de articole, Cititor Orizont, citirea vocală, setările vocale, maximizarea și fereastra AI. Etapa de promovare este validată funcțional. Nu s-a creat distribuție și nu s-a publicat nimic.
+
+## 26 septembrie 2026 — Eliminarea scurtăturilor vocale Ctrl+Alt în experiment
+
+La cererea utilizatorului, numai în Orizont RSS-experiment-scurtaturi au fost eliminate comenzile redundante Ctrl+Alt+V, Ctrl+Alt+P și Ctrl+Alt+S din model, rutare, configurator, meniuri, ghiduri și mesajul SAPI5. Rămân F9 pentru citire/pauză/continuare, Shift+F9 pentru Setări voce și Escape pentru oprirea citirii. Atribuirile vechi sunt ignorate la normalizarea setărilor. Nu s-a modificat versiunea principală și nu s-a creat distribuție.
+
+Verificări după schimbare: ShortcutsSmoke 95, CoreSmoke 103, RulesSmoke 42, LocalizationSmoke 1.320 resurse și 1.224 referințe; build Release 0 erori/avertismente. Ghidurile sursă și mesajele curente nu mai afișează combinațiile eliminate; referințele din istoricul CHANGELOG și cheile vechi de resurse sunt păstrate ca istoric/compatibilitate internă, dar nu mai sunt rutate. Confirmarea manuală cu JAWS rămâne necesară pentru F9, Shift+F9 și Escape. Executabil experimental: bin/Release/net8.0-windows10.0.17763.0/Orizont.exe.
+
+
+
+## 26 septembrie 2026 — Scurtături configurabile implementate experimental
+
+Numai în Orizont RSS-experiment-scurtaturi: 24 de comenzi configurabile prin Setări → Configurare scurtături și buton în Setări aplicație. Captură de combinație, căutare, nume accesibile fără structuri tehnice, salvare imediată, eliminare și revenire la implicit (confirmare pentru toate). Valori păstrate în AppSettings și backup, normalizare la încărcare, conflicte interne/reservări detectate conservator. Rutare în fereastra principală, lista articolelor, Cititor Orizont și comenzile vocale din conversația AI; fără hook global. Tastele standard rămân fixe. Meniurile/ghidul/indicațiile accesibile folosesc configurația curentă. Datele utilizatorului și codul versiunii principale nu sunt modificate.
+
+Fișiere experimentale: Services/Content/ShortcutBindings.cs, Views/ShortcutSettingsWindow.xaml(.cs), MainWindow.xaml(.cs), Models/AppSettings.cs, Storage/BackupPolicy.cs, Views/SettingsWindow.xaml(.cs), Views/HelpWindow.xaml.cs, Views/ArticleReaderWindow.xaml.cs, Views/AiResponseWindow.xaml.cs, resursele în opt limbi, tests/ShortcutsSmoke și EXPERIMENT.md. Teste: ShortcutsSmoke 102 verificări, CoreSmoke 103, RulesSmoke 42, LocalizationSmoke 1.319 resurse/1.224 referințe. Un test inițial avea KeyEventArgs sintetic fără RoutedEvent; corectat testul, apoi toate au trecut. Localizarea inițială incompletă a fost completată înainte de validarea finală. Build Release fără erori/avertismente. JAWS și folosirea reală a tuturor combinațiilor rămân de verificat; nu declarăm promovare. Executabil: ../Orizont RSS-experiment-scurtaturi/bin/Release/net8.0-windows10.0.17763.0/Orizont.exe. Fără distribuție/publicare.
+
+
+## 26 septembrie 2026 — Bază izolată pentru scurtături configurabile
+
+Creat folderul soră Orizont RSS-experiment-scurtaturi din sursele actuale, fără .git, bin/obj sau profil personal. Numai în experiment: titlu distinct și ExperimentData lângă executabil pentru feeduri, setări, diagnostic, WebView2, export implicit și fișiere temporare vocale. Build Release 0 erori/avertismente; RulesSmoke 42/42, inclusiv verificarea căii izolate. Nu s-au afișat ferestre și nu s-au accesat date personale sau conturi. Aplicația principală nu a fost recompilată/modificată; aici se consemnează doar progresul. Fereastra de configurare a scurtăturilor NU este implementată încă. Urmează inventarierea și integrarea incrementală conform EXPERIMENT.md din copia izolată, apoi testare JAWS înainte de promovare. Executabil experimental: ../Orizont RSS-experiment-scurtaturi/bin/Release/net8.0-windows10.0.17763.0/Orizont.exe. Fără distribuție/publicare.
+
+
+## 26 septembrie 2026 — Eliminarea experimentului de autoetichetare
+
+La cererea expresă a utilizatorului, folderul soră Orizont RSS-experiment-autoetichetare a fost mutat integral în Coșul de reciclare, inclusiv compilările și datele sale experimentale. Calea absolută a fost verificată înaintea operației; nu rula niciun proces Orizont. Verificat după operație: folderul experimental nu mai există la locația inițială, executabilul principal există. Versiunea de lucru și profilul ei nu au fost modificate. Recuperarea experimentului este posibilă din Coș până la golirea acestuia. Experimentul pentru scurtături configurabile va porni separat din versiunea actuală; nu a fost creat în această intervenție. Numai curățare și consemnare, fără recompilare sau distribuție.
+
+
+## 26 septembrie 2026 — Rezultatele regulilor: nume accesibile și comenzi normale
+
+Confirmare ulterioară a utilizatorului, 26 septembrie 2026: „da, funcționează într-adevăr”; verificare practică cu JAWS confirmată pentru corecția rezultatelor regulilor și accesul la comenzile obișnuite ale articolului. Etapa este validată în utilizarea testată de utilizator; mențiunea de verificare manuală în așteptare de mai jos este depășită pentru acest flux. Nu se extinde confirmarea la NVDA sau la fiecare comandă netestată individual. Salvarea persistentă fusese deja confirmată separat. Această intervenție actualizează numai cele trei fișiere de lucru, fără modificări de cod, date, recompilare sau distribuție.
+
+Utilizatorul a confirmat persistența regulilor după repornire. Corectat PreviewRow: ToString și AutomationProperties.Name furnizează DisplayName al articolului, nu structura tehnică; primul rezultat este selectat. Enter/dublu-click închide dialogurile regulilor și deschide articolul în lista principală, respectând modul configurat. Application/Shift+F10 sau meniul contextual face aceeași trecere și deschide meniul ArticleMenu existent, cu AI, traducere, organizare și stare. Pentru a face articolul vizibil se resetează filtrele/căutarea la toate articolele. Nu se clonează comenzile și nu se aplică rezultatele regulii la simpla deschidere. Salvarea imediată, confirmarea aplicării și datele utilizatorului sunt păstrate.
+
+Fișiere: Views/ArticleRulesPreviewWindow.xaml(.cs), Views/ArticleRulesWindow.xaml.cs, MainWindow.xaml.cs, tests/RulesSmoke/Program.cs. RulesSmoke 42/42, CoreSmoke 103/103, LocalizationSmoke 1.299 resurse/1.207 referințe în opt limbi. Prima verificare a localizării a detectat un titlu nou fără traduceri; înlocuit cu eticheta existentă Deschide și citește, apoi testul a trecut. Build Release: 0 erori/avertismente. Testele verifică numele UI Automation și identitatea articolului transmis, nu certifică focalizarea/anunțurile JAWS în ferestre reale. De verificat manual: citirea rândurilor, Enter, Application/Shift+F10 și o comandă de stare. Executabil: bin/Release/net8.0-windows10.0.17763.0/Orizont.exe. Fără distribuție/publicare; copia experimentală nu a fost modificată.
+
+
+## 26 septembrie 2026 — Salvare imediată a regulilor automate
+
+Compilare Release finală: 0 erori, 0 avertismente. git diff --check: fără erori de spațiere; avertismentele LF/CRLF existente rămân separate de această intervenție.
+
+Eliminată salvarea în două etape: după acceptarea editorului, adăugarea/editarea se scrie imediat în setări; ștergerea și activarea/dezactivarea se persistă la fel. Lista are numai Închide, iar Escape/X nu anulează modificările salvate. Confirmare prin dialog localizat în toate cele opt limbi. La eșec, lista și setările din memorie păstrează ultima stare salvată; se afișează eroarea. Închiderea și comenzile concurente sunt blocate pe durata scrierii. Aplicarea explicită la articole existente rămâne separată, iar anularea editorului nu salvează. Feedurile, stările articolelor, sincronizarea și datele personale nu au fost modificate de verificări.
+
+Fișiere: Views/ArticleRulesWindow.xaml(.cs), MainWindow.xaml.cs, Resources/UiStrings*.resx, tests/RulesSmoke/Program.cs. RulesSmoke 37/37 (inclusiv salvare/reîncărcare într-un fișier temporar și eșec de scriere simulat); CoreSmoke 103/103; LocalizationSmoke 1.299 resurse și 1.210 referințe. Verificarea manuală cu JAWS rămâne de făcut: salvare o singură dată, Escape, redeschidere și repornire. Executabilul local rămâne bin/Release/net8.0-windows10.0.17763.0/Orizont.exe. Fără distribuție nouă sau publicare.
+
++## 26 septembrie 2026 — Rezultatele autoetichetării au devenit articole accesibile
+
+Previzualizarea regulilor nu mai afișează un TextBox inert: articolele sunt rânduri selectabile, cu titlu și detalii sintetice. Enter/dublu-click deschide adresa articolului în browser; Shift+F10 oferă meniu contextual cu deschidere, copiere titlu și copiere adresă. Teste: build Release 0 erori/avertismente, RulesSmoke 32/32, CoreSmoke 103/103. Verificarea manuală JAWS rămâne necesară. Nu s-a creat distribuție.
++## 25 septembrie 2026 — Reguli automate promovate în versiunea de lucru
+
+La cererea utilizatorului, implementarea verificată în copia experimentală a fost integrată în sursele principale. Versiunea de lucru păstrează datele și folderul de export existente; nu s-a copiat ExperimentData și nu s-au importat reguli de test. Formularul clarifică „Ce să caute” și „Ce să facă”; acțiunea poate fi etichetare, Mai târziu sau ambele. Configurația nouă rămâne dezactivată până la activarea de către utilizator. Teste: RulesSmoke 32/32, CoreSmoke 103/103, LocalizationSmoke 1.294 resurse și 1.207 referințe, build Release 0 erori/avertismente. Verificarea manuală JAWS și prima utilizare cu datele reale rămân necesare. Nu s-a creat distribuție. Executabil local de test: bin/Release/net8.0-windows10.0.17763.0/Orizont.exe.
+
+## 25 septembrie 2026 — Numele accesibil al regulilor, corecție experimentală
+
+După raportarea „Row/Rule/Cititor…” la citirea regulii, numai în copia experimentală: Row.ToString întoarce starea și numele, iar ListBoxItem are AutomationProperties.Name legat explicit la Display, păstrând stilul existent. Logica regulilor, datele și aplicația stabilă nu sunt schimbate. Fișiere: Views/ArticleRulesWindow.xaml(.cs), tests/RulesSmoke/Program.cs. Build Release: 0 erori/avertismente; CoreSmoke 103/103; RulesSmoke 32/32, inclusiv numele containerului și al peer-ului UI Automation. Testul inițial fără layout nu genera containerul; corectat să măsoare lista fără afișare. Procesul acelui test eșuat a fost oprit explicit pentru deblocarea recompilării; nicio instanță Orizont nu a fost oprită. Confirmarea efectivă JAWS este încă necesară. Executabil: ../Orizont RSS-experiment-autoetichetare/bin/Release/net8.0-windows10.0.17763.0/Orizont.exe. Fără distribuție.
+
+## 25 septembrie 2026 — Reguli automate implementate numai experimental
+
+Validare finală: build Release 0 erori / 0 avertismente; CoreSmoke 103/103, RulesSmoke 28/28, LocalizationSmoke trecut; validatorul complet de localizare fără lipsuri/coruperi, codare fără mojibake. Verificări whitespace cu git diff --check în proiectul stabil pentru documente și --no-index pentru sursele experimentale: fără erori, doar avertismente LF/CRLF. Comanda git diff simplă în copia fără .git nu era aplicabilă și a fost înlocuită cu --no-index. În timpul dezvoltării s-au corectat un atribut xml:space generat incorect de scriptul de localizare și importul System.IO lipsă în noul test; rezultatele finale de mai sus sunt după corectare. Executabilul stabil verificat păstrează data 24 septembrie.
+
+În copia soră `Orizont RSS-experiment-autoetichetare`: Setări → Reguli automate; editor cu activare, nume, expresii oricare/toate, titlu/text disponibil, feeduri, etichete și Mai târziu. Reguli dezactivate inițial, acțiuni additive, previzualizare fără modificări și aplicare explicită confirmată la articole existente. Evidență persistentă per feed contra reaplicării la redescărcare, inclusă în comasarea duplicatelor. RSS și import NewsBlur integrate după filtrul de retenție; bazele sincronizării sunt păstrate, inclusiv la prima asociere RSS–NewsBlur. Configurația regulilor este locală și inclusă în backup, nu sincronizată prin NewsBlur. Maparea Saved Stories existentă rămâne valabilă; etichetele nesalvate pot fi amânate de sincronizarea existentă.
+
+Fișiere experimentale: Models/ArticleRule.cs, Services/Content/ArticleRules.cs, trei ferestre ArticleRuleDialog/ArticleRulesWindow/ArticleRulesPreviewWindow, MainWindow, modelele/setările/backupul/DuplicateCleaner, resursele în opt limbi, CoreSmoke și noul RulesSmoke. Teste: CoreSmoke 103/103; RulesSmoke 28/28 pe date fictive, fără afișare sau cont real; LocalizationSmoke 1.291 chei și 1.204 referințe. JAWS și serverul NewsBlur real rămân NEVALIDATE. Instrucțiuni: docs/AUTOMATIC-RULES.md în experiment. Codul și executabilul stabil nu sunt modificate; fără distribuție sau publicare. Executabil experimental: `../Orizont RSS-experiment-autoetichetare/bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+
+
+## 25 septembrie 2026 — Izolare aprobată pentru regulile automate
+
+Verificări: compilarea copiei experimentale reușită (0 erori; NU1900 pentru serviciul de audit NuGet indisponibil); CoreSmoke 75/75 după restaurarea dependențelor testului, cu auditul NuGet dezactivat numai pentru acea comandă. Prima încercare --no-restore nu a rulat testele deoarece copia nu avea obj/project.assets.json. git diff --check pentru documentele principale: fără erori. Executabil experimental: `../Orizont RSS-experiment-autoetichetare/bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Nu a fost lansat și nu reprezintă încă un test JAWS al funcției noi.
+
+Creată copia soră `Orizont RSS-experiment-autoetichetare`, cu sursele curente fără bin/obj. Numai în experiment: feedurile, setările, diagnosticul, profilul WebReader, fișierele vocale temporare și exportul implicit folosesc `ExperimentData` lângă executabil. Nu au fost copiate datele personale și nu a fost conectat NewsBlur. Codul și executabilul stabil nu au fost modificate. Autoetichetarea și marcarea automată Mai târziu urmează să fie implementate și testate pe date fictive; nu sunt declarate funcționale. Nu s-a creat distribuție.
+
+## 2026-09-24 — Confirmare utilizator pentru ghidul de scurtături
+
+- După testarea solicitată a ghidului F1 cu căutare și navigare în rezultate, utilizatorul a confirmat: „funcționează”. Etapa este confirmată pentru utilizarea testată; nu implică verificarea separată a tuturor limbilor sau a NVDA.
+- Actualizate jurnalul, starea proiectului, roadmapul și checklistul. Numai documentație; fără recompilare sau distribuție. Verificare: `git diff --check` pentru documentele modificate.
+
+## 2026-09-24 — Ghid de scurtături cu căutare
+
+- Extinsă fereastra HelpWindow existentă, accesibilă prin F1 și meniul Ajutor: câmp de căutare focalizat inițial, filtrare după tastă/descriere/categorie, termeni multipli, ignorarea diacriticelor și acceptarea spațiilor din combinațiile de taste. Cele 31 de intrări includ acum Ctrl+Shift+F8 și litere/cifre.
+- Tab/Enter/Jos din căutare focalizează elementul concret al primului rezultat. Ctrl+F revine și selectează căutarea, Escape închide. Nicio instrucțiune lungă HelpText pe listă; numărul de rezultate folosește StatusAnnouncer, cu întârziere de 250 ms. Lista goală este omisă din ordinea Tab și are mesaj explicit.
+- Protejate comenzile existente, meniul contextual al cititorului, datele și sincronizarea. Nu s-au schimbat scurtăturile globale și nu s-a introdus F2.
+- Fișiere: Views/HelpWindow.xaml(.cs), Services/Content/ShortcutSearch.cs, tests/CoreSmoke/Program.cs, cele opt resurse și documentele de lucru/checklist. Cele șapte texte noi au fost traduse în toate limbile. Instrumentul temporar de inserare a resurselor a fost eliminat.
+- Verificări: build Release 0 erori/0 avertismente; CoreSmoke 75/75, inclusiv patru verificări de căutare; LocalizationSmoke și validatorul complet trecute (1.257 chei, 1.170 referințe). Confirmarea practică JAWS/NVDA rămâne de făcut.
+- Executabil: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Fără distribuție sau publicare.
+
+## 2026-09-24 — Retragerea predescărcării automate a articolelor integrale
+
+- La cererea utilizatorului, eliminată propunerea Auto Full-Text din lista activă a roadmapului: multe articole nu vor fi citite, iar predescărcarea ar consuma timp și trafic inutil.
+- Consemnată decizia și în PROJECT-STATUS.md. Alegerea existentă per feed a modului de deschidere și preluarea textului la cerere nu se modifică. Propunerea nu se reia fără cerere nouă.
+- Modificate numai cele trei documente de lucru; fără cod, compilare sau distribuție. Verificare: `git diff --check` pentru documente.
+
+## 2026-09-24 — Plan pentru furnizori AI multipli
+
+- Consemnat la cererea utilizatorului planul pentru Gemini, OpenAI, Claude, Mistral și eventual DeepSeek, plus evaluarea ulterioară a serverelor compatibile și modelelor locale.
+- Prevăzute combobox de furnizor, alegere persistentă a implicitului, cheie/model/instrucțiuni pe furnizor, legătură pentru obținerea cheii și test accesibil; selecție separată pentru conversații noi, fără transfer automat al istoricului.
+- Stabilită evidența fiecărei reușite: data/modelul, funcții testate, verificări automate distincte de probe reale, limitări și confirmarea utilizatorului. Viabilitatea nu se deduce doar din compilare sau conectare.
+- Fișiere modificate: docs/ROADMAP.md, docs/PROJECT-STATUS.md și WORKLOG.md. Intervenție exclusiv documentară, fără implementare, compilare, distribuție sau publicare. Verificare: `git diff --check` pentru cele trei documente.
+
+## 2026-09-23 — Feedback după verificarea interfeței în engleză
+
+- Utilizatorul a raportat: „engleza pare să fie în regulă”, după solicitarea verificării cu JAWS. Feedback favorabil pentru zonele verificate, nu certificare exhaustivă a tuturor mesajelor sau a celorlalte limbi.
+- Consemnat în jurnal, starea proiectului și foaia de parcurs. Modificare exclusiv documentară, fără recompilare sau distribuție.
+
+## 2026-09-23 — Repararea și completarea localizării în opt limbi
+
+- Completate cele 255 de referințe lipsă în resursa română și în toate cele șapte resurse străine. Traducerile au fost redactate în această sesiune; încercarea instrumentului online existent a primit HTTP 429 și nu a produs traduceri aplicate. Nu au fost trimise date ale utilizatorului.
+- Corectate textele românești rămase, inclusiv cele fără diacritice din erorile DeepL, denumirile Setări voci/AI, caracterele deteriorate și cele șase mesaje NewsBlur în engleză din resursa română. Eticheta accesibilă a instrucțiunilor DeepL are acum și valoare română. Eliminate opt chei istorice din fiecare resursă.
+- Inventar final: 1.250 chei per limbă; 1.165 referințe C#/XAML detectate, toate acoperite. Validatorul complet: zero chei lipsă/suplimentare/duplicate, valori goale, erori de format/termeni/structură, texte românești identice detectate, marcatori interni și caractere deteriorate. Căutarea suplimentară a expresiilor românești uzuale în valorile străine nu a găsit rezultate.
+- `LocalizationSmoke` verifică fiecare valoare compilată în fiecare limbă, inclusiv acum resursa neutră; au fost adăugate regresii explicite pentru erorile DeepL fără diacritice și mesajele NewsBlur românești. Test trecut. `CoreSmoke`: 71/71, inclusiv 1.200 articole, retenție, duplicate, backup și căutare. Build Release: 0 erori, 0 avertismente.
+- Fișiere finale atinse: cele opt `Resources/UiStrings*.resx`, `tests/LocalizationSmoke/Program.cs`, `tools/sync-localization-keys.ps1` (exclude testele și packaging la inventarierea C#), cele trei documente de lucru. Instrumentul și tabelul temporar de aplicare a traducerilor au fost eliminate după aplicare.
+- Comportamente protejate: comenzi, focalizare, navigare, citire vocală, sincronizare, feeduri și date locale. Nu s-a modificat logica aplicației. Nu s-a creat distribuție și nu s-a publicat pe GitHub.
+- Rezultatul este validat automat, nu confirmat manual cu JAWS/NVDA sau de vorbitori nativi pentru fiecare limbă. Verificare manuală țintită rămasă: meniurile Setări/AI, traducere, cititor și mesajele NewsBlur în română și o limbă străină.
+- Executabil local: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+- Verificări finale: codare text și `git diff --check` trecute. Spațiile goale rămase după eliminarea cheilor obsolete au fost curățate cu verificare XML că valorile nu se schimbă. Cache-ul Python creat pentru această operație a fost eliminat.
+
+## 2026-09-23 — Audit de localizare, fără modificarea resurselor
+
+- `verify-localization.ps1 -RequireComplete` și `dotnet run --project tests/LocalizationSmoke/LocalizationSmoke.csproj --configuration Release --no-restore` au eșuat, cod 1.
+- Inventar: 1.003 chei în fiecare dintre cele opt resurse; 1.165 referințe C#/XAML detectate, dintre care 255 lipsesc din toate resursele. Inventarul istoric 1.181/1.100 nu descrie sursa actuală.
+- Zero duplicate, diferențe de inventar între limbi, valori goale în limbile străine, erori de substituenți, termeni protejați sau structură a filtrelor.
+- Texte identice cu româna detectate prin diacritice: en/es/fr/de câte 31, pt 27, hu 1, it 0. Metoda nu detectează toate textele netraduse fără diacritice și nu validează sensul traducerilor.
+- Caractere deteriorate în toate resursele; 8 chei obsolete în fiecare. PowerShell numără separat chei și valori deteriorate, C# numără intrări, de aceea totalurile diferă.
+- Testul confirmă fallbackul `Setări voci` în toate limbile străine și neconcordanțe ale etichetelor AI în es/fr/de/hu/it. Exemple de chei lipsă: `Traducere Google Translate`, `Traducerea Google Translate a fost anulată.`, `Textul complet a fost adus din NewsBlur.`.
+- Localizarea nu este validată pentru o nouă distribuție. Urmează corectarea resurselor și retestarea. Nu s-a efectuat revizie lingvistică integrală sau test manual JAWS/NVDA. Testul a compilat dependențele Release în locația standard; nu s-a creat distribuție.
+
+## 2026-09-22 — Confirmare manuală după curățarea compilărilor
+
+- Utilizatorul a confirmat că folderele temporare au dispărut și că Orizont RSS pornește și funcționează din locația permanentă `bin/Release/net8.0-windows10.0.17763.0/`.
+- Regula permanentă a locației unice de compilare a fost adăugată în `AGENTS.md`.
+- Regula a fost clarificată: experimentele riscante, aprobate explicit, pot folosi temporar un folder izolat de test, care se elimină după validare sau abandon.
+- A fost adăugată obligația de a avertiza utilizatorul înaintea unui experiment riscant și de a explica funcțiile posibil afectate înainte de izolarea compilării.
+
+## 2026-09-22 — Eliminarea folderelor temporare de test rămase
+
+- După mutarea compilării validate în `bin/Release/net8.0-windows10.0.17763.0/`, au fost șterse exact folderele temporare `bin/Release/keyword-alert-test` și `bin/Release/keyword-alert-removed-test`.
+- Compilarea permanentă și folderele standard `Debug`/`Release` au fost păstrate. Nu au fost atinse surse, documentație sau datele utilizatorului.
+
+## 2026-09-22 — Stabilirea locației permanente pentru compilarea de test
+
+- Ultima compilare validată (`river-removed-test`) a fost copiată în locația standard `bin/Release/net8.0-windows10.0.17763.0/`.
+- Copia a fost verificată prin SHA-256 (`E4AE310314FB669677F394E3B271AE5EC9EC44CF5F61B0856B93CF7B52D3211C`), apoi folderul temporar `bin/Release/river-removed-test` a fost eliminat.
+- De acum, linkurile locale de test vor indica executabilul din locația standard; nu s-a creat distribuție.
+
+## 2026-09-22 — Eliminarea vizualizării redundante River of News
+
+- La cererea utilizatorului, a fost eliminată intrarea virtuală `River of News` din lista de foldere și din logica de filtrare. Ea afișa aceeași listă globală de articole necitite ca `Ctrl+Shift+U`.
+- A fost păstrată `Ctrl+Shift+U` ca singura comandă pentru afișarea tuturor articolelor necitite. Stările vechi `RiverOfNews` din setări sunt tratate implicit ca vizualizare normală, fără pierderea feedurilor sau articolelor.
+- Au fost eliminate ramurile de cod, mesajele și verificarea de localizare aferente; nu s-a creat distribuție.
+
+## 2026-09-22 — Retragerea completă a alertelor după cuvinte-cheie pentru articole
+
+- La cererea utilizatorului, a fost eliminată funcția de urmărire a cuvintelor-cheie în articole: setarea `KeywordAlerts`, comanda de căutare a arhivei, potrivirea automată în fluxurile RSS/NewsBlur, lista de rezultate și fereastra dedicată.
+- Au fost eliminate fișierele `Services/Content/KeywordArticleMatcher.cs` și `Views/KeywordArticleAlertWindow.xaml(.cs)`. Căutarea locală obișnuită a articolelor și căutarea feedurilor după subiect rămân intacte.
+- Au fost curățate verificările de localizare și documentația activă; notele istorice despre versiunea 1.6.0 au fost păstrate ca istoric de release, nu ca funcționalitate curentă.
+- Setările vechi salvate cu cheia `KeywordAlerts` sunt ignorate; la următoarea salvare a setărilor, cheia nu mai este emisă.
+- Nu s-a creat distribuție. Buildul de test a trecut cu 0 erori, CoreSmoke a trecut 71/71, iar verificarea codării text și `git diff --check` au trecut fără erori. Executabilul de test este `bin/Release/keyword-alert-removed-test/Orizont.exe`.
+
+## 2026-09-22 — Restaurarea alertelor automate după cuvinte-cheie
+
+- Auditul a arătat că motorul `KeywordArticleMatcher` și comanda de căutare în arhivă existau, dar fluxul de actualizare nu mai apela potrivirea automată pentru articolele noi. Curățarea folderelor de build nu a șters codul; funcția era neconectată în starea sursei.
+- A fost refăcută legătura pentru actualizările RSS și importurile NewsBlur: se verifică numai articolele nou primite, se păstrează limita de trei rezultate, iar dialogul accesibil este focalizat și permite deschiderea articolului sau adăugarea în Mai târziu.
+- Deschiderea din alertă respectă acum preferința per feed pentru modul standard/Cititor Orizont. Căutarea manuală a arhivei rămâne disponibilă separat.
+- Build Release a trecut cu 0 erori; `NU1900` rămâne avertisment neblocant la accesarea indexului de vulnerabilități NuGet. CoreSmoke: 71/71. Nu s-a creat distribuție; verificarea manuală cu JAWS/NVDA este necesară.
+- După raportarea că dialogul nu apărea, fluxul a fost consolidat: potrivirile RSS și NewsBlur sunt acum adunate într-o singură listă pe durata întregii actualizări și dialogul se deschide o singură dată la final. Executabilul principal era blocat de instanța Orizont deja pornită, astfel că verificarea codului nou se face în `bin/Release/keyword-alert-test/Orizont.exe` după închiderea instanței curente.
+
+## 2026-09-22 — Curățarea artefactelor de build
+
+- La cererea utilizatorului au fost eliminate numai folderele regenerate automat `bin`/`obj` din proiect, installer și proiectele de test. Sursa, documentația, resursele, manifestele, istoricul Git și datele aplicației nu au fost atinse.
+- Pentru executabilul de test s-a refăcut restaurarea și buildul Release; după verificare au fost eliminate din nou `obj` și artefactele CoreSmoke. A rămas doar `bin/Release` principal cu executabilul actual.
+- CoreSmoke: 71/71. Restaurarea a afișat avertismentul neblocant `NU1900` deoarece indexul de vulnerabilități NuGet nu a putut fi accesat; buildul a fost finalizat cu 0 erori. Nu s-a creat distribuție.
+
+## 2026-09-22 — Marcarea automată ca citit la deschiderea în Cititor Orizont
+
+- Corectat fluxul de deschidere per feed: când un articol este deschis în Cititor Orizont, articolul și copiile sale duplicate sunt marcate ca citite, la fel ca în modul standard.
+- Lista de articole este reîmprospătată imediat, iar starea este salvată înainte de afișarea ferestrei Cititorului Orizont. Dacă extragerea conținutului eșuează fără fallback valid, articolul nu este marcat prematur.
+- Build Release: 0 avertismente/0 erori. CoreSmoke: 71/71. Nu s-a creat distribuție; verificarea manuală JAWS/NVDA rămâne necesară.
+- Confirmare manuală utilizator cu JAWS: preferința per feed pentru modul de deschidere și marcarea automată ca citit funcționează conform așteptărilor.
+
+## 2026-09-22 — Preferință per feed pentru deschiderea articolelor
+
+- La aprobarea utilizatorului, fiecare feed poate alege unde se deschid articolele la Enter sau la comanda „Deschide și citește”: setarea generală, modul standard din fereastra principală sau Cititor Orizont.
+- Setarea generală este disponibilă în `Setări > Cititor Orizont`; preferința feedului este disponibilă la adăugarea și editarea feedului și se păstrează în datele locale și în backup. Comenzile explicite către Cititor Orizont, browserul extern și modul Citire al browserului rămân neschimbate.
+- În vizualizările agregate este identificat feedul sursă al articolului; dacă nu există o asociere sigură, se folosește setarea generală. Preferința este locală și nu este sincronizată ca metadată NewsBlur.
+- Build Release: 0 avertismente/0 erori. CoreSmoke: 71/71. Nu s-a creat distribuție; verificarea manuală JAWS/NVDA rămâne necesară.
+
+## 2026-09-21 — Înlocuirea scurtăturii F8 cu Ctrl+Shift+F8
+
+- La aprobarea utilizatorului, comutarea între Text și WebReader a fost mutată de la `F8` la `Ctrl+Shift+F8`, pentru a reduce interferențele cu JAWS și cu WebView2.
+- Actualizate comanda din meniul Cititor, mesajele de ajutor, setările și textele publice în toate cele opt limbi.
+- Meniul Cititor rămâne alternativă cu mouse-ul și Enter. Build Release: 0 erori/0 avertismente; CoreSmoke: 71/71. Validatorul LocalizationSmoke păstrează eșecurile istorice ale proiectului, dar resursele noii combinații există în toate cele opt limbi. Verificarea manuală JAWS/NVDA este necesară; nu se creează distribuție în această etapă.
+- Confirmare manuală utilizator: `Ctrl+Shift+F8` funcționează pentru comutarea între cele două moduri de citire.
+
+## 2026-09-21 — Retragerea corecțiilor experimentale pentru meniul contextual/F8
+
+- La cererea utilizatorului au fost retrase din cod toate intervențiile experimentale de astăzi pentru meniul contextual și F8 din `ArticleReaderWindow` (mesaje WebView2, capturi suplimentare de taste, repoziționare și forțarea focusului).
+- A fost păstrată implementarea stabilă existentă înaintea acestor experimente și funcția de export TXT/RTF, confirmată anterior ca funcțională.
+- Nu s-a creat distribuție. Se păstrează istoricul intervențiilor de mai jos pentru trasabilitate; problema meniului contextual/F8 rămâne neînchisă și nu este declarată rezolvată.
+
+## 2026-09-21 — Consolidarea focalizării meniului contextual
+
+- Meniul contextual al Cititorului Orizont este acum focus scope explicit, cu navigare ciclică și focus sincron pe primul `MenuItem`; aceasta corectează situația în care JAWS anunța doar „Comenzi cititor”.
+- Verificări: compilare Release cu 0 erori și 0 avertismente; CoreSmoke 71/71. Nu s-a creat distribuție.
+
+## 2026-09-21 — Focusul meniului contextual pentru JAWS/NVDA
+
+- Retestarea utilizatorului a arătat că meniul se deschidea, dar JAWS anunța doar numele „Comenzi cititor”, deoarece focusul rămânea în WebView2.
+- La deschiderea meniului, focusul este mutat explicit pe primul element activ; navigarea cu săgețile poate ajunge acum la AI, traducere, copiere și distribuire.
+- Verificări: compilare Release cu 0 erori și 0 avertismente; CoreSmoke 71/71. Nu s-a creat distribuție.
+
+## 2026-09-21 — Corecție suplimentară pentru WebReader: F8 și poziționarea meniului
+
+- Prima corecție a meniului contextual nu a fost suficientă pentru controlul nativ WebView2: meniul putea să nu fie vizibil, iar `F8` nu ajungea la fereastra WPF.
+- Meniul este acum poziționat stabil față de fereastra Cititorului Orizont, iar modul WebReader trimite comenzile `Shift+F10`/`Apps` și `F8` către aplicație prin mesaje controlate WebView2. Modul Text are aceleași taste tratate direct la controlul de text.
+- Verificări: compilare Release cu 0 erori și 0 avertismente; CoreSmoke 71/71; `git diff --check` fără erori reale. Este necesară retestarea manuală cu JAWS/NVDA a ambelor moduri. Nu s-a creat distribuție.
+
+## 2026-09-21 — Restaurarea meniului contextual în Cititorul Orizont
+
+- Corectată dispariția meniului contextual în cele două moduri de vizualizare ale ferestrei `ArticleReaderWindow` (Text și WebReader).
+- Modul Text acceptă explicit `Shift+F10` și tasta `Apps` prin `PreviewKeyDown`. Modul WebReader transmite aceleași comenzi prin mesaj WebView2, iar clicul dreapta continuă să folosească evenimentul contextual personalizat.
+- Sunt din nou disponibile meniurile pentru AI, traducere Google Translate/DeepL, citire vocală, copiere și distribuire.
+- Verificări: compilare Release cu 0 erori și 0 avertismente; CoreSmoke 71/71; `git diff --check` fără erori reale. Verificarea manuală JAWS/NVDA rămâne necesară. Nu s-a creat distribuție.
+
+## 2026-09-21 — Exportul articolelor ca TXT/RTF
+
+- Implementat `Ctrl+Shift+S` pentru articolul curent; formatul implicit poate fi TXT sau RTF.
+- Folder implicit: `Documente\Orizont RSS\Articole`; utilizatorul poate introduce o altă cale în `Setări aplicație → Export articole`. Se păstrează un singur folder de export, iar duplicatele primesc sufix numeric.
+- Meniu contextual în lista articolelor și în conținutul articolului: `Salvează ca TXT` și `Salvează ca RTF`. Setările sunt incluse în backup.
+- Verificări: compilare Release cu 0 erori și 0 avertismente; CoreSmoke 71/71. Nu s-a creat distribuție.
+
+## 2026-09-20 — Reducerea repetiției JAWS la navigarea articolelor
+
+- Cauză: lista `Articles` expunea un `AutomationProperties.HelpText` lung, iar JAWS îl repeta împreună cu fiecare rând la navigarea cu săgețile.
+- Corecție: instrucțiunile au fost eliminate de pe lista de articole; fiecare rând păstrează anunțul direct al stării (`Necitit/Citit`, Favorite, Mai târziu), titlului și poziției.
+- Verificări: compilare Release cu 0 erori și 0 avertismente; CoreSmoke 67/67. Nu s-a creat distribuție.
+
+## 2026-09-20 — Corecție regresii după restaurarea River of News
+
+- Cauză identificată: handlerul de navigare alfabetică al listei de articole intercepta tastele `R`, `F` și `L`, împiedicând comenzile rapide pentru citit/necitit, favorite și Mai târziu.
+- Corecție: type-ahead-ul articolelor lasă aceste trei taste să ajungă la comenzile de stare.
+- Selectorul de foldere nu avea type-ahead; a fost adăugat suport pentru litere și cifre, cu ciclizare și focalizare stabilă, inclusiv pentru intrările virtuale.
+- Verificări: compilare Release cu 0 erori și 0 avertismente; CoreSmoke 67/67. Nu s-a creat distribuție.
+
+## 2026-09-20 — Restaurarea vizualizării River of News în lista de foldere
+
+- Cauză: lista `FolderFilter` reconstruia numai „Toate folderele” și folderele reale; opțiunea virtuală River of News nu mai era adăugată, deși documentația o declara implementată.
+- Modificări: a fost introdusă cheia stabilă `RiverOfNewsKey`, cu etichete localizate în toate cele opt limbi. Selectarea afișează articolele necitite din toate feedurile, deduplicate și ordonate cronologic, păstrând separat „Citește acum”.
+- Protecții: vizualizarea virtuală nu poate fi ștearsă, numărul de foldere raportat exclude cele două intrări virtuale, iar ultima vizualizare River of News se păstrează la închiderea și redeschiderea aplicației.
+- Nu s-a creat nicio distribuție; este necesară verificarea manuală cu JAWS/NVDA după compilare.
+
+## 2026-09-20 — Curățare Git planificată pentru o etapă ulterioară
+
+- Cerință consemnată: standardizarea sfârșiturilor de linie printr-un fișier `.gitattributes`, pentru eliminarea avertismentelor LF/CRLF și păstrarea unor diferențe Git curate.
+- Etapa rămâne planificată, fără termen stabilit și fără modificări executate acum.
+
+## 2026-09-20 — Verificarea descărcărilor GitHub pentru Orizont RSS 1.6.0
+
+- Verificare prin API GitHub Releases:
+  - `Orizont-RSS-1.6.0-win-x64.zip`: **12** descărcări (față de 6 la verificarea anterioară).
+  - `OrizontSetup.exe`: **11** descărcări (față de 7 la verificarea anterioară).
+  - Celelalte fișiere/hash-uri SHA-256: 0 descărcări.
+  - **Total descărcări versiunea 1.6.0**: **23** descărcări (+10 descărcări noi).
+  - Total cumulat pe toate versiunile (`v1.5.3`, `v1.5.4`, `v1.6.0`): **87** descărcări.
+
+## 2026-09-20 — Crearea textelor de promovare în română, engleză și spaniolă
+
+- Scop: generarea și salvarea a trei texte complete de promovare a aplicației Orizont RSS 1.6.0, adaptate pentru comunități de accesibilitate, forumuri tehnice, Reddit, Mastodon, rețele sociale și liste de discuții.
+- Fișiere create:
+  - `docs/PROMOTIONAL-TEXTS.md`: conține textele structurate în limba română (RO), engleză (EN) și spaniolă (ES), incluzând punctele forte (mod dual de citire F8, accesibilitate nativă JAWS/NVDA, traducere automată integrată Google Translate/DeepL, eSpeak NG + SAPI, confidențialitate locală, 8 limbi), linkurile oficiale către site-ul web, release-urile GitHub și comanda WinGet.
+- Verificări:
+  - `tools/verify-text-encoding.ps1`: 0 mojibake pe toate fișierele.
+  - `git diff --check`: 0 erori.
+- Nu s-a creat o distribuție nouă (conform regulilor active).
+
+## 2026-09-20 — Confirmare sincronizare documentație și stare WinGet 1.6.0
+
+- Verificare efectuată și confirmată de utilizator: documentația activă (`PROJECT-STATUS.md`, `ROADMAP.md`) este complet sincronizată cu versiunea 1.6.0, referințele la 1.5.3/1.5.4 sunt exclusiv istorice.
+- Testele automate (`CoreSmoke` 67/67, `verify-text-encoding.ps1` 0 mojibake, `git diff --check` fără erori) sunt validate.
+- Manifestele WinGet 1.6.0 sunt prezente și validate; PR-ul oficial `#431971` este în așteptarea aprobării moderatorului comunitar Microsoft.
+- S-a stabilit următorul pas operațional: după aprobarea și combinarea PR-ului se vor rula comenzile CLI de verificare (`winget search OrizontRSS`, `winget install Grifnas.OrizontRSS`, `winget uninstall Grifnas.OrizontRSS`).
+- Nu se generează nicio distribuție nouă în această etapă.
+
+## 2026-09-20 — Actualizarea și trimiterea manifestelor WinGet 1.6.0 în PR #431971
+
+- Context: la decizia utilizatorului (Opțiunea B), s-a realizat actualizarea directă a PR-ului oficial deschis pe `microsoft/winget-pkgs#431971` de la versiunea 1.5.4 la 1.6.0.
+- Operațiuni efectuate:
+  - Au fost generate și validate local toate cele 4 fișiere manifest pentru versiunea 1.6.0 în `packaging/winget/Grifnas.OrizontRSS/1.6.0/`: `Grifnas.OrizontRSS.yaml`, `Grifnas.OrizontRSS.installer.yaml` (URL `v1.6.0`, hash SHA-256 `980737F0B0A28F32267F5C28018DF5CA60C05E04788C632ABE1D3EF9D0059030`, alias portabil `orizont-rss`), `Grifnas.OrizontRSS.locale.ro-RO.yaml` și `Grifnas.OrizontRSS.locale.en-US.yaml`.
+  - `winget validate`: validare trecută cu succes (`Manifest validation succeeded`).
+  - În depozitul de lucru `.tmp-winget-pkgs-submit` (ramura `submission/orizont-rss-1.5.3`), s-a actualizat sparse-checkout-ul, s-au înlocuit manifestele 1.5.4 cu 1.6.0 și s-a realizat commitul `819cc8f04` (*Update Grifnas.OrizontRSS to 1.6.0*).
+  - Commitul a fost împins cu succes pe `origin submission/orizont-rss-1.5.3`.
+  - Titlul și descrierea PR-ului oficial `microsoft/winget-pkgs#431971` au fost actualizate prin GitHub CLI (`Update: Grifnas.OrizontRSS to 1.6.0`). Verificarea `license/cla` a trecut imediat pe verde.
+  - Documentația din `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md` a fost sincronizată.
+- Fișiere atinse: `packaging/winget/Grifnas.OrizontRSS/1.6.0/*`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md`, `WORKLOG.md`.
+
+## 2026-09-20 — Verificarea linkului de instalare din pagina publică
+
+- Butonul de instalare folosește `https://github.com/grifnas/OrizontRSS/releases/latest/download/OrizontSetup.exe`.
+- Prin urmare, în prezent descarcă asset-ul `OrizontSetup.exe` din release-ul public `v1.6.0`, nu `OrizontSetup-1.6.0.exe`.
+
+## 2026-09-20 — Verificarea publicării GitHub pentru v1.6.0
+
+- Release-ul `v1.6.0` există și este publicat, nu draft și nu prerelease: [Orizont RSS 1.6.0](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.0).
+- Publicat la 19 septembrie 2026, 10:31 UTC; sunt atașate 8 fișiere.
+- Contor actual: portabil `6`, `OrizontSetup.exe` `7`, celelalte fișiere `0`; total release `13` descărcări.
+- Observație: release-ul conține două executabile de instalare (`OrizontSetup-1.6.0.exe` și `OrizontSetup.exe`), aspect de clarificat la următoarea curățare publică.
+
+## 2026-09-20 — Reverificarea descărcărilor publice GitHub
+
+- Valorile API au rămas neschimbate față de reperul din 19 septembrie: `v1.5.3` = `24`, `v1.5.4` = `40`, total cumulat = `64` descărcări ale fișierelor atașate.
+
+## 2026-09-20 — Verificarea și restaurarea completă a footerului de partajare (e-mail și WhatsApp)
+
+- Context: la solicitarea utilizatorului, s-a verificat integritatea mecanismului de generare a footerului de atribuire la partajare („Conținut preluat prin Orizont RSS... Traducere automată... Sursa articolului...”).
+- Constatări în urma verificării:
+  - În `ArticleReaderWindow` (Cititorul Orizont) și `ArticleTranslationWindow`: footerul complet era perfect funcțional și prezent atât pentru e-mail, cât și pentru WhatsApp.
+  - În `MainWindow` (partajarea directă din panoul de conținut al ferestrei principale): apelul `ArticleSharing.BuildShareText` folosea o supraîncărcare redusă fără etichetele de atribuire și sursă, omițând footerul, iar starea traducerii DeepL nu era urmărită.
+- Remediere:
+  - `MainWindow.xaml.cs`:
+    - Adăugat câmpul `_translationProvider`, resetat la selecția altui articol și setat la `"DeepL"` după traducerea cu succes în panoul principal.
+    - Actualizat `ShareByEmail_Click` și `ShareByWhatsApp_Click` pentru a genera footerul complet prin `ArticleSharing.BuildFooter` cu menționarea preluării prin Orizont RSS, linkul către pagina oficială, nota de traducere și sursa originală a articolului.
+    - Asigurat apelul `ArticleSharing.LimitForUri` cu parametrul `footer`, protejând integritatea footerului chiar și în cazul trunchierii corpul articolului.
+  - `Services/Content/ArticleSharing.cs`:
+    - Adăugat rând liber suplimentar (linie goală separatoare) între sfârșitul conținutului articolului și începutul footerului în `BuildShareText` și `LimitForUri`.
+    - Normalizat caracterele de sfârșit de linie în `CreateWhatsApp` (LF curat `%0A%0A%0A` pentru prevenirea comasării în WhatsApp Web/Desktop) și `CreateMailto` (CRLF standard).
+  - `tests/CoreSmoke/Program.cs`: adăugate 5 aserțiuni automate noi pentru testarea directă a metodelor `ArticleSharing.BuildFooter`, `ArticleSharing.BuildShareText` și `ArticleSharing.LimitForUri`.
+- Verificări:
+  - `CoreSmoke`: toate cele 67 de teste trecute cu succes.
+  - `tools/verify-text-encoding.ps1`: 0 mojibake.
+  - `dotnet build -c Release`: 0 erori, 0 avertismente.
+  - `git diff --check`: 0 erori.
+  - Confirmare utilizator: utilizatorul a testat partajarea și a confirmat că funcționează conform cerințelor, cu separare clară de rânduri libere în WhatsApp.
+- Fișiere atinse: `MainWindow.xaml.cs`, `Services/Content/ArticleSharing.cs`, `tests/CoreSmoke/Program.cs`, `WORKLOG.md`.
+- Executabil local de test: `file:///c:/Users/grigo/Documents/ChatGPT/New%20project/Orizont%20RSS/bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+
+## 2026-09-20 — Strategie și acțiuni de promovare Orizont RSS
+
+- Scop: definirea și consemnarea strategiei de promovare și distribuție a aplicației Orizont RSS, stabilirea canalelor țintă și adăugarea regulii active de reamintire periodică a acestor propuneri către utilizator.
+- Documentație actualizată:
+  - `AGENTS.md`: adăugată Regula 18 în regulile active, pentru reamintirea periodică a propunerilor de promovare.
+  - `docs/PROJECT-STATUS.md`: adăugată secțiunea dedicată „Strategie și propuneri de promovare Orizont RSS”, detaliind atuurile unice (UVP), canalele de accesibilitate/nevăzători (România și internațional), distribuția tehnică (Winget, AlternativeTo, Softpedia), comunitățile RSS/Open Source, mecanismul organic integrat în aplicație (bucla virală prin footerul de partajare e-mail/WhatsApp cu link către pagina oficială și menționarea traducerii/sursei) și pașii imediați recomandați.
+  - `docs/ROADMAP.md`: actualizată etapa 6 cu acțiunile concrete din strategia de promovare.
+- Fișiere atinse: `AGENTS.md`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md`, `WORKLOG.md`.
+
+## 2026-09-19 — Vizualizare WebReader (WebView2) în Cititorul Orizont și restructurarea ferestrei Setări
+
+- Scop:
+  1. Integrarea modului de vizualizare „WebReader” (redare HTML curată/articol prin WebView2) ca alternativă la modul text existent în Cititorul Orizont (`ArticleReaderWindow`), cu comutare rapidă prin tasta `F8` și configurarea modului preferat implicit în Setări.
+  2. Păstrarea integrală a tuturor funcțiilor din meniul contextual în ambele moduri de vizualizare (Copiere, Selectare totală, Traducere Google / DeepL etc.).
+  3. Restructurarea ferestrei `Setări` (`SettingsWindow`) într-o interfață modernă și accesibilă împărțită pe 7 categorii selectabile prin listă (General, Feeduri și actualizare, Cititor Orizont, Date și stocare, NewsBlur, Voce și sinteză, Inteligență artificială).
+- Modificări efectuate:
+  - `CititorRSS.Jaws.csproj`: adăugat pachetul NuGet `Microsoft.Web.WebView2`.
+  - `Models/AppSettings.cs`: adăugată proprietatea `ReaderMode` ("Text" vs "WebView") și clasa `ReaderModeIds`.
+  - `Views/ArticleReaderWindow.xaml` și `xaml.cs`:
+    - Adăugat controlul `WebView2` alături de `TextBox`, cu încărcare securizată a conținutului HTML lizibil (sau generat din text simplu dacă feedul conține doar text), cu stil tipografic adaptat, curat și fără scripturi externe.
+    - Implementat `F8` (`ToggleReaderMode`) pentru comutarea fluidă la cald între vizualizarea Text și WebReader, cu anunț vocal și UIA live region.
+    - Meniul contextual păstrat și adaptat pentru ambele moduri, inclusiv opțiunile de traducere integrală a textului din fereastră (Google Translate / DeepL).
+  - `Views/SettingsWindow.xaml` și `xaml.cs`:
+    - Fereastra a fost reproiectată pe două coloane: în stânga o listă accesibilă de categorii (`CategoryList`), în dreapta un panou derulabil care afișează categoria selectată.
+    - Categoriile implementate: General, Feeduri și actualizare, Cititor Orizont (cu alegerea modului implicit: Text sau WebReader), Date și stocare (cu opțiunea și butonul de curățare imediată a articolelor expirate), NewsBlur, Voce și sinteză, Inteligență artificială.
+    - Navigare complet accesibilă cu tastatura și cititoarele de ecran JAWS/NVDA (`Alt+C` pentru categorii, `Tab` pentru controalele din categorie).
+  - `MainWindow.xaml.cs`: actualizat apelul `OpenSettingsAsync` pentru a gestiona corect schimbarea limbii sau cererea de curățare indiferent de categoria deschisă inițial.
+  - `Resources/UiStrings*.resx`: adăugate și traduse 29 de chei noi de resurse în toate cele 8 limbi ale aplicației (română, engleză, germană, spaniolă, franceză, maghiară, italiană, portugheză).
+- Verificări:
+  - `tools/verify-text-encoding.ps1`: 0 mojibake în toate fișierele de resurse și documentație.
+  - `CoreSmoke`: 62 de teste trecute cu succes.
+  - Compilare `dotnet build -c Release`: 0 erori, 0 avertismente.
+  - Respectat `AGENTS.md`: nu s-a creat distribuție sau arhivă, doar executabilul local de test.
+  - Confirmare utilizator: utilizatorul a testat și a confirmat că implementarea este conform așteptărilor sale.
+- Fișiere atinse:
+  - `CititorRSS.Jaws.csproj`
+  - `MainWindow.xaml.cs`
+  - `Models/AppSettings.cs`
+  - `Views/ArticleReaderWindow.xaml`, `Views/ArticleReaderWindow.xaml.cs`
+  - `Views/SettingsWindow.xaml`, `Views/SettingsWindow.xaml.cs`
+  - `Resources/UiStrings*.resx` (8 fișiere)
+  - `WORKLOG.md`
+  - `docs/PROJECT-STATUS.md`
+- Executabil local de test: `file:///c:/Users/grigo/Documents/ChatGPT/New%20project/Orizont%20RSS/bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+
 ## 2026-09-19 — Corectarea kitului de instalare OrizontSetup (includere biblioteci native WPF)
 
 - Problemă: la lansarea `OrizontSetup.exe` descărcat de pe GitHub, procesul se termina brusc cu `System.DllNotFoundException` în `SetWindowLongPtrWndProc` din cauza absenței bibliotecilor native WPF (`PresentationNative_cor3.dll`, `wpfgfx_cor3.dll`, `vcruntime140_cor3.dll` etc.) din interiorul executabilului unic.
@@ -1457,3 +1973,157 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: build Release reușit cu 0 erori; CoreSmoke trecut cu 121 verificări; LocalizationSmoke trecut cu 1.184 resurse și 1.103 șiruri UI; `verify-localization.ps1 -RequireComplete` fără probleme; `git diff --check` fără erori. Avertismentul NU1900 rămâne indisponibilitatea indexului de audit NuGet. Nu s-au modificat feedurile, articolele, setările, NewsBlur, GitHub sau distribuțiile.
 - Verificare manuală necesară: JAWS/NVDA trebuie folosite pentru a confirma focalizarea pe lista Feeduri, apăsarea literelor, revenirea circulară, anunțul feedului și păstrarea selecției multiple când se folosesc Ctrl/Shift.
 - Executabil local de test (framework-dependent; necesită .NET 8 Desktop Runtime): `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+
+## 2026-09-19 — Mod cititor dual (Text clasic și WebReader) în cititorul Orizont
+
+- Cerință implementată: Adăugarea unui mod de vizualizare WebReader (folosind WebView2) în fereastra Cititor Orizont (`ArticleReaderWindow`), alături de modul existent de text simplu accesibil. Utilizatorul poate selecta modul implicit din Setări aplicație și îl poate comuta instantaneu din fereastra Cititor prin tasta `F8` sau din meniul `Cititor`.
+- Condiție strictă respectată: Pentru modul WebReader au fost păstrate toate opțiunile din meniul contextual (`ReaderContextMenu` accesibil prin `Shift+F10` sau tasta `Apps`): traducere Google Translate, traducere DeepL, comenzi AI (rezumare, traducere, explicare, idei principale, discuție liberă), citire vocală cu eSpeak NG/SAPI5 (tasta `F9`), copiere și distribuire pe e-mail / WhatsApp. La apelarea traducerii sau a comenzilor AI, dacă nu este selectat text, întreg textul articolului este trimis automat.
+- Comportamente protejate: Modul clasic de text simplu (`TextBox`) rămâne disponibil și complet funcțional ca opțiune selectabilă; comenzile de tastatură existente (`F9`, `F11`, `Escape`, `Ctrl+Alt+...`) rămân intacte. Meniul contextual al browserului Chromium este dezactivat în favoarea meniului accesibil Orizont; linkurile apăsate în WebReader se deschid în browserul prestabilit al sistemului fără a părăsi cititorul.
+- Fișiere atinse: `CititorRSS.Jaws.csproj`, `Models/AppSettings.cs`, `Views/ArticleReaderWindow.xaml`, `Views/ArticleReaderWindow.xaml.cs`, `Views/SettingsWindow.xaml`, `Views/SettingsWindow.xaml.cs`, cele opt fișiere `Resources/UiStrings*.resx`, `docs/PROJECT-STATUS.md` și `WORKLOG.md`.
+- Teste rulate: `dotnet build CititorRSS.Jaws.csproj -c Release` (0 erori, 0 avertismente); `CoreSmoke` trecut cu 62 verificări; `tools/verify-text-encoding.ps1` fără erori de mojibake (0 pe toate fișierele); `git diff --check` fără erori.
+- Executabil local de test (framework-dependent; necesită .NET 8 Desktop Runtime și WebView2 Runtime): `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+- Verificare manuală: Utilizatorul a testat noul mod WebReader și a confirmat funcționarea și utilitatea acestuia ca alternativă de citire în cititorul Orizont.
+- Nu s-a creat distribuție și nu s-au modificat datele utilizatorului.
+
+## 2026-09-26 — Transfer OpenAI multifurnizor în versiunea de lucru
+
+- Scop: transferarea funcțiilor OpenAI validate în copia izolată `Orizont RSS-experiment-ai-providers` către versiunea de lucru, la cererea expresă a utilizatorului. Utilizatorul a confirmat că OpenAI funcționează impecabil în experiment înaintea transferului.
+- Modificări: furnizor implicit Gemini/OpenAI în Setări AI; configurare și păstrare separată a cheii OpenAI, model editabil și descoperire de modele text prin endpointul `/v1/models`; rutare a rezumatului, traducerii, explicației, punctelor principale, întrebării libere și continuării conversației prin adaptorul comun. OpenAI folosește Responses API cu `store=false`, link direct pentru gestionarea cheii și mesaje pentru erori de autentificare/cotă. Întrebările AI trimit textul articolului doar la comanda utilizatorului.
+- Securitate și compatibilitate: Gemini rămâne implicit pentru setările implicite/profilurile existente; cheia este păstrată prin mecanismul local `SecretProtector`, nu se copiază calea de date izolată din experiment, iar cheile Gemini/OpenAI nu sunt incluse în backup. Restaurarea păstrează furnizorul/modelul și cheile locale. Setările, numele accesibile și mesajele sunt traduse în toate cele opt limbi.
+- Fișiere OpenAI noi: `Services/Ai/AiProviderIds.cs`, `Services/Ai/AiProviderService.cs`, `Services/Ai/OpenAiConnection.cs`, `tests/OpenAiSmoke/` și extensii în setări, backup, ferestrele AI, cititorul principal/Orizont, resurse, documentație și checklistul manual. Modificările locale anterioare din checkout au fost păstrate.
+- Verificări: OpenAiSmoke 17/17; CoreSmoke 103; RulesSmoke 42; ShortcutsSmoke 95; ScaleSmoke 12 pentru 50.000 articole sintetice; EspeakSmoke trecut; LocalizationSmoke 1.374 resurse și 1.253 șiruri UI în opt limbi; `verify-localization.ps1 -RequireComplete` fără chei lipsă, duplicate, mojibake ori erori de formatare; `verify-text-encoding.ps1` cu 0 mojibake; `git diff --check` fără erori de spațiere.
+- Build permanent: `dotnet build CititorRSS.Jaws.csproj -c Release` reușit, 0 erori. Au rămas două avertismente NU1900 din cauza indisponibilității temporare a indexului online de audit NuGet; buildul a produs executabilul `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+- La momentul integrării, confirmarea manuală pe versiunea stabilă era încă în așteptare; vezi înregistrarea ulterioară de mai jos. Cititorul de ecran folosit nu a fost precizat, așadar nu se atribuie verificării o validare JAWS/NVDA.
+- Selectorul temporar de furnizor pentru o singură conversație, propus în planul inițial, nu este în acest transfer. Nu s-a creat distribuție, nu s-a publicat nimic și nu s-au folosit chei API/profilul personal pentru teste reale.
+
+## 2026-09-26 — Confirmare manuală OpenAI în versiunea de lucru
+
+- Utilizatorul a verificat funcțiile OpenAI după transferul în versiunea de lucru și a confirmat: „merge foarte bine, ca și în teste”. Se consemnează ca validare manuală funcțională a integrării transferate.
+- Utilizatorul nu a precizat ce cititor de ecran a folosit; nu se marchează separat ca verificare JAWS sau NVDA și nu se extinde la alte ecrane ori combinații netestate explicit.
+- Doar documentare: nu s-a modificat codul, nu s-au relansat testele/buildul și nu s-a creat ori publicat o distribuție.
+
+## 2026-09-26 — Mistral integrat în versiunea locală pentru testare
+
+- Scop: continuarea planului de furnizori AI după confirmarea OpenAI. S-a adăugat Mistral incremental, păstrând Gemini implicit și integrările Gemini/OpenAI existente.
+- Configurare: selector Gemini/OpenAI/Mistral; cheie Mistral distinctă, protejată local; model separat (`mistral-small-latest` inițial); bifa pentru furnizor implicit; buton direct spre `https://console.mistral.ai/api-keys/`. Mesajul explică trimiterea articolului doar după comanda AI și posibilele cote/costuri.
+- API: testarea cheii folosește `GET https://api.mistral.ai/v1/models`, selectând modelele cu `completion_chat=true`, fără a trimite articol. Generarea și continuarea conversației folosesc `POST /v1/chat/completions`. Mesajele de eroare limitează detaliile și redactează cheia. Apelurile AI din lista principală și Cititor Orizont folosesc setările Mistral; conversația capturează modelul selectat. Cheia nu se include în backup, iar restaurarea păstrează cheia și activarea locale.
+- Localizare actualizată în opt limbi. `LocalizationSmoke`: 1.382 resurse și 1.261 șiruri UI; `verify-localization.ps1 -RequireComplete`: zero chei lipsă/extra/duplicate, zero șiruri goale, erori de formatare/termeni/structură, mojibake sau chei vechi.
+- Smoke testul furnizorilor AI a fost adăugat și în GitHub Actions ca `AiProviderSmoke`; rulează numai cu HTTP-uri simulate, fără chei sau apeluri externe.
+- Verificări: `tests/OpenAiSmoke` (raportează `AiProviderSmoke`) 31 verificări, inclusiv model-list filtering, rutare, cererea de chat, cheia bearer, eroare redactată și excluderea cheii din backup; `CoreSmoke` 103/103; `RulesSmoke` 42/42; `ShortcutsSmoke` 95/95; `ScaleSmoke` 12 verificări/50.000 articole sintetice; `EspeakSmoke` trecut; `verify-text-encoding.ps1` zero mojibake; `git diff --check` fără erori de spațiere. Build Release reușit, zero erori și două avertismente NU1900 deoarece indexul de audit NuGet nu a răspuns.
+- Executabil local de test, în locația permanentă: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+- Nu a fost folosită cheie Mistral reală și nu a fost apelat un API real. Rămân testarea de către utilizator a cheii/conexiunii, a acțiunilor/continuării, persistenței furnizorului implicit și a focalizării/anunțurilor cu JAWS sau NVDA. Viabilitatea Mistral nu este încă confirmată. După confirmare se poate continua cu DeepSeek. Fără distribuție, release, push sau modificarea datelor utilizatorului.
+
+## 2026-09-27 — DeepSeek integrat în versiunea locală pentru testare
+
+- Confirmare anterioară: utilizatorul a răspuns „da, e bine” la verificarea Mistral. Se notează că Mistral este în regulă pentru testarea făcută de utilizator; cititorul de ecran și setul exact de scenarii nu au fost precizate.
+- Scop: continuarea planului aprobat de furnizori AI, fără modificarea comportamentului Gemini/OpenAI/Mistral și păstrând Gemini ca implicit.
+- Funcții: DeepSeek este inclus în selector, rutarea tuturor acțiunilor AI și continuarea conversației în lista principală și Cititor Orizont. Are cheie separată, protejată local; model separat cu `deepseek-flash` inițial; testul conexiunii actualizează lista modelelor disponibile și nu trimite articolul; butonul de cheie deschide `https://platform.deepseek.com/api_keys`.
+- API conform documentației oficiale: `GET https://api.deepseek.com/models` pentru enumerare și `POST https://api.deepseek.com/chat/completions` pentru generare; cererea nu folosește streaming și trimite instrucțiunile ca mesaj system, iar conținutul articolului numai după o comandă AI a utilizatorului. Sunt utilizate identificatoare actuale precum `deepseek-flash` și `deepseek-v4-pro`. Erorile limitează detaliile și redactează cheia.
+- Protecții: cheia și bifa de activare sunt excluse din backup; restaurarea păstrează credentialele locale și modelul DeepSeek al acestui calculator. Nicio cheie reală nu a fost folosită și nu s-a apelat API-ul real.
+- Localizare/documentație: etichetele accesibile DeepSeek reutilizează șirurile Mistral localizate, înlocuind numai numele furnizorului. `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și checklistul manual au fost actualizate.
+- Verificări: `AiProviderSmoke` 47/47 cu HTTP simulat, `CoreSmoke` 103/103, `LocalizationSmoke` 1.382 resurse/1.261 șiruri UI pentru ro-RO și șapte culturi, `verify-localization.ps1 -RequireComplete` fără erori și `verify-text-encoding.ps1` fără mojibake. `git diff --check` fără erori de spațiere; doar avertismentele informative existente LF→CRLF.
+- Build permanent: `dotnet build CititorRSS.Jaws.csproj -c Release` reușit, 0 erori; două avertismente NU1900 deoarece indexul de audit NuGet nu a răspuns. Executabil: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+- Confirmare utilizator după transfer: „merge foarte bine și DeepSeek”. Aceasta confirmă funcționarea în testarea utilizatorului; nu precizează setarea implicită, fiecare acțiune sau verificarea cu JAWS/NVDA. Nu s-a creat distribuție, release sau push și nu s-au modificat datele/feedurile utilizatorului.
+
+## 2026-09-27 — Footerul de proveniență adăugat distribuirii AI
+
+- Cauză identificată: e-mailul/WhatsApp din `AiResponseWindow` construiau documentul separat și omiteau footerul deja folosit de distribuirea directă a articolelor și de fereastra traducerii Google.
+- Remediere: footerul cu mențiunea Orizont RSS și sursa originală este inclus în documentul AI copiat/exportat și în distribuirea prin e-mail/WhatsApp. Pentru comanda AI „Traducere”, nota „Traducere automată realizată prin {furnizor}” este adăugată. Limitele URI păstrează footerul; când conținutul este scurtat, documentul complet este copiat în clipboard. Sursa afișată în metadatele documentului rămâne și în footer pentru transparență.
+- Comportamente protejate: traducerea directă DeepL/Google, distribuirea obișnuită a articolelor, furnizorii AI și conținutul original nu au fost schimbate. Nu au fost folosite chei API reale în această intervenție și nu s-au modificat feeduri, setări sau date personale.
+- Fișiere atinse: `Services/Content/ArticleSharing.cs`, `MainWindow.xaml.cs`, `Views/ArticleReaderWindow.xaml.cs`, `Views/AiResponseWindow.xaml.cs`, `tests/CoreSmoke/Program.cs`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md`, `docs/MANUAL-REGRESSION-CHECKLIST.md` și `WORKLOG.md`.
+- Verificări: CoreSmoke 107/107; AiProviderSmoke 47/47 cu HTTP simulat; LocalizationSmoke 1.382 resurse și 1.259 șiruri UI pentru ro-RO și cele șapte culturi; validatorul strict al localizării fără erori; `dotnet build CititorRSS.Jaws.csproj -c Release` fără erori (două avertismente NU1900, indexul de audit NuGet indisponibil). Verificarea manuală JAWS/NVDA a distribuirii rămâne în așteptare.
+- Executabil local de test, în locația permanentă: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Fără distribuție, release, push sau modificarea datelor utilizatorului.
+
+## 2026-09-27 — Confirmare manuală a footerului la distribuire
+
+- Utilizatorul a testat executabilul și a confirmat: „da, merge”, referindu-se la footerul cu atribuirea Orizont RSS, traducătorul și sursa.
+- Confirmarea închide verificarea funcțională manuală pentru distribuirea testată. Nu au fost precizate canalul exact (e-mail/WhatsApp) sau cititorul de ecran; nu se extinde la o certificare JAWS/NVDA.
+- Actualizate numai `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `WORKLOG.md`. Nicio modificare de cod, setări, feeduri ori date; fără build, teste automate, distribuție, release sau push, deoarece intervenția este doar consemnarea confirmării.
+
+## 2026-09-27 — Punctul A08: traducere, export și proveniență unitare
+
+- Introdus `ArticleDistributionContext` cu articol/titlu, text original, text afișat, URL sursă, furnizor și limbă țintă. MainWindow și Cititor Orizont pregătesc traducerea DeepL prin `ArticleTranslationSource`; main DeepL folosește conținutul original, nu un panou care poate deja să afișeze traducerea. Revenirea la textul original/reîncărcarea șterge furnizorul și limba traducerii, evitând atribuirea învechită.
+- Distribuirea articolului normal/tradus prin e-mail și WhatsApp, copierea articolului complet, exportul TXT/RTF, traducerea Google și documentul AI folosesc același contract de proveniență. Footerul cu linkul Orizont RSS și sursa originală este păstrat; traducerile arată furnizorul și limba, iar limitarea textului URI lasă footerul complet. Fereastra traducerii Google are buton accesibil de copiere a întregului document cu proveniență.
+- Localizare: adăugată fraza care atribuie furnizorul și limba traducerii în ro-RO, en-US, es-ES, fr-FR, de-DE, pt-BR, hu-HU și it-IT.
+- Fișiere: context/servicii de partajare și export, porturile de comenzi, MainWindow, Cititor Orizont, fereastra traducerii Google, fereastra răspunsului AI, cele opt resurse, CoreSmoke, WorkflowSmoke și documentația de proiect.
+- Verificări: `tools/verify-source.ps1 -Mode Quick -NoRestore` trecut integral: build Release 0 erori (avertisment NU1900 doar pentru indexul de audit NuGet inaccesibil), CoreSmoke 127/127, WorkflowSmoke 125/125, RulesSmoke 42/42, ShortcutsSmoke 95/95, AiProviderSmoke 47/47, LocalizationSmoke 1.390 resurse/1.266 șiruri, eSpeak 132 voci/104 variante; validatorii Quick au trecut. Smoke-urile folosesc date sintetice și nu contactează furnizori, nu folosesc chei API sau profilul personal și nu deschid ferestre vizibile.
+- Verificarea manuală cu JAWS/NVDA rămâne necesară pentru panoul principal, Cititor Text/WebReader, fereastra Google, copiere/export și răspuns AI; include un text lung pentru verificarea footerului după scurtare. Executabilul local de test este `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Fără distribuție, release, commit sau push.
+
+## 2026-09-27 — Confirmare manuală JAWS pentru o parte din A08
+
+- Utilizatorul a confirmat că funcționează: copierea traducerii din panoul principal păstrează atribuirea Orizont RSS, furnizorul și limba traducerii și sursa; revenirea la original șterge atribuirea traducerii; butonul de copiere din fereastra rezultatului Google copiază articolul cu footer.
+- Această confirmare JAWS se aplică numai celor trei trasee enumerate. Rămân de verificat manual Cititor Text/WebReader, răspunsul AI, exportul TXT/RTF, e-mail/WhatsApp și păstrarea footerului la scurtarea textelor lungi; nu se extinde la NVDA.
+- Actualizate numai documentele de progres și checklistul manual. Nu s-a schimbat codul, nu s-au relansat testele/buildul și nu s-a creat distribuție, release, commit sau push; nu s-au modificat datele utilizatorului.
+
+## 2026-09-28 — Confirmarea subsolului în Cititor Orizont
+
+- Utilizatorul a confirmat: „apare subsolul cu linkuri”, în urma verificării funcției de salvare din Cititor Orizont.
+- Formatul exportat și modul de citire nu au fost precizate. Confirmarea atestă prezența subsolului, nu validarea ambelor formate TXT/RTF ori a anunțării accesibile a comenzii.
+- Actualizate numai `docs/ROADMAP.md`, `docs/PROJECT-STATUS.md`, `docs/MANUAL-REGRESSION-CHECKLIST.md` și `WORKLOG.md`. Fără modificări de cod, teste, build, distribuție, release, commit sau push.
+
+## 2026-09-29 — Confirmarea salvărilor TXT și RTF
+
+- Utilizatorul a confirmat că ambele variante de salvare din Cititor Orizont, TXT și RTF, „se comportă la fel, adică foarte bine”. Confirmarea închide verificarea practică a conținutului exportat pentru ambele formate.
+- Modul Text/WebReader și cititorul de ecran nu au fost precizate; nu se deduce din această confirmare că meniurile și anunțurile au fost testate cu JAWS/NVDA.
+- Actualizate foaia de parcurs, starea proiectului, checklistul manual și registrul de lucru. Fără modificări de cod, teste, build, distribuție, release, commit sau push.
+
+## 2026-09-29 — Confirmarea anunțurilor barei de stare
+
+- Utilizatorul a confirmat că bara de stare anunță informațiile necesare despre conținutul articolului și alte stări relevante din Cititor Orizont.
+- Nu a fost precizat cititorul de ecran sau modul Text/WebReader; consemnarea nu este etichetată drept confirmare JAWS/NVDA.
+- Actualizate foaia de parcurs, starea proiectului, checklistul manual și registrul de lucru. Fără modificări de cod, teste, build, distribuție, release, commit sau push.
+
+## 2026-09-29 — Cititor de ecran implicit pentru verificările practice
+
+- Utilizatorul a precizat că folosește în general JAWS 2026 și foarte rar NVDA și a cerut să evităm întrebările repetate despre cititorul folosit.
+- Regulă de lucru: tratează JAWS 2026 drept cititor implicit al confirmărilor practice; întreabă doar când distincția contează pentru diagnostic sau când există indiciu că s-a folosit NVDA. Nu extrapola o verificare JAWS la NVDA și nu rescrie retroactiv confirmări istorice fără temei.
+- Actualizate `AGENTS.md`, checklistul manual, foaia de parcurs, starea proiectului și registrul de lucru. Fără modificări de cod, teste, build, distribuție, release, commit sau push.
+
+## 2026-09-29 — Punctul 9/A09: protecție pentru cereri Google Translate
+
+- Cauză: Cititor Orizont avea un indicator de cerere în curs, dar nu îl activa; fereastra principală nu împiedica deloc două cereri suprapuse.
+- Implementare: poartă atomică comună MainWindow/Cititor Orizont; o activare concurentă este refuzată și anunță starea în curs. Refuzul dialogului de consimțământ anunță anularea și eliberează poarta; după succes/eroare se poate încerca din nou. Aplicația anulează tokenul Google la închidere și la schimbarea articolului selectat; Cititor Orizont folosește tokenul duratei sale de viață și verifică anularea după extragerea textului și după HTTP, fără să afișeze rezultate/erori după închidere. Tokenul este transmis prin `ArticleCommandPorts` către `GoogleTranslateConnection`. Poarta se eliberează înainte de afișarea ferestrei rezultatului, ca citirea ei să nu blocheze o nouă traducere.
+- Verificare: `tools/verify-source.ps1 -Mode Quick -NoRestore` a trecut; Release build 0 erori (un avertisment NU1900, indexul online de vulnerabilități NuGet indisponibil), CoreSmoke 127/127, WorkflowSmoke 148/148, RulesSmoke 42/42, ShortcutsSmoke 95/95, AiProviderSmoke 47/47, LocalizationSmoke 1.390 resurse/1.265 referințe pentru opt limbi, eSpeak 132 voci/104 variante; validatoarele Quick au trecut cu zero erori/mojibake. Smoke-urile sunt sintetice, fără rețea Google sau profil personal.
+- Risc rămas/verificare practică: testarea JAWS 2026 a anunțului barei de stare, refuzului și încercării duplicate în ambele ferestre, plus închiderea în timpul cererii. Fără distribuție, release, commit sau push.
+- Executabil local standard de test: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+
+## 2026-09-30 — Amânarea confirmării practice A09 și următorul pas
+
+- Decizie utilizator: sărim momentan peste testul practic JAWS 2026 pentru punctul 9/A09 și continuăm cu următorul punct din foaia de parcurs. A09 rămâne implementat local și verificat automat, dar neînchis până la confirmarea practică ulterioară.
+- Următorul punct planificat: punctul 10/A07, localizarea dincolo de catalog — texte dinamice, mesaje de eroare și exporturi în cele opt limbi, cu validare automată separată de revizia lingvistică și testarea JAWS.
+- Nicio modificare de cod, test sau build în această actualizare; nicio distribuție, release, commit sau push.
+
+## 2026-09-30 — Punctul A07: localizare dincolo de catalog
+
+- Scanarea țintită a codului a descoperit texte generate de aplicație care nu erau localizate, deși etichetele vizibile obișnuite aveau resurse: metadate/data/feed la exportul TXT/RTF, validarea folderului de export și numele de rezervă al fișierului, lipsa limbii-țintă DeepL, două erori de extragere a conținutului pentru cititor, mesaje de verificare/descărcare a actualizării și nume/erori ale scurtăturii de dezinstalare din instalator.
+- Remedieri: mesajele respective folosesc acum resursele UI; exporturile formatează data după cultura interfeței și localizează etichetele „Data publicării” și „Feed”; validările DeepL/export și erorile HTTP ale actualizatorului au text localizat. Pentru păstrarea compatibilității, un răspuns HTTP nereușit la descărcare rămâne `HttpRequestException` cu `StatusCode`, nu este transformat într-o eroare de validare generică. Scurtătura de dezinstalare și eliminarea numelor vechi sunt specifice fiecărei culturi din instalator.
+- Resursele au fost completate în toate cele opt limbi. LocalizationSmoke verifică fișierele generate, fallbackul numelui exportat, erorile de validare și erorile HTTP/rețea simulate pentru toate culturile.
+- Verificare completă locală: `tools/verify-source.ps1 -Mode Quick -NoRestore` — build Release 0 erori; CoreSmoke 127/127; WorkflowSmoke 148/148; RulesSmoke 42/42; ShortcutsSmoke 95/95; AiProviderSmoke 47/47; LocalizationSmoke 1.419 resurse/1.294 șiruri UI și validare strictă cu zero lipsuri, extra, duplicate, goale, erori de format/termeni/structură, texte românești nemapate, marcatori interni ori mojibake în fiecare cultură; eSpeak 132 voci/104 variante; validatorul de ghiduri/codare/runner a trecut. ScaleSmoke 12/12 pentru 50.000 articole sintetice; `verify-public-pages.ps1` a validat cele 8 pagini, linkurile, SEO, capturile, robots.txt și sitemap.xml. Proiectul instalatorului a fost compilat separat cu 0 erori. `git diff --check` nu a raportat erori de spațiere; au apărut numai avertismentele LF/CRLF deja cunoscute.
+- Limite: validatorul nu dovedește naturalețea traducerilor; JAWS 2026 nu a fost rulat de agent în această probă. A07 rămâne deschis până la testul practic țintit cu interfața engleză și revizia lingvistică umană. Mesajele native ale Windows/serviciilor externe pot rămâne în limba furnizorului. NU1900 este avertismentul neblocant pentru indisponibilitatea indexului online NuGet; auditul de vulnerabilități nu este declarat.
+- Fără distribuție nouă, release, commit, push, sincronizare NewsBlur, acces la profil sau date personale. Executabilul local de test a fost recompilat în locația standard: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+
+## 2026-09-30 — Punctul A11: reper sintetic pentru performanță și clarificarea buildului
+
+- Extins `tests/ScaleSmoke/Program.cs` cu un workload de 24 de articole sintetice a câte 262.144 caractere în ambele câmpuri `Content` și `FullContent`. Măsoară mediana a trei eșantioane pentru căutare locală, serializarea JSON indentată, scrierea snapshotului într-un fișier temporar și înlocuirea lui, export TXT și export RTF. Verifică potrivirile, round-trip-ul complet și prezența URL-ului sursei în exporturi. Folosește un director GUID sub `%TEMP%`, verifică părintele exact înainte de ștergere și nu accesează profilul aplicației, rețeaua ori feedurile reale.
+- Rezultat pe mediul disponibil: căutare 64,1 ms; serializare 58,1 ms; scriere + înlocuire snapshot 6,6 ms pentru 16.205.414 bytes; TXT 2,2 ms; RTF 4,8 ms. Sunt trei eșantioane cu mediană, doar reper local; hardware-ul nu a putut fi interogat prin CIM, deci nu sunt praguri universale. Suitea ScaleSmoke: 17 verificări trecute; colecția separată existentă de 50.000 articole se procesează în 1,44 s în aceeași rulare.
+- `tools/verify-source.ps1 -Mode Quick -NoRestore` a trecut după modificare: Release build 0 erori; CoreSmoke 127/127; WorkflowSmoke 148/148; RulesSmoke 42/42; ShortcutsSmoke 95/95; AiProviderSmoke 47/47; LocalizationSmoke 1.419 resurse/1.294 șiruri UI, zero probleme structurale în cele opt limbi; eSpeak și validatoarele Quick au trecut. Avertismentul NU1900 este numai imposibilitatea accesării indexului online NuGet pentru datele de vulnerabilitate. Codul aplicației nu a fost optimizat, deoarece testul nu a demonstrat blocaj.
+- Limite: `FeedStore` folosește o cale statică în LocalAppData și nu a fost apelat pentru a proteja profilul. Serializarea temporară este reperul motorului JSON, nu o confirmare a durabilității pe disc. Nu s-au măsurat reacția WPF, focusul, tastatura sau JAWS; A11 rămâne deschis pentru acestea.
+- Clarificare pentru linkul anterior: `bin\Release\net8.0-windows10.0.17763.0\Orizont.exe` este build framework-dependent; `Orizont.runtimeconfig.json` cere .NET 8 `Microsoft.NETCore.App` și `Microsoft.WindowsDesktop.App`. Folderul conține multe dependențe și, după compilarea instalatorului în aceeași destinație, și fișierele self-contained `OrizontSetup.exe`. Nu este o arhivă portabilă, iar executabilul Orizont nu trebuie recomandat drept gata de rulat fără .NET Desktop Runtime. Această confuzie a fost provocată de prezentarea mea incompletă a linkului. Nu am instalat runtime și nu am creat o distribuție nouă.
+- Fără modificări ale feedurilor/setărilor, fără rularea aplicației pe profilul personal, fără distribuție, release, commit sau push. Fișierele atinse: `tests/ScaleSmoke/Program.cs`, `docs/ROADMAP.md`, `docs/PROJECT-STATUS.md`, `docs/MANUAL-REGRESSION-CHECKLIST.md`, `WORKLOG.md`. Nu s-a schimbat codul livrat al aplicației, deci nu s-a creat un executabil nou destinat utilizatorului.
+
+## 2026-09-30 — A11 continuare: măsurarea listei WPF fără profil
+
+- Extins suita existentă `tests/ScaleSmoke` să inițializeze resursele WPF ale aplicației și să aranjeze off-screen lista `Articles` și șablonul său real XAML. A folosit 1.000 de articole sintetice (texte mari la fiecare al 40-lea articol). Nu a afișat fereastra, nu a invocat `Window_Loaded`, nu a citit/scris profilul `LocalAppData`, nu a folosit feeduri sau rețeaua.
+- Rezultat: layoutul inițial off-screen 968,9 ms; 5 containere de rând generate din 1.000; `VirtualizingStackPanel=True`, deci rândurile nevizibile nu sunt materializate toate. Rerularea benchmarkului mare a dat mediane 74,4 ms căutare, 91,6 ms serializare, 10,5 ms snapshot la 16.205.415 bytes, 2,1 ms TXT și 4,6 ms RTF; valorile diferă față de prima rulare și nu se declară praguri.
+- Verificare: `dotnet run --project tests/ScaleSmoke/ScaleSmoke.csproj -c Release --no-restore` — 19 verificări trecute, 50.000 articole sintetice, fără date personale; proiectul aplicației referențiat a compilat fără erori. Avertismentul NU1900 arată că indexul online NuGet nu a fost accesibil. Prima încercare de compilare a testului s-a oprit din cauza importului lipsă `System.IO`; s-a corectat importul înainte de rularea reușită. Nicio fereastră nu a fost afișată.
+- Pentru ca virtualizarea observată să fie protejată contra regresiei, testul a fost întărit cu verificări explicite că există `VirtualizingStackPanel` și că numărul rândurilor materializate este mai mic decât cele 1.000 de articole. Rularea finală a trecut 20/20; layout off-screen 579,0 ms, 5 rânduri materializate. Noile mediane ale testului mare: căutare 79,1 ms, serializare 112,0 ms, snapshot 12,8 ms la 16.205.415 bytes, TXT 1,9 ms, RTF 4,1 ms. Variația între rulări rămâne documentată; nu s-a stabilit prag și nu s-a optimizat cod.
+- Limite: măsurarea nu cronometrează fereastra vizibilă și firul de interfață în execuție, filtrarea efectivă din `RefreshArticleList`, focusul, tastele sau anunțurile JAWS. Nu dovedește experiența utilizatorului și nu justifică schimbarea listei. A11 rămâne deschis pentru profil de test separat și probă JAWS; nu s-a modificat `FeedStore` și nu s-a redirecționat profilul Windows.
+- Fișiere atinse în această continuare: `tests/ScaleSmoke/ScaleSmoke.csproj`, `tests/ScaleSmoke/Program.cs`, `docs/ROADMAP.md`, `docs/PROJECT-STATUS.md`, `docs/MANUAL-REGRESSION-CHECKLIST.md`, `WORKLOG.md`. Nicio schimbare în codul livrat al aplicației, nicio distribuție, release, commit sau push. Deși proiectul aplicației este referință de compilare pentru test, nu am pornit Orizont și nu ofer `Orizont.exe` drept fișier gata de rulat; rămâne framework-dependent și poate cere runtime-ul .NET 8 Desktop. `git diff --check` a ieșit cu cod 0, numai avertismentele LF/CRLF existente; validatorul de codare a ieșit cu 0 mojibake în fișierele verificate.
+
+## 2026-09-30 — Build local autonom pentru testare
+
+- La cererea utilizatorului de a continua și de a primi o versiune locală de test, am construit în folder izolat `bin/OrizontRSS-Test-1.6.0/`, fără să modific codul aplicației ori să ating buildul mixt din `bin/Release/net8.0-windows10.0.17763.0/` și instalarea existentă.
+- Comandă: `dotnet publish .\CititorRSS.Jaws.csproj --configuration Release --runtime win-x64 --self-contained true --output <folderul izolat>`. Publicarea a reușit cu 0 erori; avertismentul NU1900 indică doar că indexul online pentru datele de vulnerabilitate NuGet nu a fost accesibil.
+- Verificat: versiunea fișierului `Orizont.exe` este 1.6.0.0; runtimeconfig declară `includedFrameworks` .NET 8.0.31 și Windows Desktop 8.0.31; folderul are 259 fișiere și 179.302.263 bytes. Sunt prezente executabilul, dependențele, catalogul RSS, DLL-ul eSpeak și ghidurile localizate. Hash SHA-256 al executabilului: `E4AE310314FB669677F394E3B271AE5EC9EC44CF5F61B0856B93CF7B52D3211C`.
+- Nu am pornit aplicația și nu am accesat profilul/NewsBlur; prin urmare pornirea efectivă și acceptarea JAWS rămân neconfirmate. Testul autonom nu cere runtime-ul .NET instalat, dar folosește profilul și mutexul aplicației curente; utilizatorul trebuie să închidă întâi instanța instalată și să nu mute `Orizont.exe` separat din folder. Copia este doar locală, nu arhivă/distribuție, release sau înlocuitor al instalării.
+- `docs/PROJECT-STATUS.md` și `WORKLOG.md` au fost actualizate. Nicio sursă de aplicație, feed, setare sau instalare nu a fost modificată. A11 rămâne deschis pentru profil de test separat și verificarea practică a interfeței/JAWS.

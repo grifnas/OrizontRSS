@@ -1,4 +1,13 @@
+using System.Buffers.Binary;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
+using CititorRSS.Jaws.Services.Content;
+using CititorRSS.Jaws.Services.Update;
+using CititorRSS.Jaws.Localization;
 using CititorRSS.Jaws;
 
 var checks = 0;
@@ -9,6 +18,75 @@ void Check(bool condition, string description)
 }
 
 var now = DateTimeOffset.UtcNow;
+var ruleFeed = new Feed { Name = "Reguli test" };
+var autoRule = new ArticleRule { Name = "Android", Enabled = true, Terms = ["android"], Tags = ["Tehnologie"], MarkReadLater = true };
+var tagged = new Article { Id = "rule-1", Title = "ANDROID nou", Tags = ["personal"], IsRead = true, IsFavorite = true };
+Check(ArticleRules.ApplyIncoming([autoRule], ruleFeed, tagged), "regula aplicată articolului nou");
+Check(tagged.ReadLater && tagged.Tags.SequenceEqual(new[] { "personal", "Tehnologie" }) && tagged.IsRead && tagged.IsFavorite, "reguli strict aditive");
+tagged.ReadLater = false; tagged.Tags.Remove("Tehnologie");
+Check(!ArticleRules.ApplyIncoming([autoRule], ruleFeed, tagged) && !tagged.ReadLater, "excluderea manuală nu este anulată la actualizare");
+var persistedFeed = JsonSerializer.Deserialize<Feed>(JsonSerializer.Serialize(ruleFeed))!;
+Check(!ArticleRules.ApplyIncoming([autoRule], persistedFeed, tagged), "evidența procesării supraviețuiește repornirii");
+var disabled = autoRule.Copy(); disabled.Enabled = false;
+Check(!ArticleRules.Apply([disabled], ruleFeed, new Article { Title = "Android" }), "regulă dezactivată");
+var wordRule = autoRule.Copy(); wordRule.Terms = ["AI"];
+Check(!ArticleRules.Matches(wordRule, ruleFeed, new Article { Title = "Mai multe știri" }), "AI nu se potrivește în mai");
+wordRule.Terms = ["inteligenta artificiala"];
+Check(ArticleRules.Matches(wordRule, ruleFeed, new Article { Title = "Inteligență artificială!" }), "expresie cu diacritice");
+Check(!ArticleRules.Matches(wordRule, ruleFeed, new Article { Title = "Inteligență nouă artificială" }), "expresie întreagă");
+wordRule.Terms = ["android", "telefon"]; wordRule.MatchAll = true;
+Check(!ArticleRules.Matches(wordRule, ruleFeed, new Article { Title = "Android" }), "toate expresiile obligatorii");
+Check(ArticleRules.Matches(wordRule, ruleFeed, new Article { Title = "Android", Content = "<p>Telefon</p>" }), "potrivire în titlu și conținut");
+wordRule.IncludeContent = false;
+Check(!ArticleRules.Matches(wordRule, ruleFeed, new Article { Title = "Android", Content = "telefon" }), "limitare la titlu");
+wordRule = autoRule.Copy(); wordRule.AllFeeds = false;
+Check(!ArticleRules.Matches(wordRule, ruleFeed, tagged), "selecția goală de feeduri nu înseamnă toate");
+wordRule.FeedIds.Add(ruleFeed.Id);
+Check(ArticleRules.Matches(wordRule, ruleFeed, tagged), "feed selectat");
+var oldArticle = new Article { Id = "existing", Title = "Android" };
+ruleFeed.Articles.Add(oldArticle); ArticleRules.SeedExisting(ruleFeed);
+Check(!ArticleRules.ApplyIncoming([autoRule], ruleFeed, oldArticle), "articolele existente nu sunt procesate automat");
+Check(ArticleRules.Apply([autoRule], ruleFeed, oldArticle), "aplicare explicită la articol existent");
+Check(!ArticleRules.Apply([autoRule], ruleFeed, oldArticle), "aplicare repetată fără etichete duplicate");
+var stacked = autoRule.Copy(); stacked.Tags = ["tehnologie", "mobil"];
+ArticleRules.Apply([autoRule, stacked], ruleFeed, oldArticle);
+Check(oldArticle.Tags.Count == 2 && oldArticle.Tags.Contains("mobil"), "reguli cumulate fără duplicate");
+Check(ArticleRetention.ShouldKeep(oldArticle, now.AddDays(1)), "Mai târziu protejează retenția");
+var baseline = new Article { Title = "Android", NewsBlurLastLocalTags = ["remote"], Tags = ["remote"], NewsBlurLastLocalSaved = false };
+ArticleRules.Apply([autoRule], ruleFeed, baseline);
+Check(baseline.NewsBlurLastLocalTags.SequenceEqual(new[] { "remote" }) && baseline.NewsBlurLastLocalSaved == false, "regulile nu alterează baza sincronizării");
+var ruleBackup = BackupPolicy.SanitizeSettings(new AppSettings { ArticleRules = [autoRule] });
+autoRule.Tags.Add("test copie");
+Check(ruleBackup.ArticleRules.Count == 1 && !ruleBackup.ArticleRules[0].Tags.Contains("test copie"), "reguli păstrate și copiate în backup");
+autoRule.Tags.Remove("test copie");
+Check(!ArticleRules.Matches(autoRule, ruleFeed, new Article { Content = "<script>android</script><p>altceva</p>" }), "nu caută în scripturi HTML");
+Check(ArticleRules.Matches(autoRule, ruleFeed, new Article { Content = "<p>Android &amp; telefoane</p>" }), "căutare în text HTML vizibil");
+var emptyRule = autoRule.Copy(); emptyRule.Terms = [" ", ""];
+Check(!ArticleRules.Matches(emptyRule, ruleFeed, tagged), "regula fără expresii nu se potrivește tuturor");
+var onlyTag = autoRule.Copy(); onlyTag.MarkReadLater = false;
+var onlyTagged = new Article { Title = "Android" };
+ArticleRules.Apply([onlyTag], ruleFeed, onlyTagged);
+Check(!onlyTagged.ReadLater && onlyTagged.Tags.Count == 1, "regulă numai pentru etichetă");
+var onlyLater = autoRule.Copy(); onlyLater.Tags = [];
+var laterArticle = new Article { Title = "Android", NewsBlurLastLocalTags = [] };
+ArticleRules.Apply([onlyLater], ruleFeed, laterArticle);
+Check(laterArticle.ReadLater && laterArticle.Tags.Count == 0 && laterArticle.AutomationPendingNewsBlurBaseline, "Mai târziu fără etichete și asociere NewsBlur încă absentă");
+var changedId = new Article { Id = "another", Link = "https://example.test/same", Title = "Android" };
+var firstId = new Article { Id = "first", Link = changedId.Link, Title = "Android" };
+ArticleRules.ApplyIncoming([autoRule], ruleFeed, firstId);
+Check(!ArticleRules.ApplyIncoming([autoRule], ruleFeed, changedId), "identificator schimbat dar aceeași adresă nu reprocesează");
+var seenWhileDisabled = new Article { Id = "disabled-first", Title = "Android" };
+ArticleRules.ApplyIncoming([], ruleFeed, seenWhileDisabled);
+Check(!ArticleRules.ApplyIncoming([autoRule], ruleFeed, seenWhileDisabled), "activarea ulterioară nu aplică retroactiv");
+var mergeA = new Feed { Url = "https://example.test/rules", AutomationSeen = ["A"] };
+var mergeB = new Feed { Url = mergeA.Url, AutomationSeen = ["B"] };
+var mergeList = new List<Feed> { mergeA, mergeB };
+DuplicateCleaner.Clean(mergeList);
+Check(mergeList.Count == 1 && mergeList[0].AutomationSeen.SetEquals(new[] { "A", "B" }), "comasarea păstrează istoricul regulilor");
+Check(ShortcutSearch.Matches("Cititor Orizont. Ctrl+Shift+F8. Schimbă modul", "ctrl + shift + f8"), "căutare scurtături cu spații în combinație");
+Check(ShortcutSearch.Matches("Citire vocală. F9. Citește articolul", "articolul vocala"), "căutare scurtături cu termeni multipli și fără diacritice");
+Check(ShortcutSearch.Matches("Citire vocală. F9", "  "), "căutarea goală păstrează scurtăturile");
+Check(!ShortcutSearch.Matches("Citire vocală. F9", "vocală export"), "toți termenii căutării trebuie să corespundă");
 var feeds = Enumerable.Range(1, 5).Select(feedNumber => new Feed
 {
     Name = $"Feed {feedNumber}",
@@ -28,6 +106,33 @@ Check(feeds.SelectMany(feed => feed.Articles).Count() == 1200, "setul de stres c
 Check(ArticleSearch.Matches(feeds[0].Articles[16], "calin georgescu"), "căutarea fără diacritice și cu două cuvinte");
 Check(ArticleSearch.Matches(feeds[0].Articles[16], "tehnologie actualitate"), "căutarea cu mai multe cuvinte în titlu/conținut");
 Check(!ArticleSearch.Matches(feeds[0].Articles[0], "cuvânt inexistent"), "căutarea nu returnează rezultate false");
+var exportArticle = new Article { Title = "Titlu: test?", Content = "Conținut exportat", Link = "https://example.test/article" };
+Check(ArticleExportService.SanitizeFileName(exportArticle.Title) == "Titlu_ test_", "numele fișierului exportat elimină caracterele interzise de Windows");
+var plainExport = ArticleExportService.BuildText(exportArticle, exportArticle.Content, "Feed test");
+Check(plainExport.Contains(UiText.Translate("Conținut preluat prin Orizont RSS:")) && plainExport.Contains(ArticleSharing.PresentationUrl) &&
+      plainExport.Contains(UiText.Translate("Sursa articolului:")) && plainExport.Contains(exportArticle.Link),
+    "exportul original păstrează footerul localizat, linkul Orizont RSS și sursa articolului");
+var translatedContext = new ArticleDistributionContext(exportArticle.Title, "Original article body", "Translated article body", exportArticle.Link, "DeepL", "română");
+var translatedNote = translatedContext.BuildTranslationNote("Traducere automată realizată prin {0} în limba {1}.");
+var translatedExport = ArticleExportService.BuildText(exportArticle, translatedContext, "Feed test", "Conținut preluat prin Orizont RSS:", "Sursa articolului:", translatedNote);
+Check(translatedExport.Contains("Translated article body") && !translatedExport.Contains("Original article body"), "exportul folosește textul afișat și păstrează separat contextul original");
+Check(translatedExport.Contains("Traducere automată realizată prin DeepL în limba română.") && translatedExport.Contains(ArticleSharing.PresentationUrl) && translatedExport.Contains(exportArticle.Link), "exportul tradus păstrează furnizorul, limba și ambele surse");
+var restoredContext = translatedContext with { DisplayText = "Original article body", TranslationProvider = null, TranslationLanguage = null };
+var restoredNote = restoredContext.BuildTranslationNote("Traducere automată realizată prin {0} în limba {1}.");
+var restoredExport = ArticleExportService.BuildText(exportArticle, restoredContext, "Feed test", "Conținut preluat prin Orizont RSS:", "Sursa articolului:", restoredNote);
+Check(restoredNote is null && !restoredExport.Contains("Traducere automată realizată"), "exportul original nu păstrează o mențiune învechită de traducere");
+var exportTestFolder = Path.Combine(Path.GetTempPath(), "OrizontRSS-CoreSmoke-" + Guid.NewGuid().ToString("N"));
+var txtExport = ArticleExportService.Save(exportArticle, exportArticle.Content, exportTestFolder, "Feed test", "txt");
+var rtfExport = ArticleExportService.Save(exportArticle, exportArticle.Content, exportTestFolder, "Feed test", "rtf");
+var translatedTxtExport = ArticleExportService.Save(exportArticle, translatedContext, exportTestFolder, "Feed test", "txt",
+    "Conținut preluat prin Orizont RSS:", "Sursa articolului:", translatedNote);
+var translatedRtfExport = ArticleExportService.Save(exportArticle, translatedContext, exportTestFolder, "Feed test", "rtf",
+    "Conținut preluat prin Orizont RSS:", "Sursa articolului:", translatedNote);
+Check(File.Exists(txtExport) && Path.GetExtension(txtExport) == ".txt", "exportul TXT creează fișierul în folderul configurat");
+Check(File.Exists(rtfExport) && Path.GetExtension(rtfExport) == ".rtf", "exportul RTF creează fișierul în folderul configurat");
+Check(File.ReadAllText(translatedTxtExport).Contains("Traducere automată realizată prin DeepL în limba română.") && File.ReadAllText(translatedTxtExport).Contains(exportArticle.Link), "TXT tradus păstrează nota și sursa");
+Check(File.ReadAllText(translatedRtfExport).Contains("DeepL") && File.ReadAllText(translatedRtfExport).Contains(exportArticle.Link), "RTF tradus păstrează furnizorul și sursa");
+Directory.Delete(exportTestFolder, true);
 Check(DuplicateCleaner.DistinctForDisplay(feeds.SelectMany(feed => feed.Articles)).Count() == 1200, "vederea globală nu limitează lista la 10 articole");
 Check(NewsBlurMetadataConflictPolicy.IsConflict(true, true, "Nume local", "Nume NewsBlur", StringComparison.Ordinal), "modificările concurente cu valori diferite cer alegere explicită");
 Check(!NewsBlurMetadataConflictPolicy.IsConflict(true, true, "Același nume", "Același nume", StringComparison.Ordinal), "modificările concurente convergente nu sunt conflict");
@@ -156,4 +261,180 @@ foreach (var language in new[] { "ro-RO", "en-US", "es-ES", "fr-FR", "de-DE", "p
 }
 Check(DemoFeedCatalog.OnlineForLanguage("ro-RO")?.Url == "https://hotnews.ro/feed", "exemplul RSS românesc folosește endpointul HotNews care răspunde ca RSS");
 
-Console.WriteLine($"Core smoke test passed: {checks} verificări, 1.200 articole, retenție, duplicate, backup și căutare.");
+var testFooter = ArticleSharing.BuildFooter("Conținut preluat prin Orizont RSS:", "Sursa articolului:", "https://example.com/stire", "Traducere automată realizată prin Google Translate.");
+Check(testFooter.Contains("https://grifnas.github.io/OrizontRSS/"), "footerul de partajare conține linkul Orizont RSS");
+Check(testFooter.Contains("Google Translate"), "footerul de partajare menționează serviciul de traducere");
+Check(testFooter.Contains("https://example.com/stire"), "footerul de partajare include sursa articolului");
+var attributedResponse = ArticleSharing.AppendFooter("Răspunsul AI despre articol", testFooter);
+Check(attributedResponse.EndsWith(testFooter, StringComparison.Ordinal), "documentele AI distribuite păstrează footerul complet de atribuire");
+Check(attributedResponse.Contains($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}Conținut preluat prin Orizont RSS:"), "footerul de atribuire este separat vizibil de răspunsul AI");
+Check(ArticleSharing.LimitForUri(attributedResponse, testFooter.Length + 30, testFooter).EndsWith(testFooter, StringComparison.Ordinal), "trunchierea răspunsului AI păstrează footerul complet");
+var deepSeekFooter = ArticleSharing.BuildFooter("Conținut preluat prin Orizont RSS:", "Sursa articolului:", "https://example.com/stire", "Traducere automată realizată prin DeepSeek.");
+var translatedAiResponse = ArticleSharing.AppendFooter("Traducerea articolului", deepSeekFooter);
+Check(translatedAiResponse.Contains("Traducere automată realizată prin DeepSeek.") && translatedAiResponse.Contains("https://example.com/stire"), "distribuirea unei traduceri AI păstrează furnizorul și sursa originală");
+
+var fullShared = ArticleSharing.BuildShareText("Titlu Test", "Textul articolului lung pentru verificare", "https://example.com/stire", "Traducere automată realizată prin Google Translate.", "Conținut preluat prin Orizont RSS:", "Sursa articolului:");
+Check(fullShared.StartsWith("Titlu Test") && fullShared.Contains("Textul articolului lung") && fullShared.Contains("https://grifnas.github.io/OrizontRSS/"), "textul complet partajat conține titlul, corpul și footerul cu link");
+var contextShared = ArticleSharing.BuildShareText(translatedContext, translatedNote, "Conținut preluat prin Orizont RSS:", "Sursa articolului:");
+Check(contextShared.Contains("Translated article body") && contextShared.Contains("Traducere automată realizată prin DeepL în limba română.") && contextShared.Contains(exportArticle.Link), "copierea/partajarea pe baza contextului păstrează traducerea și proveniența");
+var translatedFooter = ArticleSharing.BuildFooter(translatedContext, translatedNote, "Conținut preluat prin Orizont RSS:", "Sursa articolului:");
+Check(ArticleSharing.LimitForUri(contextShared, translatedFooter.Length + 30, translatedFooter).EndsWith(translatedFooter, StringComparison.Ordinal), "trunchierea distribuției păstrează footerul complet cu furnizor și limbă");
+
+var limitedShared = ArticleSharing.LimitForUri(fullShared, testFooter.Length + 30, testFooter);
+Check(limitedShared.EndsWith(testFooter), "limitarea pentru URI protejează întotdeauna footerul");
+
+await RunUpdaterSmokeAsync();
+Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
+
+async Task RunUpdaterSmokeAsync()
+{
+    const string apiUrl = "https://api.github.test/repos/grifnas/OrizontRSS/releases/latest";
+    const string version = "2.0.0";
+    var installerName = $"OrizontSetup-{version}.exe";
+    var installerUrl = $"https://github.com/grifnas/OrizontRSS/releases/download/v{version}/{installerName}";
+    var checksumUrl = installerUrl + ".sha256";
+    var releaseJson = BuildReleaseJson(version,
+        ($"{installerName}.sha256", checksumUrl),
+        ($"Orizont-RSS-{version}-win-x64.zip", $"https://github.com/grifnas/OrizontRSS/releases/download/v{version}/portable.zip"),
+        (installerName, installerUrl));
+
+    using (var client = CreateUpdateClient(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(releaseJson) }))
+    {
+        var update = await UpdateCheckerService.CheckForUpdatesAsync(client, apiUrl, "1.6.0");
+        Check(update.Status == UpdateCheckStatus.UpdateAvailable && update.DownloadUrl == installerUrl && update.ChecksumDownloadUrl == checksumUrl,
+            "updater selects exact installer and matching checksum when sidecar is listed first");
+    }
+
+    var orphanChecksum = BuildReleaseJson(version, ($"{installerName}.sha256", checksumUrl),
+        ("portable.zip", "https://github.com/grifnas/OrizontRSS/releases/download/v2.0.0/portable.zip"));
+    using (var client = CreateUpdateClient(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(orphanChecksum) }))
+    {
+        var update = await UpdateCheckerService.CheckForUpdatesAsync(client, apiUrl, "1.6.0");
+        Check(update.Status == UpdateCheckStatus.Error && !update.HasUpdate, "missing installer is an explicit error, never an HTML download");
+    }
+
+    using (var client = CreateUpdateClient(_ => new HttpResponseMessage(HttpStatusCode.Forbidden) { ReasonPhrase = "Forbidden" }))
+    {
+        var update = await UpdateCheckerService.CheckForUpdatesAsync(client, apiUrl, "1.6.0");
+        Check(update.Status == UpdateCheckStatus.Error && update.ErrorMessage.Contains("403", StringComparison.Ordinal),
+            "HTTP check error is distinct from up to date");
+    }
+
+    using (var client = CreateUpdateClient(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(BuildReleaseJson("1.6.0")) }))
+    {
+        var update = await UpdateCheckerService.CheckForUpdatesAsync(client, apiUrl, "1.6.0");
+        Check(update.Status == UpdateCheckStatus.UpToDate && !update.HasUpdate, "successful version comparison can report up to date");
+    }
+
+    var missingTagRelease = JsonSerializer.Serialize(new { tag_name = "", html_url = "https://github.com/grifnas/OrizontRSS/releases/tag/unknown" });
+    using (var client = CreateUpdateClient(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(missingTagRelease) }))
+    {
+        var update = await UpdateCheckerService.CheckForUpdatesAsync(client, apiUrl, "1.6.0");
+        Check(update.Status == UpdateCheckStatus.Error && !update.HasUpdate, "missing release version tag is not treated as up to date");
+    }
+
+    var peBytes = MakeSyntheticPe();
+    var expectedHash = Convert.ToHexString(SHA256.HashData(peBytes));
+    var updateInfo = new AppUpdateInfo { Status = UpdateCheckStatus.UpdateAvailable, DownloadUrl = installerUrl, ChecksumDownloadUrl = checksumUrl };
+    var tempRoot = Path.Combine(Path.GetTempPath(), $"OrizontUpdateSmoke-{Guid.NewGuid():N}");
+    Directory.CreateDirectory(tempRoot);
+    try
+    {
+        using (var client = CreateUpdateClient(request => request.RequestUri!.AbsolutePath.EndsWith(".sha256", StringComparison.OrdinalIgnoreCase)
+            ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent($"{expectedHash}  {installerName}\n") }
+            : new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(peBytes) }))
+        {
+            var prepared = await UpdateCheckerService.DownloadAndVerifyAsync(updateInfo, client, tempRoot);
+            var preparedDirectory = Path.GetDirectoryName(prepared.InstallerPath)!;
+            Check(File.Exists(prepared.InstallerPath) && (await File.ReadAllBytesAsync(prepared.InstallerPath)).SequenceEqual(peBytes),
+                "synthetic installer passes SHA-256 and PE header checks");
+            prepared.Dispose();
+            Check(!Directory.Exists(preparedDirectory), "verified installer temp files are cleaned on disposal");
+        }
+
+        using (var client = CreateUpdateClient(request => request.RequestUri!.AbsolutePath.EndsWith(".sha256", StringComparison.OrdinalIgnoreCase)
+            ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(new string('0', 64)) }
+            : new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(peBytes) }))
+        {
+            var rejected = await ThrowsUpdateAsync<InvalidDataException>(() => UpdateCheckerService.DownloadAndVerifyAsync(updateInfo, client, tempRoot));
+            Check(rejected && !Directory.EnumerateDirectories(tempRoot).Any(), "checksum mismatch is rejected and cleaned up");
+        }
+
+        using (var client = CreateUpdateClient(request => request.RequestUri!.AbsolutePath.EndsWith(".sha256", StringComparison.OrdinalIgnoreCase)
+            ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(expectedHash) }
+            : new HttpResponseMessage(HttpStatusCode.OK) { Content = CreateIncompleteContent(peBytes) }))
+        {
+            var rejected = await ThrowsUpdateAsync<InvalidDataException>(() => UpdateCheckerService.DownloadAndVerifyAsync(updateInfo, client, tempRoot));
+            Check(rejected && !Directory.EnumerateDirectories(tempRoot).Any(), "incomplete installer download is rejected and cleaned up");
+        }
+
+        using (var client = CreateUpdateClient(request => request.RequestUri!.AbsolutePath.EndsWith(".sha256", StringComparison.OrdinalIgnoreCase)
+            ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(expectedHash) }
+            : new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)))
+        {
+            var rejected = await ThrowsUpdateAsync<HttpRequestException>(() => UpdateCheckerService.DownloadAndVerifyAsync(updateInfo, client, tempRoot));
+            Check(rejected && !Directory.EnumerateDirectories(tempRoot).Any(), "installer HTTP error prevents staging");
+        }
+    }
+    finally
+    {
+        if (Directory.Exists(tempRoot)) Directory.Delete(tempRoot, recursive: true);
+    }
+
+    var order = new List<string>();
+    var didClose = await SafeUpdateExitFlow.SaveThenStartAndCloseAsync(
+        () => { order.Add("save"); return Task.CompletedTask; },
+        () => { order.Add("start"); return true; },
+        () => order.Add("close"));
+    Check(didClose && order.SequenceEqual(new[] { "save", "start", "close" }), "updater saves, starts installer, then closes");
+
+    var launchAfterSaveFailure = false;
+    var closeAfterSaveFailure = false;
+    var saveFailed = await ThrowsUpdateAsync<InvalidOperationException>(() => SafeUpdateExitFlow.SaveThenStartAndCloseAsync(
+        () => Task.FromException(new InvalidOperationException("simulated save failure")),
+        () => { launchAfterSaveFailure = true; return true; },
+        () => closeAfterSaveFailure = true));
+    Check(saveFailed && !launchAfterSaveFailure && !closeAfterSaveFailure, "save failure prevents update launch and app close");
+
+    var closedAfterStartFailure = false;
+    var started = await SafeUpdateExitFlow.SaveThenStartAndCloseAsync(() => Task.CompletedTask, () => false, () => closedAfterStartFailure = true);
+    Check(!started && !closedAfterStartFailure, "failed installer launch keeps app open");
+}
+
+static string BuildReleaseJson(string version, params (string Name, string Url)[] assets) => JsonSerializer.Serialize(new
+{
+    tag_name = $"v{version}",
+    html_url = $"https://github.com/grifnas/OrizontRSS/releases/tag/v{version}",
+    body = "Synthetic release notes",
+    assets = assets.Select(asset => new { name = asset.Name, browser_download_url = asset.Url })
+});
+
+static byte[] MakeSyntheticPe()
+{
+    var bytes = new byte[128];
+    bytes[0] = (byte)'M'; bytes[1] = (byte)'Z';
+    BinaryPrimitives.WriteInt32LittleEndian(bytes.AsSpan(0x3c, 4), 64);
+    bytes[64] = (byte)'P'; bytes[65] = (byte)'E';
+    return bytes;
+}
+
+static HttpClient CreateUpdateClient(Func<HttpRequestMessage, HttpResponseMessage> responder) => new(new UpdateSmokeHttpHandler(responder));
+
+static HttpContent CreateIncompleteContent(byte[] bytes)
+{
+    var content = new ByteArrayContent(bytes);
+    content.Headers.ContentLength = bytes.Length + 7;
+    return content;
+}
+
+static async Task<bool> ThrowsUpdateAsync<TException>(Func<Task> action) where TException : Exception
+{
+    try { await action(); return false; }
+    catch (TException) { return true; }
+}
+
+sealed class UpdateSmokeHttpHandler(Func<HttpRequestMessage, HttpResponseMessage> responder) : HttpMessageHandler
+{
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
+        Task.FromResult(responder(request));
+}

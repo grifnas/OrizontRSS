@@ -56,6 +56,8 @@ public static class DuplicateCleaner
             var merged = MergeArticles(group.SelectMany(feed => feed.Articles ?? []), out var removedFromGroup);
             removedArticles += removedFromGroup;
             primary.Articles = merged;
+            primary.AutomationSeen = group.SelectMany(feed => feed.AutomationSeen ?? []).ToHashSet();
+            ArticleRules.SeedExisting(primary);
             primary.AddedOn = group.Min(feed => feed.AddedOn);
             primary.LastSuccessfulUpdate = Latest(group.Select(feed => feed.LastSuccessfulUpdate));
             primary.LastArticleReceivedOn = Latest(group.Select(feed => feed.LastArticleReceivedOn));
@@ -83,6 +85,9 @@ public static class DuplicateCleaner
     {
         if (ReferenceEquals(keep, remove) || !feeds.Contains(keep) || !feeds.Contains(remove)) return 0;
         keep.Articles = MergeArticles((keep.Articles ?? []).Concat(remove.Articles ?? []), out var removedArticles);
+        keep.AutomationSeen ??= [];
+        keep.AutomationSeen.UnionWith(remove.AutomationSeen ?? []);
+        ArticleRules.SeedExisting(keep);
         keep.AddedOn = keep.AddedOn <= remove.AddedOn ? keep.AddedOn : remove.AddedOn;
         keep.LastSuccessfulUpdate = Latest([keep.LastSuccessfulUpdate, remove.LastSuccessfulUpdate]);
         keep.LastArticleReceivedOn = Latest([keep.LastArticleReceivedOn, remove.LastArticleReceivedOn]);
@@ -184,6 +189,8 @@ public static class DuplicateCleaner
         primary.IsRead = primary.IsRead && duplicate.IsRead;
         primary.IsFavorite |= duplicate.IsFavorite;
         primary.ReadLater |= duplicate.ReadLater;
+        primary.AutomationPendingNewsBlurBaseline |= duplicate.AutomationPendingNewsBlurBaseline;
+        primary.AutomationAddedReadLater |= duplicate.AutomationAddedReadLater;
         primary.Tags = (primary.Tags ?? []).Concat(duplicate.Tags ?? []).Where(tag => !string.IsNullOrWhiteSpace(tag)).Distinct(StringComparer.CurrentCultureIgnoreCase).OrderBy(tag => tag).ToList();
         primary.AiNotes = (primary.AiNotes ?? []).Concat(duplicate.AiNotes ?? [])
             .GroupBy(note => $"{note.Title}\n{note.Content}", StringComparer.Ordinal)

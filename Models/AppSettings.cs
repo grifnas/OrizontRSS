@@ -2,22 +2,36 @@ namespace CititorRSS.Jaws;
 
 public sealed class AppSettings
 {
+    public Dictionary<string, string> Shortcuts { get; set; } = new();
+    public List<ArticleRule> ArticleRules { get; set; } = [];
     public const string DefaultAiInstructions = "Răspunde în limba interfeței. Fii clar, concis și semnalează incertitudinile.";
+    public static string DefaultArticleExportFolder => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Orizont RSS", "Articole");
     public string? UiLanguage { get; set; }
     /// <summary>Application colour scheme; Windows follows the active system contrast theme.</summary>
     public string ColorScheme { get; set; } = ColorThemeManager.Windows;
-    public string KeywordAlerts { get; set; } = string.Empty;
     public bool AutoCleanupEnabled { get; set; }
     public int RetentionDays { get; set; } = 90;
     public bool UpdateAtStartup { get; set; }
     public bool CheckAppUpdatesAtStartup { get; set; } = true;
+    public string ArticleExportFolder { get; set; } = DefaultArticleExportFolder;
+    public string ArticleExportFormat { get; set; } = "txt";
     public bool SoundAlertsEnabled { get; set; } = true;
     public bool SoundAlertOnSuccess { get; set; } = true;
     public bool SoundAlertOnNewArticles { get; set; } = true;
     public bool SoundAlertOnErrors { get; set; } = true;
     public string AiInstructions { get; set; } = DefaultAiInstructions;
+    public string AiDefaultProvider { get; set; } = AiProviderIds.Gemini;
     public bool GeminiEnabled { get; set; }
     public string? EncryptedGeminiKey { get; set; }
+    public bool OpenAiEnabled { get; set; }
+    public string? EncryptedOpenAiKey { get; set; }
+    public string OpenAiModel { get; set; } = "gpt-6-luna";
+    public bool MistralEnabled { get; set; }
+    public string? EncryptedMistralKey { get; set; }
+    public string MistralModel { get; set; } = "mistral-small-latest";
+    public bool DeepSeekEnabled { get; set; }
+    public string? EncryptedDeepSeekKey { get; set; }
+    public string DeepSeekModel { get; set; } = "deepseek-flash";
     public bool DeepLEnabled { get; set; }
     public string? EncryptedDeepLKey { get; set; }
     public string GoogleTranslateSourceLanguage { get; set; } = "auto";
@@ -62,4 +76,30 @@ public sealed class AppSettings
     public double ReaderWindowHeight { get; set; } = 700;
     public double ReaderFontSize { get; set; } = 18;
     public bool ReaderWideSpacing { get; set; }
+    public string ReaderMode { get; set; } = ReaderModeIds.Text;
+    /// <summary>Where articles open when the feed has no explicit preference.</summary>
+    public string ArticleOpenMode { get; set; } = ArticleOpenModeIds.Standard;
+}
+
+public static class ReaderModeIds
+{
+    public const string Text = "Text";
+    public const string WebView = "WebView";
+
+    public static string Normalize(string? mode) =>
+        string.Equals(mode, WebView, StringComparison.OrdinalIgnoreCase) ? WebView : Text;
+}
+
+public static class ArticleOpenModeIds
+{
+    public const string Default = "Default";
+    public const string Standard = "Standard";
+    public const string Orizont = "Orizont";
+
+    public static string Normalize(string? mode)
+    {
+        if (string.Equals(mode, Orizont, StringComparison.OrdinalIgnoreCase)) return Orizont;
+        if (string.Equals(mode, Standard, StringComparison.OrdinalIgnoreCase)) return Standard;
+        return Default;
+    }
 }

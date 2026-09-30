@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using CititorRSS.Jaws.Localization;
 using CititorRSS.Jaws.Services.Update;
+using CititorRSS.Jaws.Services.Content;
 using CititorRSS.Jaws.Views;
 
 namespace CititorRSS.Jaws;
@@ -29,7 +30,7 @@ public partial class MainWindow : Window
         Failed
     }
 
-    private sealed record NewsBlurSyncOutcome(bool IsReady, bool IsBusy, bool IsCancelled, IReadOnlyList<Feed> RssFallbackFeeds, int ImportedArticles = 0);
+    private sealed record NewsBlurSyncOutcome(bool IsReady, bool IsBusy, bool IsCancelled, IReadOnlyList<Feed> RssFallbackFeeds, int ImportedArticles = 0, string? CompletionSummary = null);
 
     private readonly FeedStore _store = new();
     private readonly RssReader _rss = new();
@@ -37,6 +38,8 @@ public partial class MainWindow : Window
     private AppSettings _settings = new();
     private Feed? _feed;
     private Article? _article;
+    private string? _translationProvider;
+    private string? _translationLanguage;
     private bool _folderAggregateView;
     private bool _suppressFolderFilter;
     private bool _suppressFeedSelection;
@@ -48,10 +51,12 @@ public partial class MainWindow : Window
     private Article? _readerReturnArticle;
     private bool _isClosingAfterSave;
     private bool _closeInProgress;
+    private VerifiedUpdateInstaller? _pendingUpdateInstaller;
     private bool _startupSucceeded;
     private readonly TaskCompletionSource<bool> _startupCompletion = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private bool _isRefreshing;
     private CancellationTokenSource? _refreshCancellation;
+    private CancellationTokenSource? _googleTranslationCancellation;
     private TaskCompletionSource<bool>? _refreshCompletion;
     private DispatcherTimer? _newsBlurAutoSyncTimer;
     private bool _newsBlurStateSyncRunning;
@@ -90,6 +95,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        ArticleCommands = CreateArticleCommands();
         Title = AppVersionInfo.ProductTitle;
         var browserReaderLabel = T("Deschide articolul în modul Citire");
         var originalLabel = T("Deschide pagina originală în browser");
@@ -109,8 +115,13 @@ public partial class MainWindow : Window
         try
         {
             _feeds = await _store.LoadAsync();
+            foreach (var feed in _feeds) ArticleRules.SeedExisting(feed);
             _settings = await _store.LoadSettingsAsync();
+            _settings.Shortcuts = ShortcutBindings.Sanitize(_settings.Shortcuts);
+            ShortcutBindings.Current = _settings.Shortcuts;
+            ShortcutBindings.RefreshMenuHints(this);
             NormalizeSettings(_settings);
+            NormalizeFeedOpenModes(_feeds);
             _speech = new SpeechService();
             _speech.Configure(SpeechConfigurationFromSettings(_settings));
             _speech.StateChanged += Say;
@@ -123,18 +134,17 @@ public partial class MainWindow : Window
                 : F("Orizont RSS {0} este pregătit. S-au încărcat {1} feeduri. {2}", ProductVersion, _feeds.Count, ArticlePanelStatus()));
             _startupSucceeded = true;
             _startupCompletion.TrySetResult(true);
+            await RunStartupUpdatesAsync(
+                () => RunNewsBlurFeedSyncWithGuardAsync(automatic: true),
+                async useNewsBlur =>
+                {
+                    var startupFeeds = useNewsBlur ? _feeds.ToList() : _feeds.Where(feed => !feed.NeedsAttention).ToList();
+                    if (startupFeeds.Count == 0) return;
+                    if (useNewsBlur) await RefreshFeedsAsync(startupFeeds);
+                    else await RefreshFeedsViaRssAsync(startupFeeds);
+                });
+            if (_closeInProgress || _isClosingAfterSave) return;
             ConfigureNewsBlurAutoSync();
-            if (_settings.NewsBlurConnected && !string.IsNullOrWhiteSpace(_settings.EncryptedNewsBlurSession))
-                await RunNewsBlurFeedSyncWithGuardAsync(automatic: true);
-            var newsBlurStartupSyncRequested = _settings.NewsBlurConnected &&
-                !string.IsNullOrWhiteSpace(_settings.EncryptedNewsBlurSession) && _settings.NewsBlurAutoSyncEnabled;
-            if (_feeds.Count > 0 && (_settings.UpdateAtStartup || newsBlurStartupSyncRequested))
-            {
-                var startupFeeds = _settings.NewsBlurConnected
-                    ? _feeds.ToList()
-                    : _feeds.Where(feed => !feed.NeedsAttention).ToList();
-                await RefreshFeedsAsync(startupFeeds);
-            }
             if (_settings.CheckAppUpdatesAtStartup)
             {
                 _ = CheckAppUpdatesAsync(automatic: true);
@@ -158,9 +168,12 @@ public partial class MainWindow : Window
         e.Cancel = true;
         if (_closeInProgress) return;
         _closeInProgress = true;
+        CancelGoogleTranslationForShutdown();
         _newsBlurAutoSyncTimer?.Stop();
         _speech?.Stop(reportState: false);
         IsEnabled = false;
+        var saveCompleted = false;
+        var updateRequested = _pendingUpdateInstaller is not null;
         try
         {
             if (!_startupCompletion.Task.IsCompleted)
@@ -181,21 +194,62 @@ public partial class MainWindow : Window
                 Say("Se așteaptă încheierea sincronizării feedurilor NewsBlur înainte de închidere.");
                 await _newsBlurFeedSyncCompletion.Task;
             }
-            Say("Se salvează feedurile înainte de închidere.");
-            CaptureSessionState();
-            await _store.SaveAsync(_feeds);
-            await _store.SaveSettingsAsync(_settings);
-            _isClosingAfterSave = true;
-            _speech?.Dispose();
-            _speech = null;
-            Close();
+
+            var closed = await SafeUpdateExitFlow.SaveThenStartAndCloseAsync(
+                async () =>
+                {
+                    Say("Se salvează feedurile înainte de închidere.");
+                    CaptureSessionState();
+                    await _store.SaveAsync(_feeds);
+                    await _store.SaveSettingsAsync(_settings);
+                    saveCompleted = true;
+                },
+                () =>
+                {
+                    if (_pendingUpdateInstaller is null) return true;
+                    var installer = _pendingUpdateInstaller;
+                    var process = installer.Start();
+                    _pendingUpdateInstaller = null;
+                    installer.DeleteWhenProcessExits(process);
+                    return true;
+                },
+                () =>
+                {
+                    _isClosingAfterSave = true;
+                    _speech?.Dispose();
+                    _speech = null;
+                    Close();
+                });
+
+            if (!closed)
+            {
+                IsEnabled = true;
+                _closeInProgress = false;
+            }
         }
         catch (Exception exception)
         {
+            _pendingUpdateInstaller?.Dispose();
+            _pendingUpdateInstaller = null;
             IsEnabled = true;
             _closeInProgress = false;
-            Say(F("Nu s-au putut salva feedurile: {0}", Describe(exception)));
-            MessageBox.Show(this, F("Feedurile nu au putut fi salvate. Aplicația rămâne deschisă ca să nu pierzi modificările.\n\n{0}", Describe(exception)), T("Salvare eșuată"), MessageBoxButton.OK, MessageBoxImage.Error);
+            if (updateRequested && saveCompleted)
+            {
+                var message = F("Instalatorul verificat nu a putut fi pornit: {0}", Describe(exception));
+                Say(message);
+                MessageBox.Show(this, message, T("Eroare"), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else if (updateRequested)
+            {
+                var message = F("Actualizarea nu a fost pornită deoarece salvarea datelor a eșuat: {0}", Describe(exception));
+                Say(message);
+                MessageBox.Show(this, message, T("Salvare eșuată"), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                Say(F("Nu s-au putut salva feedurile: {0}", Describe(exception)));
+                MessageBox.Show(this, F("Feedurile nu au putut fi salvate. Aplicația rămâne deschisă ca să nu pierzi modificările.\n\n{0}", Describe(exception)), T("Salvare eșuată"), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
     private async Task RestoreSessionAsync()
@@ -358,12 +412,27 @@ public partial class MainWindow : Window
     }
     private void Articles_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        _googleTranslationCancellation?.Cancel();
+        _contentRequestRevision++;
         _article = Articles.SelectedItem as Article;
+        _translationProvider = null;
+        _translationLanguage = null;
         Reader.Text = _article?.FullContent ?? _article?.Content ?? string.Empty;
         UpdateEmptyStateMessages();
     }
 
     private void Reader_TextChanged(object sender, TextChangedEventArgs e) => UpdateEmptyStateMessages();
+    private void FolderFilter_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if ((Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Windows)) != ModifierKeys.None) return;
+        if (!TryGetFeedInitial(e.Key, out var initial)) return;
+        var choices = FolderFilter.Items.OfType<FolderChoice>().Select(choice => choice.Label).ToList();
+        var index = FeedListNavigation.FindNextByInitial(choices, initial, FolderFilter.SelectedIndex);
+        if (index < 0) return;
+        FolderFilter.SelectedIndex = index;
+        FolderFilter.Focus();
+        e.Handled = true;
+    }
     private void ListBox_PreviewKeyDown_EdgeEarcon(object sender, KeyEventArgs e)
     {
         if (sender is not ListBox listBox) return;
@@ -392,6 +461,7 @@ public partial class MainWindow : Window
         }
         if (ReferenceEquals(listBox, Articles)
             && (Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Windows)) == ModifierKeys.None
+            && !ShortcutBindings.IsArticleCommand(e.Key, Keyboard.Modifiers)
             && TryGetFeedInitial(e.Key, out var articleInitial))
         {
             var articles = Articles.Items.OfType<Article>().ToList();
@@ -423,24 +493,23 @@ public partial class MainWindow : Window
         }
         if (e.Key == Key.Enter)
         {
-            FocusReader();
+            await OpenSelectedArticleAsync();
             e.Handled = true;
             return;
         }
-        if (Keyboard.Modifiers != ModifierKeys.None) return;
         var selected = SelectedArticles();
         if (selected.Count == 0) return;
-        if (e.Key == Key.R)
+        if (ShortcutBindings.Matches("Read", e.Key, Keyboard.Modifiers))
         {
             var markRead = selected.Any(article => !article.IsRead);
             await ChangeSelectedArticlesAsync(article => article.IsRead = markRead, markRead ? T("Articole marcate citite") : T("Articole marcate necitite"));
         }
-        else if (e.Key == Key.F)
+        else if (ShortcutBindings.Matches("Favorite", e.Key, Keyboard.Modifiers))
         {
             var addFavorite = selected.Any(article => !article.IsFavorite);
             await ChangeSelectedArticlesAsync(article => article.IsFavorite = addFavorite, addFavorite ? T("Articole adăugate la favorite") : T("Articole eliminate din favorite"));
         }
-        else if (e.Key == Key.L)
+        else if (ShortcutBindings.Matches("Later", e.Key, Keyboard.Modifiers))
         {
             var addReadLater = selected.Any(article => !article.ReadLater);
             await ChangeSelectedArticlesAsync(article => article.ReadLater = addReadLater, addReadLater ? T("Articole adăugate pentru mai târziu") : T("Articole eliminate din mai târziu"));
@@ -463,6 +532,12 @@ public partial class MainWindow : Window
             Articles.SelectedIndex = 0;
             _article = Articles.SelectedItem as Article;
         }
+        if (UpdateArticleMenu()) return;
+        e.Handled = true;
+        Say("Alege mai întâi un articol.");
+    }
+    private bool UpdateArticleMenu()
+    {
         if (_article is not null)
         {
             var selected = SelectedArticles();
@@ -474,18 +549,24 @@ public partial class MainWindow : Window
             RemoveSelectedReadLaterMenuItem.Visibility = selected.Any(article => article.ReadLater) ? Visibility.Visible : Visibility.Collapsed;
             MarkSelectedReadMenuItem.Visibility = selected.Any(article => !article.IsRead) ? Visibility.Visible : Visibility.Collapsed;
             MarkSelectedUnreadMenuItem.Visibility = selected.Any(article => article.IsRead) ? Visibility.Visible : Visibility.Collapsed;
-            return;
+            return true;
         }
-        e.Handled = true;
-        Say("Alege mai întâi un articol.");
+        return false;
     }
-    private void ReadArticleMenu_Click(object sender, RoutedEventArgs e) => FocusReader();
+    private async void ReadArticleMenu_Click(object sender, RoutedEventArgs e) => await OpenSelectedArticleAsync();
     private async void LoadFullArticle_Click(object sender, RoutedEventArgs e)
+        => await LoadFullArticleAsync();
+
+    internal async Task LoadFullArticleAsync()
     {
         if (_article is null || string.IsNullOrWhiteSpace(_article.Link)) { Say("Articolul nu are o adresă de unde poate fi adus textul complet."); return; }
         var article = _article;
+        var link = article.Link;
+        var request = ++_contentRequestRevision;
         if (!string.IsNullOrWhiteSpace(article.FullContent))
         {
+            _translationProvider = null;
+            _translationLanguage = null;
             Reader.Text = article.FullContent;
             Reader.Focus(); Reader.CaretIndex = 0; Reader.Select(0, 0);
             Say("Textul complet salvat este afișat. Folosește săgețile Sus și Jos pentru citire.");
@@ -499,76 +580,112 @@ public partial class MainWindow : Window
             {
                 try
                 {
-                    var sessionId = SecretProtector.Unprotect(_settings.EncryptedNewsBlurSession);
-                    text = await new NewsBlurConnection().GetOriginalTextAsync(sessionId, article.NewsBlurStoryHash);
-                    if (!string.IsNullOrWhiteSpace(text)) Say("Textul complet a fost adus din NewsBlur.");
+                    var sessionId = ArticleCommands.Unprotect(_settings.EncryptedNewsBlurSession);
+                    text = await ArticleCommands.LoadNewsBlurTextAsync(sessionId, article.NewsBlurStoryHash);
+                    if (!string.IsNullOrWhiteSpace(text) && CanPresentArticleResult(article, request)) Say("Textul complet a fost adus din NewsBlur.");
                 }
                 catch { text = null; }
             }
-            text ??= await _rss.LoadReadableContentAsync(article.Link);
-            if (text.Length < 150) throw new InvalidOperationException("Pagina nu a oferit suficient text pentru modul de citire.");
+            text ??= await ArticleCommands.LoadReadableAsync(link);
+            if (text.Length < 150) throw new InvalidOperationException(T("Pagina nu a oferit suficient text pentru modul de citire."));
+            if (!CanPresentArticleResult(article, request)) return;
             article.FullContent = text;
+            await ArticleCommands.SaveAsync();
+            if (!CanPresentArticleResult(article, request)) return;
             Reader.Text = text;
-            await _store.SaveAsync(_feeds);
+            _translationProvider = null;
+            _translationLanguage = null;
             Reader.Focus(); Reader.CaretIndex = 0; Reader.Select(0, 0);
             Say(F("Textul complet a fost adus și salvat local. {0} caractere. Folosește săgețile Sus și Jos pentru citire.", text.Length));
         }
         catch (Exception exception)
         {
+            if (!CanPresentArticleResult(article, request)) return;
             Say(F("Nu s-a putut aduce textul complet: {0} Deschide articolul în browser pentru pagina originală.", Describe(exception)));
         }
     }
     private async void DeepLTranslate_Click(object sender, RoutedEventArgs e)
+        => await TranslateDeepLAsync();
+
+    internal async Task TranslateDeepLAsync()
     {
         if (_article is null) { Say(T("Alege mai întâi un articol pentru traducere.")); return; }
+        var article = _article;
+        var request = ++_contentRequestRevision;
         if (!_settings.DeepLEnabled) { ShowAiProblem(T("DeepL nu este activat. Deschide Setări, Setări Inteligență artificială, testează cheia DeepL și apasă Salvează."), MessageBoxImage.Warning); return; }
         string key;
-        try { key = SecretProtector.Unprotect(_settings.EncryptedDeepLKey); }
+        try { key = ArticleCommands.Unprotect(_settings.EncryptedDeepLKey); }
         catch { ShowAiProblem(T("Cheia DeepL salvată nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială."), MessageBoxImage.Warning); return; }
         if (string.IsNullOrWhiteSpace(key)) { ShowAiProblem(T("Nu există o cheie DeepL salvată. Deschide Setări Inteligență artificială."), MessageBoxImage.Warning); return; }
-        var source = !string.IsNullOrWhiteSpace(Reader.Text) ? Reader.Text : !string.IsNullOrWhiteSpace(_article.FullContent) ? _article.FullContent : _article.Content;
-        if (string.IsNullOrWhiteSpace(source)) { Say(T("Articolul nu conține text pentru traducere.")); return; }
+        var originalText = !string.IsNullOrWhiteSpace(article.FullContent) ? article.FullContent : article.Content;
+        if (string.IsNullOrWhiteSpace(originalText)) { Say(T("Articolul nu conține text pentru traducere.")); return; }
         Say(F("Se traduce articolul cu DeepL în limba interfeței. Așteaptă."));
         try
         {
-            var translated = await new DeepLConnection().TranslateAsync(key, source, DeepLConnection.TargetLanguageForUi());
+            Func<Task<string>>? loadReadable = string.IsNullOrWhiteSpace(article.Link) ? null : () => ArticleCommands.LoadReadableAsync(article.Link);
+            var source = await ArticleTranslationSource.ResolveAsync(article.FullContent, originalText, loadReadable, article.Title);
+            if (!CanPresentArticleResult(article, request)) return;
+            if (string.IsNullOrWhiteSpace(source)) { Say(T("Articolul nu conține text pentru traducere.")); return; }
+            var targetLanguage = DeepLConnection.TargetLanguageForUi();
+            var translated = await ArticleCommands.TranslateDeepLAsync(key, source, targetLanguage);
+            if (!CanPresentArticleResult(article, request)) return;
             Reader.Text = translated;
+            _translationProvider = "DeepL";
+            _translationLanguage = ArticleDistributionContext.LanguageNameForCode(targetLanguage);
             Reader.Focus(); Reader.CaretIndex = 0; Reader.Select(0, 0);
             Say(T("Articolul a fost tradus cu DeepL."));
         }
         catch (Exception exception)
         {
+            if (!CanPresentArticleResult(article, request)) return;
             Say(F("DeepL nu a putut traduce articolul: {0}", Describe(exception)));
-            MessageBox.Show(this, F("DeepL nu a putut traduce articolul: {0}", Describe(exception)), T("Traducere cu DeepL"), MessageBoxButton.OK, MessageBoxImage.Warning);
+            ArticleCommands.ShowError(F("DeepL nu a putut traduce articolul: {0}", Describe(exception)), T("Traducere cu DeepL"), MessageBoxImage.Warning);
         }
     }
     private async void GoogleTranslate_Click(object sender, RoutedEventArgs e)
+        => await TranslateGoogleAsync();
+
+    internal async Task TranslateGoogleAsync()
     {
         if (_article is null) { Say(T("Alege mai întâi un articol pentru traducere.")); return; }
-        var sourceText = !string.IsNullOrWhiteSpace(Reader.Text) ? Reader.Text : !string.IsNullOrWhiteSpace(_article.FullContent) ? _article.FullContent : _article.Content;
-        if (string.IsNullOrWhiteSpace(sourceText))
+        if (_closeInProgress || _isClosingAfterSave) return;
+
+        using var requestLease = GoogleTranslateRequestGate.TryAcquire();
+        if (requestLease is null)
         {
-            MessageBox.Show(this, T("Articolul nu conține text pentru traducere."), T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Information);
+            Say(T("Se traduce articolul cu Google Translate. Așteaptă."));
             return;
         }
 
-        var confirmation = MessageBox.Show(
-            this,
-            T("Google Translate folosește un serviciu online neoficial care se poate schimba sau limita. Textul integral al articolului va fi trimis către Google. Continui?"),
-            T("Traducere Google Translate"),
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning,
-            MessageBoxResult.No);
-        if (confirmation != MessageBoxResult.Yes)
-        {
-            Say(T("Traducerea Google Translate a fost anulată."));
-            return;
-        }
-
-        Say(T("Se traduce articolul cu Google Translate. Așteaptă."));
+        var article = _article;
+        var link = article.Link;
+        var title = article.Title;
+        var request = ++_contentRequestRevision;
+        var cancellation = new CancellationTokenSource();
+        _googleTranslationCancellation = cancellation;
+        var cancellationToken = cancellation.Token;
         try
         {
-            var source = await ArticleTranslationSource.ResolveAsync(_article.FullContent, sourceText, () => _rss.LoadReadableContentAsync(_article.Link), _article.Title);
+            var sourceText = !string.IsNullOrWhiteSpace(article.FullContent) ? article.FullContent
+                : !string.IsNullOrWhiteSpace(article.Content) ? article.Content
+                : Reader.Text;
+            if (string.IsNullOrWhiteSpace(sourceText))
+            {
+                MessageBox.Show(this, T("Articolul nu conține text pentru traducere."), T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            if (!ArticleCommands.ConfirmGoogle())
+            {
+                Say(T("Traducerea Google Translate a fost anulată."));
+                return;
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            Say(T("Se traduce articolul cu Google Translate. Așteaptă."));
+            var source = await ArticleTranslationSource.ResolveAsync(article.FullContent, sourceText, () => ArticleCommands.LoadReadableAsync(link), title);
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!CanPresentArticleResult(article, request)) return;
             if (string.IsNullOrWhiteSpace(source))
             {
                 MessageBox.Show(this, T("Articolul nu conține text pentru traducere."), T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Information);
@@ -576,57 +693,74 @@ public partial class MainWindow : Window
             }
             var targetLang = GoogleTranslateConnection.ResolveTargetLanguage(_settings.GoogleTranslateTargetLanguage);
             var sourceLang = GoogleTranslateConnection.NormalizeSourceLanguage(_settings.GoogleTranslateSourceLanguage);
-            var translated = await new GoogleTranslateConnection().TranslateAsync(source, targetLang, sourceLang);
+            var translated = await ArticleCommands.TranslateGoogleAsync(source, targetLang, sourceLang, cancellationToken);
 
-            var resultWindow = new ArticleTranslationWindow(translated, _article.Title, _article.Link, "Google Translate") { Owner = this };
-            resultWindow.ShowDialog();
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!CanPresentArticleResult(article, request)) return;
+            requestLease.Dispose();
+            ArticleCommands.ShowTranslation(new ArticleTranslationResult(
+                source,
+                translated,
+                title,
+                link,
+                "Google Translate",
+                ArticleDistributionContext.LanguageNameForCode(targetLang)));
             Say(T("Traducerea Google Translate s-a încheiat. Rezultatul este într-o fereastră separată."));
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            if (!_closeInProgress && CanPresentArticleResult(article, request))
+                Say(T("Traducerea Google Translate a fost anulată."));
         }
         catch (Exception ex)
         {
+            if (cancellationToken.IsCancellationRequested || !CanPresentArticleResult(article, request)) return;
             Say(F("Google Translate nu a putut traduce articolul: {0}", Describe(ex)));
-            MessageBox.Show(this, F("Google Translate nu a putut traduce articolul: {0}", Describe(ex)), T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Warning);
+            ArticleCommands.ShowError(F("Google Translate nu a putut traduce articolul: {0}", Describe(ex)), T("Traducere Google Translate"), MessageBoxImage.Warning);
+        }
+        finally
+        {
+            if (ReferenceEquals(_googleTranslationCancellation, cancellation))
+                _googleTranslationCancellation = null;
+            cancellation.Dispose();
         }
     }
-    private void SearchStoredArticlesByKeywords_Click(object sender, RoutedEventArgs e)
+
+    private void CancelGoogleTranslationForShutdown() => _googleTranslationCancellation?.Cancel();
+    private Feed? FindArticleSourceFeed(Article article)
     {
-        if (string.IsNullOrWhiteSpace(_settings.KeywordAlerts))
-        {
-            Say(T("Configurează mai întâi cuvintele-cheie în Setări aplicație."));
-            return;
-        }
-
-        var matches = KeywordArticleMatcher.FindMatchesInFeeds(_feeds, _settings.KeywordAlerts);
-        if (matches.Count == 0)
-        {
-            Say(F("Nu s-au găsit articole existente care să corespundă cuvintelor-cheie: {0}.", _settings.KeywordAlerts));
-            return;
-        }
-
-        var dialog = new KeywordArticleAlertWindow(
-            matches,
-            async article =>
-            {
-                article.ReadLater = true;
-                await _store.SaveAsync(_feeds);
-                return true;
-            },
-            isArchiveSearch: true)
-        {
-            Owner = this
-        };
-
-        dialog.ShowDialog();
-        if (dialog.ArticleToOpen is not null)
-        {
-            _article = dialog.ArticleToOpen;
-            Reader.Text = _article.Content;
-            FocusReader();
-        }
+        if (_feed?.Articles.Contains(article) == true) return _feed;
+        return _feeds.FirstOrDefault(feed => feed.Articles.Contains(article))
+            ?? _feeds.FirstOrDefault(feed => !string.IsNullOrWhiteSpace(article.SourceName)
+                && string.Equals(feed.Name, article.SourceName, StringComparison.CurrentCultureIgnoreCase));
     }
+
+    private async Task OpenSelectedArticleAsync()
+    {
+        if (_article is null)
+        {
+            FocusReader();
+            return;
+        }
+        var feed = FindArticleSourceFeed(_article);
+        var mode = feed is null ? ArticleOpenModeIds.Default : ArticleOpenModeIds.Normalize(feed.ArticleOpenMode);
+        if (mode == ArticleOpenModeIds.Default)
+            mode = ArticleOpenModeIds.Normalize(_settings.ArticleOpenMode);
+        if (mode == ArticleOpenModeIds.Orizont && !string.IsNullOrWhiteSpace(_article.Link))
+            await OpenArticleInOrizontAsync();
+        else
+            FocusReader();
+    }
+
     private async void OpenArticleInBrowser_Click(object sender, RoutedEventArgs e)
+        => await OpenArticleInOrizontAsync();
+
+    internal async Task OpenArticleInOrizontAsync()
     {
         if (_article is null || string.IsNullOrWhiteSpace(_article.Link)) { Say("Articolul nu are o adresă care poate fi deschisă."); return; }
+        var article = _article;
+        var link = article.Link;
+        var request = ++_contentRequestRevision;
         try
         {
             Say("Se pregătește articolul în cititorul Orizont.");
@@ -635,37 +769,36 @@ public partial class MainWindow : Window
             {
                 // Reextragem pagina pentru a nu reutiliza un FullContent vechi, care poate
                 // conține reclame sau cod JavaScript înaintea curățării extractorului.
-                text = await _rss.LoadReadableContentAsync(_article.Link);
+                text = await ArticleCommands.LoadReadableAsync(link);
             }
-            catch when (!string.IsNullOrWhiteSpace(_article.FullContent))
+            catch when (!string.IsNullOrWhiteSpace(article.FullContent))
             {
-                text = _article.FullContent;
+                if (!CanPresentArticleResult(article, request)) return;
+                text = article.FullContent;
                 Say("Pagina nu a putut fi reîmprospătată; se folosește ultima versiune salvată a articolului.");
             }
-            if (string.IsNullOrWhiteSpace(text)) throw new InvalidOperationException("Pagina nu a oferit conținut lizibil.");
-            _article.FullContent = text;
-            await _store.SaveAsync(_feeds);
-            var window = new ArticleReaderWindow(
-                _article,
-                text,
-                _settings,
+            if (string.IsNullOrWhiteSpace(text)) throw new InvalidOperationException(T("Pagina nu a oferit conținut lizibil."));
+            if (!CanPresentArticleResult(article, request)) return;
+            foreach (var copy in RelatedArticleCopies([article])) copy.IsRead = true;
+            Articles.Items.Refresh();
+            article.FullContent = text;
+            await ArticleCommands.SaveAsync();
+            if (!CanPresentArticleResult(article, request)) return;
+            ArticleCommands.ShowReader(article, text,
                 async () =>
                 {
-                    var refreshed = await _rss.LoadReadableContentAsync(_article.Link);
-                    _article.FullContent = refreshed;
-                    await _store.SaveAsync(_feeds);
+                    var refreshed = await ArticleCommands.LoadReadableAsync(link);
+                    article.FullContent = refreshed;
+                    await ArticleCommands.SaveAsync();
                     return refreshed;
-                },
-                () => _store.SaveSettingsAsync(_settings),
-                _speech!,
-                () => _store.SaveAsync(_feeds)) { Owner = this };
-            window.Show();
+                });
             Say("Articolul este deschis în cititorul Orizont.");
         }
         catch (Exception exception)
         {
+            if (!CanPresentArticleResult(article, request)) return;
             Say(F("Articolul nu a putut fi deschis în cititorul Orizont: {0}", Describe(exception)));
-            MessageBox.Show(this, F("Articolul nu a putut fi deschis în cititorul Orizont.\n\n{0}", Describe(exception)), T("Deschidere nereușită"), MessageBoxButton.OK, MessageBoxImage.Error);
+            ArticleCommands.ShowError(F("Articolul nu a putut fi deschis în cititorul Orizont.\n\n{0}", Describe(exception)), T("Deschidere nereușită"), MessageBoxImage.Error);
         }
     }
     private void OpenOriginalArticleInBrowser_Click(object sender, RoutedEventArgs e)
@@ -740,91 +873,14 @@ public partial class MainWindow : Window
     private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         var key = e.Key == Key.System ? e.SystemKey : e.Key;
-        if (key == Key.F1 && Keyboard.Modifiers == ModifierKeys.None)
-        {
-            Help_Click(this, e);
-            e.Handled = true;
-            return;
-        }
-        if (key == Key.F11 && Keyboard.Modifiers == ModifierKeys.None)
-        {
-            ToggleWindowSize_Click(this, e);
-            e.Handled = true;
-            return;
-        }
-        if (key == Key.F9 && Keyboard.Modifiers == ModifierKeys.Shift)
-        {
-            VoiceSettings_Click(this, e);
-            e.Handled = true;
-            return;
-        }
-        if (key == Key.F9 && Keyboard.Modifiers == ModifierKeys.None)
-        {
-            if (_speech?.IsSpeaking == true || _speech?.IsPaused == true)
-                PauseResumeSpeech_Click(this, e);
-            else
-                SpeakContent_Click(this, e);
-            e.Handled = true;
-            return;
-        }
-        if (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Alt))
-        {
-            if (key == Key.V) SpeakContent_Click(this, e);
-            else if (key == Key.P) PauseResumeSpeech_Click(this, e);
-            else if (key == Key.S) StopSpeech_Click(this, e);
-            else goto ContinueKeyHandling;
-            e.Handled = true;
-            return;
-        }
+        if (HandleConfiguredShortcut(key, Keyboard.Modifiers, e)) return;
         if (key == Key.Escape && Keyboard.Modifiers == ModifierKeys.None && _isRefreshing)
         {
-            StopRefresh_Click(this, e);
-            e.Handled = true;
-            return;
+            StopRefresh_Click(this, e); e.Handled = true; return;
         }
         if (key == Key.Escape && Keyboard.Modifiers == ModifierKeys.None && (_speech?.IsSpeaking == true || _speech?.IsPaused == true))
         {
-            _speech.Stop();
-            if (!Reader.IsKeyboardFocusWithin) e.Handled = true;
-            return;
-        }
-        if (Keyboard.Modifiers == ModifierKeys.Control)
-        {
-            if (key is Key.D1 or Key.NumPad1) FocusFeeds();
-            else if (key is Key.D2 or Key.NumPad2) FocusArticles();
-            else if (key is Key.D3 or Key.NumPad3) FocusReader();
-            else if (key is Key.D4 or Key.NumPad4) ReadNow_Click(this, e);
-            else goto ContinueKeyHandling;
-            e.Handled = true;
-            return;
-        }
-ContinueKeyHandling:
-        if (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
-        {
-            if (key is Key.D1 or Key.NumPad1) FocusFolderSelector();
-            else if (key is Key.D2 or Key.NumPad2) FocusSelectedFolderArticles();
-            else goto ContinueCommandHandling;
-            e.Handled = true;
-            return;
-        }
-ContinueCommandHandling:
-        if (key == Key.H && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
-        {
-            StatusHistory_Click(this, e);
-            e.Handled = true;
-            return;
-        }
-        if (key == Key.F && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
-        {
-            ArticleFilters_Click(this, e);
-            e.Handled = true;
-            return;
-        }
-        if (key == Key.U && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
-        {
-            ShowUnreadOverview_Click(this, e);
-            e.Handled = true;
-            return;
+            _speech.Stop(); if (!Reader.IsKeyboardFocusWithin) e.Handled = true; return;
         }
         if (e.Key == Key.Delete && Keyboard.Modifiers == ModifierKeys.None)
         {
@@ -846,20 +902,6 @@ ContinueCommandHandling:
                 return;
             }
         }
-        if (e.Key == Key.R && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
-        {
-            LoadFullArticle_Click(this, e);
-            e.Handled = true;
-            return;
-        }
-        if ((e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control) || e.Key == Key.F3)
-        {
-            ArticleSearch.Focus();
-            ArticleSearch.SelectAll();
-            Say("Caută în articole.");
-            e.Handled = true;
-            return;
-        }
         if (e.Key != Key.F6 || (Keyboard.Modifiers != ModifierKeys.None && Keyboard.Modifiers != ModifierKeys.Shift)) return;
         if (Keyboard.Modifiers == ModifierKeys.Shift)
         {
@@ -874,6 +916,41 @@ ContinueCommandHandling:
         else FocusFeeds();
         e.Handled = true;
     }
+
+    private void ShortcutSettings_Click(object sender, RoutedEventArgs e)
+        => new ShortcutSettingsWindow(_settings) { Owner = this }.ShowDialog();
+
+    private bool HandleConfiguredShortcut(Key key, ModifierKeys mods, KeyEventArgs e)
+    {
+        var id = ShortcutBindings.Definitions.FirstOrDefault(d => d.Scope is "Main" or "Shared" && ShortcutBindings.Matches(d.Id, key, mods))?.Id;
+        if (id is null) return false;
+        e.Handled = true;
+        switch (id)
+        {
+            case "Help": Help_Click(this, e); break;
+            case "Window": ToggleWindowSize_Click(this, e); break;
+            case "VoiceSettings": VoiceSettings_Click(this, e); break;
+            case "VoiceToggle":
+                if (_speech?.IsSpeaking == true || _speech?.IsPaused == true) PauseResumeSpeech_Click(this, e);
+                else SpeakContent_Click(this, e);
+                break;
+            case "Feeds": FocusFeeds(); break;
+            case "Articles": FocusArticles(); break;
+            case "Content": FocusReader(); break;
+            case "ReadNow": ReadNow_Click(this, e); break;
+            case "Folders": FocusFolderSelector(); break;
+            case "FolderArticles": FocusSelectedFolderArticles(); break;
+            case "Export": SaveArticleWithFormat(_settings.ArticleExportFormat); break;
+            case "History": StatusHistory_Click(this, e); break;
+            case "Filters": ArticleFilters_Click(this, e); break;
+            case "Unread": ShowUnreadOverview_Click(this, e); break;
+            case "FullText": LoadFullArticle_Click(this, e); break;
+            case "Search":
+            case "SearchAlternate": FocusArticleSearch_Click(this, e); break;
+        }
+        return true;
+    }
+
     private void FocusFeeds()
     {
         if (Feeds.SelectedItem is null && Feeds.Items.Count > 0) Feeds.SelectedIndex = 0;
@@ -996,7 +1073,7 @@ ContinueCommandHandling:
             MessageBox.Show(this, F("Această adresă este deja folosită de feedul „{0}”, în folderul „{1}”.\n\nOrizont RSS nu permite adăugarea aceluiași feed de două ori.", duplicate.Name, duplicate.Folder), T("Feed deja existent"), MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
-        var feed = new Feed { Name = dialog.FeedName, Url = dialog.FeedUrl, Folder = dialog.FolderName };
+        var feed = new Feed { Name = dialog.FeedName, Url = dialog.FeedUrl, Folder = dialog.FolderName, ArticleOpenMode = dialog.SelectedArticleOpenMode };
         _feeds.Add(feed);
         try
         {
@@ -1023,6 +1100,7 @@ ContinueCommandHandling:
         }
 
         var feed = DemoFeedCatalog.CreateLocalFeed();
+        foreach (var article in feed.Articles) ArticleRules.ApplyIncoming(_settings.ArticleRules, feed, article);
         _feeds.Add(feed);
         try
         {
@@ -1083,6 +1161,7 @@ ContinueCommandHandling:
             LastSuccessfulUpdate = DateTimeOffset.Now,
             LastArticleReceivedOn = articles.Count > 0 ? DateTimeOffset.Now : null
         };
+        foreach (var article in feed.Articles) ArticleRules.ApplyIncoming(_settings.ArticleRules, feed, article);
         _feeds.Add(feed);
         try
         {
@@ -1135,6 +1214,81 @@ ContinueCommandHandling:
         RefreshFeedList();
         ShowFolderAggregate(selectFirstWhenNoMatch: true);
         Say(F("Au fost eliminate {0} feeduri demonstrative.", demoFeeds.Count));
+    }
+    private async void ArticleRules_Click(object sender, RoutedEventArgs e)
+    {
+        if (_isRefreshing || _newsBlurFeedSyncRunning || _newsBlurStateSyncRunning)
+        {
+            MessageBox.Show(this, T("Așteaptă încheierea actualizării sau sincronizării."), T("Reguli automate"));
+            return;
+        }
+        _newsBlurAutoSyncTimer?.Stop();
+        var feedsSaved = false;
+        var snapshots = new List<(Article Article, List<string> Tags, bool Later, bool Pending, bool AddedLater)>();
+        try
+        {
+            var dialog = new ArticleRulesWindow(_settings.ArticleRules, _feeds, async rules =>
+            {
+                var previous = _settings.ArticleRules;
+                _settings.ArticleRules = rules;
+                try { await _store.SaveSettingsAsync(_settings); }
+                catch { _settings.ArticleRules = previous; throw; }
+            }) { Owner = this };
+            if (dialog.ShowDialog() != true) return;
+            if (dialog.RequestedArticle is { } requestedArticle)
+            {
+                await OpenRuleResultAsync(requestedArticle, dialog.RequestContextMenu);
+                return;
+            }
+            foreach (var change in dialog.PendingChanges)
+            {
+                snapshots.Add((change.Article, (change.Article.Tags ?? []).ToList(), change.Article.ReadLater, change.Article.AutomationPendingNewsBlurBaseline, change.Article.AutomationAddedReadLater));
+                change.Article.Tags ??= [];
+                foreach (var tag in change.Tags)
+                    if (!change.Article.Tags.Contains(tag, StringComparer.CurrentCultureIgnoreCase)) change.Article.Tags.Add(tag);
+                if (change.Later && !change.Article.ReadLater && !change.Article.NewsBlurLastRead.HasValue) change.Article.AutomationAddedReadLater = true;
+                change.Article.ReadLater |= change.Later;
+                if (!change.Article.NewsBlurLastRead.HasValue || change.Article.NewsBlurLastLocalTags is null) change.Article.AutomationPendingNewsBlurBaseline = true;
+            }
+            await _store.SaveAsync(_feeds);
+            feedsSaved = true;
+            RefreshTagFilter();
+            RefreshArticleList(selectFirstWhenNoMatch: false);
+            Say(F("Reguli salvate. Articole modificate: {0}.", dialog.PendingChanges.Count));
+        }
+        catch (Exception exception)
+        {
+            if (!feedsSaved)
+                foreach (var snapshot in snapshots) { snapshot.Article.Tags = snapshot.Tags; snapshot.Article.ReadLater = snapshot.Later; snapshot.Article.AutomationPendingNewsBlurBaseline = snapshot.Pending; snapshot.Article.AutomationAddedReadLater = snapshot.AddedLater; }
+            MessageBox.Show(this, F("Operația nu a fost finalizată: {0}", Describe(exception)), T("Reguli automate"),
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally { ConfigureNewsBlurAutoSync(); }
+    }
+    private async Task OpenRuleResultAsync(Article article, bool contextMenu)
+    {
+        if (FindArticleSourceFeed(article) is null) return;
+        _suppressArticleSearch = true;
+        ArticleSearch.Clear();
+        _suppressArticleSearch = false;
+        PrepareNewsBlurView(string.Empty, T("Articole, listă"));
+        RefreshArticleList(article, selectFirstWhenNoMatch: false);
+        Articles.SelectedItems.Clear();
+        Articles.SelectedItem = article;
+        _article = article;
+        Articles.ScrollIntoView(article);
+        await Dispatcher.InvokeAsync(() =>
+        {
+            Activate();
+            Articles.UpdateLayout();
+            if (Articles.ItemContainerGenerator.ContainerFromItem(article) is ListBoxItem item) item.Focus();
+            else Articles.Focus();
+        }, DispatcherPriority.Input);
+        if (!contextMenu) { await OpenSelectedArticleAsync(); return; }
+        ArticleMenu.PlacementTarget = Articles;
+        ArticleMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        if (!UpdateArticleMenu()) return;
+        ArticleMenu.IsOpen = true;
     }
     private async void Settings_Click(object sender, RoutedEventArgs e)
     {
@@ -1808,7 +1962,10 @@ ContinueCommandHandling:
 
     private async void NewsBlurStateSync_Click(object sender, RoutedEventArgs e)
     {
-        try { await RunNewsBlurStateSyncAsync(false); }
+        try
+        {
+            await RunNewsBlurStateSyncAsync(false);
+        }
         catch (Exception exception) { Say(F("Sincronizarea stărilor NewsBlur a eșuat: {0}", Describe(exception))); }
     }
 
@@ -1983,6 +2140,8 @@ ContinueCommandHandling:
                     imported++;
                     newInFeed++;
                     SetNewsBlurBaseline(article, story);
+                    // Establish the remote baseline BEFORE additive local rules; next sync sees the local change.
+                    ArticleRules.ApplyIncoming(_settings.ArticleRules, feed, article);
                     matched++;
                     continue;
                 }
@@ -2109,14 +2268,12 @@ ContinueCommandHandling:
         RefreshFeedList(_feed);
         RefreshTagFilter();
         RefreshArticleList(_article, selectFirstWhenNoMatch: false);
-        var syncSummary = refreshTargets is null
-            ? F("Sincronizare bidirecțională încheiată. {0} articole asociate, {1} importate din NewsBlur, {2} baze locale create, {3} stări preluate, {4} stări trimise, {5} conflicte păstrate neschimbate și {6} etichete amânate până la salvarea articolului.", matched, imported, baselineCreated, appliedRemote, toRead.Count + toUnread.Count + toStar.Count + toUnstar.Count, conflicts, skippedTags)
-            : F("Preluare NewsBlur încheiată: {0} feeduri verificate, {1} articole noi preluate, {2} feeduri necesită fallback RSS.", remoteSuccesses, imported, fallback.Count);
+        var syncSummary = F("Sincronizare bidirecțională încheiată. {0} articole asociate, {1} importate din NewsBlur, {2} baze locale create, {3} stări preluate, {4} stări trimise, {5} conflicte păstrate neschimbate și {6} etichete amânate până la salvarea articolului.", matched, imported, baselineCreated, appliedRemote, toRead.Count + toUnread.Count + toStar.Count + toUnstar.Count, conflicts, skippedTags);
         if (stateSyncFailed) syncSummary += " " + T("Articolele primite au fost salvate local, dar unele stări nu au putut fi trimise sau preluate.");
         if (skippedExpiredByRetention > 0)
             syncSummary += F(" {0} articole expirate au fost ignorate local; nu au fost șterse din NewsBlur.", skippedExpiredByRetention);
-        Say(syncSummary);
-        return new NewsBlurSyncOutcome(true, false, cancelled, cancelled ? [] : fallback, imported);
+        if (!allowDuringRefresh) Say(syncSummary);
+        return new NewsBlurSyncOutcome(true, false, cancelled, cancelled ? [] : fallback, imported, syncSummary);
         }
         finally
         {
@@ -2318,6 +2475,20 @@ ContinueCommandHandling:
         article.NewsBlurLastLocalStarred = article.IsFavorite;
         article.NewsBlurLastLocalTags = (article.Tags ?? []).ToList();
         article.NewsBlurLastLocalSaved = NewsBlurSavedState(article);
+        if (article.AutomationPendingNewsBlurBaseline)
+        {
+            article.Tags = (article.Tags ?? []).Concat(story.UserTags).Distinct(StringComparer.CurrentCultureIgnoreCase).ToList();
+            article.NewsBlurLastLocalTags = story.UserTags.ToList();
+            if (article.AutomationAddedReadLater)
+                article.NewsBlurLastLocalSaved = _settings.NewsBlurSavedStoryMode switch
+                {
+                    "ReadLater" => false,
+                    "Both" => article.IsFavorite,
+                    _ => article.IsFavorite
+                };
+            article.AutomationPendingNewsBlurBaseline = false;
+            article.AutomationAddedReadLater = false;
+        }
     }
     private async Task OpenSettingsAsync(SettingsWindow.SettingsSection section)
     {
@@ -2327,13 +2498,6 @@ ContinueCommandHandling:
         ConfigureNewsBlurAutoSync();
         _speech?.Configure(SpeechConfigurationFromSettings(_settings));
         RefreshArticleList(selectFirstWhenNoMatch: false);
-        if (section != SettingsWindow.SettingsSection.Application)
-        {
-            Say(section == SettingsWindow.SettingsSection.Voice
-                ? T("Setări voce")
-                : T("Setările Inteligență artificială au fost salvate."));
-            return;
-        }
         if (dialog.LanguageChanged)
         {
             const string languageMessage = "Limba interfeței a fost salvată. Noua limbă va fi folosită după repornirea Orizont RSS.";
@@ -2348,6 +2512,16 @@ ContinueCommandHandling:
             var answer = MessageBox.Show(this, F("Vor fi șterse {0} articole obișnuite mai vechi de {1} zile. Favoritele și articolele pentru mai târziu nu sunt afectate. Continui?", count, _settings.RetentionDays), T("Confirmă curățarea"), MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No);
             if (answer == MessageBoxResult.Yes) await CleanupExpiredArticlesAsync(true);
             else Say("Curățarea a fost anulată.");
+            return;
+        }
+        if (section == SettingsWindow.SettingsSection.Voice)
+        {
+            Say(T("Setări voce"));
+            return;
+        }
+        if (section == SettingsWindow.SettingsSection.Ai)
+        {
+            Say(T("Setările Inteligență artificială au fost salvate."));
             return;
         }
         Say(_settings.AutoCleanupEnabled ? F("Setări salvate. Articolele obișnuite sunt păstrate {0} zile.", _settings.RetentionDays) : T("Setări salvate. Curățarea automată este dezactivată."));
@@ -2514,10 +2688,32 @@ ContinueCommandHandling:
     {
         if (!automatic) Say(T("Se verifică dacă există o nouă versiune a aplicației Orizont RSS pe GitHub..."));
         var updateInfo = await UpdateCheckerService.CheckForUpdatesAsync();
+        if (_closeInProgress || _isClosingAfterSave) return;
         if (updateInfo.HasUpdate)
         {
             Say(F("Este disponibilă o nouă versiune a aplicației ({0}).", updateInfo.LatestVersion));
-            new UpdateAvailableWindow(updateInfo) { Owner = this }.ShowDialog();
+            var dialog = new UpdateAvailableWindow(updateInfo) { Owner = this };
+            if (dialog.ShowDialog() == true)
+            {
+                _pendingUpdateInstaller = dialog.TakePreparedInstaller();
+                if (_pendingUpdateInstaller is null)
+                {
+                    var message = F("Instalatorul verificat nu a putut fi pornit: {0}", T("Fișierul verificat pregătit nu mai este disponibil."));
+                    Say(message);
+                    MessageBox.Show(this, message, T("Eroare"), MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                Say(T("Actualizarea a fost descărcată și verificată. Se salvează datele înainte de pornirea instalatorului."));
+                Close();
+            }
+        }
+        else if (updateInfo.Status == UpdateCheckStatus.Error)
+        {
+            var message = F("Verificarea actualizărilor a eșuat: {0}", updateInfo.ErrorMessage);
+            Say(message);
+            if (!automatic)
+                MessageBox.Show(this, message, T("Eroare"), MessageBoxButton.OK, MessageBoxImage.Error);
         }
         else if (!automatic)
         {
@@ -2592,16 +2788,16 @@ ContinueCommandHandling:
         var sourceLine = string.IsNullOrWhiteSpace(source) ? string.Empty : F("Sursă: {0}.{1}", source, Environment.NewLine);
         return F("Titlu: {0}.{1}{2}Data publicării: {3}.{1}{1}{4}", _article.Title, Environment.NewLine, sourceLine, _article.Published.ToString("f", CultureInfo.CurrentCulture), Reader.Text);
     }
-    private async void AiSummarize_Click(object sender, RoutedEventArgs e) => await AskGeminiAsync(T("Rezumat"), T("Rezuma articolul în limba interfeței. Evidențiază faptele, contextul și incertitudinile."));
-    private async void AiTranslate_Click(object sender, RoutedEventArgs e) => await AskGeminiAsync(T("Traducere"), T("Tradu articolul complet în limba interfeței. Nu adăuga comentarii, păstrează structura paragrafului."));
-    private async void AiExplain_Click(object sender, RoutedEventArgs e) => await AskGeminiAsync(T("Explicație"), T("Explică articolul în limba interfeței, simplu și clar, pentru un cititor nespecialist."));
-    private async void AiKeyPoints_Click(object sender, RoutedEventArgs e) => await AskGeminiAsync(T("Ideile principale"), T("Extrage ideile principale ale articolului într-o listă clară, în limba interfeței."));
+    private async void AiSummarize_Click(object sender, RoutedEventArgs e) => await AskAiAsync(T("Rezumat"), T("Rezuma articolul în limba interfeței. Evidențiază faptele, contextul și incertitudinile."));
+    private async void AiTranslate_Click(object sender, RoutedEventArgs e) => await AskAiAsync(T("Traducere"), T("Tradu articolul complet în limba interfeței. Nu adăuga comentarii, păstrează structura paragrafului."), isTranslation: true);
+    private async void AiExplain_Click(object sender, RoutedEventArgs e) => await AskAiAsync(T("Explicație"), T("Explică articolul în limba interfeței, simplu și clar, pentru un cititor nespecialist."));
+    private async void AiKeyPoints_Click(object sender, RoutedEventArgs e) => await AskAiAsync(T("Ideile principale"), T("Extrage ideile principale ale articolului într-o listă clară, în limba interfeței."));
     private async void AiDiscuss_Click(object sender, RoutedEventArgs e)
     {
         if (_article is null) { Say("Alege mai întâi un articol."); return; }
-        var dialog = new AiQuestionWindow { Owner = this };
+        var dialog = new AiQuestionWindow(AiProviderIds.DisplayName(_settings.AiDefaultProvider)) { Owner = this };
         if (dialog.ShowDialog() != true) return;
-        await AskGeminiAsync(T("Răspuns Gemini"), dialog.UserQuestion);
+        await AskAiAsync(T("Răspuns AI"), dialog.UserQuestion);
     }
     private void ShowAiNotes_Click(object sender, RoutedEventArgs e)
     {
@@ -2639,41 +2835,71 @@ ContinueCommandHandling:
         await RestoreCapturedPositionAsync(position);
         Say(F("Etichete salvate pentru {0} articole.", selected.Count));
     }
-    private async Task AskGeminiAsync(string title, string request)
+    private async Task AskAiAsync(string title, string request, bool isTranslation = false)
     {
         if (_article is null) { ShowAiProblem(T("Alege mai întâi un articol."), MessageBoxImage.Information); return; }
-        if (!_settings.GeminiEnabled) { ShowAiProblem(T("Gemini nu este activat. Deschide Setări, Setări Inteligență artificială, testează cheia Gemini și apasă Salvează."), MessageBoxImage.Warning); return; }
+        var provider = AiProviderIds.Normalize(_settings.AiDefaultProvider);
+        var providerName = AiProviderIds.DisplayName(provider);
+        var enabled = provider switch
+        {
+            AiProviderIds.OpenAI => _settings.OpenAiEnabled,
+            AiProviderIds.Mistral => _settings.MistralEnabled,
+            AiProviderIds.DeepSeek => _settings.DeepSeekEnabled,
+            _ => _settings.GeminiEnabled
+        };
+        if (!enabled)
+        {
+            ShowAiProblem(F("Furnizorul AI implicit nu este activat. Deschide Setări Inteligență artificială și verifică cheia API pentru {0}.", providerName), MessageBoxImage.Warning);
+            return;
+        }
         string key;
-        try { key = SecretProtector.Unprotect(_settings.EncryptedGeminiKey); }
-        catch { ShowAiProblem(T("Cheia Gemini salvată nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială."), MessageBoxImage.Warning); return; }
-        if (string.IsNullOrWhiteSpace(key)) { ShowAiProblem(T("Nu există o cheie Gemini salvată. Deschide Setări Inteligență artificială."), MessageBoxImage.Warning); return; }
+        var encryptedKey = provider switch
+        {
+            AiProviderIds.OpenAI => _settings.EncryptedOpenAiKey,
+            AiProviderIds.Mistral => _settings.EncryptedMistralKey,
+            AiProviderIds.DeepSeek => _settings.EncryptedDeepSeekKey,
+            _ => _settings.EncryptedGeminiKey
+        };
+        try { key = SecretProtector.Unprotect(encryptedKey); }
+        catch { ShowAiProblem(F("Cheia API pentru {0} nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială.", providerName), MessageBoxImage.Warning); return; }
+        if (string.IsNullOrWhiteSpace(key)) { ShowAiProblem(F("Nu există o cheie API pentru {0}. Deschide Setări Inteligență artificială.", providerName), MessageBoxImage.Warning); return; }
         var source = !string.IsNullOrWhiteSpace(Reader.Text) ? Reader.Text : !string.IsNullOrWhiteSpace(_article.FullContent) ? _article.FullContent : _article.Content;
-        if (string.IsNullOrWhiteSpace(source)) { ShowAiProblem(T("Articolul nu conține text pentru Gemini. Alege Adu textul complet de pe site și încearcă din nou."), MessageBoxImage.Warning); return; }
+        if (string.IsNullOrWhiteSpace(source)) { ShowAiProblem(T("Articolul nu conține text pentru furnizorul AI selectat. Încearcă să aduci textul complet."), MessageBoxImage.Warning); return; }
         var article = _article;
-        Say(F("AI: Gemini pregătește {0} pentru: {1}. Așteaptă.", title.ToLower(CultureInfo.CurrentCulture), article.Title));
+        var model = provider switch
+        {
+            AiProviderIds.Mistral => _settings.MistralModel,
+            AiProviderIds.DeepSeek => _settings.DeepSeekModel,
+            _ => _settings.OpenAiModel
+        };
+        Say(F("AI: {0} pregătește {1} pentru: {2}. Așteaptă.", providerName, title.ToLower(CultureInfo.CurrentCulture), article.Title));
         try
         {
             var prompt = $"Limba interfeței: {CultureInfo.CurrentUICulture.NativeName}\nTitlu articol: {article.Title}\nSursă: {article.Link}\n\nCerere: {request}\n\nArticol:\n{source}";
-            var response = await new GeminiConnection().GenerateAsync(key, _settings.AiInstructions, prompt);
+            var response = await new AiProviderService().GenerateAsync(provider, key, model, _settings.AiInstructions, prompt);
             var initialPrompt = prompt;
             new AiResponseWindow(
                 title,
                 response,
                 article.Title,
                 article.Link,
-                followUp => new GeminiConnection().GenerateAsync(key, _settings.AiInstructions, $"{initialPrompt}\n\n{followUp}"),
+                followUp => new AiProviderService().GenerateAsync(provider, key, model, _settings.AiInstructions, $"{initialPrompt}\n\n{followUp}"),
                 async noteContent =>
                 {
                     article.AiNotes ??= [];
                     article.AiNotes.Add(new AiNote { Title = title, Content = noteContent });
                     await _store.SaveAsync(_feeds);
                 },
-                _speech) { Owner = this }.ShowDialog();
-            Say("Răspunsul Gemini a fost închis. Ești înapoi la lista de articole.");
+                _speech!,
+                providerName,
+                isTranslation,
+                source,
+                isTranslation ? CultureInfo.CurrentUICulture.NativeName : null) { Owner = this }.ShowDialog();
+            Say(T("Răspunsul AI a fost închis. Ești înapoi la lista de articole."));
         }
-        catch (TaskCanceledException) { ShowAiProblem(T("Gemini nu a răspuns în 45 de secunde. Încearcă din nou mai târziu."), MessageBoxImage.Error); }
-        catch (HttpRequestException) { ShowAiProblem(T("Nu s-a putut ajunge la Gemini. Verifică internetul, firewall-ul sau proxy-ul."), MessageBoxImage.Error); }
-        catch (Exception exception) { ShowAiProblem(F("Gemini nu a putut executa comanda „{0}”.\n\nDetalii: {1}", title, exception.Message), MessageBoxImage.Error); }
+        catch (TaskCanceledException) { ShowAiProblem(F("{0} nu a răspuns în 45 de secunde. Încearcă din nou mai târziu.", providerName), MessageBoxImage.Error); }
+        catch (HttpRequestException) { ShowAiProblem(F("Nu s-a putut ajunge la {0}. Verifică internetul, firewall-ul sau proxy-ul.", providerName), MessageBoxImage.Error); }
+        catch (Exception exception) { ShowAiProblem(F("Furnizorul {0} nu a putut executa comanda {1}. Detalii: {2}", providerName, title, exception.Message), MessageBoxImage.Error); }
     }
     private void ShowAiProblem(string message, MessageBoxImage icon)
     {
@@ -2707,7 +2933,7 @@ ContinueCommandHandling:
         folderDialog.SetFolders(AvailableFolders());
         folderDialog.SetValues(candidate.Name, candidate.Url, "Neorganizate");
         if (folderDialog.ShowDialog() != true) return;
-        var feed = new Feed { Name = folderDialog.FeedName, Url = folderDialog.FeedUrl, Folder = folderDialog.FolderName };
+        var feed = new Feed { Name = folderDialog.FeedName, Url = folderDialog.FeedUrl, Folder = folderDialog.FolderName, ArticleOpenMode = folderDialog.SelectedArticleOpenMode };
         _feeds.Add(feed);
         await _store.SaveAsync(_feeds);
         RefreshFeedList(feed);
@@ -2724,7 +2950,7 @@ ContinueCommandHandling:
         feedDialog.SetFolders(AvailableFolders());
         feedDialog.SetValues(candidate.Name, candidate.Url, candidate.SourceSite);
         if (feedDialog.ShowDialog() != true) return;
-        var feed = new Feed { Name = feedDialog.FeedName, Url = feedDialog.FeedUrl, Folder = feedDialog.FolderName };
+        var feed = new Feed { Name = feedDialog.FeedName, Url = feedDialog.FeedUrl, Folder = feedDialog.FolderName, ArticleOpenMode = feedDialog.SelectedArticleOpenMode };
         _feeds.Add(feed);
         await _store.SaveAsync(_feeds);
         RefreshFeedList(feed);
@@ -2790,7 +3016,7 @@ ContinueCommandHandling:
             var backup = new BackupDocument { Feeds = _feeds, Settings = BackupSettings(_settings) };
             await using var stream = File.Create(dialog.FileName);
             await JsonSerializer.SerializeAsync(stream, backup, new JsonSerializerOptions { WriteIndented = true });
-            Say(F("Copie de siguranță creată. {0} feeduri au fost salvate. Cheia Gemini nu este inclusă.", _feeds.Count));
+            Say(F("Copie de siguranță creată. {0} feeduri au fost salvate. Cheile API nu sunt incluse.", _feeds.Count));
         }
         catch (Exception exception)
         {
@@ -2807,7 +3033,7 @@ ContinueCommandHandling:
             await using var stream = File.OpenRead(dialog.FileName);
             var backup = await JsonSerializer.DeserializeAsync<BackupDocument>(stream);
             if (backup is null || backup.FormatVersion != 1 || backup.Feeds is null || backup.Settings is null) throw new InvalidOperationException(T("Fișierul nu este o copie de siguranță Orizont RSS compatibilă."));
-            if (MessageBox.Show(this, F("Restabilești {0} feeduri și articolele lor? Lista locală actuală va fi înlocuită. Cheia Gemini de pe acest calculator nu este afectată.", backup.Feeds.Count), T("Confirmă restaurarea"), MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes) return;
+            if (MessageBox.Show(this, F("Restabilești {0} feeduri și articolele lor? Lista locală actuală va fi înlocuită. Cheile API Gemini și OpenAI de pe acest calculator nu sunt afectate.", backup.Feeds.Count), T("Confirmă restaurarea"), MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes) return;
             backup.Feeds = backup.Feeds.Where(feed => feed is not null).ToList();
             foreach (var feed in backup.Feeds)
             {
@@ -2821,12 +3047,32 @@ ContinueCommandHandling:
             }
             var currentGeminiKey = _settings.EncryptedGeminiKey;
             var currentGeminiEnabled = _settings.GeminiEnabled;
+            var currentOpenAiKey = _settings.EncryptedOpenAiKey;
+            var currentOpenAiEnabled = _settings.OpenAiEnabled;
+            var currentOpenAiModel = _settings.OpenAiModel;
+            var currentMistralKey = _settings.EncryptedMistralKey;
+            var currentMistralEnabled = _settings.MistralEnabled;
+            var currentMistralModel = _settings.MistralModel;
+            var currentDeepSeekKey = _settings.EncryptedDeepSeekKey;
+            var currentDeepSeekEnabled = _settings.DeepSeekEnabled;
+            var currentDeepSeekModel = _settings.DeepSeekModel;
+            var currentAiDefaultProvider = _settings.AiDefaultProvider;
             _feeds = backup.Feeds;
             _settings = backup.Settings;
             NormalizeSettings(_settings);
             _settings.EncryptedGeminiKey = currentGeminiKey;
             _settings.GeminiEnabled = currentGeminiEnabled && !string.IsNullOrWhiteSpace(currentGeminiKey);
-            _speech?.Configure(SpeechConfigurationFromSettings(_settings));
+            _settings.EncryptedOpenAiKey = currentOpenAiKey;
+            _settings.OpenAiEnabled = currentOpenAiEnabled && !string.IsNullOrWhiteSpace(currentOpenAiKey);
+            _settings.OpenAiModel = string.IsNullOrWhiteSpace(currentOpenAiModel) ? "gpt-6-luna" : currentOpenAiModel;
+            _settings.EncryptedMistralKey = currentMistralKey;
+            _settings.MistralEnabled = currentMistralEnabled && !string.IsNullOrWhiteSpace(currentMistralKey);
+            _settings.MistralModel = string.IsNullOrWhiteSpace(currentMistralModel) ? "mistral-small-latest" : currentMistralModel;
+            _settings.EncryptedDeepSeekKey = currentDeepSeekKey;
+            _settings.DeepSeekEnabled = currentDeepSeekEnabled && !string.IsNullOrWhiteSpace(currentDeepSeekKey);
+            _settings.DeepSeekModel = string.IsNullOrWhiteSpace(currentDeepSeekModel) ? "deepseek-flash" : currentDeepSeekModel;
+            _settings.AiDefaultProvider = AiProviderIds.Normalize(currentAiDefaultProvider);
+            ApplyRestoredRuntimeSettings();
             _feed = null;
             _article = null;
             AttentionFilter.IsChecked = false;
@@ -2835,7 +3081,7 @@ ContinueCommandHandling:
             RefreshFeedList();
             ShowFolderAggregate();
             Reader.Clear();
-            Say(F("Restaurare încheiată. {0} feeduri au fost încărcate. Cheia Gemini locală a fost păstrată.", _feeds.Count));
+            Say(F("Restaurare încheiată. {0} feeduri au fost încărcate. Setările locale ale furnizorilor AI și cheile API au fost păstrate.", _feeds.Count));
         }
         catch (Exception exception)
         {
@@ -2843,12 +3089,25 @@ ContinueCommandHandling:
         }
     }
     private static AppSettings BackupSettings(AppSettings settings) => BackupPolicy.SanitizeSettings(settings);
+
+    private void ApplyRestoredRuntimeSettings()
+    {
+        _settings.Shortcuts = ShortcutBindings.Sanitize(_settings.Shortcuts);
+        ShortcutBindings.Current = _settings.Shortcuts;
+        ShortcutBindings.RefreshMenuHints(this);
+        ColorThemeManager.Apply(_settings.ColorScheme);
+        _speech?.Configure(SpeechConfigurationFromSettings(_settings));
+        ConfigureNewsBlurAutoSync();
+    }
     private static void NormalizeSettings(AppSettings settings)
     {
+        settings.ArticleRules = (settings.ArticleRules ?? []).Where(rule => rule is not null).ToList();
         settings.UiLanguage = UiCulture.NormalizeSelection(settings.UiLanguage);
         if (settings.RetentionDays is not (1 or 3 or 7 or 14 or 30 or 60 or 90 or 180 or 365)) settings.RetentionDays = 90;
         settings.SpeechRate = Math.Clamp(settings.SpeechRate, -10, 10);
         settings.SpeechVolume = Math.Clamp(settings.SpeechVolume, 0, 100);
+        settings.ArticleExportFolder = string.IsNullOrWhiteSpace(settings.ArticleExportFolder) ? AppSettings.DefaultArticleExportFolder : settings.ArticleExportFolder.Trim();
+        settings.ArticleExportFormat = string.Equals(settings.ArticleExportFormat, "rtf", StringComparison.OrdinalIgnoreCase) ? "rtf" : "txt";
         settings.SpeechEngine = SpeechEngineIds.Normalize(settings.SpeechEngine);
         settings.EspeakVoiceName = string.IsNullOrWhiteSpace(settings.EspeakVoiceName) ? "ro" : settings.EspeakVoiceName;
         settings.EspeakVariant ??= string.Empty;
@@ -2859,12 +3118,23 @@ ContinueCommandHandling:
         settings.NewsBlurPendingFeedDeletions ??= [];
         settings.NewsBlurPendingFeedDeletions.RemoveAll(item => !NewsBlurFeedSnapshotPolicy.IsValidPendingDeletion(item));
         settings.AiInstructions = string.IsNullOrWhiteSpace(settings.AiInstructions) ? "Răspunde în limba interfeței. Fii clar, concis și semnalează incertitudinile." : settings.AiInstructions;
+        settings.AiDefaultProvider = AiProviderIds.Normalize(settings.AiDefaultProvider);
+        settings.OpenAiModel = string.IsNullOrWhiteSpace(settings.OpenAiModel) ? "gpt-6-luna" : settings.OpenAiModel.Trim();
+        settings.MistralModel = string.IsNullOrWhiteSpace(settings.MistralModel) ? "mistral-small-latest" : settings.MistralModel.Trim();
+        settings.DeepSeekModel = string.IsNullOrWhiteSpace(settings.DeepSeekModel) ? "deepseek-flash" : settings.DeepSeekModel.Trim();
         settings.LastFolder = string.IsNullOrWhiteSpace(settings.LastFolder) || settings.LastFolder == "Toate folderele" ? AllFoldersKey : settings.LastFolder;
         settings.LastArticleFilter = string.IsNullOrWhiteSpace(settings.LastArticleFilter) ? "Toate" : settings.LastArticleFilter;
         settings.LastTimeFilter = string.IsNullOrWhiteSpace(settings.LastTimeFilter) ? "Oricând" : settings.LastTimeFilter;
         settings.LastTagFilter = string.IsNullOrWhiteSpace(settings.LastTagFilter) ? "Toate etichetele" : settings.LastTagFilter;
         settings.LastView = string.IsNullOrWhiteSpace(settings.LastView) ? "Folder" : settings.LastView;
         settings.LastPanel = string.IsNullOrWhiteSpace(settings.LastPanel) ? "Articles" : settings.LastPanel;
+        settings.ArticleOpenMode = ArticleOpenModeIds.Normalize(settings.ArticleOpenMode);
+    }
+
+    private static void NormalizeFeedOpenModes(IEnumerable<Feed> feeds)
+    {
+        foreach (var feed in feeds)
+            feed.ArticleOpenMode = ArticleOpenModeIds.Normalize(feed.ArticleOpenMode);
     }
 
     private static SpeechConfiguration SpeechConfigurationFromSettings(AppSettings settings) => new(
@@ -2903,6 +3173,7 @@ ContinueCommandHandling:
         var previousName = feed.Name;
         var previousUrl = feed.Url;
         var previousFolder = feed.Folder;
+        var previousArticleOpenMode = feed.ArticleOpenMode;
         var previousNewsBlurFeedId = feed.NewsBlurFeedId;
         var previousNewsBlurLastName = feed.NewsBlurLastName;
         var previousNewsBlurLastFolder = feed.NewsBlurLastFolder;
@@ -2929,6 +3200,7 @@ ContinueCommandHandling:
         feed.Name = dialog.FeedName;
         feed.Url = dialog.FeedUrl;
         feed.Folder = dialog.FolderName;
+        feed.ArticleOpenMode = dialog.SelectedArticleOpenMode;
         try
         {
             await _store.SaveAsync(_feeds);
@@ -2940,6 +3212,7 @@ ContinueCommandHandling:
             feed.Name = previousName;
             feed.Url = previousUrl;
             feed.Folder = previousFolder;
+            feed.ArticleOpenMode = previousArticleOpenMode;
             feed.NewsBlurFeedId = previousNewsBlurFeedId;
             feed.NewsBlurLastName = previousNewsBlurLastName;
             feed.NewsBlurLastFolder = previousNewsBlurLastFolder;
@@ -3341,6 +3614,9 @@ ContinueCommandHandling:
             RetryFailedMenuItem.IsEnabled = true;
             PlayNewsBlurRefreshAlert(outcome);
         }
+
+        if (outcome.IsReady && !string.IsNullOrWhiteSpace(outcome.CompletionSummary))
+            Say(outcome.CompletionSummary);
     }
 
     private void PlayNewsBlurRefreshAlert(NewsBlurSyncOutcome outcome)
@@ -3395,6 +3671,7 @@ ContinueCommandHandling:
                 try
                 {
                     var downloaded = DuplicateCleaner.DeduplicateArticles(await _rss.LoadAsync(feed.Url, _refreshCancellation.Token), out _);
+                    ArticleRules.SeedExisting(feed);
                     var old = feed.Articles
                         .Where(article => !string.IsNullOrWhiteSpace(article.Id))
                         .GroupBy(article => article.Id, StringComparer.OrdinalIgnoreCase)
@@ -3407,6 +3684,16 @@ ContinueCommandHandling:
                         article.Tags = old[article.Id].Tags ?? [];
                         article.AiNotes = old[article.Id].AiNotes ?? [];
                         article.FullContent = old[article.Id].FullContent;
+                        article.AutomationPendingNewsBlurBaseline = old[article.Id].AutomationPendingNewsBlurBaseline;
+                        article.AutomationAddedReadLater = old[article.Id].AutomationAddedReadLater;
+                        article.NewsBlurStoryHash = old[article.Id].NewsBlurStoryHash;
+                        article.NewsBlurLastRead = old[article.Id].NewsBlurLastRead;
+                        article.NewsBlurLastStarred = old[article.Id].NewsBlurLastStarred;
+                        article.NewsBlurLastTags = old[article.Id].NewsBlurLastTags;
+                        article.NewsBlurLastLocalRead = old[article.Id].NewsBlurLastLocalRead;
+                        article.NewsBlurLastLocalStarred = old[article.Id].NewsBlurLastLocalStarred;
+                        article.NewsBlurLastLocalTags = old[article.Id].NewsBlurLastLocalTags;
+                        article.NewsBlurLastLocalSaved = old[article.Id].NewsBlurLastLocalSaved;
                     }
                     var accepted = downloaded;
                     if (_settings.AutoCleanupEnabled)
@@ -3425,6 +3712,7 @@ ContinueCommandHandling:
                         .Where(article => !accepted.Any(current => string.Equals(current.Id, article.Id, StringComparison.OrdinalIgnoreCase)))
                         .ToList();
                     accepted.AddRange(preservedNewsBlur);
+                    foreach (var article in accepted) ArticleRules.ApplyIncoming(_settings.ArticleRules, feed, article);
                     var newlyReceived = accepted.Count(article => !old.ContainsKey(article.Id));
                     articlesAdded += newlyReceived;
                     feed.Articles = accepted;
@@ -3532,7 +3820,9 @@ ContinueCommandHandling:
         _suppressFolderFilter = true;
         var priorFolder = SelectedFolder();
         var folders = _feeds.Select(feed => feed.Folder).Where(folder => !string.IsNullOrWhiteSpace(folder)).Distinct(StringComparer.CurrentCultureIgnoreCase).OrderBy(folder => folder).ToList();
-        var folderChoices = folders.Select(folder => new FolderChoice(folder, folder)).Prepend(new FolderChoice(AllFoldersKey, T("Toate folderele"))).ToList();
+        var folderChoices = folders.Select(folder => new FolderChoice(folder, folder))
+            .Prepend(new FolderChoice(AllFoldersKey, T("Toate folderele")))
+            .ToList();
         FolderFilter.ItemsSource = folderChoices;
         SelectFolder(priorFolder);
         var displayed = DisplayedFeeds(SelectedFolder());
@@ -3915,6 +4205,27 @@ ContinueCommandHandling:
     private async void RemoveSelectedFavorites_Click(object sender, RoutedEventArgs e) => await ChangeSelectedArticlesAsync(article => article.IsFavorite = false, T("Articole eliminate din favorite"));
     private async void AddSelectedReadLater_Click(object sender, RoutedEventArgs e) => await ChangeSelectedArticlesAsync(article => article.ReadLater = true, T("Articole adăugate pentru mai târziu"));
     private async void RemoveSelectedReadLater_Click(object sender, RoutedEventArgs e) => await ChangeSelectedArticlesAsync(article => article.ReadLater = false, T("Articole eliminate din mai târziu"));
+    private void SaveArticleDefault_Click(object sender, RoutedEventArgs e) => SaveArticleWithFormat(_settings.ArticleExportFormat);
+    private void SaveArticleAsTxt_Click(object sender, RoutedEventArgs e) => SaveArticleWithFormat("txt");
+    private void SaveArticleAsRtf_Click(object sender, RoutedEventArgs e) => SaveArticleWithFormat("rtf");
+    private void SaveArticleWithFormat(string? format)
+    {
+        var article = _article ?? Articles.SelectedItem as Article;
+        if (article is null) { Say(T("Alege mai întâi un articol.")); return; }
+        var content = string.IsNullOrWhiteSpace(Reader.Text) ? article.FullContent ?? article.Content : Reader.Text;
+        var context = CreateArticleDistributionContext(article, content);
+        var translationNote = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        try
+        {
+            var path = ArticleExportService.Save(article, context, _settings.ArticleExportFolder, article.SourceName, format ?? "txt",
+                T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"), translationNote);
+            Say(F("Articol salvat: {0}", path));
+        }
+        catch (Exception exception)
+        {
+            Say(F("Articolul nu a putut fi salvat: {0}", Describe(exception)));
+        }
+    }
     private void CopySelection_Click(object sender, RoutedEventArgs e)
     {
         if (string.IsNullOrEmpty(Reader.SelectedText)) { Say("Nu există text selectat pentru copiere."); return; }
@@ -3923,7 +4234,10 @@ ContinueCommandHandling:
     private void CopyFullArticle_Click(object sender, RoutedEventArgs e)
     {
         if (_article is null) { Say("Alege mai întâi un articol."); return; }
-        Clipboard.SetText($"{_article.Title}{Environment.NewLine}{Environment.NewLine}{Reader.Text}"); Say("Articolul complet a fost copiat în clipboard.");
+        var context = CreateArticleDistributionContext(_article, Reader.Text);
+        var note = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        Clipboard.SetText(ArticleSharing.BuildShareText(context, note, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:")));
+        Say(T("Articolul complet a fost copiat în clipboard."));
     }
     private void CopyArticleLink_Click(object sender, RoutedEventArgs e)
     {
@@ -3933,8 +4247,11 @@ ContinueCommandHandling:
     private void ShareByEmail_Click(object sender, RoutedEventArgs e)
     {
         if (_article is null) { Say("Alege mai întâi un articol."); return; }
-        var shareText = ArticleSharing.BuildShareText(_article.Title, Reader.Text, _article.Link);
-        var body = ArticleSharing.LimitForUri(shareText, ArticleSharing.EmailBodyLimit);
+        var context = CreateArticleDistributionContext(_article, Reader.Text);
+        var translationNote = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        var footer = ArticleSharing.BuildFooter(context, translationNote, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
+        var shareText = ArticleSharing.BuildShareText(context, translationNote, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
+        var body = ArticleSharing.LimitForUri(shareText, ArticleSharing.EmailBodyLimit, footer);
         var truncated = !string.Equals(body, shareText, StringComparison.Ordinal);
         if (truncated) Clipboard.SetText(shareText);
         var mailto = ArticleSharing.CreateMailto(_article.Title, body);
@@ -3954,12 +4271,20 @@ ContinueCommandHandling:
     private void ShareByWhatsApp_Click(object sender, RoutedEventArgs e)
     {
         if (_article is null) { Say("Alege mai întâi un articol."); return; }
-        var shareText = ArticleSharing.LimitForUri(ArticleSharing.BuildShareText(_article.Title, Reader.Text, _article.Link), ArticleSharing.WhatsAppBodyLimit);
+        var context = CreateArticleDistributionContext(_article, Reader.Text);
+        var translationNote = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        var footer = ArticleSharing.BuildFooter(context, translationNote, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
+        var fullShareText = ArticleSharing.BuildShareText(context, translationNote, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
+        var shareText = ArticleSharing.LimitForUri(fullShareText, ArticleSharing.WhatsAppBodyLimit, footer);
+        var truncated = !string.Equals(shareText, fullShareText, StringComparison.Ordinal);
+        if (truncated) Clipboard.SetText(fullShareText);
         var address = ArticleSharing.CreateWhatsApp(shareText);
         try
         {
             Process.Start(new ProcessStartInfo(address) { UseShellExecute = true });
-            Say(T("WhatsApp a fost deschis pentru distribuirea articolului."));
+            Say(truncated
+                ? F("{0} {1}", T("WhatsApp a fost deschis pentru distribuirea articolului."), T("Articolul complet a fost copiat în clipboard."))
+                : T("WhatsApp a fost deschis pentru distribuirea articolului."));
         }
         catch (Exception exception)
         {

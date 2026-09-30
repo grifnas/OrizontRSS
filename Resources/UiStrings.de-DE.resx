@@ -151,7 +151,7 @@
     <value>Anwendungseinstellungen</value>
   </data>
   <data name="Setări Inteligență artificială" xml:space="preserve">
-    <value>Einstellungen Künstliche Intelligenz</value>
+    <value>Einstellungen für künstliche Intelligenz</value>
   </data>
   <data name="Istoric stare și erori" xml:space="preserve">
     <value>Status- und Fehlerhistorie</value>
@@ -600,9 +600,7 @@
   <data name="Introdu pagina principală a unei publicații. Orizont caută feedurile declarate și adresele RSS uzuale; fiecare rezultat trebuie verificat înainte de adăugare." xml:space="preserve">
     <value>Geben Sie die Hauptseite einer Publikation ein. Orizont sucht nach deklarierten Feeds und üblichen RSS-Adressen; Jedes Ergebnis muss vor dem Hinzufügen überprüft werden.</value>
   </data>
-  <data name="Istoric stare și erori — Orizont RSS 1.3" xml:space="preserve">
-    <value>Status- und Fehlerverlauf – Orizont RSS 1.3</value>
-  </data>
+
   <data name="Istoric stare și erori, text numai citire" xml:space="preserve">
     <value>Status- und Fehlerhistorie, schreibgeschützter Text</value>
   </data>
@@ -669,9 +667,7 @@
   <data name="Oricând" xml:space="preserve">
     <value>Jederzeit</value>
   </data>
-  <data name="Orizont RSS 1.3" xml:space="preserve">
-    <value>Orizont RSS 1.3</value>
-  </data>
+
   <data name="Păstrează articolele obișnuite timp de" xml:space="preserve">
     <value>Bewahren Sie normale Gegenstände auf</value>
   </data>
@@ -939,7 +935,7 @@
   <data name="Ghid indisponibil" xml:space="preserve">
     <value>Leitfaden nicht verfügbar</value>
   </data>
-  <data name="Ghidul nu a putut fi deschis.&#xA;&#xA;{0}" xml:space="preserve">
+  <data name="Ghidul nu a putut fi deschis.&#10;&#10;{0}" xml:space="preserve">
     <value>Die Anleitung konnte nicht geöffnet werden.
 
 {0}</value>
@@ -1424,7 +1420,7 @@
   <data name=" Vor fi eliminate și {0} copii identice din alte feeduri." xml:space="preserve">
     <value>{0} identische Kopien aus anderen Feeds werden ebenfalls entfernt.</value>
   </data>
-  <data name="{0}&#xA;&#xA;Citește, organizează și înțelege informațiile din sursele tale preferate.&#xA;&#xA;Orizont RSS a fost creat de Grigore Frișan în colaborare cu OpenAI Codex.&#xA;&#xA;F1 deschide ajutorul. Ctrl+Shift+H deschide istoricul stării și al erorilor. Licența completă poate fi deschisă din meniul Ajutor." xml:space="preserve">
+  <data name="{0}&#10;&#10;Citește, organizează și înțelege informațiile din sursele tale preferate.&#10;&#10;Orizont RSS a fost creat de Grigore Frișan în colaborare cu OpenAI Codex.&#10;&#10;F1 deschide ajutorul. Ctrl+Shift+H deschide istoricul stării și al erorilor. Licența completă poate fi deschisă din meniul Ajutor." xml:space="preserve">
     <value>{0}
 
 Lesen, organisieren und verstehen Sie Informationen aus Ihren bevorzugten Quellen.
@@ -1433,7 +1429,7 @@ Orizont RSS wurde von Grigore Frișan in Zusammenarbeit mit OpenAI Codex erstell
 
 F1 öffnet die Hilfe. Ctrl+Shift+H öffnet den Status- und Fehlerverlauf. Die Volllizenz kann über das Hilfemenü geöffnet werden.</value>
   </data>
-  <data name="{0}&#xA;&#xA;Stare: {1}&#xA;Folder: {2}&#xA;Adresă: {3}&#xA;Articole salvate: {4}&#xA;Erori consecutive: {5}&#xA;Ultima actualizare reușită: {6}&#xA;Ultimul articol primit: {7}&#xA;{8}" xml:space="preserve">
+  <data name="{0}&#10;&#10;Stare: {1}&#10;Folder: {2}&#10;Adresă: {3}&#10;Articole salvate: {4}&#10;Erori consecutive: {5}&#10;Ultima actualizare reușită: {6}&#10;Ultimul articol primit: {7}&#10;{8}" xml:space="preserve">
     <value>{0}
 
 Status: {1}
@@ -1445,12 +1441,12 @@ Letztes erfolgreiches Update: {6}
 Letzter Artikel erhalten: {7}
 {8}</value>
   </data>
-  <data name="Această adresă este deja folosită de feedul „{0}”, în folderul „{1}”.&#xA;&#xA;Orizont RSS nu permite adăugarea aceluiași feed de două ori." xml:space="preserve">
+  <data name="Această adresă este deja folosită de feedul „{0}”, în folderul „{1}”.&#10;&#10;Orizont RSS nu permite adăugarea aceluiași feed de două ori." xml:space="preserve">
     <value>Diese Adresse wird bereits vom Feed „{0}“ im Ordner „{1}“ verwendet.
 
 Orizont RSS erlaubt nicht, denselben Feed zweimal hinzuzufügen.</value>
   </data>
-  <data name="Aceste feeduri au adrese diferite, dar {0} din {1} articole ale feedului mai mic sunt comune, adică {2}%.&#xA;&#xA;PRIMUL: {3}&#xA;Folder: {4}&#xA;Adresă: {5}&#xA;&#xA;AL DOILEA: {6}&#xA;Folder: {7}&#xA;Adresă: {8}&#xA;&#xA;Alege:&#xA;DA = păstrează primul și elimină al doilea;&#xA;NU = păstrează al doilea și elimină primul;&#xA;ANULEAZĂ = păstrează ambele." xml:space="preserve">
+  <data name="Aceste feeduri au adrese diferite, dar {0} din {1} articole ale feedului mai mic sunt comune, adică {2}%.&#10;&#10;PRIMUL: {3}&#10;Folder: {4}&#10;Adresă: {5}&#10;&#10;AL DOILEA: {6}&#10;Folder: {7}&#10;Adresă: {8}&#10;&#10;Alege:&#10;DA = păstrează primul și elimină al doilea;&#10;NU = păstrează al doilea și elimină primul;&#10;ANULEAZĂ = păstrează ambele." xml:space="preserve">
     <value>Diese Feeds haben unterschiedliche Adressen, aber {0} von {1} Elementen im kleineren Feed sind gemeinsam, also {2} %.
 
 ZUERST: {3}
@@ -1469,7 +1465,7 @@ CANCEL = beide behalten.</value>
   <data name="Adresă deja abonată" xml:space="preserve">
     <value>Adresse bereits abonniert</value>
   </data>
-  <data name="Adresa introdusă este deja folosită de feedul „{0}”, din folderul „{1}”.&#xA;&#xA;Feedul curent nu a fost modificat." xml:space="preserve">
+  <data name="Adresa introdusă este deja folosită de feedul „{0}”, din folderul „{1}”.&#10;&#10;Feedul curent nu a fost modificat." xml:space="preserve">
     <value>Die von Ihnen eingegebene Adresse wird bereits vom Feed „{0}“ im Ordner „{1}“ verwendet.
 
 Der aktuelle Feed wurde nicht geändert.</value>
@@ -1486,7 +1482,7 @@ Der aktuelle Feed wurde nicht geändert.</value>
   <data name="AI — stare comandă" xml:space="preserve">
     <value>AI – Befehlsstatus</value>
   </data>
-  <data name="Aplicația de e-mail nu a putut fi deschisă.&#xA;&#xA;{0}" xml:space="preserve">
+  <data name="Aplicația de e-mail nu a putut fi deschisă.&#10;&#10;{0}" xml:space="preserve">
     <value>Die E-Mail-Anwendung konnte nicht geöffnet werden.
 
 {0}</value>
@@ -1497,7 +1493,7 @@ Der aktuelle Feed wurde nicht geändert.</value>
   <data name="Articole șterse: {0}." xml:space="preserve">
     <value>Gelöschte Elemente: {0}.</value>
   </data>
-  <data name="Articolul nu a putut fi deschis în browser.&#xA;&#xA;{0}" xml:space="preserve">
+  <data name="Articolul nu a putut fi deschis în browser.&#10;&#10;{0}" xml:space="preserve">
     <value>Der Artikel konnte nicht im Browser geöffnet werden.
 
 {0}</value>
@@ -1505,7 +1501,7 @@ Der aktuelle Feed wurde nicht geändert.</value>
   <data name="articolul selectat" xml:space="preserve">
     <value>ausgewähltes Element</value>
   </data>
-  <data name="Au fost găsite:&#xA;&#xA;• {0} grupuri cu aceeași adresă de feed;&#xA;• {1} copii suplimentare de feeduri cu aceeași adresă;&#xA;• {2} copii suplimentare de articole;&#xA;• {3} perechi de feeduri cu cel puțin 90% articole comune.&#xA;&#xA;Duplicatele certe vor fi comasate. Pentru fiecare pereche cu adrese diferite și conținut foarte asemănător, Orizont RSS te va întreba separat ce feed păstrezi. Poți păstra ambele.&#xA;&#xA;Favoritele, articolele pentru mai târziu, etichetele, textele complete și notițele AI vor fi păstrate.&#xA;&#xA;Continui cu verificarea și curățarea?" xml:space="preserve">
+  <data name="Au fost găsite:&#10;&#10;• {0} grupuri cu aceeași adresă de feed;&#10;• {1} copii suplimentare de feeduri cu aceeași adresă;&#10;• {2} copii suplimentare de articole;&#10;• {3} perechi de feeduri cu cel puțin 90% articole comune.&#10;&#10;Duplicatele certe vor fi comasate. Pentru fiecare pereche cu adrese diferite și conținut foarte asemănător, Orizont RSS te va întreba separat ce feed păstrezi. Poți păstra ambele.&#10;&#10;Favoritele, articolele pentru mai târziu, etichetele, textele complete și notițele AI vor fi păstrate.&#10;&#10;Continui cu verificarea și curățarea?" xml:space="preserve">
     <value>Gefunden:
 
 • {0} Gruppen mit derselben Feed-Adresse;
@@ -1546,7 +1542,7 @@ Favoriten, Elemente für später, Tags, Volltexte und KI-Notizen bleiben erhalte
   <data name="Confirmă ștergerea folderului" xml:space="preserve">
     <value>Bestätigen Sie das Löschen des Ordners</value>
   </data>
-  <data name="Curățarea s-a încheiat.&#xA;&#xA;Feeduri eliminate prin comasare: {0}.&#xA;Articole duplicate eliminate: {1}.&#xA;Perechi de feeduri suprapuse păstrate sau ignorate: {2}.&#xA;&#xA;Marcajele și notițele articolelor au fost păstrate." xml:space="preserve">
+  <data name="Curățarea s-a încheiat.&#10;&#10;Feeduri eliminate prin comasare: {0}.&#10;Articole duplicate eliminate: {1}.&#10;Perechi de feeduri suprapuse păstrate sau ignorate: {2}.&#10;&#10;Marcajele și notițele articolelor au fost păstrate." xml:space="preserve">
     <value>Die Reinigung ist abgeschlossen.
 
 Durch Zusammenführen entfernte Feeds: {0}.
@@ -1570,17 +1566,17 @@ Artikelmarkierungen und Notizen sind erhalten geblieben.</value>
   <data name="feedul „{0}”" xml:space="preserve">
     <value>Feed „{0}“</value>
   </data>
-  <data name="Feedul a rămas nemodificat deoarece datele nu au putut fi salvate.&#xA;&#xA;{0}" xml:space="preserve">
+  <data name="Feedul a rămas nemodificat deoarece datele nu au putut fi salvate.&#10;&#10;{0}" xml:space="preserve">
     <value>Der Feed blieb unverändert, da die Daten nicht gespeichert werden konnten.
 
 {0}</value>
   </data>
-  <data name="Feedul nu a fost adăugat deoarece datele nu au putut fi salvate.&#xA;&#xA;{0}" xml:space="preserve">
+  <data name="Feedul nu a fost adăugat deoarece datele nu au putut fi salvate.&#10;&#10;{0}" xml:space="preserve">
     <value>Der Feed wurde nicht hinzugefügt, da die Daten nicht gespeichert werden konnten.
 
 {0}</value>
   </data>
-  <data name="Feedurile nu au putut fi salvate. Aplicația rămâne deschisă ca să nu pierzi modificările.&#xA;&#xA;{0}" xml:space="preserve">
+  <data name="Feedurile nu au putut fi salvate. Aplicația rămâne deschisă ca să nu pierzi modificările.&#10;&#10;{0}" xml:space="preserve">
     <value>Feeds konnten nicht gespeichert werden. Die App bleibt geöffnet, sodass Ihre Änderungen nicht verloren gehen.
 
 {0}</value>
@@ -1588,7 +1584,7 @@ Artikelmarkierungen und Notizen sind erhalten geblieben.</value>
   <data name="Fișierul LICENSE nu a putut fi găsit. Copiază din nou toate fișierele distribuției Orizont RSS." xml:space="preserve">
     <value>Die LICENSE-Datei konnte nicht gefunden werden. Kopieren Sie alle Dateien der Orizont RSS-Distribution erneut.</value>
   </data>
-  <data name="Ghidul utilizatorului nu a putut fi deschis.&#xA;&#xA;{0}" xml:space="preserve">
+  <data name="Ghidul utilizatorului nu a putut fi deschis.&#10;&#10;{0}" xml:space="preserve">
     <value>Das Benutzerhandbuch konnte nicht geöffnet werden.
 
 {0}</value>
@@ -1596,7 +1592,7 @@ Artikelmarkierungen und Notizen sind erhalten geblieben.</value>
   <data name="Licență indisponibilă" xml:space="preserve">
     <value>Lizenz nicht verfügbar</value>
   </data>
-  <data name="Licența nu a putut fi deschisă.&#xA;&#xA;{0}" xml:space="preserve">
+  <data name="Licența nu a putut fi deschisă.&#10;&#10;{0}" xml:space="preserve">
     <value>Die Lizenz konnte nicht geöffnet werden.
 
 {0}</value>
@@ -1613,7 +1609,7 @@ Artikelmarkierungen und Notizen sind erhalten geblieben.</value>
   <data name="niciodată" xml:space="preserve">
     <value>niemals</value>
   </data>
-  <data name="Nu au fost găsite feeduri duplicate și nici articole duplicate în interiorul feedurilor.&#xA;&#xA;Articolele asemănătoare publicate de surse diferite nu sunt considerate duplicate." xml:space="preserve">
+  <data name="Nu au fost găsite feeduri duplicate și nici articole duplicate în interiorul feedurilor.&#10;&#10;Articolele asemănătoare publicate de surse diferite nu sunt considerate duplicate." xml:space="preserve">
     <value>Keine doppelten Feeds oder doppelten Artikel in Feeds gefunden.
 
 Ähnliche Artikel, die von verschiedenen Quellen veröffentlicht wurden, gelten nicht als Duplikate.</value>
@@ -1627,7 +1623,7 @@ Artikelmarkierungen und Notizen sind erhalten geblieben.</value>
   <data name="Oprește actualizarea" xml:space="preserve">
     <value>Stoppen Sie das Update</value>
   </data>
-  <data name="Orizont RSS {0}&#xA;Ediție compilată la {1}&#xA;Windows pe 64 de biți&#xA;Copyright © 2026 Grigore Frișan&#xA;Creat în colaborare cu OpenAI Codex&#xA;Licență: GNU GPL versiunea 3 sau ulterioară" xml:space="preserve">
+  <data name="Orizont RSS {0}&#10;Ediție compilată la {1}&#10;Windows pe 64 de biți&#10;Copyright © 2026 Grigore Frișan&#10;Creat în colaborare cu OpenAI Codex&#10;Licență: GNU GPL versiunea 3 sau ulterioară" xml:space="preserve">
     <value>Orizont RSS {0}
 Ausgabe zusammengestellt unter {1}
 64-Bit-Windows
@@ -1635,7 +1631,7 @@ Copyright © 2026 Grigore Frișan
 Erstellt in Zusammenarbeit mit dem OpenAI Codex
 Lizenz: GNU GPL Version 3 oder höher</value>
   </data>
-  <data name="Orizont RSS nu a putut încărca în siguranță datele locale și se va închide fără să le suprascrie.&#xA;&#xA;Detalii: {0}" xml:space="preserve">
+  <data name="Orizont RSS nu a putut încărca în siguranță datele locale și se va închide fără să le suprascrie.&#10;&#10;Detalii: {0}" xml:space="preserve">
     <value>Orizont RSS konnte die lokalen Daten nicht sicher laden und wird beendet, ohne sie zu überschreiben.
 
 Details: {0}</value>
@@ -1692,7 +1688,7 @@ Details: {0}</value>
     <value>Dies ist die ausgewählte Stimme für Orizont RSS.</value>
   </data>
   <data name="Articol: {0}{1}Adresă: {2}{1}Tip răspuns AI: {3}{1}Generat/exportat: {4}{1}{1}{5}" xml:space="preserve">
-    <value>Element: {0}{1}Adresse: {2}{1}KI-Antworttyp: {3}{1}Generiert/exportiert: {4}{1}{1}{5}</value>
+    <value>Artikel: {0}{1}Adresse: {2}{1}KI-Antworttyp: {3}{1}Erstellt/exportiert: {4}{1}{1}{5}</value>
   </data>
   <data name="Au fost găsite {0} voci SAPI5 instalate." xml:space="preserve">
     <value>Es wurden {0} SAPI5-Stimmen installiert.</value>
@@ -1787,7 +1783,7 @@ Details: {0}</value>
   <data name="Nu există încă un răspuns de trimis." xml:space="preserve">
     <value>Es liegt noch keine Antwort zum Senden vor.</value>
   </data>
-  <data name="Pagina Google AI Studio nu a putut fi deschisă.&#xA;&#xA;{0}" xml:space="preserve">
+  <data name="Pagina Google AI Studio nu a putut fi deschisă.&#10;&#10;{0}" xml:space="preserve">
     <value>Die Google AI Studio-Seite konnte nicht geöffnet werden.
 
 {0}</value>
@@ -1834,7 +1830,7 @@ Details: {0}</value>
   <data name="Vocea nu a putut fi testată." xml:space="preserve">
     <value>Die Stimme konnte nicht getestet werden.</value>
   </data>
-  <data name="&#xA;&#xA;Un raport tehnic a fost salvat în:&#xA;{0}" xml:space="preserve">
+  <data name="&#10;&#10;Un raport tehnic a fost salvat în:&#10;{0}" xml:space="preserve">
     <value>Ein technischer Bericht wurde gespeichert in:
 {0}</value>
   </data>
@@ -1910,7 +1906,7 @@ Details: {0}</value>
   <data name="Orizont RSS — raport de eroare neașteptată" xml:space="preserve">
     <value>Orizont RSS – unerwarteter Fehlerbericht</value>
   </data>
-  <data name="Orizont RSS a întâmpinat o eroare neașteptată și a oprit comanda curentă. Este posibil ca ultima modificare să nu fi fost salvată.&#xA;&#xA;Închide și redeschide aplicația înainte de a repeta operația.&#xA;&#xA;Detalii: {0}{1}" xml:space="preserve">
+  <data name="Orizont RSS a întâmpinat o eroare neașteptată și a oprit comanda curentă. Este posibil ca ultima modificare să nu fi fost salvată.&#10;&#10;Închide și redeschide aplicația înainte de a repeta operația.&#10;&#10;Detalii: {0}{1}" xml:space="preserve">
     <value>Orizont RSS hat einen unerwarteten Fehler festgestellt und den aktuellen Befehl gestoppt. Die letzte Änderung wurde möglicherweise nicht gespeichert.
 
 Schließen Sie die Anwendung und öffnen Sie sie erneut, bevor Sie den Vorgang wiederholen.
@@ -1953,7 +1949,7 @@ Details: {0}{1}</value>
   <data name="Adresa nu conține un flux RSS sau Atom cu articole." xml:space="preserve">
     <value>Die Adresse enthält keinen RSS- oder Atom-Stream mit Elementen.</value>
   </data>
-  <data name="Articol: {0}&#xA;Feed: {1}&#xA;Sursă: {2}&#xA;Tip: {3}&#xA;Salvat: {4}&#xA;&#xA;{5}" xml:space="preserve">
+  <data name="Articol: {0}&#10;Feed: {1}&#10;Sursă: {2}&#10;Tip: {3}&#10;Salvat: {4}&#10;&#10;{5}" xml:space="preserve">
     <value>Artikel: {0}
 Feed: {1}
 Quelle: {2}
@@ -2052,7 +2048,7 @@ Gespeichert: {4}
   <data name="Gemini a refuzat comanda. Verifică cheia API, proiectul Google și permisiunile. Detalii server: {0}" xml:space="preserve">
     <value>Gemini lehnte die Bestellung ab. Überprüfen Sie Ihren API-Schlüssel, Ihr Google-Projekt und Ihre Berechtigungen. Serverdetails: {0}</value>
   </data>
-  <data name="Gemini nu a putut executa comanda „{0}”.&#xA;&#xA;Detalii: {1}" xml:space="preserve">
+  <data name="Gemini nu a putut executa comanda „{0}”.&#10;&#10;Detalii: {1}" xml:space="preserve">
     <value>Gemini konnte den Befehl „{0}“ nicht ausführen.
 
 Details: {1}</value>
@@ -2210,7 +2206,7 @@ Details: {1}</value>
   <data name="Vocea motorului vocal" xml:space="preserve">
     <value>Stimme der Sprach-Engine</value>
   </data>
-  <data name="Articolul nu a putut fi deschis în modul Citire.&#xA;&#xA;{0}" xml:space="preserve">
+  <data name="Articolul nu a putut fi deschis în modul Citire.&#10;&#10;{0}" xml:space="preserve">
     <value>Der Artikel konnte nicht im Lesemodus geöffnet werden.
 
 {0}</value>
@@ -2230,7 +2226,7 @@ Details: {1}</value>
   <data name="Pagina originală a articolului a fost deschisă în browserul implicit." xml:space="preserve">
     <value>Die ursprüngliche Artikelseite wurde im Standardbrowser geöffnet.</value>
   </data>
-  <data name="Pagina originală nu a putut fi deschisă în browser.&#xA;&#xA;{0}" xml:space="preserve">
+  <data name="Pagina originală nu a putut fi deschisă în browser.&#10;&#10;{0}" xml:space="preserve">
     <value>Die Originalseite konnte im Browser nicht geöffnet werden.
 
 {0}</value>
@@ -2347,24 +2343,24 @@ Details: {1}</value>
     <value>Die Ordnerauswahl ist nicht verfügbar, während aufmerksamkeitsstarke Feeds angezeigt werden. Drücken Sie die Taste, um zu den Ordnern zurückzukehren.</value>
   </data>
   <data name="Alege mai întâi un articol pentru traducerea locală." xml:space="preserve">
-    <value>Alege mai întâi un articol pentru traducerea locală.</value>
+    <value>Wählen Sie zuerst einen Artikel für die lokale Übersetzung.</value>
   </data>
   <data name="Articolul este deschis în cititorul Orizont." xml:space="preserve">
-    <value>Articolul este deschis în cititorul Orizont.</value>
+    <value>Artikel im Orizont-Leser geöffnet.</value>
   </data>
-  <data name="Articolul nu a putut fi deschis în cititorul Orizont.&#xA;&#xA;{0}" xml:space="preserve">
-    <value>Articolul nu a putut fi deschis în cititorul Orizont.
+  <data name="Articolul nu a putut fi deschis în cititorul Orizont.&#10;&#10;{0}" xml:space="preserve">
+    <value>Artikel konnte im Orizont-Leser nicht geöffnet werden.
 
 {0}</value>
   </data>
   <data name="Articolul nu a putut fi deschis în cititorul Orizont: {0}" xml:space="preserve">
-    <value>Articolul nu a putut fi deschis în cititorul Orizont: {0}</value>
+    <value>Artikel konnte im Orizont-Leser nicht geöffnet werden: {0}</value>
   </data>
   <data name="Articolul nu conține text pentru traducerea locală." xml:space="preserve">
-    <value>Articolul nu conține text pentru traducerea locală.</value>
+    <value>Artikel enthält keinen Text für die lokale Übersetzung.</value>
   </data>
   <data name="Citește acum: {0} articole noi din ultimele {1} zile, favorite și articole pentru mai târziu." xml:space="preserve">
-    <value>Citește acum: {0} articole noi din ultimele {1} zile, favorite și articole pentru mai târziu.</value>
+    <value>Jetzt lesen: {0} neue Artikel der letzten {1} Tage, Favoriten und Artikel zum späteren Lesen.</value>
   </data>
   <data name="Deutsch" xml:space="preserve">
     <value>German</value>
@@ -2379,77 +2375,65 @@ Details: {1}</value>
     <value>Français</value>
   </data>
   <data name="Limba sursă a articolelor" xml:space="preserve">
-    <value>Limba sursă a articolelor</value>
+    <value>Ausgangssprache der Artikel</value>
   </data>
   <data name="Pagina nu a putut fi reîmprospătată; se folosește ultima versiune salvată a articolului." xml:space="preserve">
-    <value>Pagina nu a putut fi reîmprospătată; se folosește ultima versiune salvată a articolului.</value>
+    <value>Seite konnte nicht aktualisiert werden; letzte gespeicherte Artikelversion wird verwendet.</value>
   </data>
   <data name="Português" xml:space="preserve">
     <value>Português</value>
   </data>
   <data name="Română" xml:space="preserve">
-    <value>Română</value>
+    <value>Rumänisch</value>
   </data>
   <data name="Se pregătește articolul în cititorul Orizont." xml:space="preserve">
-    <value>Se pregătește articolul în cititorul Orizont.</value>
+    <value>Artikel wird im Orizont-Leser vorbereitet.</value>
   </data>
   <data name="Traducere locală" xml:space="preserve">
-    <value>Traducere locală</value>
+    <value>Lokale Übersetzung</value>
   </data>
 
-  <data name="Activează traducerea cu DeepL" xml:space="preserve"><value>Activează traducerea cu DeepL</value></data>
-  <data name="Alege mai întâi un articol pentru traducere." xml:space="preserve"><value>Alege mai întâi un articol pentru traducere.</value></data>
-  <data name="Articolul a fost tradus cu DeepL." xml:space="preserve"><value>Der Artikel wurde mit DeepL Ã¼bersetzt.</value></data>
-  <data name="Articolul nu conține text pentru traducere." xml:space="preserve"><value>Articolul nu conține text pentru traducere.</value></data>
-  <data name="Cheia API DeepL nu a fost acceptată. Verifică cheia și abonamentul API Free. Detalii: {0}" xml:space="preserve"><value>Cheia API DeepL nu a fost acceptată. Verifică cheia și abonamentul API Free. Detalii: {0}</value></data>
-  <data name="Cheia DeepL salvată nu poate fi citită pentru acest cont Windows." xml:space="preserve"><value>Cheia DeepL salvată nu poate fi citită pentru acest cont Windows.</value></data>
-  <data name="Cheia DeepL salvată nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială." xml:space="preserve"><value>Cheia DeepL salvată nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială.</value></data>
-  <data name="Conexiune DeepL reușită. Alege Salvează pentru păstrarea setării." xml:space="preserve"><value>Conexiune DeepL reușită. Alege Salvează pentru păstrarea setării.</value></data>
-  <data name="Conexiune DeepL reușită. Utilizare: {0} din {1} caractere. Alege Salvează pentru păstrarea setării." xml:space="preserve"><value>Conexiune DeepL reușită. Utilizare: {0} din {1} caractere. Alege Salvează pentru păstrarea setării.</value></data>
-  <data name="Conexiunea DeepL a eșuat: {0}" xml:space="preserve"><value>Conexiunea DeepL a eșuat: {0}</value></data>
-  <data name="DeepL a limitat solicitarea sau limita de caractere a fost atinsă. Detalii: {0}" xml:space="preserve"><value>DeepL a limitat solicitarea sau limita de caractere a fost atinsă. Detalii: {0}</value></data>
-  <data name="DeepL a răspuns cu eroarea {0}. Detalii: {1}" xml:space="preserve"><value>DeepL a răspuns cu eroarea {0}. Detalii: {1}</value></data>
-  <data name="DeepL este un serviciu online. Articolul este trimis la DeepL și consumă limita contului API." xml:space="preserve"><value>DeepL este un serviciu online. Articolul este trimis la DeepL și consumă limita contului API.</value></data>
-  <data name="DeepL nu a putut traduce articolul: {0}" xml:space="preserve"><value>DeepL nu a putut traduce articolul: {0}</value></data>
-  <data name="DeepL nu a returnat text tradus." xml:space="preserve"><value>DeepL nu a returnat text tradus.</value></data>
-  <data name="DeepL nu este activat. Deschide Setări, Setări Inteligență artificială, testează cheia DeepL și apasă Salvează." xml:space="preserve"><value>DeepL nu este activat. Deschide Setări, Setări Inteligență artificială, testează cheia DeepL și apasă Salvează.</value></data>
-  <data name="Introdu cheia API DeepL în Setări Inteligență artificială." xml:space="preserve"><value>Introdu cheia API DeepL în Setări Inteligență artificială.</value></data>
-  <data name="Introdu mai întâi cheia API DeepL." xml:space="preserve"><value>Introdu mai întâi cheia API DeepL.</value></data>
-  <data name="Nu există o cheie DeepL salvată. Deschide Setări Inteligență artificială." xml:space="preserve"><value>Nu există o cheie DeepL salvată. Deschide Setări Inteligență artificială.</value></data>
-  
-  <data name="Se testează conexiunea DeepL. Nu este trimis niciun articol." xml:space="preserve"><value>Se testează conexiunea DeepL. Nu este trimis niciun articol.</value></data>
-  <data name="Se traduce articolul cu DeepL în limba interfeței. Așteaptă." xml:space="preserve"><value>Se traduce articolul cu DeepL în limba interfeței. Așteaptă.</value></data>
-  <data name="Test DeepL" xml:space="preserve"><value>Test DeepL</value></data>
-  <data name="Testează conexiunea DeepL" xml:space="preserve"><value>Testează conexiunea DeepL</value></data>
-  <data name="Traduce cu DeepL" xml:space="preserve"><value>Mit DeepL Ã¼bersetzen</value></data>
-  <data name="Traducere cu DeepL" xml:space="preserve"><value>DeepL-Ãœbersetzung</value></data>
-<data name="Pagina DeepL pentru cheia API nu a putut fi deschisă. {0}" xml:space="preserve"><value>Die DeepL-Seite fÃ¼r den API-SchlÃ¼ssel konnte nicht geÃ¶ffnet werden. {0}</value></data><data name="Configurare DeepL: apasă Obține cheie API DeepL, creează contul API Free, deschide API Keys &amp; Limits, creează și copiază cheia aici, apoi testează și salvează." xml:space="preserve"><value>Configurare DeepL: apasă Obține cheie API DeepL, creează contul API Free, deschide API Keys &amp; Limits, creează și copiază cheia aici, apoi testează și salvează.</value></data>  <data name="Distribuie prin WhatsApp" xml:space="preserve">
-    <value>Ãœber WhatsApp teilen</value>
+  <data name="Activează traducerea cu DeepL" xml:space="preserve"><value>DeepL-Übersetzung aktivieren</value></data>
+  <data name="Alege mai întâi un articol pentru traducere." xml:space="preserve"><value>Wählen Sie zuerst einen Artikel zum Übersetzen.</value></data>
+  <data name="Articolul a fost tradus cu DeepL." xml:space="preserve"><value>Der Artikel wurde mit DeepL übersetzt.</value></data>
+  <data name="Articolul nu conține text pentru traducere." xml:space="preserve"><value>Artikel enthält keinen Text zum Übersetzen.</value></data>
+  <data name="Cheia API DeepL nu a fost acceptată. Verifică cheia și abonamentul API Free. Detalii: {0}" xml:space="preserve"><value>DeepL-API-Schlüssel nicht akzeptiert. Schlüssel und API Free-Abonnement prüfen. Details: {0}</value></data>
+  <data name="Cheia DeepL salvată nu poate fi citită pentru acest cont Windows." xml:space="preserve"><value>Gespeicherter DeepL-Schlüssel ist für dieses Windows-Konto nicht lesbar.</value></data>
+  <data name="Cheia DeepL salvată nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială." xml:space="preserve"><value>DeepL-Schlüssel für dieses Windows-Konto nicht lesbar. Geben Sie ihn erneut unter Einstellungen für künstliche Intelligenz ein.</value></data>
+  <data name="Conexiune DeepL reușită. Alege Salvează pentru păstrarea setării." xml:space="preserve"><value>DeepL-Verbindung erfolgreich. Wählen Sie Speichern, um die Einstellung zu behalten.</value></data>
+  <data name="Conexiune DeepL reușită. Utilizare: {0} din {1} caractere. Alege Salvează pentru păstrarea setării." xml:space="preserve"><value>DeepL-Verbindung erfolgreich. Nutzung: {0} von {1} Zeichen. Zum Behalten der Einstellung Speichern wählen.</value></data>
+  <data name="Conexiunea DeepL a eșuat: {0}" xml:space="preserve"><value>DeepL-Verbindung fehlgeschlagen: {0}</value></data>
+  <data name="DeepL a limitat solicitarea sau limita de caractere a fost atinsă. Detalii: {0}" xml:space="preserve"><value>DeepL hat die Anfrage begrenzt oder das Zeichenlimit wurde erreicht. Details: {0}</value></data>
+  <data name="DeepL a răspuns cu eroarea {0}. Detalii: {1}" xml:space="preserve"><value>DeepL meldete Fehler {0}. Details: {1}</value></data>
+  <data name="DeepL este un serviciu online. Articolul este trimis la DeepL și consumă limita contului API." xml:space="preserve"><value>DeepL ist ein Onlinedienst. Der Artikel wird an DeepL gesendet und verbraucht API-Kontingent.</value></data>
+  <data name="DeepL nu a putut traduce articolul: {0}" xml:space="preserve"><value>DeepL konnte den Artikel nicht übersetzen: {0}</value></data>
+  <data name="DeepL nu a returnat text tradus." xml:space="preserve"><value>DeepL hat keinen übersetzten Text geliefert.</value></data>
+  <data name="DeepL nu este activat. Deschide Setări, Setări Inteligență artificială, testează cheia DeepL și apasă Salvează." xml:space="preserve"><value>DeepL ist deaktiviert. Öffnen Sie Einstellungen, Einstellungen für künstliche Intelligenz, testen Sie den DeepL-Schlüssel und speichern Sie.</value></data>
+  <data name="Introdu cheia API DeepL în Setări Inteligență artificială." xml:space="preserve"><value>Geben Sie den DeepL-API-Schlüssel unter Einstellungen für künstliche Intelligenz ein.</value></data>
+  <data name="Introdu mai întâi cheia API DeepL." xml:space="preserve"><value>Geben Sie zuerst den DeepL-API-Schlüssel ein.</value></data>
+  <data name="Nu există o cheie DeepL salvată. Deschide Setări Inteligență artificială." xml:space="preserve"><value>Kein DeepL-Schlüssel gespeichert. Öffnen Sie Einstellungen für künstliche Intelligenz.</value></data>
+
+  <data name="Se testează conexiunea DeepL. Nu este trimis niciun articol." xml:space="preserve"><value>DeepL-Verbindung wird getestet. Kein Artikel wird gesendet.</value></data>
+  <data name="Se traduce articolul cu DeepL în limba interfeței. Așteaptă." xml:space="preserve"><value>Artikel wird mit DeepL in die Oberflächensprache übersetzt. Bitte warten.</value></data>
+  <data name="Test DeepL" xml:space="preserve"><value>DeepL testen</value></data>
+  <data name="Testează conexiunea DeepL" xml:space="preserve"><value>DeepL-Verbindung testen</value></data>
+  <data name="Traduce cu DeepL" xml:space="preserve"><value>Mit DeepL übersetzen</value></data>
+  <data name="Traducere cu DeepL" xml:space="preserve"><value>DeepL-Übersetzung</value></data>
+<data name="Pagina DeepL pentru cheia API nu a putut fi deschisă. {0}" xml:space="preserve"><value>Die DeepL-Seite für den API-Schlüssel konnte nicht geöffnet werden. {0}</value></data><data name="Configurare DeepL: apasă Obține cheie API DeepL, creează contul API Free, deschide API Keys &amp; Limits, creează și copiază cheia aici, apoi testează și salvează." xml:space="preserve"><value>DeepL-Einrichtung: DeepL-API-Schlüssel erhalten wählen, API Free-Konto erstellen, API Keys &amp; Limits öffnen, Schlüssel erstellen und hier einfügen, dann testen und speichern.</value></data>  <data name="Distribuie prin WhatsApp" xml:space="preserve">
+    <value>Über WhatsApp teilen</value>
   </data>
   <data name="WhatsApp a fost deschis pentru distribuirea articolului." xml:space="preserve">
-    <value>WhatsApp wurde zum Teilen des Artikels geÃ¶ffnet.</value>
+    <value>WhatsApp wurde zum Teilen des Artikels geöffnet.</value>
   </data>
   <data name="WhatsApp nu a putut fi deschis: {0}" xml:space="preserve">
-    <value>WhatsApp konnte nicht geÃ¶ffnet werden: {0}</value>
+    <value>WhatsApp konnte nicht geöffnet werden: {0}</value>
   </data>
-  <data name="FereastrÄƒ" xml:space="preserve">
-    <value>Fenster</value>
-  </data>
-  <data name="MaximizeazÄƒ/restabileÈ™te fereastra" xml:space="preserve">
-    <value>Fenster maximieren/wiederherstellen</value>
-  </data>
-  <data name="MaximizeazÄƒ sau restabileÈ™te fereastra." xml:space="preserve">
-    <value>Fenster maximieren oder wiederherstellen.</value>
-  </data>
-  <data name="Deschide SetÄƒri voce." xml:space="preserve">
-    <value>Spracheinstellungen Ã¶ffnen.</value>
-  </data>
-  <data name="Fereastra a fost maximizatÄƒ." xml:space="preserve">
-    <value>Das Fenster wurde maximiert.</value>
-  </data>
-  <data name="Fereastra a fost restabilitÄƒ." xml:space="preserve">
-    <value>Das Fenster wurde wiederhergestellt.</value>
-  </data>
+
+
+
+
+
+
   <data name="Nu există articole necitite în lista afișată." xml:space="preserve"><value>In der angezeigten Liste gibt es keine ungelesenen Artikel.</value></data>
   <data name="Confirmă marcarea ca citite" xml:space="preserve"><value>Als gelesen markieren bestätigen</value></data>
   <data name="{0} articole afișate vor fi marcate ca citite. Continui?" xml:space="preserve"><value>{0} angezeigte Artikel werden als gelesen markiert. Fortfahren?</value></data>
@@ -2536,4 +2520,561 @@ Details: {1}</value>
 <data name="{0} {1}" xml:space="preserve"><value>{0} {1}</value></data><data name="{0} · " xml:space="preserve"><value>{0} · </value></data><data name="{0}: " xml:space="preserve"><value>{0}: </value></data><data name="{0}: {1} articole." xml:space="preserve"><value>{0}: {1} Artikel.</value></data><data name="{0}{1}{2}, folder: {3}, {4} articole" xml:space="preserve"><value>{0}{1}{2}, Ordner: {3}, {4} Artikel</value></data><data name="{0}Folder: {1} · {2} articole" xml:space="preserve"><value>{0}Ordner: {1} · {2} Artikel</value></data><data name="Abonamentele locale sunt deja sincronizate cu NewsBlur. Nu s-a modificat nimic." xml:space="preserve"><value>Lokale Abonnements sind bereits mit NewsBlur synchronisiert. Es wurden keine Änderungen vorgenommen.</value></data><data name="Articolul nu a putut fi reîncărcat: {0}" xml:space="preserve"><value>Der Artikel konnte nicht erneut geladen werden: {0}</value></data><data name="Articolul nu conține text pentru Gemini. Reîncarcă articolul și încearcă din nou." xml:space="preserve"><value>Gemini kann den Artikeltext nicht lesen. Lade den Artikel neu und versuche es erneut.</value></data><data name="Au fost găsite {0} feeduri noi și {1} feeduri de actualizat în NewsBlur. Se așteaptă confirmarea." xml:space="preserve"><value>In NewsBlur wurden {0} neue Feeds und {1} zu aktualisierende Feeds gefunden. Bestätigung steht aus.</value></data><data name="Confirmă sincronizarea NewsBlur" xml:space="preserve"><value>NewsBlur-Synchronisierung bestätigen</value></data><data name="Deschide Setări voce." xml:space="preserve"><value>Spracheinstellungen öffnen.</value></data><data name="Fereastră" xml:space="preserve"><value>Fenster</value></data><data name="Fereastra a fost maximizată." xml:space="preserve"><value>Das Fenster wurde maximiert.</value></data><data name="Fereastra a fost restabilită." xml:space="preserve"><value>Das Fenster wurde wiederhergestellt.</value></data><data name="Gemini nu a putut executa comanda „{0}”. Detalii: {1}" xml:space="preserve"><value>Gemini konnte den Befehl „{0}“ nicht ausführen. Details: {1}</value></data><data name="limba interfeței nu este disponibilă" xml:space="preserve"><value>die Oberflächensprache ist nicht verfügbar</value></data><data name="Maximizează sau restabilește fereastra." xml:space="preserve"><value>Fenster maximieren oder wiederherstellen.</value></data><data name="NewsBlur a raportat {0} abonamente. Vor fi adăugate {1} feeduri noi, actualizate {2} feeduri și create {3} foldere noi. Feedurile locale care lipsesc din NewsBlur vor fi păstrate. Continui?" xml:space="preserve"><value>NewsBlur meldet {0} Abonnements. {1} neue Feeds werden hinzugefügt, {2} Feeds aktualisiert und {3} Ordner erstellt. Lokale Feeds, die in NewsBlur fehlen, bleiben erhalten. Fortfahren?</value></data><data name="NewsBlur nu a returnat un fișier OPML valid." xml:space="preserve"><value>NewsBlur hat keine gültige OPML-Datei zurückgegeben.</value></data><data name="NewsBlur nu este conectat. Deschide Feeduri, Servicii externe, Autentificare NewsBlur." xml:space="preserve"><value>NewsBlur ist nicht verbunden. Öffne Feeds, Externe Dienste, NewsBlur-Anmeldung.</value></data><data name="Notițe AI" xml:space="preserve"><value>KI-Notizen</value></data><data name="Răspunsul AI complet pentru articolul „{0}” a fost copiat în clipboard. Lipește-l în WhatsApp cu Ctrl+V." xml:space="preserve"><value>Die vollständige KI-Antwort zum Artikel „{0}“ wurde in die Zwischenablage kopiert. Füge sie mit Ctrl+V in WhatsApp ein.</value></data><data name="Se sincronizează abonamentele NewsBlur. Așteaptă." xml:space="preserve"><value>NewsBlur-Abonnements werden synchronisiert. Bitte warten.</value></data><data name="Sesiunea NewsBlur nu poate fi citită pentru acest cont Windows. Autentifică-te din nou." xml:space="preserve"><value>Die NewsBlur-Sitzung kann für dieses Windows-Konto nicht gelesen werden. Melde dich erneut an.</value></data><data name="Sincronizare NewsBlur încheiată. Au fost adăugate {0} feeduri și actualizate {1}; feedurile locale au fost păstrate." xml:space="preserve"><value>NewsBlur-Synchronisierung abgeschlossen. {0} Feeds wurden hinzugefügt und {1} aktualisiert; lokale Feeds blieben erhalten.</value></data><data name="Sincronizarea a fost anulată. Nu s-a modificat nimic." xml:space="preserve"><value>Die Synchronisierung wurde abgebrochen. Es wurden keine Änderungen vorgenommen.</value></data><data name="sincronizarea abonamentelor NewsBlur" xml:space="preserve"><value>Synchronisierung der NewsBlur-Abonnements</value></data><data name="Sincronizarea abonamentelor NewsBlur a eșuat." xml:space="preserve"><value>Die Synchronisierung der NewsBlur-Abonnements ist fehlgeschlagen.</value></data><data name="Sincronizarea NewsBlur a eșuat: {0}" xml:space="preserve"><value>NewsBlur-Synchronisierung fehlgeschlagen: {0}</value></data><data name="Titlu: {0}.{1}Data publicării: {2}.{1}{1}{3}" xml:space="preserve"><value>Titel: {0}.{1}Veröffentlichungsdatum: {2}.{1}{1}{3}</value></data><data name="Sincronizează abonamentele NewsBlur" xml:space="preserve"><value>NewsBlur-Abonnements synchronisieren</value></data><data name="Feedurile nu au putut fi salvate: {0}" xml:space="preserve"><value>Die Feeds konnten nicht gespeichert werden: {0}</value></data><data name="NewsBlur nu a returnat articole într-un format valid." xml:space="preserve"><value>NewsBlur hat die Artikel nicht in einem gültigen Format zurückgegeben.</value></data><data name="NewsBlur nu a returnat un răspuns valid pentru feeduri." xml:space="preserve"><value>NewsBlur hat keine gültige Antwort für Feeds zurückgegeben.</value></data><data name="Nu au fost găsite articole locale care să poată fi asociate cu NewsBlur. Actualizează feedurile locale și încearcă din nou." xml:space="preserve"><value>Es wurden keine lokalen Artikel gefunden, die NewsBlur zugeordnet werden können. Aktualisiere die lokalen Feeds und versuche es erneut.</value></data><data name="Se sincronizează articolele și stările NewsBlur. Prima rulare stabilește baza fără să suprascrie stări." xml:space="preserve"><value>NewsBlur-Artikel und -Status werden synchronisiert. Beim ersten Durchlauf wird die Ausgangsbasis festgelegt, ohne Status zu überschreiben.</value></data><data name="Sincronizare bidirecțională încheiată. {0} articole asociate, {1} stări preluate, {2} stări trimise, {3} conflicte păstrate neschimbate și {4} etichete amânate până la salvarea articolului." xml:space="preserve"><value>Bidirektionale Synchronisierung abgeschlossen. {0} Artikel zugeordnet, {1} Status übernommen, {2} Status gesendet, {3} Konflikte unverändert gelassen und {4} Tags bis zum Speichern des Artikels zurückgestellt.</value></data><data name="Sincronizarea articolelor NewsBlur a eșuat." xml:space="preserve"><value>Die NewsBlur-Artikelsynchronisierung ist fehlgeschlagen.</value></data><data name="Sincronizarea feedului NewsBlur {0} a eșuat: {1}" xml:space="preserve"><value>Synchronisierung des NewsBlur-Feeds {0} fehlgeschlagen: {1}</value></data><data name="sincronizarea stărilor NewsBlur" xml:space="preserve"><value>Synchronisierung des NewsBlur-Status</value></data><data name="Sincronizarea stărilor NewsBlur a eșuat." xml:space="preserve"><value>Die Synchronisierung des NewsBlur-Status ist fehlgeschlagen.</value></data><data name="Sincronizarea stărilor NewsBlur a eșuat: {0}" xml:space="preserve"><value>Synchronisierung des NewsBlur-Status fehlgeschlagen: {0}</value></data><data name="Adresa feedului este obligatorie." xml:space="preserve"><value>Die Feed-Adresse ist erforderlich.</value></data><data name="Articol NewsBlur fără titlu" xml:space="preserve"><value>NewsBlur-Artikel ohne Titel</value></data><data name="Feedul {0} nu a putut fi trimis în NewsBlur: {1}" xml:space="preserve"><value>Feed {0} konnte nicht an NewsBlur gesendet werden: {1}</value></data><data name="Feedul nu a putut fi adăugat în NewsBlur." xml:space="preserve"><value>Der Feed konnte nicht zu NewsBlur hinzugefügt werden.</value></data><data name="Feedurile și folderele sunt deja sincronizate cu NewsBlur. Nu s-a modificat nimic." xml:space="preserve"><value>Feeds und Ordner sind bereits mit NewsBlur synchronisiert. Es wurden keine Änderungen vorgenommen.</value></data><data name="Folderul {0} nu a putut fi creat în NewsBlur: {1}" xml:space="preserve"><value>Der Ordner {0} konnte in NewsBlur nicht erstellt werden: {1}</value></data><data name="Folderul nu a putut fi creat în NewsBlur." xml:space="preserve"><value>Der Ordner konnte in NewsBlur nicht erstellt werden.</value></data><data name="NewsBlur nu a returnat articole pentru feedurile locale. Nu s-a modificat nimic." xml:space="preserve"><value>NewsBlur hat keine Artikel für die lokalen Feeds zurückgegeben. Es wurden keine Änderungen vorgenommen.</value></data><data name="NewsBlur: {0} feeduri cunoscute. Vor fi trimise {1} feeduri locale noi în NewsBlur, importate {2} feeduri noi local și actualizate local {3} feeduri cu numele sau folderul din NewsBlur. Nu se șterge nimic. Continui?" xml:space="preserve"><value>NewsBlur: {0} bekannte Feeds. {1} neue lokale Feeds werden an NewsBlur gesendet, {2} neue Feeds lokal importiert und {3} lokale Feeds mit dem Namen oder Ordner aus NewsBlur aktualisiert. Es wird nichts gelöscht. Fortfahren?</value></data><data name="Se sincronizează feedurile și folderele NewsBlur. Așteaptă." xml:space="preserve"><value>NewsBlur-Feeds und -Ordner werden synchronisiert. Bitte warten.</value></data><data name="Sincronizare bidirecțională încheiată. {0} articole asociate, {1} importate din NewsBlur, {2} baze locale create, {3} stări preluate, {4} stări trimise, {5} conflicte păstrate neschimbate și {6} etichete amânate până la salvarea articolului." xml:space="preserve"><value>Bidirektionale Synchronisierung abgeschlossen. {0} Artikel zugeordnet, {1} aus NewsBlur importiert, {2} lokale Zuordnungen erstellt, {3} Status übernommen, {4} Status gesendet, {5} Konflikte unverändert gelassen und {6} Tags bis zum Speichern des Artikels zurückgestellt.</value></data><data name="Sincronizare feeduri și foldere încheiată. Trimise: {0}, eșuate: {1}, foldere create: {2}, importate local: {3}, actualizate local: {4}. Nu s-a șters nimic." xml:space="preserve"><value>Feed- und Ordnersynchronisierung abgeschlossen. Gesendet: {0}, fehlgeschlagen: {1}, Ordner erstellt: {2}, lokal importiert: {3}, lokal aktualisiert: {4}. Es wurde nichts gelöscht.</value></data><data name="Sincronizare feeduri: {0} de trimis, {1} de importat și {2} de actualizat local. Se așteaptă confirmarea." xml:space="preserve"><value>Feed-Synchronisierung: {0} zu senden, {1} zu importieren und {2} lokal zu aktualisieren. Bestätigung steht aus.</value></data><data name="Sincronizarea feedurilor NewsBlur a eșuat: {0}" xml:space="preserve"><value>NewsBlur-Feed-Synchronisierung fehlgeschlagen: {0}</value></data><data name="sincronizarea feedurilor și folderelor NewsBlur" xml:space="preserve"><value>Synchronisierung der NewsBlur-Feeds und -Ordner</value></data><data name="Articolele salvate în NewsBlur se sincronizează ca" xml:space="preserve"><value>In NewsBlur gespeicherte Artikel werden synchronisiert als</value></data><data name="Maparea articolelor salvate NewsBlur" xml:space="preserve"><value>Zuordnung gespeicherter NewsBlur-Artikel</value></data><data name="Sincronizare NewsBlur" xml:space="preserve"><value>NewsBlur-Synchronisierung</value></data><data name="Stelele NewsBlur sunt articole salvate. Alegerea se aplică la următoarea sincronizare și nu șterge articole locale." xml:space="preserve"><value>NewsBlur-Sterne stehen für gespeicherte Artikel. Diese Auswahl wird bei der nächsten Synchronisierung angewendet und löscht keine lokalen Artikel.</value></data><data name="Intonația vocii eSpeak" xml:space="preserve"><value>eSpeak-Stimmintonation</value></data><data name="Intonația vocii eSpeak, de la 0 la 100" xml:space="preserve"><value>eSpeak-Stimmintonation, von 0 bis 100</value></data><data name="Varianta eSpeak {0} nu este disponibilă. Se folosește vocea de bază {1}." xml:space="preserve"><value>Die eSpeak-Variante {0} ist nicht verfügbar. Die Basisstimme {1} wird verwendet.</value></data><data name="Variantă vocală eSpeak NG" xml:space="preserve"><value>eSpeak-NG-Stimmvariante</value></data><data name="Vocea implicită a limbii" xml:space="preserve"><value>Standardeinstellung für die Sprachvariante</value></data><data name="Au fost găsite {0} voci și {1} variante eSpeak NG incluse." xml:space="preserve"><value>{0} Stimmen und {1} enthaltene eSpeak-NG-Varianten gefunden.</value></data>  <data name="Căutare și filtrare articole" xml:space="preserve"><value>Artikelsuche und -filterung</value></data>
   <data name="Descoperire feeduri noi" xml:space="preserve"><value>Neue Feeds entdecken</value></data>
   <data name="Vizualizări rapide" xml:space="preserve"><value>Schnellansichten</value></data>
+  <data name="Categorii" xml:space="preserve">
+    <value>Kategorien</value>
+  </data>
+  <data name="Categorii setări" xml:space="preserve">
+    <value>Einstellungskategorien</value>
+  </data>
+  <data name="Feeduri și actualizare" xml:space="preserve">
+    <value>Feeds und Aktualisierung</value>
+  </data>
+  <data name="Inteligență artificială și traducere" xml:space="preserve">
+    <value>Künstliche Intelligenz und Übersetzung</value>
+  </data>
+  <data name="Aplicație" xml:space="preserve">
+    <value>Anwendung</value>
+  </data>
+  <data name="Mod implicit de afișare a articolelor" xml:space="preserve">
+    <value>Standardmodus für Artikelanzeige</value>
+  </data>
+  <data name="Text simplu accesibil (cursor text clasic)" xml:space="preserve">
+    <value>Barrierefreier Klartext (klassischer Textcursor)</value>
+  </data>
+  <data name="WebReader (formatat web, navigare Virtual Cursor JAWS/NVDA)" xml:space="preserve">
+    <value>WebReader (Web-formatiert, JAWS/NVDA Virtual-Cursor-Navigation)</value>
+  </data>
+  <data name="Modul text simplu este recomandat pentru navigare tradițională cu săgețile. Modul WebReader permite navigarea prin taste rapide de browser (H pentru titluri, P pentru paragrafe, Tab pentru linkuri). Modul se poate comuta oricând și din fereastra Cititor cu tasta Ctrl+Shift+F8." xml:space="preserve">
+    <value>Der Klartextmodus wird für die herkömmliche Tastaturnavigation mit Pfeiltasten empfohlen. Der WebReader-Modus ermöglicht die Navigation über Browser-Schnelltasten (H für Überschriften, P für Absätze, Tab für Links). Der Modus kann jederzeit auch im Lesefenster mit Ctrl+Shift+F8 umgeschaltet werden.</value>
+  </data>
+  <data name="Preferințe articole" xml:space="preserve">
+    <value>Artikeleinstellungen</value>
+  </data>
+  <data name="Afișează articolele noi în Citește acum pentru" xml:space="preserve">
+    <value>Neue Artikel in &apos;Jetzt lesen&apos; anzeigen für</value>
+  </data>
+  <data name="Perioada articolelor noi în Citește acum" xml:space="preserve">
+    <value>Zeitraum für neue Artikel in &apos;Jetzt lesen&apos;</value>
+  </data>
+  <data name="Favoritele și articolele De citit mai târziu rămân în Citește acum indiferent de vechime, până când le elimini manual." xml:space="preserve">
+    <value>Favoriten und &apos;Später lesen&apos;-Artikel bleiben unabhängig vom Alter in &apos;Jetzt lesen&apos;, bis sie manuell entfernt werden.</value>
+  </data>
+  <data name="Comută modul de citire (Ctrl+Shift+F8)" xml:space="preserve">
+    <value>Lesemodus umschalten (Ctrl+Shift+F8)</value>
+  </data>
+  <data name="Modul de citire a fost comutat la: {0}" xml:space="preserve">
+    <value>Lesemodus gewechselt zu: {0}</value>
+  </data>
+  <data name="WebReader (formatat web)" xml:space="preserve">
+    <value>WebReader (Web-formatiert)</value>
+  </data>
+  <data name="Text simplu accesibil" xml:space="preserve">
+    <value>Barrierefreier Klartext</value>
+  </data>
+  <data name="Comută între vizualizarea text clasică și WebReader (Ctrl+Shift+F8)" xml:space="preserve">
+    <value>Zwischen klassischer Textansicht und WebReader umschalten (Ctrl+Shift+F8)</value>
+  </data>
+  <data name="Componenta de navigare web (WebView2) se inițializează..." xml:space="preserve">
+    <value>Die Web-Browsing-Komponente (WebView2) wird initialisiert...</value>
+  </data>
+  <data name="Componenta web nu s-a putut inițializa: {0}" xml:space="preserve">
+    <value>Die Web-Komponente konnte nicht initialisiert werden: {0}</value>
+  </data>
+  <data name="Eroare inițializare WebReader" xml:space="preserve">
+    <value>Fehler bei der Initialisierung von WebReader</value>
+  </data>
+  <data name="Comută în modul WebReader" xml:space="preserve">
+    <value>In den WebReader-Modus wechseln</value>
+  </data>
+  <data name="Comută în modul text" xml:space="preserve">
+    <value>In den Textmodus wechseln</value>
+  </data>
+  <data name="Se încarcă modul WebReader..." xml:space="preserve">
+    <value>WebReader-Modus wird geladen...</value>
+  </data>
+  <data name="Articolul este afișat în modul WebReader." xml:space="preserve">
+    <value>Der Artikel wird im WebReader-Modus angezeigt.</value>
+  </data>
+  <data name="Modul WebReader nu a putut fi inițializat ({0}); se revine la modul text." xml:space="preserve">
+    <value>Der WebReader-Modus konnte nicht initialisiert werden ({0}); Rückkehr zum Textmodus.</value>
+  </data>
+  <data name="Articolul este afișat în modul text simplu." xml:space="preserve">
+    <value>Der Artikel wird im Klartextmodus angezeigt.</value>
+  </data>
+  <data name="Articol în modul WebReader" xml:space="preserve">
+    <value>Artikel im WebReader-Modus</value>
+  </data>
+  <data name="Folosește tastele de navigare web (H pentru titluri, P pentru paragrafe, Tab pentru linkuri). Shift+F10 deschide comenzile articolului. Ctrl+Shift+F8 comută modul text." xml:space="preserve">
+    <value>Verwenden Sie Web-Navigationstasten (H für Überschriften, P für Absätze, Tab für Links). Umschalt+F10 öffnet die Artikelbefehle. Ctrl+Shift+F8 schaltet in den Textmodus um.</value>
+  </data>
+  <data name="Export articole" xml:space="preserve"><value>Artikel exportieren</value></data>
+  <data name="Folder pentru exportul articolelor" xml:space="preserve"><value>Exportordner für Artikel</value></data>
+  <data name="Folderul implicit este Documente\Orizont RSS\Articole. Poți alege un alt folder." xml:space="preserve"><value>Der Standardordner ist Dokumente\Orizont RSS\Artikel. Sie können einen anderen Ordner wählen.</value></data>
+  <data name="Format implicit pentru export" xml:space="preserve"><value>Standardexportformat</value></data>
+  <data name="Fișier TXT (.txt)" xml:space="preserve"><value>TXT-Datei (.txt)</value></data>
+  <data name="Fișier RTF (.rtf)" xml:space="preserve"><value>RTF-Datei (.rtf)</value></data>
+  <data name="Salvează articolul" xml:space="preserve"><value>Artikel speichern</value></data>
+  <data name="Salvează ca TXT" xml:space="preserve"><value>Als TXT speichern</value></data>
+  <data name="Salvează ca RTF" xml:space="preserve"><value>Als RTF speichern</value></data>
+  <data name="Salvează articolul curent în formatul implicit din folderul de export." xml:space="preserve"><value>Den aktuellen Artikel im Standardformat im Exportordner speichern.</value></data>
+  <data name="Articol salvat: {0}" xml:space="preserve"><value>Artikel gespeichert: {0}</value></data>
+  <data name="Articolul nu a putut fi salvat: {0}" xml:space="preserve"><value>Der Artikel konnte nicht gespeichert werden: {0}</value></data>
+  <data name="La deschiderea articolului" xml:space="preserve"><value>Beim Öffnen des Artikels</value></data>
+  <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Standardmäßiges Öffnen von Artikeln</value></data>
+  <data name="Folosește setarea generală" xml:space="preserve"><value>Allgemeine Einstellung verwenden</value></data>
+  <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Standardmodus im Hauptfenster</value></data>
+  <data name="Alege unde se deschid articolele acestui feed când apeși Enter sau alegi Deschide și citește." xml:space="preserve"><value>Wählen Sie, wo Artikel dieses Feeds bei Eingabe oder Öffnen und Lesen geöffnet werden.</value></data>
+  <data name=" {0} abonamente asociate NewsBlur vor fi dezabonate la următoarea sincronizare a feedurilor." xml:space="preserve"><value> {0} zugeordnete NewsBlur-Abonnements werden bei der nächsten Feed-Synchronisierung entfernt.</value></data>
+  <data name=" {0} articole expirate au fost ignorate local; nu au fost șterse din NewsBlur." xml:space="preserve"><value> {0} abgelaufene Artikel wurden lokal übersprungen, nicht aus NewsBlur gelöscht.</value></data>
+  <data name=" {0} articole obișnuite expirate au fost șterse local; favoritele și articolele pentru mai târziu au fost păstrate." xml:space="preserve"><value> {0} abgelaufene normale Artikel lokal gelöscht; Favoriten und Artikel zum späteren Lesen bleiben erhalten.</value></data>
+  <data name="1 zi" xml:space="preserve"><value>1 Tag</value></data>
+  <data name="14 zile" xml:space="preserve"><value>14 Tage</value></data>
+  <data name="3 zile" xml:space="preserve"><value>3 Tage</value></data>
+  <data name="7 zile" xml:space="preserve"><value>7 Tage</value></data>
+  <data name="Abonamente: {0}&#10;{1}" xml:space="preserve"><value>Abonnements: {0}
+{1}</value></data>
+  <data name="Activează sincronizarea automată NewsBlur" xml:space="preserve"><value>Automatische NewsBlur-Synchronisierung aktivieren</value></data>
+  <data name="Actualizare disponibilă — Orizont RSS" xml:space="preserve"><value>Update verfügbar — Orizont RSS</value></data>
+  <data name="Actualizarea {0} pentru feedul {1} a eșuat; valorile rămân în conflict pentru o nouă încercare. Detalii: {2}" xml:space="preserve"><value>Aktualisierung von {0} für Feed {1} fehlgeschlagen; der Konflikt bleibt für einen neuen Versuch bestehen. Details: {2}</value></data>
+  <data name="Acțiuni conversație AI" xml:space="preserve"><value>KI-Gesprächsaktionen</value></data>
+  <data name="AI și traducere" xml:space="preserve"><value>KI und Übersetzung</value></data>
+  <data name="Alb pe negru" xml:space="preserve"><value>Weiß auf Schwarz</value></data>
+  <data name="Alege o categorie din catalogul verificat sau caută după cuvinte-cheie. Opțional, poți extinde căutarea pe internet." xml:space="preserve"><value>Wählen Sie eine Kategorie im geprüften Katalog oder suchen Sie nach Schlüsselwörtern. Die Suche kann auf das Internet erweitert werden.</value></data>
+  <data name="Amână" xml:space="preserve"><value>Zurückstellen</value></data>
+  <data name="Aplicație la zi" xml:space="preserve"><value>Anwendung aktuell</value></data>
+  <data name="Articol" xml:space="preserve"><value>Artikel</value></data>
+  <data name="Articol în modul cititor" xml:space="preserve"><value>Artikel im Lesemodus</value></data>
+  <data name="articole necitite" xml:space="preserve"><value>ungelesene Artikel</value></data>
+  <data name="Articole necitite NewsBlur" xml:space="preserve"><value>Ungelesene NewsBlur-Artikel</value></data>
+  <data name="articole salvate" xml:space="preserve"><value>gespeicherte Artikel</value></data>
+  <data name="Articole salvate NewsBlur" xml:space="preserve"><value>Gespeicherte NewsBlur-Artikel</value></data>
+  <data name="Articolele NewsBlur sunt șterse numai local; API-ul nu oferă ștergerea individuală pe server." xml:space="preserve"><value>NewsBlur-Artikel werden nur lokal gelöscht; die API unterstützt kein einzelnes Löschen auf dem Server.</value></data>
+  <data name="Articolele primite au fost salvate local, dar unele stări nu au putut fi trimise sau preluate." xml:space="preserve"><value>Empfangene Artikel wurden lokal gespeichert, einige Zustände konnten jedoch nicht gesendet oder abgerufen werden.</value></data>
+  <data name="Aspect și contrast" xml:space="preserve"><value>Darstellung und Kontrast</value></data>
+  <data name="Au fost marcate ca citite articolele din {0} feeduri NewsBlur." xml:space="preserve"><value>Artikel aus {0} NewsBlur-Feeds als gelesen markiert.</value></data>
+  <data name="Așteaptă încheierea sincronizării feedurilor NewsBlur înainte de actualizarea articolelor." xml:space="preserve"><value>Warten Sie vor der Artikelaktualisierung auf das Ende der NewsBlur-Feed-Synchronisierung.</value></data>
+  <data name="Așteaptă încheierea sincronizării feedurilor NewsBlur înainte de sincronizarea articolelor." xml:space="preserve"><value>Warten Sie vor der Artikelsynchronisierung auf das Ende der NewsBlur-Feed-Synchronisierung.</value></data>
+  <data name="Așteaptă încheierea sincronizării NewsBlur înainte de a șterge feeduri." xml:space="preserve"><value>Warten Sie vor dem Löschen von Feeds auf das Ende der NewsBlur-Synchronisierung.</value></data>
+  <data name="Categorie" xml:space="preserve"><value>Kategorie</value></data>
+  <data name="Caută pe internet" xml:space="preserve"><value>Im Internet suchen</value></data>
+  <data name="Caută în catalog" xml:space="preserve"><value>Katalog durchsuchen</value></data>
+  <data name="Cererile de dezabonare rezolvate nu au putut fi scoase din coada locală: {0}" xml:space="preserve"><value>Abgeschlossene Abmeldungen konnten nicht aus der lokalen Warteschlange entfernt werden: {0}</value></data>
+  <data name="Cheie API DeepL" xml:space="preserve"><value>DeepL-API-Schlüssel</value></data>
+  <data name="Citește informațiile și alege o acțiune." xml:space="preserve"><value>Lesen Sie die Informationen und wählen Sie eine Aktion.</value></data>
+  <data name="Cititor" xml:space="preserve"><value>Leser</value></data>
+  <data name="Cititor Orizont" xml:space="preserve"><value>Orizont-Leser</value></data>
+  <data name="Comenzi cititor" xml:space="preserve"><value>Lesebefehle</value></data>
+  <data name="Comenzi conținut articol" xml:space="preserve"><value>Befehle für Artikelinhalt</value></data>
+  <data name="Confirmă marcarea ca citit" xml:space="preserve"><value>Als gelesen markieren bestätigen</value></data>
+  <data name="Conflict NewsBlur pentru {0} în feedul {1}. Se așteaptă alegerea." xml:space="preserve"><value>NewsBlur-Konflikt für {0} im Feed {1}. Auswahl ausstehend.</value></data>
+  <data name="Continuă sincronizarea" xml:space="preserve"><value>Synchronisierung fortsetzen</value></data>
+  <data name="Controlează toate alertele sonore ale actualizării feedurilor." xml:space="preserve"><value>Steuert alle Hinweistöne bei Feed-Aktualisierungen.</value></data>
+  <data name="Conținut preluat prin Orizont RSS:" xml:space="preserve"><value>Inhalt abgerufen mit Orizont RSS:</value></data>
+  <data name="Copiază cu articolul și sursa" xml:space="preserve"><value>Mit Artikel und Quelle kopieren</value></data>
+  <data name="Curățarea nu a putut fi salvată; feedurile și setările au fost păstrate. Detalii: {0}" xml:space="preserve"><value>Bereinigung nicht gespeichert; Feeds und Einstellungen bleiben erhalten. Details: {0}</value></data>
+  <data name="Curăță duplicatele" xml:space="preserve"><value>Duplikate bereinigen</value></data>
+  <data name="Cuvinte-cheie" xml:space="preserve"><value>Schlüsselwörter</value></data>
+  <data name="Decizie NewsBlur" xml:space="preserve"><value>NewsBlur-Entscheidung</value></data>
+  <data name="DeepL" xml:space="preserve"><value>DeepL</value></data>
+  <data name="DeepL setup instructions" xml:space="preserve"><value>DeepL-Einrichtungsanleitung</value></data>
+  <data name="Deschide articolul curățat de reclame și elemente inutile în cititorul integrat Orizont." xml:space="preserve"><value>Öffnet den von Werbung und unnötigen Elementen bereinigten Artikel im integrierten Orizont-Leser.</value></data>
+  <data name="Deschide articolul în cititorul Orizont" xml:space="preserve"><value>Artikel im Orizont-Leser öffnen</value></data>
+  <data name="Deschide articolul în modul Citire al browserului" xml:space="preserve"><value>Artikel im Lesemodus des Browsers öffnen</value></data>
+  <data name="Deschide articolul în modul Citire Microsoft Edge, dacă pagina este compatibilă." xml:space="preserve"><value>Öffnet den Artikel im Microsoft Edge-Lesemodus, sofern die Seite kompatibel ist.</value></data>
+  <data name="Deschide curățarea duplicatelor" xml:space="preserve"><value>Duplikatbereinigung öffnen</value></data>
+  <data name="Deschide pagina versiunii pe GitHub" xml:space="preserve"><value>Versionsseite auf GitHub öffnen</value></data>
+  <data name="Deschide pe GitHub" xml:space="preserve"><value>Auf GitHub öffnen</value></data>
+  <data name="Descărcarea actualizării a eșuat: {0}" xml:space="preserve"><value>Update-Download fehlgeschlagen: {0}</value></data>
+  <data name="Descărcă și instalează" xml:space="preserve"><value>Herunterladen und installieren</value></data>
+  <data name="Descărcă și instalează actualizarea" xml:space="preserve"><value>Update herunterladen und installieren</value></data>
+  <data name="Detaliile deciziei NewsBlur, numai citire" xml:space="preserve"><value>NewsBlur-Entscheidungsdetails, schreibgeschützt</value></data>
+  <data name="Detectare automată" xml:space="preserve"><value>Automatisch erkennen</value></data>
+  <data name="Dezabonarea feedului {0} din NewsBlur a eșuat: {1}" xml:space="preserve"><value>Abmelden des Feeds {0} bei NewsBlur fehlgeschlagen: {1}</value></data>
+  <data name="Distribuie conversația" xml:space="preserve"><value>Gespräch teilen</value></data>
+  <data name="Distribuie întreaga conversație AI prin e-mail" xml:space="preserve"><value>Gesamtes KI-Gespräch per E-Mail teilen</value></data>
+  <data name="Eroare" xml:space="preserve"><value>Fehler</value></data>
+  <data name="Este disponibilă o nouă versiune a aplicației ({0})." xml:space="preserve"><value>Eine neue Anwendungsversion ({0}) ist verfügbar.</value></data>
+  <data name="Este disponibilă o nouă versiune a aplicației ({0}). Versiunea ta curentă este {1}." xml:space="preserve"><value>Eine neue Version ({0}) ist verfügbar. Ihre aktuelle Version ist {1}.</value></data>
+  <data name="Etichete: {0}" xml:space="preserve"><value>Schlagwörter: {0}</value></data>
+  <data name="Există adrese de feed duplicate în lista locală; sincronizarea a fost oprită fără modificări." xml:space="preserve"><value>Doppelte Feed-Adressen in der lokalen Liste; Synchronisierung ohne Änderungen gestoppt.</value></data>
+  <data name="Favorit" xml:space="preserve"><value>Favorit</value></data>
+  <data name="Favorite și De citit mai târziu" xml:space="preserve"><value>Favoriten und Später lesen</value></data>
+  <data name="Feed nefuncțional sau indisponibil: {0}" xml:space="preserve"><value>Feed nicht verfügbar oder fehlerhaft: {0}</value></data>
+  <data name="Feed verificat cu succes: {0} articole disponibile." xml:space="preserve"><value>Feed geprüft: {0} Artikel verfügbar.</value></data>
+  <data name="Feed: {0}. " xml:space="preserve"><value>Feed: {0}. </value></data>
+  <data name="Feedul nu a putut fi dezabonat din NewsBlur." xml:space="preserve"><value>Feed konnte bei NewsBlur nicht abgemeldet werden.</value></data>
+  <data name="Feedul nu a putut fi mutat în NewsBlur." xml:space="preserve"><value>Feed konnte in NewsBlur nicht verschoben werden.</value></data>
+  <data name="Feedul nu a putut fi redenumit în NewsBlur." xml:space="preserve"><value>Feed konnte in NewsBlur nicht umbenannt werden.</value></data>
+  <data name="Feeduri duplicate în lista locală" xml:space="preserve"><value>Doppelte Feeds in der lokalen Liste</value></data>
+  <data name="Feeduri duplicate în răspunsul NewsBlur" xml:space="preserve"><value>Doppelte Feeds in der NewsBlur-Antwort</value></data>
+  <data name="Feedurile locale demonstrative nu se actualizează de pe internet; articolele sunt deja disponibile." xml:space="preserve"><value>Lokale Demo-Feeds werden nicht online aktualisiert; ihre Artikel sind bereits verfügbar.</value></data>
+  <data name="Feedurile NewsBlur nu au putut fi marcate ca citite: {0}" xml:space="preserve"><value>NewsBlur-Feeds konnten nicht als gelesen markiert werden: {0}</value></data>
+  <data name="Feedurile nu au putut fi marcate ca citite în NewsBlur." xml:space="preserve"><value>Feeds konnten in NewsBlur nicht als gelesen markiert werden.</value></data>
+  <data name="Filtru categorie catalog" xml:space="preserve"><value>Katalog-Kategoriefilter</value></data>
+  <data name="Folder {0}, Feed: {1}. " xml:space="preserve"><value>Ordner {0}, Feed: {1}. </value></data>
+  <data name="folderul" xml:space="preserve"><value>Ordner</value></data>
+  <data name="Folderul local al feedului {0} nu a putut fi trimis în NewsBlur: {1}" xml:space="preserve"><value>Lokaler Ordner des Feeds {0} konnte nicht an NewsBlur gesendet werden: {1}</value></data>
+  <data name="Folderul selectat nu are feeduri NewsBlur asociate. Sincronizează mai întâi feedurile și folderele." xml:space="preserve"><value>Der gewählte Ordner enthält keine zugeordneten NewsBlur-Feeds. Synchronisieren Sie zuerst Feeds und Ordner.</value></data>
+  <data name="Folosește NewsBlur" xml:space="preserve"><value>NewsBlur verwenden</value></data>
+  <data name="Folosești deja cea mai recentă versiune Orizont RSS ({0})." xml:space="preserve"><value>Sie verwenden bereits die neueste Orizont RSS-Version ({0}).</value></data>
+  <data name="Galben pe albastru închis" xml:space="preserve"><value>Gelb auf Dunkelblau</value></data>
+  <data name="Google Translate (fără cheie API)" xml:space="preserve"><value>Google Translate (ohne API-Schlüssel)</value></data>
+  <data name="Google Translate a limitat cererile. Încearcă din nou mai târziu." xml:space="preserve"><value>Google Translate hat die Anfragen begrenzt. Versuchen Sie es später erneut.</value></data>
+  <data name="Google Translate nu a putut traduce articolul: {0}" xml:space="preserve"><value>Google Translate konnte den Artikel nicht übersetzen: {0}</value></data>
+  <data name="Google Translate nu a răspuns în 45 de secunde. Încearcă din nou mai târziu." xml:space="preserve"><value>Google Translate hat nicht innerhalb von 45 Sekunden geantwortet. Versuchen Sie es später erneut.</value></data>
+  <data name="Grupul {0}: adresă normalizată {1}&#10;{2}" xml:space="preserve"><value>Gruppe {0}: normalisierte Adresse {1}
+{2}</value></data>
+  <data name="Identificator repetat {0}: {1}" xml:space="preserve"><value>Wiederholte Kennung {0}: {1}</value></data>
+  <data name="Ignoră" xml:space="preserve"><value>Ignorieren</value></data>
+  <data name="Ignoră actualizarea" xml:space="preserve"><value>Update überspringen</value></data>
+  <data name="Indexul de feeduri: {0}&#10;{1}" xml:space="preserve"><value>Feed-Index: {0}
+{1}</value></data>
+  <data name="Inițializare NewsBlur pe acest calculator" xml:space="preserve"><value>NewsBlur auf diesem Computer einrichten</value></data>
+  <data name="Inițializarea NewsBlur a fost anulată. Nu s-au modificat datele locale sau NewsBlur." xml:space="preserve"><value>NewsBlur-Einrichtung abgebrochen. Lokale und NewsBlur-Daten unverändert.</value></data>
+  <data name="Instrucțiuni pentru dialogul de decizie" xml:space="preserve"><value>Anleitung zum Entscheidungsdialog</value></data>
+  <data name="Interval sincronizare automată" xml:space="preserve"><value>Intervall der automatischen Synchronisierung</value></data>
+  <data name="Interval sincronizare automată NewsBlur" xml:space="preserve"><value>Intervall der automatischen NewsBlur-Synchronisierung</value></data>
+  <data name="Introdu numele de utilizator NewsBlur, nu adresa de e-mail." xml:space="preserve"><value>Geben Sie Ihren NewsBlur-Benutzernamen ein, nicht die E-Mail-Adresse.</value></data>
+  <data name="La fiecare 15 minute" xml:space="preserve"><value>Alle 15 Minuten</value></data>
+  <data name="La fiecare 3 ore" xml:space="preserve"><value>Alle 3 Stunden</value></data>
+  <data name="La fiecare 30 de minute" xml:space="preserve"><value>Alle 30 Minuten</value></data>
+  <data name="La fiecare oră" xml:space="preserve"><value>Jede Stunde</value></data>
+  <data name="Limba interfeței aplicației" xml:space="preserve"><value>Sprache der Benutzeroberfläche</value></data>
+  <data name="Limba sursă pentru Google Translate" xml:space="preserve"><value>Ausgangssprache für Google Translate</value></data>
+  <data name="Limba țintă pentru Google Translate" xml:space="preserve"><value>Zielsprache für Google Translate</value></data>
+  <data name="Limba țintă pentru traducere lipsește." xml:space="preserve"><value>Die Zielsprache fehlt.</value></data>
+  <data name="Limbă" xml:space="preserve"><value>Sprache</value></data>
+  <data name="Linkul a fost deschis în browserul implicit." xml:space="preserve"><value>Link im Standardbrowser geöffnet.</value></data>
+  <data name="marcarea folderului NewsBlur ca citit" xml:space="preserve"><value>Markieren des NewsBlur-Ordners als gelesen</value></data>
+  <data name="Marchează ca citite numai articolele vizibile după filtrele curente." xml:space="preserve"><value>Nur mit den aktuellen Filtern sichtbare Artikel als gelesen markieren.</value></data>
+  <data name="Marchează folderul selectat ca citit în NewsBlur" xml:space="preserve"><value>Gewählten Ordner in NewsBlur als gelesen markieren</value></data>
+  <data name="Marchează toate articolele afișate ca citite" xml:space="preserve"><value>Alle angezeigten Artikel als gelesen markieren</value></data>
+  <data name="Meniu cititor" xml:space="preserve"><value>Lesemenü</value></data>
+  <data name="Micșorează textul" xml:space="preserve"><value>Text verkleinern</value></data>
+  <data name="Mărește textul" xml:space="preserve"><value>Text vergrößern</value></data>
+  <data name="Negru pe alb" xml:space="preserve"><value>Schwarz auf Weiß</value></data>
+  <data name="Negru pe galben" xml:space="preserve"><value>Schwarz auf Gelb</value></data>
+  <data name="NewsBlur a returnat un index incomplet pentru feeduri." xml:space="preserve"><value>NewsBlur hat einen unvollständigen Feed-Index geliefert.</value></data>
+  <data name="NewsBlur nu a putut furniza {0} feeduri; se încearcă RSS direct doar pentru acestea." xml:space="preserve"><value>NewsBlur konnte {0} Feeds nicht liefern; direkter RSS-Abruf wird nur für diese versucht.</value></data>
+  <data name="NewsBlur nu a returnat un index complet pentru feeduri." xml:space="preserve"><value>NewsBlur hat keinen vollständigen Feed-Index geliefert.</value></data>
+  <data name="NewsBlur: {0} din {1} feeduri verificate; {2} reușite, {3} vor fi încercate prin RSS." xml:space="preserve"><value>NewsBlur: {0} von {1} Feeds geprüft; {2} erfolgreich, {3} werden über RSS versucht.</value></data>
+  <data name="Notele versiunii noi" xml:space="preserve"><value>Hinweise zur neuen Version</value></data>
+  <data name="Noutăți în această versiune:" xml:space="preserve"><value>Neues in dieser Version:</value></data>
+  <data name="Nu există note suplimentare pentru această versiune." xml:space="preserve"><value>Keine weiteren Hinweise zu dieser Version.</value></data>
+  <data name="Nu există rubrici în catalog pentru filtrul curent. Apasă &#x27;Caută pe internet&#x27; pentru a căuta live." xml:space="preserve"><value>Keine Katalogeinträge für diesen Filter. Wählen Sie „Im Internet suchen“ für eine Online-Suche.</value></data>
+  <data name="Nu s-a putut ajunge la Google Translate. Verifică internetul și încearcă din nou." xml:space="preserve"><value>Google Translate nicht erreichbar. Prüfen Sie die Internetverbindung und versuchen Sie es erneut.</value></data>
+  <data name="Nu s-a putut deschide linkul: {0}" xml:space="preserve"><value>Link konnte nicht geöffnet werden: {0}</value></data>
+  <data name="Nu s-au găsit feeduri noi pe internet pentru &#x27;{0}&#x27;." xml:space="preserve"><value>Keine neuen Feeds im Internet für „{0}“ gefunden.</value></data>
+  <data name="Nu se poate sincroniza {0} pentru feedul {1}: lipsește identificatorul NewsBlur." xml:space="preserve"><value>{0} für Feed {1} kann nicht synchronisiert werden: NewsBlur-Kennung fehlt.</value></data>
+  <data name="Nu se poate începe {0} cât timp se sincronizează feedurile cu NewsBlur. Așteaptă încheierea sincronizării și încearcă din nou." xml:space="preserve"><value>{0} kann während der Feed-Synchronisierung mit NewsBlur nicht gestartet werden. Warten Sie das Ende ab und versuchen Sie es erneut.</value></data>
+  <data name="numele" xml:space="preserve"><value>Name</value></data>
+  <data name="Numele contului NewsBlur nu este disponibil. Autentifică-te din nou înainte de sincronizare." xml:space="preserve"><value>NewsBlur-Kontoname nicht verfügbar. Melden Sie sich vor der Synchronisierung erneut an.</value></data>
+  <data name="Numele local al feedului {0} nu a putut fi trimis în NewsBlur: {1}" xml:space="preserve"><value>Lokaler Name des Feeds {0} konnte nicht an NewsBlur gesendet werden: {1}</value></data>
+  <data name="Obține cheie API DeepL" xml:space="preserve"><value>DeepL-API-Schlüssel erhalten</value></data>
+  <data name="Operația a fost anulată. Nu s-a modificat nimic." xml:space="preserve"><value>Vorgang abgebrochen. Keine Änderungen.</value></data>
+  <data name="Opțiuni pentru decizia NewsBlur" xml:space="preserve"><value>NewsBlur-Entscheidungsoptionen</value></data>
+  <data name="Pagina GitHub nu a putut fi deschisă: {0}" xml:space="preserve"><value>GitHub-Seite konnte nicht geöffnet werden: {0}</value></data>
+  <data name="Parola NewsBlur" xml:space="preserve"><value>NewsBlur-Passwort</value></data>
+  <data name="Pauză sau continuă citirea vocală" xml:space="preserve"><value>Sprachausgabe pausieren oder fortsetzen</value></data>
+  <data name="Preluare NewsBlur încheiată: {0} feeduri verificate, {1} articole noi preluate, {2} feeduri necesită fallback RSS." xml:space="preserve"><value>NewsBlur-Abruf abgeschlossen: {0} Feeds geprüft, {1} neue Artikel abgerufen, {2} Feeds benötigen RSS-Ersatzabruf.</value></data>
+  <data name="Preluarea din NewsBlur a eșuat; se încearcă fluxurile RSS directe: {0}" xml:space="preserve"><value>NewsBlur-Abruf fehlgeschlagen; direkter RSS-Abruf wird versucht: {0}</value></data>
+  <data name="Preluarea din NewsBlur a fost oprită după verificarea a {0} din {1} feeduri. Datele deja primite au fost păstrate." xml:space="preserve"><value>NewsBlur-Abruf nach Prüfung von {0} aus {1} Feeds gestoppt. Empfangene Daten bleiben erhalten.</value></data>
+  <data name="Prima sincronizare NewsBlur pe acest profil: import numai din NewsBlur. Se așteaptă confirmarea." xml:space="preserve"><value>Erste NewsBlur-Synchronisierung dieses Profils: nur Import aus NewsBlur. Bestätigung ausstehend.</value></data>
+  <data name="Progres descărcare actualizare" xml:space="preserve"><value>Fortschritt des Update-Downloads</value></data>
+  <data name="Păstrează al doilea și elimină primul" xml:space="preserve"><value>Zweiten behalten und ersten entfernen</value></data>
+  <data name="Păstrează ambele" xml:space="preserve"><value>Beide behalten</value></data>
+  <data name="Păstrează Orizont RSS" xml:space="preserve"><value>Orizont RSS behalten</value></data>
+  <data name="Păstrează primul și elimină al doilea" xml:space="preserve"><value>Ersten behalten und zweiten entfernen</value></data>
+  <data name="Rezolvă conflictul NewsBlur" xml:space="preserve"><value>NewsBlur-Konflikt lösen</value></data>
+  <data name="Reîncarcă și curăță articolul" xml:space="preserve"><value>Artikel neu laden und bereinigen</value></data>
+  <data name="Răspunsul Google Translate nu a putut fi citit." xml:space="preserve"><value>Google Translate-Antwort konnte nicht gelesen werden.</value></data>
+  <data name="Răspunsul Google Translate nu conține text tradus." xml:space="preserve"><value>Google Translate-Antwort enthält keinen übersetzten Text.</value></data>
+  <data name="S-a recunoscut o asociere NewsBlur existentă; se continuă cu sincronizarea bidirecțională." xml:space="preserve"><value>Bestehende NewsBlur-Verknüpfung erkannt; bidirektionale Synchronisierung wird fortgesetzt.</value></data>
+  <data name="Se aplică feedurilor care folosesc opțiunea Folosește setarea generală." xml:space="preserve"><value>Gilt für Feeds mit der Option Allgemeine Einstellung verwenden.</value></data>
+  <data name="Se așteaptă încheierea sincronizării feedurilor NewsBlur înainte de închidere." xml:space="preserve"><value>Vor dem Schließen wird das Ende der NewsBlur-Feed-Synchronisierung abgewartet.</value></data>
+  <data name="Se caută pe internet pentru &#x27;{0}&#x27;..." xml:space="preserve"><value>Internetsuche nach „{0}“...</value></data>
+  <data name="Se descarcă actualizarea... {0:0}%" xml:space="preserve"><value>Update wird heruntergeladen... {0:0}%</value></data>
+  <data name="Se pregătește descărcarea actualizării..." xml:space="preserve"><value>Update-Download wird vorbereitet...</value></data>
+  <data name="Se preiau articolele din NewsBlur pentru {0} feeduri." xml:space="preserve"><value>NewsBlur-Artikel für {0} Feeds werden abgerufen.</value></data>
+  <data name="Se traduce articolul cu Google Translate. Așteaptă." xml:space="preserve"><value>Artikel wird mit Google Translate übersetzt. Bitte warten.</value></data>
+  <data name="Se verifică conexiunea la {0}..." xml:space="preserve"><value>Verbindung zu {0} wird geprüft...</value></data>
+  <data name="Se verifică dacă există o nouă versiune a aplicației Orizont RSS pe GitHub..." xml:space="preserve"><value>GitHub wird auf eine neue Orizont RSS-Version geprüft...</value></data>
+  <data name="Selectează un feed din listă." xml:space="preserve"><value>Wählen Sie einen Feed aus der Liste.</value></data>
+  <data name="Setări voci" xml:space="preserve"><value>Spracheinstellungen</value></data>
+  <data name="Sincronizarea automată NewsBlur a eșuat: {0}" xml:space="preserve"><value>Automatische NewsBlur-Synchronisierung fehlgeschlagen: {0}</value></data>
+  <data name="Sincronizarea feedurilor și folderelor NewsBlur este deja în curs." xml:space="preserve"><value>NewsBlur-Feed- und Ordnersynchronisierung läuft bereits.</value></data>
+  <data name="Sincronizarea stărilor NewsBlur este deja în curs." xml:space="preserve"><value>NewsBlur-Statussynchronisierung läuft bereits.</value></data>
+  <data name="Sincronizarea stărilor NewsBlur este deja în curs. Încearcă actualizarea după încheierea ei." xml:space="preserve"><value>NewsBlur-Statussynchronisierung läuft. Versuchen Sie die Aktualisierung nach ihrem Ende.</value></data>
+  <data name="Sincronizează articolele și stările NewsBlur" xml:space="preserve"><value>NewsBlur-Artikel und -Zustände synchronisieren</value></data>
+  <data name="Sincronizează articolele și stările NewsBlur la pornire" xml:space="preserve"><value>NewsBlur-Artikel und -Zustände beim Start synchronisieren</value></data>
+  <data name="Sincronizează feedurile și folderele NewsBlur" xml:space="preserve"><value>NewsBlur-Feeds und -Ordner synchronisieren</value></data>
+  <data name="Sincronizează feedurile și folderele NewsBlur la pornire" xml:space="preserve"><value>NewsBlur-Feeds und -Ordner beim Start synchronisieren</value></data>
+  <data name="Sincronizează mai întâi feedurile și folderele NewsBlur. Sincronizarea articolelor și stărilor începe după inițializarea acestui profil." xml:space="preserve"><value>Synchronisieren Sie zuerst NewsBlur-Feeds und -Ordner. Artikel und Zustände folgen nach der Profileinrichtung.</value></data>
+  <data name="Spațiere largă" xml:space="preserve"><value>Weiter Abstand</value></data>
+  <data name="Spațiere normală" xml:space="preserve"><value>Normaler Abstand</value></data>
+  <data name="Status versiune nouă" xml:space="preserve"><value>Status der neuen Version</value></data>
+  <data name="Sursa articolului:" xml:space="preserve"><value>Artikelquelle:</value></data>
+  <data name="Sursa și data articolului" xml:space="preserve"><value>Quelle und Datum des Artikels</value></data>
+  <data name="Sursa: {0}" xml:space="preserve"><value>Quelle: {0}</value></data>
+  <data name="Tastați un subiect și apasă Enter sau Caută." xml:space="preserve"><value>Geben Sie ein Thema ein und drücken Sie Enter oder Suchen.</value></data>
+  <data name="Tastează un cuvânt-cheie pentru căutarea pe internet." xml:space="preserve"><value>Geben Sie ein Schlüsselwort für die Internetsuche ein.</value></data>
+  <data name="Temă de culori" xml:space="preserve"><value>Farbschema</value></data>
+  <data name="Text complet disponibil" xml:space="preserve"><value>Volltext verfügbar</value></data>
+  <data name="Text tradus cu Google Translate" xml:space="preserve"><value>Mit Google Translate übersetzter Text</value></data>
+  <data name="Textul complet a fost adus din NewsBlur." xml:space="preserve"><value>Volltext von NewsBlur abgerufen.</value></data>
+  <data name="Textul complet NewsBlur nu a putut fi adus." xml:space="preserve"><value>Volltext von NewsBlur konnte nicht abgerufen werden.</value></data>
+  <data name="Titlul articolului" xml:space="preserve"><value>Artikeltitel</value></data>
+  <data name="toate articolele" xml:space="preserve"><value>alle Artikel</value></data>
+  <data name="Toate articolele NewsBlur" xml:space="preserve"><value>Alle NewsBlur-Artikel</value></data>
+  <data name="Toate categoriile" xml:space="preserve"><value>Alle Kategorien</value></data>
+  <data name="Tradu cu Google Translate (fără cheie API)" xml:space="preserve"><value>Mit Google Translate übersetzen (ohne API-Schlüssel)</value></data>
+  <data name="Traducere automată realizată prin {0}." xml:space="preserve"><value>Maschinelle Übersetzung mit {0}.</value></data>
+  <data name="Traducere Google Translate" xml:space="preserve"><value>Google Translate-Übersetzung</value></data>
+  <data name="Traducerea articolului" xml:space="preserve"><value>Artikelübersetzung</value></data>
+  <data name="Traducerea Google Translate a fost anulată." xml:space="preserve"><value>Google Translate-Übersetzung abgebrochen.</value></data>
+  <data name="Traducerea Google Translate s-a încheiat. Rezultatul este într-o fereastră separată." xml:space="preserve"><value>Google Translate ist fertig. Das Ergebnis steht in einem separaten Fenster.</value></data>
+  <data name="Verifică actualizări aplicație..." xml:space="preserve"><value>Nach Anwendungsupdates suchen...</value></data>
+  <data name="Verifică actualizările aplicației la pornire" xml:space="preserve"><value>Beim Start nach Updates suchen</value></data>
+  <data name="Vizualizare NewsBlur: {0}. " xml:space="preserve"><value>NewsBlur-Ansicht: {0}. </value></data>
+  <data name="Vizualizări NewsBlur" xml:space="preserve"><value>NewsBlur-Ansichten</value></data>
+  <data name="Voce" xml:space="preserve"><value>Stimme</value></data>
+  <data name="Vor fi marcate ca citite toate articolele din {0} feeduri NewsBlur ale zonei {1}. Continui?" xml:space="preserve"><value>Alle Artikel aus {0} NewsBlur-Feeds im Bereich {1} werden als gelesen markiert. Fortfahren?</value></data>
+  <data name="Windows automat" xml:space="preserve"><value>Windows automatisch</value></data>
+  <data name="{0} ({1})" xml:space="preserve"><value>{0} ({1})</value></data>
+  <data name="{0} abonamente NewsBlur au fost puse în așteptarea sincronizării confirmate." xml:space="preserve"><value>{0} NewsBlur-Abonnements warten auf die bestätigte Synchronisierung.</value></data>
+  <data name="{0} feeduri găsite în catalog. Selectează unul și verifică-l." xml:space="preserve"><value>{0} Feeds im Katalog gefunden. Wählen und prüfen Sie einen.</value></data>
+  <data name="{0} feeduri live găsite pe internet. Selectează unul și verifică-l." xml:space="preserve"><value>{0} Feeds online gefunden. Wählen und prüfen Sie einen.</value></data>
+  <data name="{0}{1}" xml:space="preserve"><value>{0}{1}</value></data>
+  <data name="Înapoi la lista de articole. {0}" xml:space="preserve"><value>Zurück zur Artikelliste. {0}</value></data>
+  <data name="Înapoi la lista de articole. {0}{1}" xml:space="preserve"><value>Zurück zur Artikelliste. {0}{1}</value></data>
+  <data name="Ștergerea nu a putut fi salvată; feedurile și articolele au fost păstrate. Detalii: {0}" xml:space="preserve"><value>Löschung nicht gespeichert; Feeds und Artikel bleiben erhalten. Details: {0}</value></data>
+  <data name="Ștergi {0} și articolele lor salvate?{1}" xml:space="preserve"><value>{0} und ihre gespeicherten Artikel löschen?{1}</value></data>
+  <data name="Ștergi {0}?{1} Această acțiune elimină și eventualele marcaje Favorite sau De citit mai târziu. {2}" xml:space="preserve"><value>{0} löschen?{1} Dadurch werden auch Markierungen als Favorit oder Später lesen entfernt. {2}</value></data>
+  <data name="• {0}; folder: {1}; adresă: {2}" xml:space="preserve"><value>• {0}; Ordner: {1}; Adresse: {2}</value></data>
+  <data name="• {0}; folder: {1}; adresă: {2}; identificator: {3}" xml:space="preserve"><value>• {0}; Ordner: {1}; Adresse: {2}; Kennung: {3}</value></data>
+  <data name="Aceste feeduri au adrese diferite, dar {0} din {1} articole ale feedului mai mic sunt comune, adică {2}%.&#10;&#10;PRIMUL: {3}&#10;Folder: {4}&#10;Adresă: {5}&#10;&#10;AL DOILEA: {6}&#10;Folder: {7}&#10;Adresă: {8}&#10;&#10;Dacă nu dorești să comasezi feedurile, alege păstrarea ambelor." xml:space="preserve"><value>Die Feeds haben verschiedene Adressen, teilen aber {0} von {1} Artikeln des kleineren Feeds ({2} %).
+
+ERSTER: {3}
+Ordner: {4}
+Adresse: {5}
+
+ZWEITER: {6}
+Ordner: {7}
+Adresse: {8}
+
+Wählen Sie Beide behalten, wenn Sie die Feeds nicht zusammenführen möchten.</value></data>
+  <data name="Asocierea NewsBlur existentă a fost găsită, dar marcajul local nu s-a putut salva. Sincronizarea bidirecțională a fost oprită pentru siguranță. Detalii: {0}" xml:space="preserve"><value>Bestehende NewsBlur-Verknüpfung gefunden, lokale Markierung jedoch nicht gespeichert. Bidirektionale Synchronisierung vorsichtshalber gestoppt. Details: {0}</value></data>
+  <data name="Conflict de sincronizare pentru {0} în feedul {1}.&#10;&#10;Valoarea din Orizont RSS: {2}&#10;Valoarea din NewsBlur: {3}&#10;&#10;Alege dacă păstrezi varianta locală, preiei varianta NewsBlur sau amâni rezolvarea acestui câmp. Dacă amâni, sincronizarea celorlalte câmpuri continuă." xml:space="preserve"><value>Synchronisierungskonflikt für {0} im Feed {1}.
+
+Orizont RSS-Wert: {2}
+NewsBlur-Wert: {3}
+
+Lokalen Wert behalten, NewsBlur verwenden oder dieses Feld zurückstellen. Andere Felder werden weiterhin synchronisiert.</value></data>
+  <data name="Există dezabonări NewsBlur în așteptare. Folosește comanda Sincronizează feedurile și folderele NewsBlur pentru a le confirma." xml:space="preserve"><value>NewsBlur-Abmeldungen stehen aus. Verwenden Sie NewsBlur-Feeds und -Ordner synchronisieren zur Bestätigung.</value></data>
+  <data name="Feedurile au fost sincronizate, dar coada locală de dezabonare nu a putut fi actualizată. Următoarea sincronizare va verifica din nou starea. Detalii: {0}" xml:space="preserve"><value>Feeds synchronisiert, lokale Abmeldewarteschlange jedoch nicht aktualisiert. Der nächste Abgleich prüft den Status erneut. Details: {0}</value></data>
+  <data name="Feedurile și folderele sunt deja sincronizate cu NewsBlur. Cererile de ștergere rezolvate au fost închise." xml:space="preserve"><value>Feeds und Ordner sind bereits mit NewsBlur synchronisiert. Erledigte Löschanfragen wurden abgeschlossen.</value></data>
+  <data name="Folderul {0} nu a putut fi creat sau confirmat în NewsBlur; se încearcă totuși operația pentru feed. Detalii: {1}" xml:space="preserve"><value>Ordner {0} konnte in NewsBlur nicht erstellt oder bestätigt werden; Feed-Vorgang wird dennoch versucht. Details: {1}</value></data>
+  <data name="Folosește săgețile pentru a citi textul. Apasă Tab pentru a ajunge la opțiuni. Escape alege opțiunea sigură și închide dialogul." xml:space="preserve"><value>Mit Pfeiltasten lesen. Tab führt zu den Optionen. Escape wählt die sichere Option und schließt den Dialog.</value></data>
+  <data name="Folosește săgețile pentru a citi traducerea. Escape închide fereastra și revine la articol." xml:space="preserve"><value>Mit Pfeiltasten die Übersetzung lesen. Escape schließt das Fenster und kehrt zum Artikel zurück.</value></data>
+  <data name="Folosește săgețile pentru citire. Shift+F10 deschide comenzile articolului. Ctrl+Shift+F8 comută modul WebReader. Bara de stare anunță încărcarea și acțiunile în curs." xml:space="preserve"><value>Mit Pfeiltasten lesen. Shift+F10 öffnet Artikelbefehle. Ctrl+Shift+F8 wechselt den WebReader-Modus. Die Statusleiste meldet Ladevorgänge und laufende Aktionen.</value></data>
+  <data name="Folosește săgețile Sus și Jos pentru citire. Tab trece la câmpul pentru continuarea conversației. Shift+F10 oferă citire, copiere și distribuire." xml:space="preserve"><value>Mit Auf und Ab lesen. Tab führt zum Eingabefeld für die Gesprächsfortsetzung. Shift+F10 bietet Lesen, Kopieren und Teilen.</value></data>
+  <data name="Google Translate folosește un serviciu online neoficial care se poate schimba sau limita. Textul integral al articolului va fi trimis către Google. Continui?" xml:space="preserve"><value>Google Translate verwendet einen inoffiziellen Onlinedienst, der sich ändern oder begrenzt werden kann. Der vollständige Artikeltext wird an Google gesendet. Fortfahren?</value></data>
+  <data name="Identitatea feedului {0} nu corespunde adresei asociate din NewsBlur; nu s-a modificat nimic pentru a evita o dezabonare sau o dublură incorectă." xml:space="preserve"><value>Identität des Feeds {0} stimmt nicht mit der zugeordneten NewsBlur-Adresse überein; keine Änderung, um falsche Abmeldung oder Duplikate zu vermeiden.</value></data>
+  <data name="Inițializare NewsBlur încheiată pentru {0}: {1} feeduri importate, {2} feeduri locale păstrate fără trimitere, {3} exemple demonstrative ignorate. NewsBlur nu a fost modificat. Următoarea sincronizare pentru acest cont va fi bidirecțională." xml:space="preserve"><value>NewsBlur für {0} eingerichtet: {1} Feeds importiert, {2} lokale Feeds ohne Versand behalten, {3} Demos übersprungen. NewsBlur unverändert. Nächste Kontosynchronisierung ist bidirektional.</value></data>
+  <data name="Inițializarea a fost citită, dar nu a putut fi salvată complet. Reîncearcă sincronizarea; NewsBlur nu a fost modificat. Detalii: {0}" xml:space="preserve"><value>Einrichtungsdaten gelesen, aber nicht vollständig gespeichert. Synchronisierung erneut versuchen; NewsBlur unverändert. Details: {0}</value></data>
+  <data name="Modificarea feedului nu a putut fi salvată, iar revenirea completă a eșuat. Verifică datele locale înainte de sincronizare. Detalii: {0}" xml:space="preserve"><value>Feed-Änderung nicht gespeichert, vollständige Wiederherstellung fehlgeschlagen. Lokale Daten vor der Synchronisierung prüfen. Details: {0}</value></data>
+  <data name="Modul text simplu este recomandat pentru navigare tradițională cu săgețile. Modul WebReader permite navigarea prin taste rapide de browser (H pentru titluri, P pentru paragrafe, Tab pentru linkuri). Modul se poate comuta oricând și din fereastra Cititor cu combinația Ctrl+Shift+F8." xml:space="preserve"><value>Klartext wird für klassische Pfeiltastennavigation empfohlen. WebReader unterstützt Browser-Schnelltasten (H für Überschriften, P für Absätze, Tab für Links). Im Lesefenster jederzeit mit Ctrl+Shift+F8 umschalten.</value></data>
+  <data name="NewsBlur a returnat liste incomplete sau neconcordante ({0}); nu s-a modificat nimic. Reîncearcă sincronizarea mai târziu." xml:space="preserve"><value>NewsBlur lieferte unvollständige oder widersprüchliche Listen ({0}); keine Änderung. Synchronisierung später erneut versuchen.</value></data>
+  <data name="Oglindire NewsBlur încheiată. Feeduri trimise: {0}, eșuate: {1}, foldere create: {2}, importate local: {3}, metadate trimise: {4}, preluate: {5}, conflicte rezolvate cu Orizont: {6}, cu NewsBlur: {7}, amânate: {8}, erori la conflicte: {9}, dezabonări NewsBlur reușite: {10}, eșuate: {11}, feeduri și articole eliminate local după ștergerea din NewsBlur: {12} și {13}." xml:space="preserve"><value>NewsBlur-Abgleich abgeschlossen. Feeds gesendet: {0}, fehlgeschlagen: {1}, Ordner erstellt: {2}, lokal importiert: {3}, Metadaten gesendet: {4}, empfangen: {5}, Konflikte mit Orizont gelöst: {6}, mit NewsBlur: {7}, zurückgestellt: {8}, Konfliktfehler: {9}, erfolgreiche NewsBlur-Abmeldungen: {10}, fehlgeschlagen: {11}, nach NewsBlur-Löschung lokal entfernte Feeds und Artikel: {12} und {13}.</value></data>
+  <data name="Prima sincronizare NewsBlur pentru acest profil va importa {0} feeduri, va actualiza numele/folderele pentru {1} feeduri deja locale și va păstra local {2} feeduri care nu există în NewsBlur. Cele {3} feeduri demonstrative vor rămâne locale. În această etapă NewsBlur nu va primi feeduri, mutări sau dezabonări. Continui?" xml:space="preserve"><value>Erste NewsBlur-Synchronisierung importiert {0} Feeds, aktualisiert Namen/Ordner von {1} lokalen Feeds und behält {2} in NewsBlur fehlende lokale Feeds. Die {3} Demo-Feeds bleiben lokal. Keine Feeds, Verschiebungen oder Abmeldungen werden jetzt an NewsBlur gesendet. Fortfahren?</value></data>
+  <data name="Salvarea curățării și revenirea la starea anterioară au eșuat. Nu porni sincronizarea NewsBlur până nu verificăm datele locale. Detalii: {0}" xml:space="preserve"><value>Speichern der Bereinigung und Wiederherstellen fehlgeschlagen. NewsBlur-Synchronisierung erst nach Prüfung der lokalen Daten starten. Details: {0}</value></data>
+  <data name="Salvarea și revenirea la starea anterioară au eșuat. Nu continua sincronizarea NewsBlur până nu verificăm datele locale. Detalii: {0}" xml:space="preserve"><value>Speichern und Wiederherstellen fehlgeschlagen. NewsBlur-Synchronisierung erst nach Prüfung der lokalen Daten fortsetzen. Details: {0}</value></data>
+  <data name="Se oglindesc automat abonamentele NewsBlur: {0} de trimis, {1} de importat, {2} cu metadate diferite, {3} dezabonări confirmate local și {4} eliminări remote de aplicat local." xml:space="preserve"><value>Automatischer NewsBlur-Abgleich: {0} zu senden, {1} zu importieren, {2} mit unterschiedlichen Metadaten, {3} lokal bestätigte Abmeldungen und {4} entfernte Löschungen lokal anzuwenden.</value></data>
+  <data name="Sincronizarea periodică include feeduri, foldere, articole și stări. Primele două bife controlează separat ce se sincronizează la pornire; comenzile manuale rămân disponibile." xml:space="preserve"><value>Regelmäßige Synchronisierung umfasst Feeds, Ordner, Artikel und Zustände. Die ersten beiden Kontrollkästchen steuern den Startabgleich getrennt; manuelle Befehle bleiben verfügbar.</value></data>
+  <data name="Sincronizarea s-a oprit fără să modifice datele. Au fost găsite {0} grupuri de feeduri cu aceeași adresă. Consultă lista de mai jos. Pentru curățare, deschide instrumentul existent; acesta va cere o confirmare separată. După verificare, pornește din nou sincronizarea." xml:space="preserve"><value>Synchronisierung ohne Datenänderung gestoppt. {0} Feed-Gruppen mit gleicher Adresse gefunden. Prüfen Sie die Liste. Öffnen Sie die Bereinigung; sie verlangt eine separate Bestätigung. Danach Synchronisierung neu starten.</value></data>
+  <data name="Tab trece la Citește acum. Tastează litera sau cifra pentru a ajunge la următorul folder care începe cu ea. Delete șterge folderul selectat și mută feedurile în Neorganizate." xml:space="preserve"><value>Tab führt zu Jetzt lesen. Buchstabe oder Ziffer wählt den nächsten damit beginnenden Ordner. Delete löscht den Ordner und verschiebt Feeds nach Ungeordnet.</value></data>
+  <data name="Traducerea folosește un serviciu online Google. Textul complet se trimite numai după confirmarea din articol." xml:space="preserve"><value>Die Übersetzung nutzt einen Google-Onlinedienst. Volltext wird erst nach Bestätigung im Artikel gesendet.</value></data>
+  <data name="Windows automat respectă tema Contrast aleasă în Windows. Celelalte variante sunt optimizate pentru contrast ridicat și se aplică după salvare." xml:space="preserve"><value>Windows automatisch folgt dem Windows-Kontrastdesign. Andere Varianten sind für hohen Kontrast optimiert und werden nach dem Speichern angewendet.</value></data>
+  <data name="{0}&#10;&#10;Feeduri duplicate raportate de NewsBlur:&#10;{1}&#10;&#10;Aceste duplicate sunt în contul NewsBlur. Curățarea locală din Orizont nu le va șterge de pe server." xml:space="preserve"><value>{0}
+
+Von NewsBlur gemeldete doppelte Feeds:
+{1}
+
+Diese Duplikate befinden sich im NewsBlur-Konto. Die lokale Bereinigung in Orizont entfernt sie nicht vom Server.</value></data>
+  <data name="{0}&#10;&#10;Verificarea locală nu a putut identifica adresele duplicate. Nicio modificare nu a fost făcută." xml:space="preserve"><value>{0}
+
+Die lokale Prüfung konnte doppelte Adressen nicht bestimmen. Keine Änderungen.</value></data>
+  <data name="Caută după tastă, comandă sau categorie. Tab trece la rezultate; săgețile parcurg lista. Ctrl+F revine la căutare. Escape închide ghidul. Comenzile se folosesc în zona indicată." xml:space="preserve"><value>Nach Taste, Befehl oder Kategorie suchen. Tab führt zu Ergebnissen, Pfeiltasten durch die Liste. Ctrl+F kehrt zur Suche zurück. Escape schließt die Hilfe. Befehle im angegebenen Bereich verwenden.</value></data>
+  <data name="Caută scurtături" xml:space="preserve"><value>Tastenkürzel suchen</value></data>
+  <data name="Comută între Text și WebReader în fereastra Cititor Orizont." xml:space="preserve"><value>Wechselt zwischen Text und WebReader im Orizont-Lesefenster.</value></data>
+  <data name="Litere și cifre" xml:space="preserve"><value>Buchstaben und Ziffern</value></data>
+  <data name="Nu s-au găsit scurtături. Modifică termenii căutării." xml:space="preserve"><value>Keine Tastenkürzel gefunden. Ändern Sie die Suchbegriffe.</value></data>
+  <data name="Scurtături găsite: {0} din {1}." xml:space="preserve"><value>Tastenkürzel gefunden: {0} von {1}.</value></data>
+  <data name="În lista de foldere, feeduri sau articole, selectează următorul element care începe cu caracterul tastat. În lista de articole, R, F și L rămân comenzi pentru stări." xml:space="preserve"><value>Wählt in der Ordner-, Feed- oder Artikelliste den nächsten Eintrag mit dem eingegebenen Anfangszeichen. In der Artikelliste bleiben R, F und L Statusbefehle.</value></data>
+<data name="Activată" xml:space="preserve"><value>Aktiviert</value></data>
+<data name="Dezactivată" xml:space="preserve"><value>Deaktiviert</value></data>
+<data name="Activează sau dezactivează" xml:space="preserve"><value>Aktivieren oder deaktivieren</value></data>
+<data name="Aplici modificările previzualizate pentru {0} articole și salvezi regulile?" xml:space="preserve"><value>Vorgesehene Änderungen auf {0} Artikel anwenden und Regeln speichern?</value></data>
+<data name="Articol: {0}&#xA;Feed: {1}&#xA;Reguli: {2}&#xA;Etichete de adăugat: {3}&#xA;Mai târziu: {4}" xml:space="preserve"><value>Artikel: {0}
+Feed: {1}
+Regeln: {2}
+Hinzuzufügende Tags: {3}
+Später lesen: {4}</value></data>
+<data name="Articole care ar fi modificate: {0}." xml:space="preserve"><value>Zu ändernde Artikel: {0}.</value></data>
+<data name="Așteaptă încheierea actualizării sau sincronizării." xml:space="preserve"><value>Warten Sie, bis die Aktualisierung oder Synchronisierung abgeschlossen ist.</value></data>
+<data name="Caută și în textul deja descărcat" xml:space="preserve"><value>Auch im bereits heruntergeladenen Text suchen</value></data>
+<data name="Completează numele, expresiile, feedurile și cel puțin o acțiune. Maximum 50 de expresii a câte 200 de caractere și 50 de caractere per etichetă." xml:space="preserve"><value>Geben Sie einen Namen, Ausdrücke, Feeds und mindestens eine Aktion an. Höchstens 50 Ausdrücke mit je 200 Zeichen und 50 Zeichen pro Tag.</value></data>
+<data name="Da" xml:space="preserve"><value>Ja</value></data>
+<data name="Nu" xml:space="preserve"><value>Nein</value></data>
+<data name="Editează" xml:space="preserve"><value>Bearbeiten</value></data>
+<data name="Etichete existente" xml:space="preserve"><value>Vorhandene Tags</value></data>
+<data name="Expresii, câte una pe rând" xml:space="preserve"><value>Ausdrücke, einer pro Zeile</value></data>
+<data name="Feeduri selectate" xml:space="preserve"><value>Ausgewählte Feeds</value></data>
+<data name="Marchează pentru mai târziu" xml:space="preserve"><value>Zum späteren Lesen markieren</value></data>
+<data name="Niciun articol de modificat." xml:space="preserve"><value>Keine Artikel zu ändern.</value></data>
+<data name="Numele regulii" xml:space="preserve"><value>Regelname</value></data>
+<data name="Operația nu a fost finalizată: {0}" xml:space="preserve"><value>Der Vorgang wurde nicht abgeschlossen: {0}</value></data>
+<data name="Previzualizare reguli" xml:space="preserve"><value>Regelvorschau</value></data>
+<data name="Previzualizează regulile active" xml:space="preserve"><value>Aktive Regeln anzeigen</value></data>
+<data name="Regulă activată" xml:space="preserve"><value>Regel aktiviert</value></data>
+<data name="Regulă automată" xml:space="preserve"><value>Automatische Regel</value></data>
+<data name="Reguli automate" xml:space="preserve"><value>Automatische Regeln</value></data>
+<data name="Reguli salvate. Articole modificate: {0}." xml:space="preserve"><value>Regeln gespeichert. Geänderte Artikel: {0}.</value></data>
+<data name="Regulile adaugă etichete și marcajul Mai târziu numai articolelor noi. Testarea nu modifică articolele." xml:space="preserve"><value>Regeln ergänzen Tags und die Markierung Später lesen nur bei neuen Artikeln. Tests ändern keine Artikel.</value></data>
+<data name="Rezultatele regulilor" xml:space="preserve"><value>Regelergebnisse</value></data>
+<data name="Salvează regulile și aplică rezultatele" xml:space="preserve"><value>Regeln speichern und Ergebnisse anwenden</value></data>
+<data name="Șterge" xml:space="preserve"><value>Löschen</value></data>
+<data name="Ștergi regula selectată? Articolele rămân neschimbate." xml:space="preserve"><value>Ausgewählte Regel löschen? Artikel bleiben unverändert.</value></data>
+<data name="Testează regula selectată" xml:space="preserve"><value>Ausgewählte Regel testen</value></data>
+<data name="Toate feedurile" xml:space="preserve"><value>Alle Feeds</value></data>
+<data name="Trebuie să se potrivească toate expresiile" xml:space="preserve"><value>Alle Ausdrücke müssen übereinstimmen</value></data>
+<data name="Nu există reguli automate." xml:space="preserve"><value>Keine automatischen Regeln vorhanden.</value></data>
+  <data name="Ce să caute" xml:space="preserve"><value>Wonach suchen</value></data>
+  <data name="Ce să facă" xml:space="preserve"><value>Was tun</value></data>
+  <data name="Alege cel puțin o acțiune: adaugă etichete sau marchează pentru mai târziu." xml:space="preserve"><value>Wählen Sie mindestens eine Aktion: Tags hinzufügen oder zum späteren Lesen markieren.</value></data>
+  <data name="Feed: {0}. Reguli: {1}. Etichete de adăugat: {2}. Mai târziu: {3}" xml:space="preserve"><value>Feed: {0}. Regeln: {1}. Hinzuzufügende Tags: {2}. Später lesen: {3}</value></data>
+  <data name="Articole găsite după reguli" xml:space="preserve"><value>Durch Regeln gefundene Artikel</value></data>
+  <data name="Comenzi articol găsit" xml:space="preserve"><value>Befehle für gefundenen Artikel</value></data>
+  <data name="Copiază titlul" xml:space="preserve"><value>Titel kopieren</value></data>
+  <data name="Regulile au fost salvate." xml:space="preserve"><value>Die Regeln wurden gespeichert.</value></data>
+  <data name="Configurare scurtături" xml:space="preserve"><value>Tastenkürzel konfigurieren</value></data>
+  <data name="Selectează o comandă și apasă Schimbă scurtătura. Modificările se salvează imediat. Tastele de navigare rămân neschimbate." xml:space="preserve"><value>Wählen Sie einen Befehl und Tastenkürzel ändern. Änderungen werden sofort gespeichert. Navigationstasten bleiben unverändert.</value></data>
+  <data name="Caută o comandă" xml:space="preserve"><value>Befehl suchen</value></data>
+  <data name="Comenzi și scurtături" xml:space="preserve"><value>Befehle und Tastenkürzel</value></data>
+  <data name="Schimbă scurtătura" xml:space="preserve"><value>Tastenkürzel ändern</value></data>
+  <data name="Elimină scurtătura" xml:space="preserve"><value>Tastenkürzel entfernen</value></data>
+  <data name="Restabilește implicitul" xml:space="preserve"><value>Standard wiederherstellen</value></data>
+  <data name="Restabilește toate" xml:space="preserve"><value>Alle zurücksetzen</value></data>
+  <data name="{0}. Actuală: {1}. Implicită: {2}." xml:space="preserve"><value>{0}. Aktuell: {1}. Standard: {2}.</value></data>
+  <data name="Restabilești toate scurtăturile implicite?" xml:space="preserve"><value>Alle Standardtastenkürzel wiederherstellen?</value></data>
+  <data name="Scurtăturile au fost salvate." xml:space="preserve"><value>Die Tastenkürzel wurden gespeichert.</value></data>
+  <data name="Apasă combinația în câmpul următor, apoi Tab și Salvează. Escape anulează. Conflictele cu JAWS sau Windows nu pot fi detectate complet." xml:space="preserve"><value>Drücken Sie die Kombination im nächsten Feld, dann Tab und Speichern. Escape bricht ab. Konflikte mit JAWS oder Windows können nicht vollständig erkannt werden.</value></data>
+  <data name="Combinație nouă" xml:space="preserve"><value>Neue Tastenkombination</value></data>
+  <data name="Fără scurtătură" xml:space="preserve"><value>Kein Tastenkürzel</value></data>
+  <data name="Combinație rezervată pentru navigare sau sistem." xml:space="preserve"><value>Tastenkombination für Navigation oder System reserviert.</value></data>
+  <data name="Folosește Ctrl sau Ctrl+Shift împreună cu tasta aleasă." xml:space="preserve"><value>Verwenden Sie Strg oder Strg+Umschalt mit der gewählten Taste.</value></data>
+  <data name="Combinația este folosită de: {0}." xml:space="preserve"><value>Tastenkombination bereits verwendet von: {0}.</value></data>
+  <data name="Citire vocală: pornește, întrerupe sau continuă" xml:space="preserve"><value>Sprachausgabe: starten, pausieren oder fortsetzen</value></data>
+  <data name="Caută în articole — alternativă" xml:space="preserve"><value>Artikel durchsuchen — Alternative</value></data>
+  <data name="Selectează următorul element după inițială; tastele atribuite comenzilor au prioritate în lista de articole." xml:space="preserve"><value>Wählt das nächste Element nach Anfangsbuchstaben; Befehlstasten haben in der Artikelliste Vorrang.</value></data>
+  <data name="Motorul SAPI5 nu mai răspunde. Pornește din nou citirea cu F9; motorul va fi reinițializat automat." xml:space="preserve"><value>Die SAPI5-Engine antwortet nicht. Starten Sie das Vorlesen mit F9 erneut; die Engine wird automatisch neu initialisiert.</value></data>
+  <data name="Furnizor AI" xml:space="preserve"><value>KI-Anbieter</value></data>
+  <data name="Folosește ca furnizor implicit" xml:space="preserve"><value>Als Standardanbieter verwenden</value></data>
+  <data name="Activează OpenAI" xml:space="preserve"><value>OpenAI aktivieren</value></data>
+  <data name="Cheie API OpenAI" xml:space="preserve"><value>OpenAI-API-Schlüssel</value></data>
+  <data name="Model OpenAI" xml:space="preserve"><value>OpenAI-Modell</value></data>
+  <data name="Testează conexiunea OpenAI" xml:space="preserve"><value>OpenAI-Verbindung testen</value></data>
+  <data name="Obține cheia API OpenAI" xml:space="preserve"><value>OpenAI-API-Schlüssel abrufen</value></data>
+  <data name="OpenAI API este facturat separat de abonamentul ChatGPT. Testul verifică modelele fără să trimită articol; întrebările AI trimit textul articolului către OpenAI." xml:space="preserve"><value>Die OpenAI-API wird getrennt vom ChatGPT-Abonnement abgerechnet. Der Test prüft verfügbare Modelle, ohne einen Artikel zu senden; KI-Anfragen übermitteln den Artikeltext an OpenAI.</value></data>
+  <data name="Cheia OpenAI salvată nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială." xml:space="preserve"><value>Der gespeicherte OpenAI-Schlüssel kann für dieses Windows-Konto nicht gelesen werden. Geben Sie ihn erneut in den KI-Einstellungen ein.</value></data>
+  <data name="Pagina OpenAI pentru gestionarea cheilor API nu a putut fi deschisă. {0}" xml:space="preserve"><value>Die OpenAI-Seite zur Verwaltung der API-Schlüssel konnte nicht geöffnet werden. {0}</value></data>
+  <data name="Introdu mai întâi cheia API OpenAI." xml:space="preserve"><value>Geben Sie zuerst den OpenAI-API-Schlüssel ein.</value></data>
+  <data name="Test OpenAI" xml:space="preserve"><value>OpenAI-Test</value></data>
+  <data name="Se testează conexiunea OpenAI. Nu este trimis niciun articol." xml:space="preserve"><value>OpenAI-Verbindung wird getestet. Es wird kein Artikel gesendet.</value></data>
+  <data name="Conexiune OpenAI reușită. S-au găsit {0} modele accesibile. Apasă Salvează pentru păstrarea setării." xml:space="preserve"><value>OpenAI-Verbindung erfolgreich. {0} zugängliche Modelle gefunden. Wählen Sie Speichern, um diese Einstellung zu übernehmen.</value></data>
+  <data name="Conexiunea OpenAI a eșuat: {0}" xml:space="preserve"><value>OpenAI-Verbindung fehlgeschlagen: {0}</value></data>
+  <data name="Activează și testează celălalt furnizor înainte de a-l alege ca implicit." xml:space="preserve"><value>Aktivieren und testen Sie den anderen Anbieter, bevor Sie ihn als Standard auswählen.</value></data>
+  <data name="Furnizor AI implicit" xml:space="preserve"><value>KI-Standardanbieter</value></data>
+  <data name="Activează OpenAI și introdu cheia API înainte să îl alegi ca furnizor implicit." xml:space="preserve"><value>Aktivieren Sie OpenAI und geben Sie den API-Schlüssel ein, bevor Sie OpenAI als Standardanbieter auswählen.</value></data>
+  <data name="Răspunsul OpenAI nu conține lista modelelor." xml:space="preserve"><value>Die OpenAI-Antwort enthält keine Modellliste.</value></data>
+  <data name="Cheia OpenAI nu are modele text disponibile pentru Responses API." xml:space="preserve"><value>Für diesen OpenAI-Schlüssel sind keine Textmodelle für die Responses API verfügbar.</value></data>
+  <data name="Introdu cheia API OpenAI în Setări Inteligență artificială." xml:space="preserve"><value>Geben Sie den OpenAI-API-Schlüssel in den KI-Einstellungen ein.</value></data>
+  <data name="Selectează un model OpenAI în Setări Inteligență artificială." xml:space="preserve"><value>Wählen Sie in den KI-Einstellungen ein OpenAI-Modell aus.</value></data>
+  <data name="OpenAI nu a returnat text." xml:space="preserve"><value>OpenAI hat keinen Text zurückgegeben.</value></data>
+  <data name="Cheia API OpenAI nu a fost acceptată. Verifică cheia și permisiunile. Detalii: {0}" xml:space="preserve"><value>Der OpenAI-API-Schlüssel wurde nicht akzeptiert. Prüfen Sie den Schlüssel und seine Berechtigungen. Details: {0}</value></data>
+  <data name="OpenAI a limitat solicitarea sau a fost atinsă cota contului. Detalii: {0}" xml:space="preserve"><value>OpenAI hat die Anfrage begrenzt oder das Kontingent des Kontos ist erreicht. Details: {0}</value></data>
+  <data name="OpenAI a răspuns cu eroarea {0}. Detalii: {1}" xml:space="preserve"><value>OpenAI hat den Fehler {0} zurückgegeben. Details: {1}</value></data>
+  <data name="Furnizorul AI implicit nu este activat. Deschide Setări Inteligență artificială și verifică cheia API pentru {0}." xml:space="preserve"><value>Der KI-Standardanbieter ist nicht aktiviert. Öffnen Sie die KI-Einstellungen und prüfen Sie den API-Schlüssel für {0}.</value></data>
+  <data name="Cheia API pentru {0} nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială." xml:space="preserve"><value>Der API-Schlüssel für {0} kann für dieses Windows-Konto nicht gelesen werden. Geben Sie ihn erneut in den KI-Einstellungen ein.</value></data>
+  <data name="Nu există o cheie API pentru {0}. Deschide Setări Inteligență artificială." xml:space="preserve"><value>Für {0} ist kein API-Schlüssel gespeichert. Öffnen Sie die KI-Einstellungen.</value></data>
+  <data name="Articolul nu conține text pentru furnizorul AI selectat. Încearcă să aduci textul complet." xml:space="preserve"><value>Der Artikel enthält keinen Text für den ausgewählten KI-Anbieter. Versuchen Sie, den vollständigen Text abzurufen.</value></data>
+  <data name="AI: {0} pregătește {1} pentru: {2}. Așteaptă." xml:space="preserve"><value>KI: {0} bereitet {1} vor für: {2}. Bitte warten.</value></data>
+  <data name="Răspunsul AI a fost închis. Ești înapoi la lista de articole." xml:space="preserve"><value>Das KI-Antwortfenster wurde geschlossen. Sie sind zurück in der Artikelliste.</value></data>
+  <data name="{0} nu a răspuns în 45 de secunde. Încearcă din nou mai târziu." xml:space="preserve"><value>{0} hat innerhalb von 45 Sekunden nicht geantwortet. Versuchen Sie es später erneut.</value></data>
+  <data name="Nu s-a putut ajunge la {0}. Verifică internetul, firewall-ul sau proxy-ul." xml:space="preserve"><value>{0} ist nicht erreichbar. Prüfen Sie Internetverbindung, Firewall oder Proxy.</value></data>
+  <data name="Furnizorul {0} nu a putut executa comanda {1}. Detalii: {2}" xml:space="preserve"><value>{0} konnte die Anfrage {1} nicht ausführen. Details: {2}</value></data>
+  <data name="Restaurare încheiată. {0} feeduri au fost încărcate. Setările locale ale furnizorilor AI și cheile API au fost păstrate." xml:space="preserve"><value>Wiederherstellung abgeschlossen. {0} Feeds wurden geladen. Die lokalen KI-Anbietereinstellungen und API-Schlüssel wurden beibehalten.</value></data>
+  <data name="Întreabă {0} despre articol" xml:space="preserve"><value>{0} zum Artikel befragen</value></data>
+  <data name="Furnizorul {0} primește conținutul complet disponibil în panoul de lectură și răspunde în contextul articolului." xml:space="preserve"><value>{0} erhält den vollständigen im Lesebereich verfügbaren Inhalt und antwortet im Kontext des Artikels.</value></data>
+  <data name="Întrebarea pentru {0}" xml:space="preserve"><value>Frage an {0}</value></data>
+  <data name="Furnizorul AI primește conținutul complet disponibil în panoul de lectură și răspunde în contextul articolului." xml:space="preserve"><value>Der KI-Anbieter erhält den vollständigen im Lesebereich verfügbaren Inhalt und antwortet im Kontext des Artikels.</value></data>
+  <data name="Întrebarea pentru furnizorul AI" xml:space="preserve"><value>Frage an den KI-Anbieter</value></data>
+  <data name="Întreabă furnizorul AI despre articol" xml:space="preserve"><value>Den KI-Anbieter zum Artikel befragen</value></data>
+  <data name="Continuă conversația cu furnizorul AI" xml:space="preserve"><value>Gespräch mit dem KI-Anbieter fortsetzen</value></data>
+  <data name="Conversație AI, numai citire" xml:space="preserve"><value>KI-Unterhaltung, schreibgeschützt</value></data>
+  <data name="Conversație cu {0}, numai citire" xml:space="preserve"><value>Unterhaltung mit {0}, schreibgeschützt</value></data>
+  <data name="Continuă conversația cu {0}" xml:space="preserve"><value>Unterhaltung mit {0} fortsetzen</value></data>
+  <data name="{0} răspunde..." xml:space="preserve"><value>{0} antwortet...</value></data>
+  <data name="Răspuns {0}: {1}" xml:space="preserve"><value>Antwort von {0}: {1}</value></data>
+  <data name="{0} nu a răspuns în 45 de secunde. Poți încerca întrebarea din nou." xml:space="preserve"><value>{0} hat innerhalb von 45 Sekunden nicht geantwortet. Sie können die Frage erneut stellen.</value></data>
+  <data name="{0} nu a putut răspunde: {1}" xml:space="preserve"><value>{0} konnte nicht antworten: {1}</value></data>
+  <data name="{0}{0}Întrebarea ta: {1}{0}{0}{2} răspunde...{0}" xml:space="preserve"><value>{0}{0}Ihre Frage: {1}{0}{0}{2} antwortet...{0}</value></data>
+  <data name="Mistral este un serviciu online. Testul enumeră modelele de conversație fără să trimită articolul. Când întrebi Mistral despre un articol, textul articolului este trimis furnizorului și poate consuma cota sau genera costuri în cont." xml:space="preserve"><value>Mistral ist ein Onlinedienst. Beim Test werden verfügbare Chatmodelle aufgelistet, ohne den Artikel zu senden. Wenn Sie Mistral zu einem Artikel befragen, wird der Artikeltext an den Anbieter gesendet und kann Ihr Kontingent verbrauchen oder Kosten auf Ihrem Konto verursachen.</value></data>
+  <data name="Nu s-au găsit modele de conversație disponibile pentru {0}." xml:space="preserve"><value>Für {0} wurden keine verfügbaren Chatmodelle gefunden.</value></data>
+  <data name="Mistral" xml:space="preserve"><value>Mistral</value></data>
+  <data name="Activează Mistral" xml:space="preserve"><value>Mistral aktivieren</value></data>
+  <data name="Cheie API Mistral" xml:space="preserve"><value>Mistral-API-Schlüssel</value></data>
+  <data name="Model Mistral" xml:space="preserve"><value>Mistral-Modell</value></data>
+  <data name="Testează conexiunea Mistral" xml:space="preserve"><value>Mistral-Verbindung testen</value></data>
+  <data name="Obține cheia API Mistral" xml:space="preserve"><value>Mistral-API-Schlüssel abrufen</value></data>
+  <data name="OpenAI" xml:space="preserve"><value>OpenAI</value></data>
+  <data name="Copie de siguranță creată. {0} feeduri au fost salvate. Cheile API nu sunt incluse." xml:space="preserve"><value>Sicherung erstellt. {0} Feeds wurden gespeichert. API-Schlüssel sind nicht enthalten.</value></data>
+  <data name="Restabilești {0} feeduri și articolele lor? Lista locală actuală va fi înlocuită. Cheile API Gemini și OpenAI de pe acest calculator nu sunt afectate." xml:space="preserve"><value>Möchten Sie {0} Feeds und ihre Artikel wiederherstellen? Die aktuelle lokale Liste wird ersetzt. Die Gemini- und OpenAI-API-Schlüssel auf diesem Computer bleiben unberührt.</value></data>
+  <data name="Orizont RSS este deja deschis. Este permisă o singură instanță. Folosește combinația Alt+Tab pentru a reveni la fereastra deja deschisă." xml:space="preserve"><value>Orizont RSS ist bereits geöffnet. Es kann nur eine Instanz ausgeführt werden. Drücken Sie Alt+Tab, um zum bereits geöffneten Fenster zurückzukehren.</value></data>
+  <data name="Verificarea actualizărilor a eșuat: {0}" xml:space="preserve"><value>Die Suche nach Aktualisierungen ist fehlgeschlagen: {0}</value></data>
+  <data name="Actualizarea nu a fost pornită deoarece salvarea datelor a eșuat: {0}" xml:space="preserve"><value>Das Update wurde nicht gestartet, weil das Speichern der Daten fehlgeschlagen ist: {0}</value></data>
+  <data name="Instalatorul verificat nu a putut fi pornit: {0}" xml:space="preserve"><value>Das überprüfte Installationsprogramm konnte nicht gestartet werden: {0}</value></data>
+  <data name="Actualizarea a fost descărcată și verificată. Se salvează datele înainte de pornirea instalatorului." xml:space="preserve"><value>Das Update wurde heruntergeladen und überprüft. Die Daten werden vor dem Start des Installationsprogramms gespeichert.</value></data>
+  <data name="Descărcarea actualizării a fost anulată." xml:space="preserve"><value>Der Download des Updates wurde abgebrochen.</value></data>
+  <data name="Fișierul verificat pregătit nu mai este disponibil." xml:space="preserve"><value>Die überprüfte Installationsdatei ist nicht mehr verfügbar.</value></data>
+  <data name="Traducere automată realizată prin {0} în limba {1}." xml:space="preserve"><value>Maschinelle Übersetzung mit {0} in die Sprache {1}.</value></data>
+  <data name="Data publicării: {0}" xml:space="preserve"><value>Veröffentlichungsdatum: {0}</value></data>
+  <data name="Feed: {0}" xml:space="preserve"><value>Feed: {0}</value></data>
+  <data name="Folderul de export lipsește." xml:space="preserve"><value>Der Exportordner fehlt.</value></data>
+  <data name="Pagina nu a oferit suficient text pentru modul de citire." xml:space="preserve"><value>Die Seite hat nicht genügend Text für den Lesemodus bereitgestellt.</value></data>
+  <data name="Pagina nu a oferit conținut lizibil." xml:space="preserve"><value>Die Seite hat keinen lesbaren Inhalt bereitgestellt.</value></data>
+  <data name="Limba țintă lipsește." xml:space="preserve"><value>Die Zielsprache fehlt.</value></data>
+  <data name="GitHub a răspuns cu codul HTTP {0}." xml:space="preserve"><value>GitHub hat den HTTP-Statuscode {0} zurückgegeben.</value></data>
+  <data name="GitHub a returnat un răspuns de versiune nevalid." xml:space="preserve"><value>GitHub hat eine ungültige Versionsantwort zurückgegeben.</value></data>
+  <data name="Eticheta versiunii curente sau publicate lipsește." xml:space="preserve"><value>Das Versions-Tag der aktuellen oder veröffentlichten Version fehlt.</value></data>
+  <data name="Numărul versiunii curente sau publicate nu este valid." xml:space="preserve"><value>Die aktuelle oder veröffentlichte Versionsnummer ist ungültig.</value></data>
+  <data name="Adresa paginii release-ului GitHub nu este validă." xml:space="preserve"><value>Die Adresse der GitHub-Release-Seite ist ungültig.</value></data>
+  <data name="Release-ul nu conține un instalator și un fișier SHA-256 corespunzător." xml:space="preserve"><value>Das Release enthält kein passendes Installationsprogramm und keine passende SHA-256-Datei.</value></data>
+  <data name="Conexiunea la GitHub nu a putut fi stabilită." xml:space="preserve"><value>Es konnte keine Verbindung zu GitHub hergestellt werden.</value></data>
+  <data name="Verificarea actualizărilor a expirat." xml:space="preserve"><value>Die Updateprüfung hat das Zeitlimit überschritten.</value></data>
+  <data name="Verificarea actualizărilor a eșuat din cauza unei erori neașteptate." xml:space="preserve"><value>Die Updateprüfung ist aufgrund eines unerwarteten Fehlers fehlgeschlagen.</value></data>
+  <data name="Nu există o actualizare verificată disponibilă pentru descărcare." xml:space="preserve"><value>Es ist kein verifiziertes Update zum Herunterladen verfügbar.</value></data>
+  <data name="Adresa instalatorului sau a fișierului SHA-256 nu este un asset HTTPS al unui release GitHub." xml:space="preserve"><value>Die Adresse des Installationsprogramms oder der SHA-256-Datei ist kein HTTPS-Asset eines GitHub-Releases.</value></data>
+  <data name="Dimensiunea instalatorului este nulă sau depășește limita de siguranță de 512 MiB." xml:space="preserve"><value>Die Größe des Installationsprogramms ist null oder überschreitet die Sicherheitsgrenze von 512 MiB.</value></data>
+  <data name="Instalatorul depășește limita de siguranță de 512 MiB." xml:space="preserve"><value>Das Installationsprogramm überschreitet die Sicherheitsgrenze von 512 MiB.</value></data>
+  <data name="Descărcarea instalatorului este incompletă." xml:space="preserve"><value>Der Download des Installationsprogramms ist unvollständig.</value></data>
+  <data name="Suma SHA-256 a instalatorului nu corespunde sumei publicate." xml:space="preserve"><value>Die SHA-256-Prüfsumme des Installationsprogramms stimmt nicht mit der veröffentlichten Prüfsumme überein.</value></data>
+  <data name="Fișierul descărcat nu este un executabil Windows valid." xml:space="preserve"><value>Die heruntergeladene Datei ist keine gültige Windows-Programmdatei.</value></data>
+  <data name="Eroare necunoscută la verificarea actualizărilor." xml:space="preserve"><value>Bei der Updateprüfung ist ein unbekannter Fehler aufgetreten.</value></data>
+  <data name="Fișierul SHA-256 este prea mare." xml:space="preserve"><value>Die SHA-256-Datei ist zu groß.</value></data>
+  <data name="Fișierul SHA-256 publicat nu este valid." xml:space="preserve"><value>Die veröffentlichte SHA-256-Datei ist ungültig.</value></data>
+  <data name="Windows nu a pornit instalatorul verificat." xml:space="preserve"><value>Windows hat das verifizierte Installationsprogramm nicht gestartet.</value></data>
+  <data name="Descărcarea actualizării a expirat." xml:space="preserve"><value>Der Update-Download hat das Zeitlimit überschritten.</value></data>
+  <data name="Nu există acces la folderul temporar al actualizării." xml:space="preserve"><value>Der Zugriff auf den temporären Updateordner wurde verweigert.</value></data>
+  <data name="Fișierul temporar al actualizării nu a putut fi scris." xml:space="preserve"><value>Die temporäre Update-Datei konnte nicht geschrieben werden.</value></data>
 </root>

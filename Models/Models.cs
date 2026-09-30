@@ -21,9 +21,12 @@ public sealed class Feed
     /// <summary>Last NewsBlur feed name and folder acknowledged by a completed sync.</summary>
     public string? NewsBlurLastName { get; set; }
     public string? NewsBlurLastFolder { get; set; }
+    /// <summary>Preferred destination when an article from this feed is opened with Enter.</summary>
+    public string ArticleOpenMode { get; set; } = ArticleOpenModeIds.Default;
     /// <summary>Local metadata must be sent after this feed has first been added to NewsBlur.</summary>
     public bool NewsBlurPendingLocalMetadataSync { get; set; }
     public List<Article> Articles { get; set; } = [];
+    public HashSet<string> AutomationSeen { get; set; } = [];
     public bool HasThreeMonthSilence => DateTimeOffset.Now - (LastArticleReceivedOn ?? LastSuccessfulUpdate ?? AddedOn) >= TimeSpan.FromDays(90);
     public bool NeedsAttention => ConsecutiveFailures >= 3 || HasThreeMonthSilence;
     public string AttentionReason => ConsecutiveFailures >= 3 ? UiText.Translate("după 3 erori consecutive") : UiText.Translate("nu a primit articole de peste 3 luni");
@@ -60,6 +63,8 @@ public sealed class Article
     public bool IsFavorite { get; set; }
     public bool ReadLater { get; set; }
     public List<string> Tags { get; set; } = [];
+    public bool AutomationPendingNewsBlurBaseline { get; set; }
+    public bool AutomationAddedReadLater { get; set; }
     public List<AiNote> AiNotes { get; set; } = [];
     /// <summary>Stable NewsBlur story hash used for bidirectional state sync.</summary>
     public string? NewsBlurStoryHash { get; set; }

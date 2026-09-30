@@ -1,0 +1,29 @@
+<Window x:Class="CititorRSS.Jaws.ArticleRuleDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="Regulă automată" Width="650" Height="740" MinWidth="500" MinHeight="500" WindowStartupLocation="CenterOwner">
+ <DockPanel Margin="18">
+  <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+   <Button Content="Salvează" Click="Save_Click" IsDefault="True"/><Button Content="Anulează" IsCancel="True"/>
+  </StackPanel>
+  <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Focusable="False">
+   <StackPanel>
+    <Label Content="Numele regulii" Target="{Binding ElementName=RuleName}"/><TextBox x:Name="RuleName" MaxLength="100"/>
+    <CheckBox x:Name="EnabledBox" Content="Regulă activată"/>
+    <TextBlock Text="Ce să caute" Style="{StaticResource SectionTitleTextStyle}"/>
+    <Label Content="Expresii, câte una pe rând" Target="{Binding ElementName=TermsBox}"/>
+    <TextBox x:Name="TermsBox" Height="75" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" MaxLength="4000"/>
+    <CheckBox x:Name="AllTermsBox" Content="Trebuie să se potrivească toate expresiile"/>
+    <CheckBox x:Name="ContentBox" Content="Caută și în textul deja descărcat"/>
+    <CheckBox x:Name="AllFeedsBox" Content="Toate feedurile" Checked="Scope_Changed" Unchecked="Scope_Changed"/>
+    <Label Content="Feeduri selectate" Target="{Binding ElementName=FeedList}"/>
+    <ListBox x:Name="FeedList" Height="90" SelectionMode="Extended" DisplayMemberPath="Name"/>
+    <TextBlock Text="Ce să facă" Style="{StaticResource SectionTitleTextStyle}"/>
+    <TextBlock Text="Alege cel puțin o acțiune: adaugă etichete sau marchează pentru mai târziu." TextWrapping="Wrap"/>
+    <Label Content="Etichete existente" Target="{Binding ElementName=TagList}"/>
+    <ListBox x:Name="TagList" Height="70" SelectionMode="Extended"/>
+    <Label Content="Etichete noi, separate prin virgulă" Target="{Binding ElementName=TagsBox}"/>
+    <TextBox x:Name="TagsBox" MaxLength="1000"/>
+    <CheckBox x:Name="LaterBox" Content="Marchează pentru mai târziu"/>
+   </StackPanel>
+  </ScrollViewer>
+ </DockPanel>
+</Window>

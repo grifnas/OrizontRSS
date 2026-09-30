@@ -19,6 +19,22 @@ dotnet build CititorRSS.Jaws.csproj -c Release
 
 ## Publicare Windows x64
 
+Înainte de publicare este necesară cererea expresă a utilizatorului. Pentru verificarea obișnuită a sursei, fără pachete de distribuție, folosește comenzile din secțiunea următoare.
+
+## Verificare comună a sursei, fără distribuție
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\verify-source.ps1 -Mode Full
+```
+
+Aceasta este și comanda din CI: compilează aplicația și instalatorul, rulează succesiv CoreSmoke, WorkflowSmoke, RulesSmoke, ShortcutsSmoke, AiProviderSmoke (proiectul OpenAiSmoke), LocalizationSmoke, EspeakSmoke și ScaleSmoke, apoi verifică localizările, ghidurile, codarea textelor, paginile locale și comportamentul orchestratorului la eșec. Se oprește la prima eroare. Nu creează o distribuție și nu contactează conturile personale pentru teste.
+
+`-Mode Quick` omite compilarea instalatorului, benchmarkul ScaleSmoke și verificarea paginilor publice; nu reprezintă validare completă. `-ListOnly` afișează pașii fără execuție. `-NoRestore` se folosește numai când dependențele tuturor proiectelor sunt deja restaurate. NU1900 înseamnă că auditul vulnerabilităților NuGet nu a obținut date, chiar dacă testele trec.
+
+WorkflowSmoke execută comenzile reale din MainWindow cu operațiile externe substituite: nu deschide ferestre, nu citește profilul și nu trimite cereri online. Include schimbarea selecției în timpul operațiilor și matricea bifelor de pornire. Nu înlocuiește verificarea practică JAWS/NVDA sau sincronizarea reală pe două calculatoare.
+
+## Publicare Windows x64 — comandă
+
 Pentru o distribuție autonomă, care include .NET Runtime:
 
 ```powershell
@@ -44,7 +60,7 @@ Acest director nu trebuie inclus într-o distribuție sau într-un raport public
 - compilare cu zero erori și zero avertismente;
 - absența fișierelor `*.pdb`, `settings.json`, `feeds.json`, backupurilor și diagnosticelor;
 - prezența ghidului HTML, a licenței și a notificărilor pentru componente terțe;
-- funcționarea comenzilor `Ctrl+1`, `Ctrl+2`, `Ctrl+3`, `F6`, `F1`, `Delete`, `F9`, `Escape`, `Shift+F9`, `F11` și a alternativelor `Ctrl+Alt+V`, `Ctrl+Alt+P`, `Ctrl+Alt+S`;
+- funcționarea comenzilor `Ctrl+1`, `Ctrl+2`, `Ctrl+3`, `F6`, `F1`, `Delete`, `F9`, `Escape`, `Shift+F9` și `F11`;
 - calcularea și publicarea sumei SHA-256 pentru fiecare arhivă.
 
 Validarea completă, inclusiv testele automate pentru logică, 1.200 de articole, localizare, eSpeak NG, ghiduri și distribuție, se rulează astfel:

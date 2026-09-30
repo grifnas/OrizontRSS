@@ -1,0 +1,25 @@
+<Window x:Class="CititorRSS.Jaws.ShortcutSettingsWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="Configurare scurtături" Width="820" Height="610" MinWidth="650" MinHeight="450" WindowStartupLocation="CenterOwner">
+ <DockPanel Margin="20">
+  <StackPanel DockPanel.Dock="Top" KeyboardNavigation.TabIndex="0">
+   <TextBlock Text="Selectează o comandă și apasă Schimbă scurtătura. Modificările se salvează imediat. Tastele de navigare rămân neschimbate." TextWrapping="Wrap" Margin="0,0,0,10"/>
+   <Label Content="Caută o comandă" Target="{Binding ElementName=Search}"/>
+   <TextBox x:Name="Search" AutomationProperties.Name="Caută o comandă" TextChanged="Search_Changed"/>
+  </StackPanel>
+  <StackPanel DockPanel.Dock="Bottom" KeyboardNavigation.TabIndex="2">
+   <TextBlock x:Name="Status" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" Margin="0,8"/>
+   <WrapPanel>
+    <Button x:Name="ChangeButton" Content="Schimbă scurtătura" Click="Change_Click"/>
+    <Button Content="Elimină scurtătura" Click="Remove_Click"/>
+    <Button Content="Restabilește implicitul" Click="Reset_Click"/>
+    <Button Content="Restabilește toate" Click="ResetAll_Click"/>
+    <Button Content="Închide" IsCancel="True"/>
+   </WrapPanel>
+  </StackPanel>
+  <ListBox x:Name="Commands" TabIndex="1" AutomationProperties.Name="Comenzi și scurtături" DisplayMemberPath="Display" Margin="0,10">
+   <ListBox.ItemContainerStyle><Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+    <Setter Property="AutomationProperties.Name" Value="{Binding Display}"/>
+   </Style></ListBox.ItemContainerStyle>
+  </ListBox>
+ </DockPanel>
+</Window>

@@ -273,7 +273,7 @@ public partial class MainWindow : Window
         var programs = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
         Directory.CreateDirectory(programs);
         CreateShortcut(Path.Combine(programs, "Orizont RSS.lnk"), Path.Combine(destination, "Orizont.exe"), destination, "Orizont RSS");
-        CreateShortcut(Path.Combine(programs, "Dezinstalează Orizont RSS.lnk"), Path.Combine(destination, "OrizontSetup.exe"), destination, "Dezinstalează Orizont RSS", "/uninstall");
+        CreateShortcut(Path.Combine(programs, $"{_texts.UninstallShortcutName}.lnk"), Path.Combine(destination, "OrizontSetup.exe"), destination, _texts.UninstallShortcutName, "/uninstall");
         if (createDesktopShortcut)
         {
             var desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
@@ -281,10 +281,10 @@ public partial class MainWindow : Window
         }
     }
 
-    private static void CreateShortcut(string shortcutPath, string targetPath, string workingDirectory, string description, string arguments = "")
+    private void CreateShortcut(string shortcutPath, string targetPath, string workingDirectory, string description, string arguments = "")
     {
-        var shellType = Type.GetTypeFromProgID("WScript.Shell") ?? throw new InvalidOperationException("Windows Script Host nu este disponibil.");
-        dynamic shell = Activator.CreateInstance(shellType) ?? throw new InvalidOperationException("Nu s-a putut crea scurtătura.");
+        var shellType = Type.GetTypeFromProgID("WScript.Shell") ?? throw new InvalidOperationException(_texts.WindowsScriptHostUnavailable);
+        dynamic shell = Activator.CreateInstance(shellType) ?? throw new InvalidOperationException(_texts.ShortcutCreationFailed);
         dynamic shortcut = shell.CreateShortcut(shortcutPath);
         shortcut.TargetPath = targetPath;
         shortcut.WorkingDirectory = workingDirectory;
@@ -297,7 +297,7 @@ public partial class MainWindow : Window
     private static void DeleteShortcuts()
     {
         var programs = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.StartMenu), "Programs");
-        foreach (var name in new[] { "Orizont RSS.lnk", "Dezinstalează Orizont RSS.lnk" })
+        foreach (var name in new[] { "Orizont RSS.lnk" }.Concat(InstallerLanguages.UninstallShortcutNames))
         {
             var path = Path.Combine(programs, name);
             if (File.Exists(path)) File.Delete(path);

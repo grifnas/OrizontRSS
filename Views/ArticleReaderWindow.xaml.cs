@@ -1,10 +1,15 @@
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Globalization;
 using System.Net.Http;
+using System.Text.Json;
 using CititorRSS.Jaws.Localization;
+using CititorRSS.Jaws.Services.Content;
+using Microsoft.Web.WebView2.Core;
 
 namespace CititorRSS.Jaws;
 
@@ -18,8 +23,11 @@ public partial class ArticleReaderWindow : Window
     private readonly Func<Task> _saveArticle;
     private readonly SpeechService _speech;
     private readonly CancellationTokenSource _readerLifetime = new();
-    private bool _googleTranslationInProgress;
     private string? _translationProvider;
+    private string? _translationLanguage;
+    private string _originalReadableText = string.Empty;
+    private bool _isWebViewActive;
+    private bool _webViewInitialized;
 
     public ArticleReaderWindow(Article article, string readableText, AppSettings settings, Func<Task<string>> refresh, Func<Task> saveSettings, SpeechService speech, Func<Task>? saveArticle = null)
     {
@@ -32,6 +40,8 @@ public partial class ArticleReaderWindow : Window
         _speech = speech;
         _saveArticle = saveArticle ?? (() => Task.CompletedTask);
         _speech.StateChanged += SpeechStateChanged;
+        LocalizeSaveMenuHeaders(ReaderMenu);
+        if (Resources["ReaderContextMenu"] is ItemsControl contextMenu) LocalizeSaveMenuHeaders(contextMenu);
         Width = Math.Max(600, settings.ReaderWindowWidth);
         Height = Math.Max(400, settings.ReaderWindowHeight);
         ArticleText.FontSize = Math.Clamp(settings.ReaderFontSize, 12, 36);
@@ -42,8 +52,268 @@ public partial class ArticleReaderWindow : Window
             ? article.Published.ToString("dd MMMM yyyy, HH:mm")
             : $"{article.SourceName} · {article.Published:dd MMMM yyyy, HH:mm}";
         ArticleText.Text = RssReader.CleanReadableContent(readableText, article.Title);
+        _originalReadableText = ArticleText.Text;
         Status.Text = T("Articolul este deschis în cititorul Orizont.");
-        Loaded += (_, _) => { ArticleText.Focus(); ArticleText.CaretIndex = 0; ArticleText.Select(0, 0); };
+
+        ShortcutBindings.RefreshMenuHints(this);
+
+        Loaded += async (_, _) =>
+        {
+            if (string.Equals(_settings.ReaderMode, ReaderModeIds.WebView, StringComparison.OrdinalIgnoreCase))
+            {
+                await SetReaderModeAsync(ReaderModeIds.WebView, updateSettings: false);
+            }
+            else
+            {
+                ArticleText.Focus();
+                ArticleText.CaretIndex = 0;
+                ArticleText.Select(0, 0);
+                UpdateModeMenuText();
+            }
+        };
+    }
+
+    private async Task EnsureWebViewInitializedAsync()
+    {
+        if (_webViewInitialized) return;
+
+        var userDataFolder = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "CititorRSS-JAWS",
+            "WebView2");
+        Directory.CreateDirectory(userDataFolder);
+
+        var environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder);
+        await ArticleWebView.EnsureCoreWebView2Async(environment);
+
+        ArticleWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+        ArticleWebView.CoreWebView2.Settings.AreDevToolsEnabled = false;
+        ArticleWebView.CoreWebView2.Settings.IsStatusBarEnabled = false;
+
+        ArticleWebView.CoreWebView2.ContextMenuRequested += ArticleWebView_ContextMenuRequested;
+        ArticleWebView.CoreWebView2.NavigationStarting += ArticleWebView_NavigationStarting;
+        _webViewInitialized = true;
+    }
+
+    private void ArticleWebView_ContextMenuRequested(object? sender, CoreWebView2ContextMenuRequestedEventArgs e)
+    {
+        e.Handled = true;
+        Dispatcher.InvokeAsync(OpenContextMenu);
+    }
+
+    private void ArticleWebView_NavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
+    {
+        if (e.Uri.StartsWith("about:", StringComparison.OrdinalIgnoreCase) ||
+            e.Uri.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        e.Cancel = true;
+        try
+        {
+            Process.Start(new ProcessStartInfo(e.Uri) { UseShellExecute = true });
+            StatusAnnouncer.Set(Status, T("Linkul a fost deschis în browserul implicit."), ReaderStatusBar);
+        }
+        catch (Exception ex)
+        {
+            StatusAnnouncer.Set(Status, F("Nu s-a putut deschide linkul: {0}", ex.Message), ReaderStatusBar);
+        }
+    }
+
+    private async Task SetReaderModeAsync(string mode, bool updateSettings = true)
+    {
+        var normalized = ReaderModeIds.Normalize(mode);
+        var targetIsWeb = normalized == ReaderModeIds.WebView;
+
+        if (targetIsWeb)
+        {
+            try
+            {
+                StatusAnnouncer.Set(Status, T("Se încarcă modul WebReader..."), ReaderStatusBar);
+                await EnsureWebViewInitializedAsync();
+                await LoadWebViewContentAsync();
+                _isWebViewActive = true;
+                ArticleText.Visibility = Visibility.Collapsed;
+                ArticleWebView.Visibility = Visibility.Visible;
+                ArticleWebView.Focus();
+                StatusAnnouncer.Set(Status, T("Articolul este afișat în modul WebReader."), ReaderStatusBar);
+            }
+            catch (Exception ex)
+            {
+                _isWebViewActive = false;
+                ArticleWebView.Visibility = Visibility.Collapsed;
+                ArticleText.Visibility = Visibility.Visible;
+                ArticleText.Focus();
+                StatusAnnouncer.Set(Status, F("Modul WebReader nu a putut fi inițializat ({0}); se revine la modul text.", ex.Message), ReaderStatusBar);
+            }
+        }
+        else
+        {
+            _isWebViewActive = false;
+            ArticleWebView.Visibility = Visibility.Collapsed;
+            ArticleText.Visibility = Visibility.Visible;
+            ArticleText.Focus();
+            StatusAnnouncer.Set(Status, T("Articolul este afișat în modul text simplu."), ReaderStatusBar);
+        }
+
+        UpdateModeMenuText();
+
+        if (updateSettings)
+        {
+            _settings.ReaderMode = _isWebViewActive ? ReaderModeIds.WebView : ReaderModeIds.Text;
+            await _saveSettings();
+        }
+    }
+
+    private void UpdateModeMenuText()
+    {
+        if (MenuToggleReaderMode != null)
+        {
+            MenuToggleReaderMode.Header = _isWebViewActive
+                ? T("Comută în modul text")
+                : T("Comută în modul WebReader");
+        }
+    }
+
+    private async void ToggleReaderMode_Click(object sender, RoutedEventArgs e)
+    {
+        await ToggleReaderModeAsync();
+    }
+
+    private async Task ToggleReaderModeAsync()
+    {
+        var target = _isWebViewActive ? ReaderModeIds.Text : ReaderModeIds.WebView;
+        await SetReaderModeAsync(target, updateSettings: true);
+    }
+
+    private async Task LoadWebViewContentAsync()
+    {
+        if (!_webViewInitialized || ArticleWebView.CoreWebView2 == null) return;
+        var html = GenerateReaderHtml();
+        ArticleWebView.NavigateToString(html);
+        await Task.CompletedTask;
+    }
+
+    private string GenerateReaderHtml()
+    {
+        var title = System.Net.WebUtility.HtmlEncode(_article.Title);
+        var details = System.Net.WebUtility.HtmlEncode(ArticleDetails.Text);
+        var lang = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
+        var bg = "#ffffff";
+        var fg = "#000000";
+        var secondary = "#555555";
+        var link = "#0b62b2";
+
+        if (Application.Current?.Resources["ThemeWindowBrush"] is SolidColorBrush windowBrush)
+            bg = $"#{windowBrush.Color.R:X2}{windowBrush.Color.G:X2}{windowBrush.Color.B:X2}";
+        if (Application.Current?.Resources["ThemeWindowTextBrush"] is SolidColorBrush textBrush)
+            fg = $"#{textBrush.Color.R:X2}{textBrush.Color.G:X2}{textBrush.Color.B:X2}";
+        if (Application.Current?.Resources["ThemeSecondaryTextBrush"] is SolidColorBrush secBrush)
+            secondary = $"#{secBrush.Color.R:X2}{secBrush.Color.G:X2}{secBrush.Color.B:X2}";
+        if (Application.Current?.Resources["ThemeHighlightBrush"] is SolidColorBrush hlBrush)
+            link = $"#{hlBrush.Color.R:X2}{hlBrush.Color.G:X2}{hlBrush.Color.B:X2}";
+
+        var fontSize = Math.Clamp(ArticleText.FontSize, 12, 36);
+        var lineHeight = _settings.ReaderWideSpacing ? "2.0" : "1.6";
+        var paragraphSpacing = _settings.ReaderWideSpacing ? "1.6em" : "1.2em";
+
+        var content = ArticleText.Text;
+        var sb = new System.Text.StringBuilder();
+        var paragraphs = content.Split(["\r\n\r\n", "\n\n"], StringSplitOptions.RemoveEmptyEntries);
+        foreach (var p in paragraphs)
+        {
+            var trimmed = p.Trim();
+            if (string.IsNullOrWhiteSpace(trimmed)) continue;
+            sb.Append("<p>").Append(System.Net.WebUtility.HtmlEncode(trimmed)).Append("</p>\n");
+        }
+
+        return $@"<!DOCTYPE html>
+<html lang=""{lang}"">
+<head>
+<meta charset=""utf-8"">
+<meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+<title>{title}</title>
+<style>
+  body {{
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-size: {fontSize}px;
+    line-height: {lineHeight};
+    color: {fg};
+    background-color: {bg};
+    max-width: 52rem;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem;
+    word-wrap: break-word;
+  }}
+  h1 {{
+    font-size: 1.4em;
+    line-height: 1.25;
+    margin: 0 0 0.5rem 0;
+    color: {fg};
+  }}
+  .meta {{
+    font-size: 0.9em;
+    color: {secondary};
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid {secondary};
+  }}
+  p {{
+    margin: 0 0 {paragraphSpacing} 0;
+  }}
+  a {{
+    color: {link};
+  }}
+  a:focus, a:hover {{
+    outline: 2px solid currentColor;
+    text-decoration: underline;
+  }}
+</style>
+</head>
+<body>
+  <h1>{title}</h1>
+  <div class=""meta"">{details}</div>
+  <article>
+    {sb}
+  </article>
+</body>
+</html>";
+    }
+
+    private async Task<string> GetSelectedTextAsync()
+    {
+        if (_isWebViewActive && _webViewInitialized && ArticleWebView.CoreWebView2 != null)
+        {
+            try
+            {
+                var json = await ArticleWebView.ExecuteScriptAsync("window.getSelection().toString()");
+                if (!string.IsNullOrEmpty(json) && json != "null" && json != "\"\"")
+                {
+                    return JsonSerializer.Deserialize<string>(json) ?? string.Empty;
+                }
+            }
+            catch { }
+            return string.Empty;
+        }
+        return ArticleText.SelectedText;
+    }
+
+    private async Task<string> GetSelectedOrFullTextAsync()
+    {
+        var selected = await GetSelectedTextAsync();
+        return string.IsNullOrWhiteSpace(selected) ? ArticleText.Text : selected;
+    }
+
+    private void OpenContextMenu()
+    {
+        if (Resources["ReaderContextMenu"] is ContextMenu menu)
+        {
+            menu.PlacementTarget = _isWebViewActive ? (UIElement)ArticleWebView : ArticleText;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
+            menu.IsOpen = true;
+        }
     }
 
     private async void Refresh_Click(object sender, RoutedEventArgs e)
@@ -52,14 +322,24 @@ public partial class ArticleReaderWindow : Window
         {
             Status.Text = T("Se pregătește articolul în cititorul Orizont.");
             ArticleText.Text = RssReader.CleanReadableContent(await _refresh(), _article.Title);
+            _originalReadableText = ArticleText.Text;
             _translationProvider = null;
-            ArticleText.Focus(); ArticleText.CaretIndex = 0; ArticleText.Select(0, 0);
+            _translationLanguage = null;
+            if (_isWebViewActive)
+            {
+                await LoadWebViewContentAsync();
+            }
+            else
+            {
+                ArticleText.Focus(); ArticleText.CaretIndex = 0; ArticleText.Select(0, 0);
+            }
             Status.Text = T("Articolul este deschis în cititorul Orizont.");
         }
         catch (Exception exception)
         {
-            Status.Text = F("Articolul nu a putut fi reîncărcat: {0}", exception.Message);
-            MessageBox.Show(this, $"Articolul nu a putut fi reîncărcat.\n\n{exception.Message}", "Reîncărcare nereușită", MessageBoxButton.OK, MessageBoxImage.Warning);
+            var message = F("Articolul nu a putut fi reîncărcat: {0}", exception.Message);
+            Status.Text = message;
+            MessageBox.Show(this, message, T("Deschidere nereușită"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -72,14 +352,14 @@ public partial class ArticleReaderWindow : Window
     {
         ArticleText.FontSize = Math.Clamp(size, 12, 36);
         _settings.ReaderFontSize = ArticleText.FontSize;
+        if (_isWebViewActive) _ = LoadWebViewContentAsync();
     }
 
     private void ApplySpacing(bool wide)
     {
-        // WPF TextBox nu expune spațierea rândurilor; paddingul vertical oferă un
-        // mod de lectură mai aerisit fără să modifice textul copiat.
         ArticleText.Padding = wide ? new Thickness(0, 8, 0, 8) : new Thickness(0);
         _settings.ReaderWideSpacing = wide;
+        if (_isWebViewActive) _ = LoadWebViewContentAsync();
     }
 
     private async void Window_Closed(object? sender, EventArgs e)
@@ -89,6 +369,7 @@ public partial class ArticleReaderWindow : Window
         _settings.ReaderWindowWidth = Width;
         _settings.ReaderWindowHeight = Height;
         _settings.ReaderFontSize = ArticleText.FontSize;
+        _settings.ReaderMode = _isWebViewActive ? ReaderModeIds.WebView : ReaderModeIds.Text;
         await _saveSettings();
     }
 
@@ -102,64 +383,112 @@ public partial class ArticleReaderWindow : Window
         if (ArticleText.Text.Length == 0) e.Handled = true;
     }
 
-    private async void AiSummarize_Click(object sender, RoutedEventArgs e) => await AskGeminiAsync(T("Rezumat"), T("Rezuma articolul în limba interfeței. Evidențiază faptele, contextul și incertitudinile."));
-    private async void AiTranslate_Click(object sender, RoutedEventArgs e) => await AskGeminiAsync(T("Traducere"), T("Tradu articolul complet în limba interfeței. Nu adăuga comentarii, păstrează structura paragrafului."));
-    private async void AiExplain_Click(object sender, RoutedEventArgs e) => await AskGeminiAsync(T("Explicație"), T("Explică articolul în limba interfeței, simplu și clar, pentru un cititor nespecialist."));
-    private async void AiKeyPoints_Click(object sender, RoutedEventArgs e) => await AskGeminiAsync(T("Ideile principale"), T("Extrage ideile principale ale articolului într-o listă clară, în limba interfeței."));
+    private async void AiSummarize_Click(object sender, RoutedEventArgs e) => await AskAiAsync(T("Rezumat"), T("Rezuma articolul în limba interfeței. Evidențiază faptele, contextul și incertitudinile."));
+    private async void AiTranslate_Click(object sender, RoutedEventArgs e) => await AskAiAsync(T("Traducere"), T("Tradu articolul complet în limba interfeței. Nu adăuga comentarii, păstrează structura paragrafului."), isTranslation: true);
+    private async void AiExplain_Click(object sender, RoutedEventArgs e) => await AskAiAsync(T("Explicație"), T("Explică articolul în limba interfeței, simplu și clar, pentru un cititor nespecialist."));
+    private async void AiKeyPoints_Click(object sender, RoutedEventArgs e) => await AskAiAsync(T("Ideile principale"), T("Extrage ideile principale ale articolului într-o listă clară, în limba interfeței."));
     private async void AiDiscuss_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new AiQuestionWindow { Owner = this };
+        var dialog = new AiQuestionWindow(AiProviderIds.DisplayName(_settings.AiDefaultProvider)) { Owner = this };
         if (dialog.ShowDialog() != true || string.IsNullOrWhiteSpace(dialog.UserQuestion)) return;
-        await AskGeminiAsync(T("Răspuns Gemini"), dialog.UserQuestion);
+        await AskAiAsync(T("Răspuns AI"), dialog.UserQuestion);
     }
 
-    private async Task AskGeminiAsync(string title, string request)
+    private async Task AskAiAsync(string title, string request, bool isTranslation = false)
     {
-        if (!_settings.GeminiEnabled)
+        var provider = AiProviderIds.Normalize(_settings.AiDefaultProvider);
+        var providerName = AiProviderIds.DisplayName(provider);
+        var enabled = provider switch
         {
-            ShowAiProblem(T("Gemini nu este activat. Deschide Setări, Setări Inteligență artificială, testează cheia Gemini și apasă Salvează."));
+            AiProviderIds.OpenAI => _settings.OpenAiEnabled,
+            AiProviderIds.Mistral => _settings.MistralEnabled,
+            AiProviderIds.DeepSeek => _settings.DeepSeekEnabled,
+            _ => _settings.GeminiEnabled
+        };
+        if (!enabled)
+        {
+            ShowAiProblem(F("Furnizorul AI implicit nu este activat. Deschide Setări Inteligență artificială și verifică cheia API pentru {0}.", providerName));
             return;
         }
         string key;
-        try { key = SecretProtector.Unprotect(_settings.EncryptedGeminiKey); }
+        var encryptedKey = provider switch
+        {
+            AiProviderIds.OpenAI => _settings.EncryptedOpenAiKey,
+            AiProviderIds.Mistral => _settings.EncryptedMistralKey,
+            AiProviderIds.DeepSeek => _settings.EncryptedDeepSeekKey,
+            _ => _settings.EncryptedGeminiKey
+        };
+        try { key = SecretProtector.Unprotect(encryptedKey); }
         catch
         {
-            ShowAiProblem(T("Cheia Gemini salvată nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială."));
+            ShowAiProblem(F("Cheia API pentru {0} nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială.", providerName));
             return;
         }
         if (string.IsNullOrWhiteSpace(key))
         {
-            ShowAiProblem(T("Nu există o cheie Gemini salvată. Deschide Setări Inteligență artificială."));
+            ShowAiProblem(F("Nu există o cheie API pentru {0}. Deschide Setări Inteligență artificială.", providerName));
             return;
         }
-        if (string.IsNullOrWhiteSpace(ArticleText.Text))
+        var articleText = await GetSelectedOrFullTextAsync();
+        if (string.IsNullOrWhiteSpace(articleText))
         {
-            ShowAiProblem(T("Articolul nu conține text pentru Gemini. Reîncarcă articolul și încearcă din nou."));
+            ShowAiProblem(T("Articolul nu conține text pentru furnizorul AI selectat. Încearcă să aduci textul complet."));
             return;
         }
-        var prompt = $"Limba interfeței: {CultureInfo.CurrentUICulture.NativeName}\nTitlu articol: {_article.Title}\nSursă: {_article.Link}\n\nCerere: {request}\n\nArticol:\n{ArticleText.Text}";
+        var prompt = $"Limba interfeței: {CultureInfo.CurrentUICulture.NativeName}\nTitlu articol: {_article.Title}\nSursă: {_article.Link}\n\nCerere: {request}\n\nArticol:\n{articleText}";
+        var model = provider switch
+        {
+            AiProviderIds.Mistral => _settings.MistralModel,
+            AiProviderIds.DeepSeek => _settings.DeepSeekModel,
+            _ => _settings.OpenAiModel
+        };
         try
         {
             Status.Text = T("Se pregătește articolul în cititorul Orizont.");
-            var response = await new GeminiConnection().GenerateAsync(key, _settings.AiInstructions, prompt);
-            new AiResponseWindow(
+            var response = await new AiProviderService().GenerateAsync(provider, key, model, _settings.AiInstructions, prompt);
+            var responseWindow = CreateAiResponseWindow(
                 title,
                 response,
-                _article.Title,
-                _article.Link,
-                followUp => new GeminiConnection().GenerateAsync(key, _settings.AiInstructions, $"{prompt}\n\n{followUp}"),
+                providerName,
+                isTranslation,
+                followUp => new AiProviderService().GenerateAsync(provider, key, model, _settings.AiInstructions, $"{prompt}\n\n{followUp}"),
                 async noteContent =>
                 {
                     _article.AiNotes ??= [];
                     _article.AiNotes.Add(new AiNote { Title = title, Content = noteContent });
                     await _saveArticle();
                 },
-                null) { Owner = this }.ShowDialog();
+                articleText,
+                isTranslation ? CultureInfo.CurrentUICulture.NativeName : null);
+            responseWindow.Owner = this;
+            responseWindow.ShowDialog();
         }
-        catch (TaskCanceledException) { Status.Text = T("Gemini nu a răspuns în 45 de secunde. Încearcă din nou mai târziu."); ShowAiProblem(Status.Text); }
-        catch (HttpRequestException) { Status.Text = T("Nu s-a putut ajunge la Gemini. Verifică internetul, firewall-ul sau proxy-ul."); ShowAiProblem(Status.Text); }
-        catch (Exception exception) { Status.Text = F("Gemini nu a putut executa comanda „{0}”. Detalii: {1}", title, exception.Message); ShowAiProblem(Status.Text); }
+        catch (TaskCanceledException) { Status.Text = F("{0} nu a răspuns în 45 de secunde. Încearcă din nou mai târziu.", providerName); ShowAiProblem(Status.Text); }
+        catch (HttpRequestException) { Status.Text = F("Nu s-a putut ajunge la {0}. Verifică internetul, firewall-ul sau proxy-ul.", providerName); ShowAiProblem(Status.Text); }
+        catch (Exception exception) { Status.Text = F("Furnizorul {0} nu a putut executa comanda {1}. Detalii: {2}", providerName, title, exception.Message); ShowAiProblem(Status.Text); }
     }
+
+    private AiResponseWindow CreateAiResponseWindow(
+        string title,
+        string response,
+        string providerName,
+        bool isTranslation,
+        Func<string, Task<string>> continueConversation,
+        Func<string, Task> saveNote,
+        string sourceArticleText,
+        string? translationLanguage)
+        => new(
+            title,
+            response,
+            _article.Title,
+            _article.Link,
+            continueConversation,
+            saveNote,
+            _speech,
+            providerName,
+            isTranslation,
+            sourceArticleText,
+            translationLanguage);
 
     private async void DeepLTranslate_Click(object sender, RoutedEventArgs e)
     {
@@ -170,15 +499,24 @@ public partial class ArticleReaderWindow : Window
         if (string.IsNullOrWhiteSpace(key)) { ShowAiProblem(T("Nu există o cheie DeepL salvată. Deschide Setări Inteligență artificială.")); return; }
         try
         {
-            var source = await ArticleTranslationSource.ResolveAsync(_article.FullContent, ArticleText.Text, _refresh, _article.Title);
+            var source = await ArticleTranslationSource.ResolveAsync(_article.FullContent, _originalReadableText, _refresh, _article.Title);
             if (string.IsNullOrWhiteSpace(source)) { ShowAiProblem(T("Articolul nu conține text pentru traducere.")); return; }
             Status.Text = T("Se traduce articolul cu DeepL în limba interfeței. Așteaptă.");
-            var translated = await new DeepLConnection().TranslateAsync(key, source, DeepLConnection.TargetLanguageForUi());
+            var targetLanguage = DeepLConnection.TargetLanguageForUi();
+            var translated = await new DeepLConnection().TranslateAsync(key, source, targetLanguage);
             ArticleText.Text = translated;
             _translationProvider = "DeepL";
-            ArticleText.Focus();
-            ArticleText.CaretIndex = 0;
-            ArticleText.Select(0, 0);
+            _translationLanguage = ArticleDistributionContext.LanguageNameForCode(targetLanguage);
+            if (_isWebViewActive)
+            {
+                await LoadWebViewContentAsync();
+            }
+            else
+            {
+                ArticleText.Focus();
+                ArticleText.CaretIndex = 0;
+                ArticleText.Select(0, 0);
+            }
             Status.Text = T("Articolul a fost tradus cu DeepL.");
         }
         catch (Exception exception) { Status.Text = F("DeepL nu a putut traduce articolul: {0}", exception.Message); ShowAiProblem(Status.Text); }
@@ -186,85 +524,100 @@ public partial class ArticleReaderWindow : Window
 
     private async void GoogleTranslate_Click(object sender, RoutedEventArgs e)
     {
-        if (_googleTranslationInProgress) return;
-        if (string.IsNullOrWhiteSpace(ArticleText.Text))
+        if (_readerLifetime.IsCancellationRequested) return;
+        using var requestLease = GoogleTranslateRequestGate.TryAcquire();
+        if (requestLease is null)
         {
-            MessageBox.Show(this, T("Articolul nu conține text pentru traducere."), T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Information);
+            StatusAnnouncer.Set(Status, T("Se traduce articolul cu Google Translate. Așteaptă."), ReaderStatusBar);
             return;
         }
 
-        var confirmation = MessageBox.Show(
-            this,
-            T("Google Translate folosește un serviciu online neoficial care se poate schimba sau limita. Textul integral al articolului va fi trimis către Google. Continui?"),
-            T("Traducere Google Translate"),
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning,
-            MessageBoxResult.No);
-        if (confirmation != MessageBoxResult.Yes)
-        {
-            Status.Text = T("Traducerea Google Translate a fost anulată.");
-            ArticleText.Focus();
-            return;
-        }
-
-        _googleTranslationInProgress = true;
-        var selectionStart = ArticleText.SelectionStart;
-        var selectionLength = ArticleText.SelectionLength;
         try
         {
-            Status.Text = T("Se traduce articolul cu Google Translate. Așteaptă.");
-            var source = await ArticleTranslationSource.ResolveAsync(_article.FullContent, ArticleText.Text, _refresh, _article.Title);
+            var cancellationToken = _readerLifetime.Token;
+            var selectedText = await GetSelectedTextAsync();
+            cancellationToken.ThrowIfCancellationRequested();
+            var textToTranslate = string.IsNullOrWhiteSpace(selectedText) ? _originalReadableText : selectedText;
+            if (string.IsNullOrWhiteSpace(textToTranslate))
+            {
+                MessageBox.Show(this, T("Articolul nu conține text pentru traducere."), T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var confirmation = MessageBox.Show(
+                this,
+                T("Google Translate folosește un serviciu online neoficial care se poate schimba sau limita. Textul integral al articolului va fi trimis către Google. Continui?"),
+                T("Traducere Google Translate"),
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question,
+                MessageBoxResult.No);
+            if (confirmation != MessageBoxResult.Yes)
+            {
+                StatusAnnouncer.Set(Status, T("Traducerea Google Translate a fost anulată."), ReaderStatusBar);
+                return;
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            var selectionStart = ArticleText.SelectionStart;
+            var selectionLength = ArticleText.SelectionLength;
+            StatusAnnouncer.Set(Status, T("Se traduce articolul cu Google Translate. Așteaptă."), ReaderStatusBar);
+            var source = await ArticleTranslationSource.ResolveAsync(_article.FullContent, textToTranslate, _refresh, _article.Title);
+            cancellationToken.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(source))
             {
                 MessageBox.Show(this, T("Articolul nu conține text pentru traducere."), T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
+            var targetLanguage = GoogleTranslateConnection.ResolveTargetLanguage(_settings.GoogleTranslateTargetLanguage);
             var translated = await new GoogleTranslateConnection().TranslateAsync(
                 source,
-                GoogleTranslateConnection.ResolveTargetLanguage(_settings.GoogleTranslateTargetLanguage),
+                targetLanguage,
                 GoogleTranslateConnection.NormalizeSourceLanguage(_settings.GoogleTranslateSourceLanguage),
-                _readerLifetime.Token);
-            if (_readerLifetime.IsCancellationRequested) return;
+                cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
 
-            var resultWindow = new ArticleTranslationWindow(translated, _article.Title, _link, "Google Translate") { Owner = this };
+            requestLease.Dispose();
+            var resultWindow = new ArticleTranslationWindow(translated, _article.Title, _link, "Google Translate", source,
+                ArticleDistributionContext.LanguageNameForCode(targetLanguage)) { Owner = this };
             resultWindow.ShowDialog();
             if (!_readerLifetime.IsCancellationRequested)
             {
-                ArticleText.Focus();
-                ArticleText.Select(selectionStart, selectionLength);
-                Status.Text = T("Traducerea Google Translate s-a încheiat. Rezultatul este într-o fereastră separată.");
+                if (!_isWebViewActive)
+                {
+                    ArticleText.Focus();
+                    ArticleText.Select(selectionStart, selectionLength);
+                }
+                StatusAnnouncer.Set(Status, T("Traducerea Google Translate s-a încheiat. Rezultatul este într-o fereastră separată."), ReaderStatusBar);
             }
         }
         catch (OperationCanceledException) when (_readerLifetime.IsCancellationRequested)
         {
-            // Closing the article reader cancels the request; there is no window left to announce into.
+        }
+        catch (Exception) when (_readerLifetime.IsCancellationRequested)
+        {
         }
         catch (TaskCanceledException)
         {
             var message = T("Google Translate nu a răspuns în 45 de secunde. Încearcă din nou mai târziu.");
-            Status.Text = message;
+            StatusAnnouncer.Set(Status, message, ReaderStatusBar);
             MessageBox.Show(this, message, T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (HttpRequestException)
         {
             var message = T("Nu s-a putut ajunge la Google Translate. Verifică internetul și încearcă din nou.");
-            Status.Text = message;
+            StatusAnnouncer.Set(Status, message, ReaderStatusBar);
             MessageBox.Show(this, message, T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (InvalidOperationException exception)
         {
-            Status.Text = exception.Message;
+            StatusAnnouncer.Set(Status, exception.Message, ReaderStatusBar);
             MessageBox.Show(this, exception.Message, T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (Exception exception)
         {
             var message = F("Google Translate nu a putut traduce articolul: {0}", exception.Message);
-            Status.Text = message;
+            StatusAnnouncer.Set(Status, message, ReaderStatusBar);
             MessageBox.Show(this, message, T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-        finally
-        {
-            _googleTranslationInProgress = false;
         }
     }
 
@@ -286,26 +639,59 @@ public partial class ArticleReaderWindow : Window
     private static string T(string source) => UiText.Translate(source);
     private static string F(string source, params object?[] arguments) => UiText.Format(source, arguments);
 
-    private void Window_KeyDown(object sender, KeyEventArgs e)
+    private void LocalizeSaveMenuHeaders(ItemsControl root)
+    {
+        string[] keys = ["Salvează articolul", "Salvează ca TXT", "Salvează ca RTF"];
+        foreach (var item in root.Items.OfType<MenuItem>())
+        {
+            if (item.Header is string header && keys.Contains(header, StringComparer.Ordinal)) item.Header = T(header);
+            LocalizeSaveMenuHeaders(item);
+        }
+    }
+
+    private void SaveArticleAsTxt_Click(object sender, RoutedEventArgs e) => SaveArticleWithFormat("txt");
+
+    private void SaveArticleAsRtf_Click(object sender, RoutedEventArgs e) => SaveArticleWithFormat("rtf");
+
+    private void SaveArticleWithFormat(string format)
+    {
+        var context = CreateArticleDistributionContext(ArticleText.Text);
+        var translationNote = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        try
+        {
+            var path = ArticleExportService.Save(_article, context, _settings.ArticleExportFolder, _article.SourceName, format,
+                T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"), translationNote);
+            StatusAnnouncer.Set(Status, F("Articol salvat: {0}", path), ReaderStatusBar);
+        }
+        catch (Exception exception)
+        {
+            StatusAnnouncer.Set(Status, F("Articolul nu a putut fi salvat: {0}", exception.Message), ReaderStatusBar);
+        }
+    }
+
+    private async void Window_KeyDown(object sender, KeyEventArgs e)
     {
         var key = e.Key == Key.System ? e.SystemKey : e.Key;
-        if (key == Key.F9 && Keyboard.Modifiers == ModifierKeys.None)
+        if (ShortcutBindings.Matches("ReaderMode", key, Keyboard.Modifiers))
+        {
+            await ToggleReaderModeAsync();
+            e.Handled = true;
+            return;
+        }
+        if (key == Key.Apps || (key == Key.F10 && Keyboard.Modifiers == ModifierKeys.Shift))
+        {
+            OpenContextMenu();
+            e.Handled = true;
+            return;
+        }
+        if (ShortcutBindings.Matches("VoiceToggle", key, Keyboard.Modifiers))
         {
             if (_speech.IsSpeaking || _speech.IsPaused) PauseResumeSpeech_Click(this, e);
             else SpeakContent_Click(this, e);
             e.Handled = true;
             return;
         }
-        if (Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Alt))
-        {
-            if (key == Key.V) SpeakContent_Click(this, e);
-            else if (key == Key.P) PauseResumeSpeech_Click(this, e);
-            else if (key == Key.S) StopSpeech_Click(this, e);
-            else goto ContinueWindowKeys;
-            e.Handled = true;
-            return;
-        }
-        if (e.Key == Key.F11 && Keyboard.Modifiers == ModifierKeys.None)
+        if (ShortcutBindings.Matches("Window", key, Keyboard.Modifiers))
         {
             WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
             var message = WindowState == WindowState.Maximized
@@ -325,14 +711,13 @@ public partial class ArticleReaderWindow : Window
         Close();
         e.Handled = true;
         return;
-
-    ContinueWindowKeys:;
     }
 
-    private void SpeakContent_Click(object sender, RoutedEventArgs e)
+    private async void SpeakContent_Click(object sender, RoutedEventArgs e)
     {
         if (!_speech.EnsureAvailable()) { StatusAnnouncer.Set(Status, T("Motorul vocal selectat nu este disponibil. Verifică motorul și vocea în Setări."), ReaderStatusBar); return; }
-        var text = ArticleText.SelectionLength > 0 ? ArticleText.SelectedText : ArticleSpeechDocument();
+        var selected = await GetSelectedTextAsync();
+        var text = !string.IsNullOrWhiteSpace(selected) ? selected : ArticleSpeechDocument();
         if (string.IsNullOrWhiteSpace(text)) { StatusAnnouncer.Set(Status, T("Nu există conținut de citit cu voce."), ReaderStatusBar); return; }
         _speech.Speak(text);
     }
@@ -360,15 +745,27 @@ public partial class ArticleReaderWindow : Window
 
     private string ArticleSpeechDocument() => F("Titlu: {0}.{1}Data publicării: {2}.{1}{1}{3}", _article.Title, Environment.NewLine, _article.Published.ToString("f", CultureInfo.CurrentCulture), ArticleText.Text);
 
-    private void CopySelection_Click(object sender, RoutedEventArgs e)
+    private ArticleDistributionContext CreateArticleDistributionContext(string displayText) => new(
+        _article.Title,
+        _originalReadableText,
+        displayText,
+        _link,
+        _translationProvider,
+        _translationLanguage);
+
+    private async void CopySelection_Click(object sender, RoutedEventArgs e)
     {
-        if (string.IsNullOrEmpty(ArticleText.SelectedText)) return;
-        Clipboard.SetText(ArticleText.SelectedText);
+        var selected = await GetSelectedTextAsync();
+        if (!string.IsNullOrEmpty(selected)) Clipboard.SetText(selected);
     }
 
     private void CopyFullArticle_Click(object sender, RoutedEventArgs e)
     {
-        if (!string.IsNullOrEmpty(ArticleText.Text)) Clipboard.SetText(ArticleText.Text);
+        if (string.IsNullOrEmpty(ArticleText.Text)) return;
+        var context = CreateArticleDistributionContext(ArticleText.Text);
+        var note = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        Clipboard.SetText(ArticleSharing.BuildShareText(context, note, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:")));
+        Status.Text = T("Articolul complet a fost copiat în clipboard.");
     }
 
     private void CopyLink_Click(object sender, RoutedEventArgs e)
@@ -378,9 +775,10 @@ public partial class ArticleReaderWindow : Window
 
     private void ShareByEmail_Click(object sender, RoutedEventArgs e)
     {
-        var translationNote = _translationProvider is null ? null : F("Traducere automată realizată prin {0}.", _translationProvider);
-        var footer = ArticleSharing.BuildFooter(T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"), _link, translationNote);
-        var shareText = ArticleSharing.BuildShareText(_article.Title, ArticleText.Text, _link, translationNote, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
+        var context = CreateArticleDistributionContext(ArticleText.Text);
+        var translationNote = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        var footer = ArticleSharing.BuildFooter(context, translationNote, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
+        var shareText = ArticleSharing.BuildShareText(context, translationNote, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
         var body = ArticleSharing.LimitForUri(shareText, ArticleSharing.EmailBodyLimit, footer);
         var truncated = !string.Equals(body, shareText, StringComparison.Ordinal);
         if (truncated) Clipboard.SetText(shareText);
@@ -401,9 +799,10 @@ public partial class ArticleReaderWindow : Window
 
     private void ShareByWhatsApp_Click(object sender, RoutedEventArgs e)
     {
-        var translationNote = _translationProvider is null ? null : F("Traducere automată realizată prin {0}.", _translationProvider);
-        var footer = ArticleSharing.BuildFooter(T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"), _link, translationNote);
-        var fullShareText = ArticleSharing.BuildShareText(_article.Title, ArticleText.Text, _link, translationNote, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
+        var context = CreateArticleDistributionContext(ArticleText.Text);
+        var translationNote = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        var footer = ArticleSharing.BuildFooter(context, translationNote, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
+        var fullShareText = ArticleSharing.BuildShareText(context, translationNote, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
         var shareText = ArticleSharing.LimitForUri(fullShareText, ArticleSharing.WhatsAppBodyLimit, footer);
         var truncated = !string.Equals(shareText, fullShareText, StringComparison.Ordinal);
         if (truncated) Clipboard.SetText(fullShareText);

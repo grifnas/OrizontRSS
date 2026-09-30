@@ -4,16 +4,24 @@ using System.Windows.Automation;
 using System.Diagnostics;
 using System.Net.Http;
 using CititorRSS.Jaws.Localization;
+using CititorRSS.Jaws.Services.Content;
 
 namespace CititorRSS.Jaws;
 
 public partial class SettingsWindow : Window
 {
+    private void ShortcutSettings_Click(object sender, RoutedEventArgs e)
+        => new ShortcutSettingsWindow(Settings) { Owner = this }.ShowDialog();
+
     public enum SettingsSection
     {
         Application,
         Voice,
-        Ai
+        Ai,
+        Feeds,
+        Reader,
+        Storage,
+        NewsBlur
     }
 
     private readonly SpeechService _speech = new();
@@ -22,11 +30,27 @@ public partial class SettingsWindow : Window
     public bool LanguageChanged { get; private set; }
     private readonly string _initialLanguage;
     private bool _initializingSpeech = true;
+    private bool _initializingAiProvider;
+    private string _pendingAiDefaultProvider = AiProviderIds.Gemini;
     public SettingsWindow(AppSettings settings, SettingsSection section = SettingsSection.Application)
     {
         InitializeComponent();
         Settings = settings;
+        ShortcutSettingsButton.Visibility = section == SettingsSection.Application ? Visibility.Visible : Visibility.Collapsed;
         SettingsIntro.Text = T("Modificările sunt păstrate numai după alegerea butonului Salvează.");
+
+        // Categorii
+        CategoriesLabel.Content = T("Categorii");
+        AutomationProperties.SetName(CategoryList, T("Categorii setări"));
+        CategoryGeneralItem.Content = T("General");
+        CategoryFeedsItem.Content = T("Feeduri și actualizare");
+        CategoryReaderItem.Content = T("Cititor Orizont");
+        CategoryStorageItem.Content = T("Date și stocare");
+        CategoryNewsBlurItem.Content = T("Sincronizare NewsBlur");
+        CategoryVoiceItem.Content = T("Citire vocală");
+        CategoryAiItem.Content = T("Inteligență artificială și traducere");
+
+        // 1. General
         AppearanceGroup.Header = T("Aspect și contrast");
         ColorSchemeLabel.Content = T("Temă de culori");
         ColorSchemeNotice.Text = T("Windows automat respectă tema Contrast aleasă în Windows. Celelalte variante sunt optimizate pentru contrast ridicat și se aplică după salvare.");
@@ -40,23 +64,26 @@ public partial class SettingsWindow : Window
                 ColorThemeManager.YellowOnNavy => "Galben pe albastru închis",
                 _ => "Windows automat"
             });
-        SpeechSettingsGroup.Header = T("Citire vocală");
-        SpeechEngineLabel.Content = T("Motor vocal");
-        Sapi5EngineItem.Content = T("SAPI5, vocile instalate în Windows");
-        EspeakEngineItem.Content = T("eSpeak NG, inclus în Orizont RSS");
-        GeminiEngineItem.Content = T("Gemini TTS, voci online");
-        GeminiSpeechNotice.Text = T("Gemini TTS este online. Textul citit este trimis la Google și poate consuma cota sau creditele API.");
-        DeepLTitle.Text = "DeepL";
-        DeepLEnabled.Content = T("Activează traducerea cu DeepL");
-        DeepLNotice.Text = T("DeepL este un serviciu online. Articolul este trimis la DeepL și consumă limita contului API.");
-        DeepLInstructions.Text = T("Configurare DeepL: apasă Obține cheie API DeepL, creează contul API Free, deschide API Keys & Limits, creează și copiază cheia aici, apoi testează și salvează.");
-        TestDeepLButton.Content = T("Testează conexiunea DeepL");
-        GoogleTranslateTitle.Text = T("Google Translate (fără cheie API)");
-        GoogleTranslateSourceLabel.Content = T("Limba sursă pentru Google Translate");
-        GoogleTranslateTargetLabel.Content = T("Limba țintă pentru Google Translate");
-        GoogleTranslateNotice.Text = T("Traducerea folosește un serviciu online Google. Textul complet se trimite numai după confirmarea din articol.");
-        AutomationProperties.SetName(GoogleTranslateSourceLanguage, T("Limba sursă pentru Google Translate"));
-        AutomationProperties.SetName(GoogleTranslateTargetLanguage, T("Limba țintă pentru Google Translate"));
+
+        LanguageGroup.Header = T("Limbă");
+        LanguageLabel.Content = T("Limba interfeței");
+        LanguageNotice.Text = T("Limba aleasă se aplică după repornirea aplicației.");
+        GeneralAppGroup.Header = T("Aplicație");
+        CheckAppUpdatesAtStartup.Content = T("Verifică actualizările aplicației la pornire");
+        AutomationProperties.SetName(CheckAppUpdatesAtStartup, T("Verifică actualizările aplicației la pornire"));
+        ArticleExportGroup.Header = T("Export articole");
+        ArticleExportFolderLabel.Content = T("Folder pentru exportul articolelor");
+        AutomationProperties.SetName(ArticleExportFolder, T("Folder pentru exportul articolelor"));
+        ArticleExportFolderNotice.Text = T("Folderul implicit este Documente\\Orizont RSS\\Articole. Poți alege un alt folder.");
+        ArticleExportFormatLabel.Content = T("Format implicit pentru export");
+        AutomationProperties.SetName(ArticleExportFormat, T("Format implicit pentru export"));
+        foreach (ComboBoxItem item in ArticleExportFormat.Items)
+            item.Content = T(item.Tag?.ToString() == "rtf" ? "Fișier RTF (.rtf)" : "Fișier TXT (.txt)");
+
+        // 2. Feeduri și actualizare
+        UpdateGroup.Header = T("Actualizare și afișare");
+        UpdateAtStartup.Content = T("Actualizează feedurile la pornire");
+        AutomationProperties.SetName(UpdateAtStartup, T("Actualizează feedurile la pornire"));
         SoundAlerts.Content = T("Activează alertele sonore");
         AutomationProperties.SetName(SoundAlerts, T("Activează alertele sonore"));
         AutomationProperties.SetHelpText(SoundAlerts, T("Redă un sunet la finalizarea actualizării și un sunet de avertizare când există erori de feed. Nu întrerupe citirea vocală."));
@@ -67,6 +94,38 @@ public partial class SettingsWindow : Window
         SoundAlertOnErrors.Content = T("Alertă la erori de feed");
         AutomationProperties.SetName(SoundAlertOnErrors, T("Alertă la erori de feed"));
         TestSoundButton.Content = T("Testează sunetul");
+        AutomationProperties.SetName(TestSoundButton, T("Testează sunetul"));
+        HideRepeatedArticles.Content = T("Ascunde articolele repetate în vederile globale");
+        AutomationProperties.SetName(HideRepeatedArticles, T("Ascunde articolele repetate în vederile globale"));
+        AutomationProperties.SetHelpText(HideRepeatedArticles, T("Nu șterge articolele din feeduri. Afișează o singură copie când sunt combinate mai multe surse."));
+
+        // 3. Cititor Orizont
+        ReaderGroup.Header = T("Cititor Orizont");
+        ReaderModeLabel.Content = T("Mod implicit de afișare a articolelor");
+        AutomationProperties.SetName(ReaderMode, T("Mod implicit de afișare a articolelor"));
+        ReaderModeTextItem.Content = T("Text simplu accesibil (cursor text clasic)");
+        ReaderModeWebViewItem.Content = T("WebReader (formatat web, navigare Virtual Cursor JAWS/NVDA)");
+        ReaderModeNotice.Text = T("Modul text simplu este recomandat pentru navigare tradițională cu săgețile. Modul WebReader permite navigarea prin taste rapide de browser (H pentru titluri, P pentru paragrafe, Tab pentru linkuri). Modul se poate comuta oricând și din fereastra Cititor cu combinația Ctrl+Shift+F8.");
+        ArticleOpenModeLabel.Content = T("Deschiderea implicită a articolelor");
+        AutomationProperties.SetName(ArticleOpenMode, T("Deschiderea implicită a articolelor"));
+        ArticleOpenMode.Items[0] = new ComboBoxItem { Content = T("Mod standard în fereastra principală"), Tag = ArticleOpenModeIds.Standard };
+        ArticleOpenMode.Items[1] = new ComboBoxItem { Content = T("Cititor Orizont"), Tag = ArticleOpenModeIds.Orizont };
+        ArticleOpenModeNotice.Text = T("Se aplică feedurilor care folosesc opțiunea Folosește setarea generală.");
+        ReaderPreferencesGroup.Header = T("Preferințe articole");
+        ReadNowFavoriteDaysLabel.Content = T("Afișează articolele noi în Citește acum pentru");
+        AutomationProperties.SetName(ReadNowFavoriteDays, T("Perioada articolelor noi în Citește acum"));
+        ReadNowFavoriteDaysNotice.Text = T("Favoritele și articolele De citit mai târziu rămân în Citește acum indiferent de vechime, până când le elimini manual.");
+
+        // 4. Date și stocare
+        StorageGroup.Header = T("Date și stocare");
+        AutoCleanup.Content = T("Șterge automat articolele obișnuite expirate");
+        AutomationProperties.SetName(AutoCleanup, T("Șterge automat articolele obișnuite expirate"));
+        RetentionDaysLabel.Content = T("Păstrează articolele obișnuite timp de");
+        AutomationProperties.SetName(RetentionDays, T("Perioada de păstrare a articolelor obișnuite"));
+        StorageNotice.Text = T("Favoritele și articolele De citit mai târziu sunt protejate și nu sunt șterse automat.");
+        CleanupButton.Content = T("Curăță acum articolele expirate");
+
+        // 5. Sincronizare NewsBlur
         NewsBlurSyncGroup.Header = T("Sincronizare NewsBlur");
         NewsBlurSavedStoryModeLabel.Content = T("Articolele salvate în NewsBlur se sincronizează ca");
         NewsBlurSavedStoryModeNotice.Text = T("Stelele NewsBlur sunt articole salvate. Alegerea se aplică la următoarea sincronizare și nu șterge articole locale.");
@@ -80,7 +139,15 @@ public partial class SettingsWindow : Window
         NewsBlurAutoSyncMinutesLabel.Content = T("Interval sincronizare automată");
         AutomationProperties.SetName(NewsBlurAutoSyncMinutes, T("Interval sincronizare automată NewsBlur"));
         NewsBlurAutoSyncNotice.Text = T("Sincronizarea periodică include feeduri, foldere, articole și stări. Primele două bife controlează separat ce se sincronizează la pornire; comenzile manuale rămân disponibile.");
-        AutomationProperties.SetName(TestSoundButton, T("Testează sunetul"));
+
+        // 6. Citire vocală
+        SpeechSettingsGroup.Header = T("Citire vocală");
+        SpeechNotice.Text = T("Vocea pornește numai la comanda ta și nu înlocuiește cititorul de ecran pentru citirea interfeței.");
+        SpeechEngineLabel.Content = T("Motor vocal");
+        Sapi5EngineItem.Content = T("SAPI5, vocile instalate în Windows");
+        EspeakEngineItem.Content = T("eSpeak NG, inclus în Orizont RSS");
+        GeminiEngineItem.Content = T("Gemini TTS, voci online");
+        GeminiSpeechNotice.Text = T("Gemini TTS este online. Textul citit este trimis la Google și poate consuma cota sau creditele API.");
         EspeakPitchLabel.Content = T("Înălțimea vocii eSpeak, de la 0 la 100");
         AutomationProperties.SetName(SpeechEngine, T("Motor vocal"));
         AutomationProperties.SetName(SpeechVoice, T("Vocea motorului vocal"));
@@ -89,16 +156,100 @@ public partial class SettingsWindow : Window
         AutomationProperties.SetName(EspeakVariant, T("Variantă vocală eSpeak NG"));
         EspeakInflectionLabel.Content = T("Intonația vocii eSpeak, de la 0 la 100");
         AutomationProperties.SetName(EspeakInflection, T("Intonația vocii eSpeak"));
+        SpeechVolumeLabel.Content = T("Volum");
+        AutomationProperties.SetName(SpeechVolume, T("Volumul vocii"));
+        StopSpeechWhenLeavingArticle.Content = T("Oprește vocea când ies din conținutul articolului cu Escape");
+        AutomationProperties.SetName(StopSpeechWhenLeavingArticle, T("Oprește vocea când ies din conținutul articolului"));
+        TestSpeechButton.Content = T("Testează vocea");
+        StopSpeechTestButton.Content = T("Oprește testul");
+
+        // 7. Inteligență artificială și traducere
+        AiSettingsGroup.Header = T("Inteligență artificială și traducere");
+        AiProviderLabel.Content = T("Furnizor AI");
+        AutomationProperties.SetName(AiProviderSelector, T("Furnizor AI"));
+        AiDefaultProvider.Content = T("Folosește ca furnizor implicit");
+        AutomationProperties.SetName(AiDefaultProvider, T("Folosește ca furnizor implicit"));
+        GeminiSectionTitle.Text = "Gemini";
+        GeminiEnabled.Content = T("Activează Gemini");
+        AutomationProperties.SetName(GeminiEnabled, T("Activează Gemini"));
+        GeminiKeyLabel.Content = T("Cheie API Gemini");
+        AutomationProperties.SetName(GeminiKey, T("Cheie API Gemini"));
+        TestGeminiButton.Content = T("Testează conexiunea Gemini");
+        GetGeminiKeyButton.Content = T("Obține cheie API Gemini");
+        GeminiTestNotice.Text = T("Testul verifică modelele disponibile și nu trimite niciun articol.");
+        OpenAiSectionTitle.Text = "OpenAI";
+        OpenAiEnabled.Content = T("Activează OpenAI");
+        AutomationProperties.SetName(OpenAiEnabled, T("Activează OpenAI"));
+        OpenAiKeyLabel.Content = T("Cheie API OpenAI");
+        AutomationProperties.SetName(OpenAiKey, T("Cheie API OpenAI"));
+        OpenAiModelLabel.Content = T("Model OpenAI");
+        AutomationProperties.SetName(OpenAiModel, T("Model OpenAI"));
+        TestOpenAiButton.Content = T("Testează conexiunea OpenAI");
+        GetOpenAiKeyButton.Content = T("Obține cheia API OpenAI");
+        OpenAiNotice.Text = T("OpenAI API este facturat separat de abonamentul ChatGPT. Testul verifică modelele fără să trimită articol; întrebările AI trimit textul articolului către OpenAI.");
+        MistralSectionTitle.Text = T("Mistral");
+        MistralEnabled.Content = T("Activează Mistral");
+        AutomationProperties.SetName(MistralEnabled, T("Activează Mistral"));
+        MistralKeyLabel.Content = T("Cheie API Mistral");
+        AutomationProperties.SetName(MistralKey, T("Cheie API Mistral"));
+        MistralModelLabel.Content = T("Model Mistral");
+        AutomationProperties.SetName(MistralModel, T("Model Mistral"));
+        TestMistralButton.Content = T("Testează conexiunea Mistral");
+        GetMistralKeyButton.Content = T("Obține cheia API Mistral");
+        MistralNotice.Text = T("Mistral este un serviciu online. Testul enumeră modelele de conversație fără să trimită articolul. Când întrebi Mistral despre un articol, textul articolului este trimis furnizorului și poate consuma cota sau genera costuri în cont.");
+        DeepSeekProviderItem.Content = AiProviderIds.DeepSeek;
+        DeepSeekSectionTitle.Text = T("Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+        DeepSeekEnabled.Content = T("Activează Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+        AutomationProperties.SetName(DeepSeekEnabled, T("Activează Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal));
+        DeepSeekKeyLabel.Content = T("Cheie API Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+        AutomationProperties.SetName(DeepSeekKey, T("Cheie API Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal));
+        DeepSeekModelLabel.Content = T("Model Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+        AutomationProperties.SetName(DeepSeekModel, T("Model Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal));
+        TestDeepSeekButton.Content = T("Testează conexiunea Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+        GetDeepSeekKeyButton.Content = T("Obține cheia API Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+        DeepSeekNotice.Text = T("Mistral este un serviciu online. Testul enumeră modelele de conversație fără să trimită articolul. Când întrebi Mistral despre un articol, textul articolului este trimis furnizorului și poate consuma cota sau genera costuri în cont.").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+        DeepLTitle.Text = "DeepL";
+        DeepLEnabled.Content = T("Activează traducerea cu DeepL");
+        AutomationProperties.SetName(DeepLEnabled, T("Activează traducerea cu DeepL"));
+        DeepLKeyLabel.Content = T("Cheie API DeepL");
+        AutomationProperties.SetName(DeepLKey, T("Cheie API DeepL"));
+        TestDeepLButton.Content = T("Testează conexiunea DeepL");
+        GetDeepLKeyButton.Content = T("Obține cheie API DeepL");
+        DeepLNotice.Text = T("DeepL este un serviciu online. Articolul este trimis la DeepL și consumă limita contului API.");
+        DeepLInstructions.Text = T("Configurare DeepL: apasă Obține cheie API DeepL, creează contul API Free, deschide API Keys & Limits, creează și copiază cheia aici, apoi testează și salvează.");
+        GoogleTranslateTitle.Text = T("Google Translate (fără cheie API)");
+        GoogleTranslateSourceLabel.Content = T("Limba sursă pentru Google Translate");
+        GoogleTranslateTargetLabel.Content = T("Limba țintă pentru Google Translate");
+        GoogleTranslateNotice.Text = T("Traducerea folosește un serviciu online Google. Textul complet se trimite numai după confirmarea din articol.");
+        AutomationProperties.SetName(GoogleTranslateSourceLanguage, T("Limba sursă pentru Google Translate"));
+        AutomationProperties.SetName(GoogleTranslateTargetLanguage, T("Limba țintă pentru Google Translate"));
+        AiInstructionsLabel.Content = T("Instrucțiuni permanente pentru agent");
+        AutomationProperties.SetName(AiInstructions, T("Instrucțiuni permanente pentru agentul AI"));
+        AiInstructionsNotice.Text = T("Instrucțiunile se aplică rezumării, traducerii și conversațiilor viitoare despre articole.");
+
+        // Butoane
+        CancelButton.Content = T("Anulează");
+        SaveButton.Content = T("Salvează");
+
         _initialLanguage = UiCulture.NormalizeSelection(settings.UiLanguage);
         foreach (var language in UiCulture.SupportedLanguages) UiLanguage.Items.Add(language);
         UiLanguage.SelectedItem = UiLanguage.Items.Cast<UiLanguage>().First(language => language.Code == _initialLanguage);
         ColorScheme.SelectedItem = ColorScheme.Items.Cast<ComboBoxItem>()
             .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), ColorThemeManager.Normalize(settings.ColorScheme), StringComparison.OrdinalIgnoreCase))
             ?? ColorScheme.Items[0];
-        KeywordAlerts.Text = settings.KeywordAlerts;
+        ReaderMode.SelectedItem = ReaderMode.Items.Cast<ComboBoxItem>()
+            .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), ReaderModeIds.Normalize(settings.ReaderMode), StringComparison.OrdinalIgnoreCase))
+            ?? ReaderMode.Items[0];
+        ArticleOpenMode.SelectedItem = ArticleOpenMode.Items.Cast<ComboBoxItem>()
+            .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), ArticleOpenModeIds.Normalize(settings.ArticleOpenMode), StringComparison.OrdinalIgnoreCase))
+            ?? ArticleOpenMode.Items[0];
         AutoCleanup.IsChecked = settings.AutoCleanupEnabled;
         UpdateAtStartup.IsChecked = settings.UpdateAtStartup;
         CheckAppUpdatesAtStartup.IsChecked = settings.CheckAppUpdatesAtStartup;
+        ArticleExportFolder.Text = settings.ArticleExportFolder;
+        ArticleExportFormat.SelectedItem = ArticleExportFormat.Items.Cast<ComboBoxItem>()
+            .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), settings.ArticleExportFormat, StringComparison.OrdinalIgnoreCase))
+            ?? ArticleExportFormat.Items[0];
         SoundAlerts.IsChecked = settings.SoundAlertsEnabled;
         SoundAlertOnSuccess.IsChecked = settings.SoundAlertOnSuccess;
         SoundAlertOnNewArticles.IsChecked = settings.SoundAlertOnNewArticles;
@@ -130,53 +281,121 @@ public partial class SettingsWindow : Window
         foreach (ComboBoxItem item in SpeechVolume.Items) if (item.Tag?.ToString() == Math.Clamp(settings.SpeechVolume, 0, 100).ToString()) { SpeechVolume.SelectedItem = item; break; }
         if (SpeechVolume.SelectedIndex < 0) SpeechVolume.SelectedIndex = 3;
         AiInstructions.Text = AiInstructionsLocalization.ForDisplay(settings.AiInstructions);
+        _initializingAiProvider = true;
+        _pendingAiDefaultProvider = AiProviderIds.Normalize(settings.AiDefaultProvider);
+        AiProviderSelector.SelectedItem = AiProviderSelector.Items.Cast<ComboBoxItem>()
+            .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), _pendingAiDefaultProvider, StringComparison.OrdinalIgnoreCase))
+            ?? AiProviderSelector.Items[0];
         GeminiEnabled.IsChecked = settings.GeminiEnabled;
+        OpenAiEnabled.IsChecked = settings.OpenAiEnabled;
+        OpenAiModel.Text = string.IsNullOrWhiteSpace(settings.OpenAiModel) ? "gpt-6-luna" : settings.OpenAiModel.Trim();
+        MistralEnabled.IsChecked = settings.MistralEnabled;
+        MistralModel.Text = string.IsNullOrWhiteSpace(settings.MistralModel) ? "mistral-small-latest" : settings.MistralModel.Trim();
+        DeepSeekEnabled.IsChecked = settings.DeepSeekEnabled;
+        DeepSeekModel.Text = string.IsNullOrWhiteSpace(settings.DeepSeekModel) ? "deepseek-flash" : settings.DeepSeekModel.Trim();
         DeepLEnabled.IsChecked = settings.DeepLEnabled;
         PopulateGoogleTranslateLanguages(settings);
         try { DeepLKey.Password = SecretProtector.Unprotect(settings.EncryptedDeepLKey); }
         catch { DeepLStatus.Text = T("Cheia DeepL salvată nu poate fi citită pentru acest cont Windows."); }
         try { GeminiKey.Password = SecretProtector.Unprotect(settings.EncryptedGeminiKey); }
         catch { GeminiStatus.Text = T("Cheia Gemini salvată nu poate fi citită pentru acest cont Windows."); }
+        try { OpenAiKey.Password = SecretProtector.Unprotect(settings.EncryptedOpenAiKey); }
+        catch { OpenAiStatus.Text = T("Cheia OpenAI salvată nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială."); }
+        try { MistralKey.Password = SecretProtector.Unprotect(settings.EncryptedMistralKey); }
+        catch { MistralStatus.Text = F("Cheia API pentru {0} nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială.", AiProviderIds.Mistral); }
+        try { DeepSeekKey.Password = SecretProtector.Unprotect(settings.EncryptedDeepSeekKey); }
+        catch { DeepSeekStatus.Text = F("Cheia API pentru {0} nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială.", AiProviderIds.DeepSeek); }
+        AiDefaultProvider.IsChecked = true;
+        _initializingAiProvider = false;
+        UpdateAiProviderPanel();
         foreach (ComboBoxItem item in RetentionDays.Items) if (item.Tag?.ToString() == settings.RetentionDays.ToString()) { RetentionDays.SelectedItem = item; break; }
         if (RetentionDays.SelectedIndex < 0) RetentionDays.SelectedIndex = 2;
-        if (section != SettingsSection.Application)
+
+        switch (section)
         {
-            AppearanceGroup.Visibility = Visibility.Collapsed;
-            LanguageGroup.Visibility = Visibility.Collapsed;
-            StorageGroup.Visibility = Visibility.Collapsed;
-            UpdateGroup.Visibility = Visibility.Collapsed;
-            NewsBlurSyncGroup.Visibility = Visibility.Collapsed;
-            CleanupButton.Visibility = Visibility.Collapsed;
-            if (section == SettingsSection.Voice)
-            {
+            case SettingsSection.Voice:
                 Title = SettingsTitle.Text = T("Setări voce");
-                AiSettingsGroup.Visibility = Visibility.Collapsed;
+                CategoryList.SelectedItem = CategoryVoiceItem;
                 Loaded += (_, _) => SpeechEngine.Focus();
-            }
-            else
-            {
+                break;
+            case SettingsSection.Ai:
                 Title = SettingsTitle.Text = T("Setări Inteligență artificială");
-                SpeechSettingsGroup.Visibility = Visibility.Collapsed;
-                Loaded += (_, _) => GeminiEnabled.Focus();
-            }
-        }
-        else
-        {
-            Title = SettingsTitle.Text = T("Setări aplicație");
-            SpeechSettingsGroup.Visibility = Visibility.Collapsed;
-            AiSettingsGroup.Visibility = Visibility.Collapsed;
-            Loaded += (_, _) => ColorScheme.Focus();
+                CategoryList.SelectedItem = CategoryAiItem;
+                Loaded += (_, _) => AiProviderSelector.Focus();
+                break;
+            case SettingsSection.Feeds:
+                Title = SettingsTitle.Text = T("Setări aplicație");
+                CategoryList.SelectedItem = CategoryFeedsItem;
+                Loaded += (_, _) => UpdateAtStartup.Focus();
+                break;
+            case SettingsSection.Reader:
+                Title = SettingsTitle.Text = T("Setări aplicație");
+                CategoryList.SelectedItem = CategoryReaderItem;
+                Loaded += (_, _) => ReaderMode.Focus();
+                break;
+            case SettingsSection.Storage:
+                Title = SettingsTitle.Text = T("Setări aplicație");
+                CategoryList.SelectedItem = CategoryStorageItem;
+                Loaded += (_, _) => AutoCleanup.Focus();
+                break;
+            case SettingsSection.NewsBlur:
+                Title = SettingsTitle.Text = T("Setări aplicație");
+                CategoryList.SelectedItem = CategoryNewsBlurItem;
+                Loaded += (_, _) => NewsBlurSavedStoryMode.Focus();
+                break;
+            case SettingsSection.Application:
+            default:
+                Title = SettingsTitle.Text = T("Setări aplicație");
+                CategoryList.SelectedItem = CategoryGeneralItem;
+                Loaded += (_, _) => CategoryList.Focus();
+                break;
         }
         Closed += (_, _) => _speech.Dispose();
     }
+
+    private void CategoryList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (CategoryList.SelectedItem is not ListBoxItem selected) return;
+        var tag = selected.Tag?.ToString();
+        ShowCategory(tag);
+    }
+
+    private void ShowCategory(string? categoryTag)
+    {
+        GeneralCategoryPanel.Visibility = categoryTag == "General" ? Visibility.Visible : Visibility.Collapsed;
+        FeedsCategoryPanel.Visibility = categoryTag == "Feeds" ? Visibility.Visible : Visibility.Collapsed;
+        ReaderCategoryPanel.Visibility = categoryTag == "Reader" ? Visibility.Visible : Visibility.Collapsed;
+        StorageCategoryPanel.Visibility = categoryTag == "Storage" ? Visibility.Visible : Visibility.Collapsed;
+        NewsBlurCategoryPanel.Visibility = categoryTag == "NewsBlur" ? Visibility.Visible : Visibility.Collapsed;
+        VoiceCategoryPanel.Visibility = categoryTag == "Voice" ? Visibility.Visible : Visibility.Collapsed;
+        AiCategoryPanel.Visibility = categoryTag == "Ai" ? Visibility.Visible : Visibility.Collapsed;
+    }
+
     private void Save_Click(object sender, RoutedEventArgs e)
     {
-        Settings.KeywordAlerts = KeywordAlerts.Text.Trim();
+        var pendingProvider = AiProviderIds.Normalize(_pendingAiDefaultProvider);
+        if (pendingProvider != AiProviderIds.Gemini && !IsAiProviderConfigured(pendingProvider))
+        {
+            var message = T("Activează OpenAI și introdu cheia API înainte să îl alegi ca furnizor implicit.").Replace("OpenAI", AiProviderIds.DisplayName(pendingProvider), StringComparison.Ordinal);
+            MessageBox.Show(this, message, T("Furnizor AI implicit"), MessageBoxButton.OK, MessageBoxImage.Warning);
+            AiProviderSelector.Focus();
+            return;
+        }
+        SaveSettingsValues();
+        DialogResult = true;
+    }
+
+    private void SaveSettingsValues()
+    {
         Settings.AutoCleanupEnabled = AutoCleanup.IsChecked == true;
         SaveLanguageSetting();
         Settings.ColorScheme = ColorThemeManager.Normalize((ColorScheme.SelectedItem as ComboBoxItem)?.Tag?.ToString());
+        Settings.ReaderMode = ReaderModeIds.Normalize((ReaderMode.SelectedItem as ComboBoxItem)?.Tag?.ToString());
+        Settings.ArticleOpenMode = ArticleOpenModeIds.Normalize((ArticleOpenMode.SelectedItem as ComboBoxItem)?.Tag?.ToString());
         Settings.UpdateAtStartup = UpdateAtStartup.IsChecked == true;
         Settings.CheckAppUpdatesAtStartup = CheckAppUpdatesAtStartup.IsChecked == true;
+        Settings.ArticleExportFolder = string.IsNullOrWhiteSpace(ArticleExportFolder.Text) ? AppSettings.DefaultArticleExportFolder : ArticleExportFolder.Text.Trim();
+        Settings.ArticleExportFormat = ArticleExportService.NormalizeFormat((ArticleExportFormat.SelectedItem as ComboBoxItem)?.Tag?.ToString());
         Settings.SoundAlertsEnabled = SoundAlerts.IsChecked == true;
         Settings.SoundAlertOnSuccess = SoundAlertOnSuccess.IsChecked == true;
         Settings.SoundAlertOnNewArticles = SoundAlertOnNewArticles.IsChecked == true;
@@ -193,9 +412,18 @@ public partial class SettingsWindow : Window
         SaveAiInstructions();
         Settings.GeminiEnabled = GeminiEnabled.IsChecked == true;
         Settings.EncryptedGeminiKey = string.IsNullOrWhiteSpace(GeminiKey.Password) ? null : SecretProtector.Protect(GeminiKey.Password);
+        Settings.AiDefaultProvider = AiProviderIds.Normalize(_pendingAiDefaultProvider);
+        Settings.OpenAiEnabled = OpenAiEnabled.IsChecked == true;
+        Settings.EncryptedOpenAiKey = string.IsNullOrWhiteSpace(OpenAiKey.Password) ? null : SecretProtector.Protect(OpenAiKey.Password);
+        Settings.OpenAiModel = string.IsNullOrWhiteSpace(OpenAiModel.Text) ? "gpt-6-luna" : OpenAiModel.Text.Trim();
+        Settings.MistralEnabled = MistralEnabled.IsChecked == true;
+        Settings.EncryptedMistralKey = string.IsNullOrWhiteSpace(MistralKey.Password) ? null : SecretProtector.Protect(MistralKey.Password);
+        Settings.MistralModel = string.IsNullOrWhiteSpace(MistralModel.Text) ? "mistral-small-latest" : MistralModel.Text.Trim();
+        Settings.DeepSeekEnabled = DeepSeekEnabled.IsChecked == true;
+        Settings.EncryptedDeepSeekKey = string.IsNullOrWhiteSpace(DeepSeekKey.Password) ? null : SecretProtector.Protect(DeepSeekKey.Password);
+        Settings.DeepSeekModel = string.IsNullOrWhiteSpace(DeepSeekModel.Text) ? "deepseek-flash" : DeepSeekModel.Text.Trim();
         SaveGoogleTranslateSettings();
         SaveDeepLSettings();
-        DialogResult = true;
     }
     private void SaveLanguageSetting()
     {
@@ -338,6 +566,57 @@ public partial class SettingsWindow : Window
         try { return SecretProtector.Unprotect(Settings.EncryptedGeminiKey); }
         catch { return null; }
     }
+    private void AiProviderSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_initializingAiProvider) return;
+        var selected = SelectedAiProvider();
+        AiDefaultProvider.IsChecked = string.Equals(selected, _pendingAiDefaultProvider, StringComparison.OrdinalIgnoreCase);
+        UpdateAiProviderPanel();
+    }
+
+    private void AiDefaultProvider_Changed(object sender, RoutedEventArgs e)
+    {
+        if (_initializingAiProvider) return;
+        var selected = SelectedAiProvider();
+        if (AiDefaultProvider.IsChecked == true)
+        {
+            _pendingAiDefaultProvider = selected;
+            return;
+        }
+        if (!string.Equals(selected, _pendingAiDefaultProvider, StringComparison.OrdinalIgnoreCase)) return;
+
+        var alternative = AiProviderIds.All.FirstOrDefault(provider =>
+            !string.Equals(provider, selected, StringComparison.OrdinalIgnoreCase) && IsAiProviderConfigured(provider));
+        if (alternative is null)
+        {
+            _initializingAiProvider = true;
+            AiDefaultProvider.IsChecked = true;
+            _initializingAiProvider = false;
+            MessageBox.Show(this, T("Activează și testează celălalt furnizor înainte de a-l alege ca implicit."), T("Furnizor AI implicit"), MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+        _pendingAiDefaultProvider = alternative;
+    }
+
+    private bool IsAiProviderConfigured(string provider) => AiProviderIds.Normalize(provider) switch
+    {
+        AiProviderIds.OpenAI => OpenAiEnabled.IsChecked == true && !string.IsNullOrWhiteSpace(OpenAiKey.Password),
+        AiProviderIds.Mistral => MistralEnabled.IsChecked == true && !string.IsNullOrWhiteSpace(MistralKey.Password),
+        AiProviderIds.DeepSeek => DeepSeekEnabled.IsChecked == true && !string.IsNullOrWhiteSpace(DeepSeekKey.Password),
+        _ => GeminiEnabled.IsChecked == true && !string.IsNullOrWhiteSpace(GeminiKey.Password)
+    };
+
+    private string SelectedAiProvider() => AiProviderIds.Normalize((AiProviderSelector.SelectedItem as ComboBoxItem)?.Tag?.ToString());
+
+    private void UpdateAiProviderPanel()
+    {
+        var selected = SelectedAiProvider();
+        GeminiProviderPanel.Visibility = selected == AiProviderIds.Gemini ? Visibility.Visible : Visibility.Collapsed;
+        OpenAiProviderPanel.Visibility = selected == AiProviderIds.OpenAI ? Visibility.Visible : Visibility.Collapsed;
+        MistralProviderPanel.Visibility = selected == AiProviderIds.Mistral ? Visibility.Visible : Visibility.Collapsed;
+        DeepSeekProviderPanel.Visibility = selected == AiProviderIds.DeepSeek ? Visibility.Visible : Visibility.Collapsed;
+    }
+
     private void SaveDeepLSettings()
     {
         Settings.DeepLEnabled = DeepLEnabled.IsChecked == true;
@@ -419,6 +698,149 @@ public partial class SettingsWindow : Window
         try { Process.Start(new ProcessStartInfo("https://www.deepl.com/en/developers") { UseShellExecute = true }); }
     catch (Exception exception) { MessageBox.Show(this, F("Pagina DeepL pentru cheia API nu a putut fi deschisă. {0}", exception.Message), T("Deschidere nereușită"), MessageBoxButton.OK, MessageBoxImage.Error); }
     }
+    private void OpenAiKey_Click(object sender, RoutedEventArgs e)
+    {
+        try { Process.Start(new ProcessStartInfo("https://platform.openai.com/api-keys") { UseShellExecute = true }); }
+        catch (Exception exception) { MessageBox.Show(this, F("Pagina OpenAI pentru gestionarea cheilor API nu a putut fi deschisă. {0}", exception.Message), T("Deschidere nereușită"), MessageBoxButton.OK, MessageBoxImage.Error); }
+    }
+    private void MistralKey_Click(object sender, RoutedEventArgs e)
+    {
+        try { Process.Start(new ProcessStartInfo("https://console.mistral.ai/api-keys/") { UseShellExecute = true }); }
+        catch (Exception exception)
+        {
+            var message = F("Pagina OpenAI pentru gestionarea cheilor API nu a putut fi deschisă. {0}", exception.Message)
+                .Replace("OpenAI", AiProviderIds.Mistral, StringComparison.Ordinal);
+            MessageBox.Show(this, message, T("Deschidere nereușită"), MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+    private async void TestMistral_Click(object sender, RoutedEventArgs e)
+    {
+        var key = MistralKey.Password;
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            MistralStatus.Text = T("Introdu mai întâi cheia API OpenAI.").Replace("OpenAI", AiProviderIds.Mistral, StringComparison.Ordinal);
+            MessageBox.Show(this, MistralStatus.Text, T("Test OpenAI").Replace("OpenAI", AiProviderIds.Mistral, StringComparison.Ordinal), MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        MistralStatus.Text = T("Se testează conexiunea OpenAI. Nu este trimis niciun articol.").Replace("OpenAI", AiProviderIds.Mistral, StringComparison.Ordinal);
+        TestMistralButton.IsEnabled = false;
+        await Task.Yield();
+        string result;
+        MessageBoxImage icon;
+        try
+        {
+            var models = await new MistralConnection().TestAsync(key);
+            var preferred = models.FirstOrDefault(model => string.Equals(model, MistralModel.Text.Trim(), StringComparison.OrdinalIgnoreCase))
+                ?? models.FirstOrDefault(model => string.Equals(model, "mistral-small-latest", StringComparison.OrdinalIgnoreCase))
+                ?? models[0];
+            MistralModel.Items.Clear();
+            foreach (var model in models) MistralModel.Items.Add(new ComboBoxItem { Content = model, Tag = model });
+            MistralModel.Text = preferred;
+            MistralEnabled.IsChecked = true;
+            result = F("Conexiune OpenAI reușită. S-au găsit {0} modele accesibile. Apasă Salvează pentru păstrarea setării.", models.Count)
+                .Replace("OpenAI", AiProviderIds.Mistral, StringComparison.Ordinal);
+            icon = MessageBoxImage.Information;
+        }
+        catch (Exception exception)
+        {
+            result = F("Conexiunea OpenAI a eșuat: {0}", exception.Message)
+                .Replace("OpenAI", AiProviderIds.Mistral, StringComparison.Ordinal);
+            icon = MessageBoxImage.Warning;
+        }
+        finally { TestMistralButton.IsEnabled = true; }
+
+        MistralStatus.Text = result;
+        MessageBox.Show(this, result, T("Test OpenAI").Replace("OpenAI", AiProviderIds.Mistral, StringComparison.Ordinal), MessageBoxButton.OK, icon);
+    }
+    private void DeepSeekKey_Click(object sender, RoutedEventArgs e)
+    {
+        try { Process.Start(new ProcessStartInfo("https://platform.deepseek.com/api_keys") { UseShellExecute = true }); }
+        catch (Exception exception)
+        {
+            var message = F("Pagina OpenAI pentru gestionarea cheilor API nu a putut fi deschisă. {0}", exception.Message)
+                .Replace("OpenAI", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+            MessageBox.Show(this, message, T("Deschidere nereușită"), MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+    private async void TestDeepSeek_Click(object sender, RoutedEventArgs e)
+    {
+        var key = DeepSeekKey.Password;
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            DeepSeekStatus.Text = T("Introdu mai întâi cheia API OpenAI.").Replace("OpenAI", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+            MessageBox.Show(this, DeepSeekStatus.Text, T("Test OpenAI").Replace("OpenAI", AiProviderIds.DeepSeek, StringComparison.Ordinal), MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        DeepSeekStatus.Text = T("Se testează conexiunea OpenAI. Nu este trimis niciun articol.").Replace("OpenAI", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+        TestDeepSeekButton.IsEnabled = false;
+        await Task.Yield();
+        string result;
+        MessageBoxImage icon;
+        try
+        {
+            var models = await new DeepSeekConnection().TestAsync(key);
+            var preferred = models.FirstOrDefault(model => string.Equals(model, DeepSeekModel.Text.Trim(), StringComparison.OrdinalIgnoreCase))
+                ?? models.FirstOrDefault(model => string.Equals(model, "deepseek-flash", StringComparison.OrdinalIgnoreCase))
+                ?? models[0];
+            DeepSeekModel.Items.Clear();
+            foreach (var model in models) DeepSeekModel.Items.Add(new ComboBoxItem { Content = model, Tag = model });
+            DeepSeekModel.Text = preferred;
+            DeepSeekEnabled.IsChecked = true;
+            result = F("Conexiune OpenAI reușită. S-au găsit {0} modele accesibile. Apasă Salvează pentru păstrarea setării.", models.Count)
+                .Replace("OpenAI", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+            icon = MessageBoxImage.Information;
+        }
+        catch (Exception exception)
+        {
+            result = F("Conexiunea OpenAI a eșuat: {0}", exception.Message)
+                .Replace("OpenAI", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+            icon = MessageBoxImage.Warning;
+        }
+        finally { TestDeepSeekButton.IsEnabled = true; }
+
+        DeepSeekStatus.Text = result;
+        MessageBox.Show(this, result, T("Test OpenAI").Replace("OpenAI", AiProviderIds.DeepSeek, StringComparison.Ordinal), MessageBoxButton.OK, icon);
+    }
+    private async void TestOpenAi_Click(object sender, RoutedEventArgs e)
+    {
+        var key = OpenAiKey.Password;
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            OpenAiStatus.Text = T("Introdu mai întâi cheia API OpenAI.");
+            MessageBox.Show(this, OpenAiStatus.Text, T("Test OpenAI"), MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        OpenAiStatus.Text = T("Se testează conexiunea OpenAI. Nu este trimis niciun articol.");
+        TestOpenAiButton.IsEnabled = false;
+        await Task.Yield();
+        string result;
+        MessageBoxImage icon;
+        try
+        {
+            var models = await new OpenAiConnection().TestAsync(key);
+            var preferred = models.FirstOrDefault(model => string.Equals(model, OpenAiModel.Text.Trim(), StringComparison.OrdinalIgnoreCase))
+                ?? models.FirstOrDefault(model => string.Equals(model, "gpt-6-luna", StringComparison.OrdinalIgnoreCase))
+                ?? models[0];
+            OpenAiModel.Items.Clear();
+            foreach (var model in models) OpenAiModel.Items.Add(new ComboBoxItem { Content = model, Tag = model });
+            OpenAiModel.Text = preferred;
+            OpenAiEnabled.IsChecked = true;
+            result = F("Conexiune OpenAI reușită. S-au găsit {0} modele accesibile. Apasă Salvează pentru păstrarea setării.", models.Count);
+            icon = MessageBoxImage.Information;
+        }
+        catch (Exception exception)
+        {
+            result = F("Conexiunea OpenAI a eșuat: {0}", exception.Message);
+            icon = MessageBoxImage.Warning;
+        }
+        finally { TestOpenAiButton.IsEnabled = true; }
+
+        OpenAiStatus.Text = result;
+        MessageBox.Show(this, result, T("Test OpenAI"), MessageBoxButton.OK, icon);
+    }
     private async void TestGemini_Click(object sender, RoutedEventArgs e)
     {
         var key = GeminiKey.Password;
@@ -456,30 +878,10 @@ public partial class SettingsWindow : Window
         GeminiStatus.Text = result;
         MessageBox.Show(this, result, T("Test Gemini"), MessageBoxButton.OK, icon);
     }
+
     private void CleanupNow_Click(object sender, RoutedEventArgs e)
     {
-        Settings.KeywordAlerts = KeywordAlerts.Text.Trim();
-        Settings.AutoCleanupEnabled = AutoCleanup.IsChecked == true;
-        SaveLanguageSetting();
-        Settings.ColorScheme = ColorThemeManager.Normalize((ColorScheme.SelectedItem as ComboBoxItem)?.Tag?.ToString());
-        Settings.UpdateAtStartup = UpdateAtStartup.IsChecked == true;
-        Settings.SoundAlertsEnabled = SoundAlerts.IsChecked == true;
-        Settings.SoundAlertOnSuccess = SoundAlertOnSuccess.IsChecked == true;
-        Settings.SoundAlertOnNewArticles = SoundAlertOnNewArticles.IsChecked == true;
-        Settings.SoundAlertOnErrors = SoundAlertOnErrors.IsChecked == true;
-        Settings.HideRepeatedArticlesInGlobalViews = HideRepeatedArticles.IsChecked == true;
-        Settings.NewsBlurSavedStoryMode = NormalizeNewsBlurSavedStoryMode((NewsBlurSavedStoryMode.SelectedItem as ComboBoxItem)?.Tag?.ToString());
-        Settings.NewsBlurSyncFeedsAndFoldersAtStartup = NewsBlurSyncFeedsAndFoldersAtStartup.IsChecked == true;
-        Settings.NewsBlurSyncArticlesAndStatesAtStartup = NewsBlurSyncArticlesAndStatesAtStartup.IsChecked == true;
-        Settings.NewsBlurAutoSyncEnabled = NewsBlurAutoSyncEnabled.IsChecked == true;
-        Settings.NewsBlurAutoSyncMinutes = NormalizeNewsBlurAutoSyncMinutes((NewsBlurAutoSyncMinutes.SelectedItem as ComboBoxItem)?.Tag?.ToString());
-        SaveSpeechSettings();
-        Settings.RetentionDays = int.TryParse((RetentionDays.SelectedItem as ComboBoxItem)?.Tag?.ToString(), out var days) ? days : 90;
-        SaveAiInstructions();
-        Settings.GeminiEnabled = GeminiEnabled.IsChecked == true;
-        Settings.EncryptedGeminiKey = string.IsNullOrWhiteSpace(GeminiKey.Password) ? null : SecretProtector.Protect(GeminiKey.Password);
-        SaveGoogleTranslateSettings();
-        SaveDeepLSettings();
+        SaveSettingsValues();
         CleanupRequested = true;
         DialogResult = true;
     }

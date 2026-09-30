@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Input;
 using CititorRSS.Jaws.Localization;
+using CititorRSS.Jaws.Services.Content;
 
 namespace CititorRSS.Jaws;
 
@@ -16,11 +17,16 @@ public partial class AiResponseWindow : Window
     private readonly string _articleTitle;
     private readonly string _articleLink;
     private readonly string _responseTitle;
-    private readonly SpeechService? _speech;
-    private readonly Action<string>? _speechStateHandler;
+    private readonly string _providerName;
+    private readonly bool _isTranslation;
+    private readonly string _sourceArticleText;
+    private readonly string? _translationLanguage;
+    private readonly SpeechService _speech;
+    private readonly Action<string> _speechStateHandler;
     private bool _sending;
-    public AiResponseWindow(string title, string response, string articleTitle, string articleLink, Func<string, Task<string>> continueConversation, Func<string, Task> saveNote, SpeechService? speech)
+    public AiResponseWindow(string title, string response, string articleTitle, string articleLink, Func<string, Task<string>> continueConversation, Func<string, Task> saveNote, SpeechService speech, string providerName = "Gemini", bool isTranslation = false, string? sourceArticleText = null, string? translationLanguage = null)
     {
+        ArgumentNullException.ThrowIfNull(speech);
         InitializeComponent();
         Title = T(title);
         ResponseSpeechMenuItem.Header = T("Citire vocală");
@@ -39,22 +45,26 @@ public partial class AiResponseWindow : Window
         WhatsAppConversationMenuItem.Header = T("Distribuie conversația AI prin WhatsApp");
         FocusFollowUpMenuItem.Header = T("Continuă conversația");
         Response.Text = response;
+        Response.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, F("Conversație cu {0}, numai citire", providerName));
+        FollowUpQuestion.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, F("Continuă conversația cu {0}", providerName));
         _responseTitle = T(title);
+        _providerName = providerName;
+        _isTranslation = isTranslation;
+        _sourceArticleText = sourceArticleText ?? string.Empty;
+        _translationLanguage = translationLanguage;
         _articleTitle = articleTitle;
         _articleLink = articleLink;
         _continueConversation = continueConversation;
         _saveNote = saveNote;
         _speech = speech;
-        if (_speech is not null)
-        {
-            _speechStateHandler = message => Dispatcher.Invoke(() => StatusAnnouncer.Set(SpeechStatus, message, ResponseStatusBar));
-            _speech.StateChanged += _speechStateHandler;
-        }
+        _speechStateHandler = message => Dispatcher.Invoke(() => StatusAnnouncer.Set(SpeechStatus, message, ResponseStatusBar));
+        _speech.StateChanged += _speechStateHandler;
+        ShortcutBindings.RefreshMenuHints(this);
         Loaded += (_, _) => { Response.Focus(); Response.CaretIndex = 0; Response.Select(0, 0); };
         Closed += (_, _) =>
         {
-            _speech?.Stop(reportState: false);
-            if (_speech is not null && _speechStateHandler is not null) _speech.StateChanged -= _speechStateHandler;
+            _speech.Stop(reportState: false);
+            _speech.StateChanged -= _speechStateHandler;
         };
     }
     private void SpeakConversation_Click(object sender, RoutedEventArgs e)
@@ -80,7 +90,7 @@ public partial class AiResponseWindow : Window
     {
         if (EnsureSpeechAvailable()) _speech!.PauseOrResume();
     }
-    private void StopSpeech_Click(object sender, RoutedEventArgs e) => _speech?.Stop();
+    private void StopSpeech_Click(object sender, RoutedEventArgs e) => _speech.Stop();
     private void FocusFollowUp_Click(object sender, RoutedEventArgs e)
     {
         FollowUpQuestion.Focus();
@@ -88,7 +98,7 @@ public partial class AiResponseWindow : Window
     }
     private bool EnsureSpeechAvailable()
     {
-        if (_speech?.EnsureAvailable() == true) return true;
+        if (_speech.EnsureAvailable()) return true;
         var message = T("Motorul vocal selectat nu este disponibil. Verifică motorul și vocea în Setări.");
         StatusAnnouncer.Set(SpeechStatus, message, ResponseStatusBar);
         MessageBox.Show(this, message, T("Citire vocală indisponibilă"), MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -97,7 +107,7 @@ public partial class AiResponseWindow : Window
     private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         var key = e.Key == Key.System ? e.SystemKey : e.Key;
-        if (key == Key.F11 && Keyboard.Modifiers == ModifierKeys.None)
+        if (ShortcutBindings.Matches("Window", key, Keyboard.Modifiers))
         {
             WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
             var message = WindowState == WindowState.Maximized
@@ -107,27 +117,39 @@ public partial class AiResponseWindow : Window
             e.Handled = true;
             return;
         }
-        if (key == Key.F9 && Keyboard.Modifiers == ModifierKeys.None)
+        if (ShortcutBindings.Matches("VoiceToggle", key, Keyboard.Modifiers))
         {
-            if (_speech?.IsSpeaking == true || _speech?.IsPaused == true) PauseResumeSpeech_Click(this, e);
+            if (_speech.IsSpeaking || _speech.IsPaused) PauseResumeSpeech_Click(this, e);
             else SpeakConversation_Click(this, e);
             e.Handled = true;
             return;
         }
-        if (key == Key.Escape && Keyboard.Modifiers == ModifierKeys.None && (_speech?.IsSpeaking == true || _speech?.IsPaused == true))
+        if (key == Key.Escape && Keyboard.Modifiers == ModifierKeys.None && (_speech.IsSpeaking || _speech.IsPaused))
         {
             _speech.Stop();
             e.Handled = true;
             return;
         }
-        if (Keyboard.Modifiers != (ModifierKeys.Control | ModifierKeys.Alt)) return;
-        if (key == Key.V) SpeakConversation_Click(this, e);
-        else if (key == Key.P) PauseResumeSpeech_Click(this, e);
-        else if (key == Key.S) StopSpeech_Click(this, e);
-        else return;
-        e.Handled = true;
     }
-    private string ResponseDocument() => F("Articol: {0}{1}Adresă: {2}{1}Tip răspuns AI: {3}{1}Generat/exportat: {4}{1}{1}{5}", _articleTitle, Environment.NewLine, _articleLink, _responseTitle, DateTimeOffset.Now.ToString("g", CultureInfo.CurrentCulture), Response.Text.Trim());
+    private string DistributionFooter()
+    {
+        var context = DistributionContext();
+        var translationNote = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
+        return ArticleSharing.BuildFooter(context, translationNote, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"));
+    }
+
+    private ArticleDistributionContext DistributionContext() => new(
+        _articleTitle,
+        _sourceArticleText,
+        Response.Text,
+        _articleLink,
+        _isTranslation ? _providerName : null,
+        _isTranslation ? _translationLanguage : null);
+    private string ResponseDocument()
+    {
+        var document = F("Articol: {0}{1}Adresă: {2}{1}Tip răspuns AI: {3}{1}Generat/exportat: {4}{1}{1}{5}", _articleTitle, Environment.NewLine, _articleLink, _responseTitle, DateTimeOffset.Now.ToString("g", CultureInfo.CurrentCulture), Response.Text.Trim());
+        return ArticleSharing.AppendFooter(document, DistributionFooter());
+    }
     private void CopyResponse_Click(object sender, RoutedEventArgs e)
     {
         if (string.IsNullOrWhiteSpace(Response.Text)) { MessageBox.Show(this, T("Nu există încă un răspuns de copiat."), T("Răspuns AI"), MessageBoxButton.OK, MessageBoxImage.Information); return; }
@@ -166,14 +188,14 @@ public partial class AiResponseWindow : Window
     {
         if (string.IsNullOrWhiteSpace(Response.Text)) { MessageBox.Show(this, T("Nu există încă un răspuns de trimis."), T("Răspuns AI"), MessageBoxButton.OK, MessageBoxImage.Information); return; }
         var document = ResponseDocument();
-        const int emailBodyLimit = 1800;
-        var body = document.Length <= emailBodyLimit ? document : F("Răspunsul AI complet pentru articolul „{0}” a fost copiat în clipboard. Lipește-l în acest mesaj cu Ctrl+V.{1}{1}Sursă: {2}", _articleTitle, Environment.NewLine, _articleLink);
-        if (document.Length > emailBodyLimit) Clipboard.SetText(document);
-        var mailto = $"mailto:?subject={Uri.EscapeDataString($"{_responseTitle}: {_articleTitle}")}&body={Uri.EscapeDataString(body)}";
+        var body = ArticleSharing.LimitForUri(document, ArticleSharing.EmailBodyLimit, DistributionFooter());
+        var truncated = !string.Equals(body, document, StringComparison.Ordinal);
+        if (truncated) Clipboard.SetText(document);
+        var mailto = ArticleSharing.CreateMailto($"{_responseTitle}: {_articleTitle}", body);
         try
         {
             Process.Start(new ProcessStartInfo(mailto) { UseShellExecute = true });
-            if (document.Length > emailBodyLimit) MessageBox.Show(this, T("A fost deschisă aplicația de e-mail. Răspunsul complet este în clipboard; lipește-l în mesaj cu Ctrl+V."), T("Răspuns AI"), MessageBoxButton.OK, MessageBoxImage.Information);
+            if (truncated) MessageBox.Show(this, T("A fost deschisă aplicația de e-mail. Răspunsul complet este în clipboard; lipește-l în mesaj cu Ctrl+V."), T("Răspuns AI"), MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception exception) { MessageBox.Show(this, F("Aplicația de e-mail nu a putut fi deschisă: {0}", exception.Message), T("Răspuns AI"), MessageBoxButton.OK, MessageBoxImage.Error); }
     }
@@ -181,17 +203,17 @@ public partial class AiResponseWindow : Window
     {
         if (string.IsNullOrWhiteSpace(Response.Text)) { MessageBox.Show(this, T("Nu există încă un răspuns de trimis."), T("Răspuns AI"), MessageBoxButton.OK, MessageBoxImage.Information); return; }
         var document = ResponseDocument();
-        var shareText = ArticleSharing.LimitForUri(document, ArticleSharing.WhatsAppBodyLimit);
-        if (document.Length > ArticleSharing.WhatsAppBodyLimit)
+        var shareText = ArticleSharing.LimitForUri(document, ArticleSharing.WhatsAppBodyLimit, DistributionFooter());
+        var truncated = !string.Equals(shareText, document, StringComparison.Ordinal);
+        if (truncated)
         {
             Clipboard.SetText(document);
-            shareText = F("Răspunsul AI complet pentru articolul „{0}” a fost copiat în clipboard. Lipește-l în WhatsApp cu Ctrl+V.", _articleTitle);
         }
         var address = ArticleSharing.CreateWhatsApp(shareText);
         try
         {
             Process.Start(new ProcessStartInfo(address) { UseShellExecute = true });
-            MessageBox.Show(this, document.Length > ArticleSharing.WhatsAppBodyLimit
+            MessageBox.Show(this, truncated
                 ? T("WhatsApp a fost deschis. Conversația AI completă este în clipboard; lipește-o cu Ctrl+V.")
                 : T("WhatsApp a fost deschis pentru distribuirea conversației AI."), T("Răspuns AI"), MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -215,27 +237,27 @@ public partial class AiResponseWindow : Window
         var question = FollowUpQuestion.Text.Trim();
         if (_sending || string.IsNullOrWhiteSpace(question))
         {
-            if (string.IsNullOrWhiteSpace(question)) MessageBox.Show(this, T("Scrie mai întâi o întrebare."), "Gemini", MessageBoxButton.OK, MessageBoxImage.Warning);
+            if (string.IsNullOrWhiteSpace(question)) MessageBox.Show(this, T("Scrie mai întâi o întrebare."), T("Răspuns AI"), MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
         _sending = true;
         SendFollowUpButton.IsEnabled = false;
-        SendFollowUpButton.Content = T("Gemini răspunde...");
+        SendFollowUpButton.Content = F("{0} răspunde...", _providerName);
         FollowUpQuestion.IsEnabled = false;
         try
         {
             var previous = Response.Text;
-            Response.AppendText(F("{0}{0}Întrebarea ta: {1}{0}{0}Gemini răspunde...{0}", Environment.NewLine, question));
+            Response.AppendText(F("{0}{0}Întrebarea ta: {1}{0}{0}{2} răspunde...{0}", Environment.NewLine, question, _providerName));
             Response.ScrollToEnd();
             var answer = await _continueConversation($"Conversația de până acum:\n{previous}\n\nÎntrebarea nouă a utilizatorului: {question}\nRăspunde direct la întrebarea nouă, folosind articolul și conversația.");
             RemovePendingIndicator();
-            Response.AppendText(F("Răspuns Gemini: {0}", answer));
+            Response.AppendText(F("Răspuns {0}: {1}", _providerName, answer));
             FollowUpQuestion.Clear();
             Response.ScrollToEnd();
             Response.Focus();
         }
-        catch (TaskCanceledException) { RemovePendingIndicator(); MessageBox.Show(this, T("Gemini nu a răspuns în 45 de secunde. Poți încerca întrebarea din nou."), "Gemini", MessageBoxButton.OK, MessageBoxImage.Error); }
-        catch (Exception exception) { RemovePendingIndicator(); MessageBox.Show(this, F("Gemini nu a putut răspunde: {0}", exception.Message), "Gemini", MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (TaskCanceledException) { RemovePendingIndicator(); MessageBox.Show(this, F("{0} nu a răspuns în 45 de secunde. Poți încerca întrebarea din nou.", _providerName), T("Răspuns AI"), MessageBoxButton.OK, MessageBoxImage.Error); }
+        catch (Exception exception) { RemovePendingIndicator(); MessageBox.Show(this, F("{0} nu a putut răspunde: {1}", _providerName, exception.Message), T("Răspuns AI"), MessageBoxButton.OK, MessageBoxImage.Error); }
         finally
         {
             _sending = false;
@@ -247,7 +269,7 @@ public partial class AiResponseWindow : Window
     }
     private void RemovePendingIndicator()
     {
-        var pending = T("Gemini răspunde...") + Environment.NewLine;
+        var pending = F("{0} răspunde...", _providerName) + Environment.NewLine;
         if (Response.Text.EndsWith(pending, StringComparison.Ordinal)) Response.Text = Response.Text[..^pending.Length];
     }
     private static string T(string source) => UiText.Translate(source);

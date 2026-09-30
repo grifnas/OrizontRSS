@@ -1,24 +1,76 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Threading;
 using CititorRSS.Jaws.Localization;
 
 namespace CititorRSS.Jaws;
 
 public partial class HelpWindow : Window
 {
+    private readonly DispatcherTimer _searchTimer = new() { Interval = TimeSpan.FromMilliseconds(250) };
+    private List<ShortcutEntry> _shortcuts = [];
     public HelpWindow()
     {
         InitializeComponent();
         // Translate before the window is shown so screen readers announce only
         // the title in the language selected by the user.
         UiLocalizer.Apply(this);
-        ShortcutList.ItemsSource = Shortcuts();
+        _shortcuts = Shortcuts().Select(entry => entry with { Shortcut = ShortcutBindings.TranslateHint(entry.Shortcut) }).ToList();
+        _searchTimer.Tick += (_, _) => { _searchTimer.Stop(); ApplySearch(); };
+        ApplySearch();
+        Closed += (_, _) => _searchTimer.Stop();
         Loaded += (_, _) =>
         {
-            ShortcutList.SelectedIndex = 0;
-            ShortcutList.Focus();
+            ShortcutSearchBox.Focus();
         };
+    }
+
+    private void Search_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (ShortcutList is null) return;
+        _searchTimer.Stop();
+        _searchTimer.Start();
+    }
+
+    private void ApplySearch()
+    {
+        var items = _shortcuts.Where(item => ShortcutSearch.Matches(item.AccessibleName, ShortcutSearchBox.Text)).ToList();
+        ShortcutList.ItemsSource = items;
+        ShortcutList.IsTabStop = items.Count > 0;
+        ShortcutList.SelectedIndex = items.Count > 0 ? 0 : -1;
+        EmptyResults.Visibility = items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+        StatusAnnouncer.Set(ResultStatus, items.Count == 0
+            ? T("Nu s-au găsit scurtături. Modifică termenii căutării.")
+            : UiText.Format("Scurtături găsite: {0} din {1}.", items.Count, _shortcuts.Count));
+    }
+
+    private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Escape && Keyboard.Modifiers == ModifierKeys.None)
+        {
+            e.Handled = true;
+            Close();
+        }
+        else if (e.Key == Key.F && Keyboard.Modifiers == ModifierKeys.Control)
+        {
+            e.Handled = true;
+            ShortcutSearchBox.Focus();
+            ShortcutSearchBox.SelectAll();
+        }
+        else if (ShortcutSearchBox.IsKeyboardFocusWithin &&
+                 (e.Key == Key.Down || e.Key == Key.Enter || e.Key == Key.Tab) && Keyboard.Modifiers == ModifierKeys.None)
+        {
+            _searchTimer.Stop();
+            ApplySearch();
+            if (ShortcutList.Items.Count == 0) return;
+            e.Handled = true;
+            ShortcutList.ScrollIntoView(ShortcutList.Items[0]);
+            ShortcutList.UpdateLayout();
+            if (ShortcutList.ItemContainerGenerator.ContainerFromIndex(0) is ListBoxItem row) row.Focus();
+        }
     }
 
     private static List<ShortcutEntry> Shortcuts() =>
@@ -44,11 +96,14 @@ public partial class HelpWindow : Window
         new(T("Articole"), "R", T("Marchează articolele selectate ca citite sau necitite.")),
         new(T("Articole"), "F", T("Adaugă sau elimină articolele selectate din Favorite.")),
         new(T("Articole"), "L", T("Adaugă sau elimină articolele selectate din De citit mai târziu.")),
+        new(T("Articole"), "Ctrl+Shift+S", T("Salvează articolul curent în formatul implicit din folderul de export.")),
+        new(T("Cititor Orizont"), "Ctrl+Shift+F8", T("Comută între Text și WebReader în fereastra Cititor Orizont.")),
+        new(T("Navigare"), T("Litere și cifre"), T("Selectează următorul element după inițială; tastele atribuite comenzilor au prioritate în lista de articole.")),
         new(T("Conținut"), "Ctrl+Shift+R", T("Aduce textul complet al articolului de pe site.")),
         new(T("Stare"), "Ctrl+Shift+H", T("Deschide istoricul stării și al erorilor.")),
-        new(T("Citire vocală"), "F9 / Ctrl+Alt+V", T("Citește cu motorul vocal selectat textul, articolul curent sau conversația Gemini.")),
-        new(T("Citire vocală"), "F9 / Ctrl+Alt+P", T("Întrerupe sau continuă citirea vocală.")),
-        new(T("Citire vocală"), "Escape / Ctrl+Alt+S", T("Oprește citirea vocală.")),
+        new(T("Citire vocală"), "F9", T("Citește cu motorul vocal selectat textul, articolul curent sau conversația Gemini.")),
+        new(T("Citire vocală"), "F9", T("Întrerupe sau continuă citirea vocală.")),
+        new(T("Citire vocală"), "Escape", T("Oprește citirea vocală.")),
         new(T("Citire vocală"), "Shift+F9", T("Deschide Setări voce.")),
         new(T("Fereastră"), "F11", T("Maximizează sau restabilește fereastra.")),
     ];
