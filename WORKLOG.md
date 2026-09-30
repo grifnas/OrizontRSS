@@ -1,5 +1,13 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-09-30 — Pornirea reală după curățare și limita auditului NuGet
+
+- Folosit computer-use pentru verificarea ferestrei reale. Prima lansare prin calea simplă a rezolvat copia instalată din LocalAppData/Programs; identitatea a fost verificată și această pornire nu a fost atribuită buildului de lucru. Închisă normal copia instalată; lansarea explicită prin identificatorul `process:<calea completă>` a pornit executabilul corect din `bin/Release/net8.0-windows10.0.17763.0`.
+- Confirmat procesul 6092 în această sesiune: calea executabilului din proiect, Responding=True, hostfxr.dll/hostpolicy.dll/coreclr.dll încărcate din același folder. Fereastra Orizont RSS 1.6.0 afișează feeduri, articole și progres NewsBlur; nu a apărut dialog de runtime. Profilul existent și sincronizarea automată au fost folosite conform autorizării permanente.
+- Observația UI Automation găsește lista Articole fără vechiul HelpText lung. Focusul observat este în căutare; Ctrl+2 nu a produs o schimbare confirmată în snapshot. Instrumentul a raportat repetat intervenția utilizatorului și a blocat comenzile ulterioare. Oprit testul interactiv pentru a evita interferența; meniurile, focusul, tastele și JAWS nu sunt declarate trecute. Aplicația de lucru a rămas deschisă.
+- Verificare directă read-only a indexului NuGet: eșec TLS, cu HttpRequestException/AuthenticationException și Win32Exception «No credentials are available in the security package». Nu s-a dezactivat verificarea certificatelor; nu se declară auditul vulnerabilităților validat.
+- Actualizate PROJECT-STATUS, ROADMAP și registrul de recuperare. Fără schimbări în cod, rebuild, distribuție sau push; executabilul autonom rămâne cel verificat la curățare.
+
 ## 2026-09-30 — Curățarea artefactelor și revenirea la locația permanentă
 
 - La cererea explicită de curățare, inventariate directoarele generate din proiect. Păstrată locația proiectului; nu există necesitatea mutării surselor. Proiectele vecine și arhivele de release nu sunt reziduuri ale acestei intervenții și au rămas intacte.
