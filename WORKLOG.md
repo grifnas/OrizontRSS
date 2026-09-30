@@ -1,5 +1,13 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-09-30 — Curățarea artefactelor și revenirea la locația permanentă
+
+- La cererea explicită de curățare, inventariate directoarele generate din proiect. Păstrată locația proiectului; nu există necesitatea mutării surselor. Proiectele vecine și arhivele de release nu sunt reziduuri ale acestei intervenții și au rămas intacte.
+- Eliminate 11.297 fișiere, total 1.502.296.369 bytes: `bin/Debug`, vechiul `bin/Release` mixt, `obj`, `packaging/installer/bin` și `obj`, respectiv `bin`/`obj` din cele opt proiecte de test. Fiecare țintă a fost rezolvată în interiorul proiectului și verificată pentru absența fișierelor urmărite de Git, a settings.json/feeds.json și a punctelor de redirecționare. Nu erau procese Orizont active.
+- Mutată integral copia autonomă din `bin/OrizontRSS-Test-1.6.0` în `bin/Release/net8.0-windows10.0.17763.0`. Verificate toate cele 948 de fișiere prin SHA-256 înainte/după mutare: identice. Total păstrat 221.660.870 bytes; cifra anterioară de 259 fișiere număra numai nivelul superior.
+- Fișierele generate șterse nu au fost trimise în Coș; se regenerează din surse prin restaurare/compilare. Sursele, resursele, testele, .git, checkpointul și profilul personal sunt intacte. Nicio recompilare sau pornire în această intervenție; codul binar păstrat este identic, iar validarea practică rămâne deschisă.
+- Actualizate PROJECT-STATUS, ROADMAP, registrul de recuperare și BUILDING. Executabilul curent: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Fără distribuție sau push.
+
 ## 2026-09-30 — Fixarea surselor într-un punct local de revenire
 
 - La solicitarea utilizatorului privind repararea situației și păstrarea lucrărilor, verificat registrul Git: 102 intrări inițiale, inclusiv fișiere noi încă neurmărite; acestea reprezintă mai multe sesiuni. Codul A09, resursele A07 și testele A11 sunt prezente în proiect.

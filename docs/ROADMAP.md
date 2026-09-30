@@ -1,5 +1,7 @@
 # Foaia de parcurs Orizont RSS
 
+Curățare efectuată la 30 septembrie: eliminate 11.297 fișiere generate redundante (1.502.296.369 bytes); copia autonomă este unica aplicație locală în locația standard, verificată integral prin SHA-256. Sursele, testele, istoricul Git și datele personale sunt păstrate. Pornirea practică rămâne de verificat.
+
 Prioritate de recuperare, 30 septembrie: păstrarea stării prin `checkpoint-local-2026-09-30`, verificarea pornirii și repararea fluxului de compilare conform `RECOVERY-2026-09-30.md`, înaintea funcțiilor noi. Validările practice restante rămân deschise.
 ## Parcurs activ — consolidarea după auditul din 27 septembrie 2026
 

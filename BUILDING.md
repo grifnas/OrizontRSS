@@ -6,7 +6,7 @@
 - .NET 8 SDK;
 - PowerShell sau un terminal echivalent.
 
-Proiectul nu declară pachete NuGet externe. Folosește WPF din .NET 8 și, în timpul execuției, poate apela interfața SAPI5 disponibilă în Windows.
+Proiectul folosește WPF din .NET 8, pachetul NuGet Microsoft.Web.WebView2 și, în timpul execuției, poate apela interfața SAPI5 disponibilă în Windows.
 
 ## Compilare pentru dezvoltare
 
@@ -18,6 +18,18 @@ dotnet build CititorRSS.Jaws.csproj -c Release
 ```
 
 ## Publicare Windows x64
+
+### Executabilul local de lucru
+
+Locația permanentă este `bin\Release\net8.0-windows10.0.17763.0\Orizont.exe`. După curățarea din 30 septembrie 2026 conține copia autonomă, cu .NET inclus. Păstrează toate fișierele din acest folder împreună.
+
+Un `dotnet build` sau un test care compilează aplicația ca referință poate înlocui această copie cu un build framework-dependent. După verificările sursei, înainte de predarea executabilului, refă copia autonomă locală:
+
+```powershell
+dotnet publish CititorRSS.Jaws.csproj -c Release -r win-x64 --self-contained true -o bin\Release\net8.0-windows10.0.17763.0
+```
+
+Verifică runtimeconfig (`includedFrameworks`), conținutul folderului și pornirea; compilarea singură nu validează pornirea sau JAWS. Nu redirecționa `OutputPath`, `OutDir` sau `--output` ale instalatorului ori ale unei soluții întregi spre folderul aplicației. Instalatorul și proiectele de test folosesc directoarele lor proprii. Fișierele intermediare eliminate la curățare se regenerează la restore/build; prima verificare ulterioară necesită restore, nu `-NoRestore`.
 
 Înainte de publicare este necesară cererea expresă a utilizatorului. Pentru verificarea obișnuită a sursei, fără pachete de distribuție, folosește comenzile din secțiunea următoare.
 
