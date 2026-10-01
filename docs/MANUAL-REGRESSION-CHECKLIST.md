@@ -11,7 +11,7 @@ Această listă se execută după orice modificare care poate afecta interfața,
 
 ## A. Pornire, focalizare și închidere
 
-### Consolidare 28 septembrie 2026 — A01 confirmat; A02–A03 în verificare
+### Consolidare — A01 și A03 confirmate; A02 în verificare
 
 - Deschide un articol în Cititor Orizont, revino la fereastra principală și selectează alt articol. Reîncărcarea din cititor trebuie să păstreze articolul inițial; meniul contextual, Ctrl+Shift+F8 și marcarea citit trebuie să funcționeze ca înainte.
 - Dacă descărcarea/traducerea durează, selectează între timp alt articol. Răspunsul vechi nu trebuie să înlocuiască noul conținut, să deschidă o fereastră pentru articolul greșit sau să mute focusul înapoi. Verifică și o descărcare/traducere obișnuită, fără schimbarea selecției.
@@ -40,6 +40,8 @@ Utilizatorul a confirmat că funcționează după solicitarea testului F1, căut
 | A6 | A doua pornire a aplicației | Cu prima instanță deschisă, lansează din nou același executabil. JAWS/NVDA anunță dialogul localizat care spune că aplicația rulează deja și indică `Alt+Tab`; Enter îl închide, prima fereastră rămâne funcțională, iar a doua instanță nu modifică feedurile sau setările. Repetă după închiderea primei instanțe pentru a confirma că aplicația pornește normal. |
 
 Confirmare parțială a utilizatorului, 27 septembrie 2026: mesajul este anunțat în engleză pe Windows în engleză, dialogul are un singur buton `OK` (intenționat), iar după închidere prima fereastră a rămas afișată cu articolele folderului selectat. Mai trebuie confirmată interacțiunea efectivă cu prima fereastră după `OK`; cititorul de ecran folosit nu a fost precizat.
+
+Confirmare completată la 1 octombrie 2026 pentru copia locală autonomă: cu JAWS 2026 pornit, a doua lansare a aceleiași căi a afișat dialogul în engleză și butonul OK, anunțate de cititor. După închiderea dialogului a rămas un singur proces Orizont, iar utilizatorul a confirmat că poate naviga normal prin articole în prima fereastră. După închiderea normală a primei instanțe, procesul s-a terminat și aplicația a pornit din nou cu listele încărcate. Nu s-a testat NVDA și nu s-a comparat fiecare fișier de profil.
 
 ## B. Feeduri și articole
 

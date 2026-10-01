@@ -4,6 +4,12 @@ Starea scurtă și probele pentru fiecare dintre cele 12 puncte sunt în [ACCEPT
 
 Punct de revenire local curent: `checkpoint-local-2026-10-01-a12`; eticheta anterioară `checkpoint-local-2026-09-30` și inventarul din `RECOVERY-2026-09-30.md` rămân disponibile. Verificările practice restante nu sunt închise.
 
+## A03 — instanța unică confirmată practic, 1 octombrie 2026
+
+Starea curentă a auditului este **6/12 puncte închise local**: A10, A01, A03, A05, A04 și A06. Cu JAWS 2026 pornit, a fost lansată de două ori exact copia autonomă locală `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. A doua lansare a afișat dialogul în engleză „Orizont RSS is already open”, cu buton OK; utilizatorul a confirmat anunțul JAWS. După închiderea dialogului, a rămas un singur proces Orizont și utilizatorul a confirmat că poate naviga normal prin articole în prima fereastră. Prima instanță a fost apoi închisă normal; procesul s-a terminat, iar aceeași copie a pornit din nou cu listele de feeduri și articole prezente. Testul practic completează verificările sintetice ale mutexului. Nu s-a comparat fiecare fișier al profilului înainte și după probă; nu se extinde confirmarea la NVDA.
+
+Prima încercare de lansare prin calea simplă a fost redirecționată de instrument spre copia instalată din LocalAppData. Calea procesului a fost verificată; acea copie a fost închisă normal după actualizarea de pornire și nu a fost inclusă în rezultatul A03. Testul valid a folosit identificatorul explicit `process:<calea copiei locale>`.
+
 ## Build local de test — 30 septembrie 2026
 
 După curățarea din 30 septembrie, unica copie locală de lucru este cea autonomă Windows x64 din `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe` (FileVersion 1.6.0.0). A fost mutată integral din folderul experimental; toate cele 948 de fișiere, total 221.660.870 bytes, au fost verificate SHA-256 înainte și după mutare. Numărul anterior de 259 fișiere omitea subfolderele. Runtimeconfig include .NET și Windows Desktop 8.0.31. Cauza exactă a vechiului dialog runtime nu este stabilită. NU1900 rămâne limita auditului online de vulnerabilități.

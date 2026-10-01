@@ -1,5 +1,11 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-01 — A03: probă practică a instanței unice cu JAWS 2026
+
+- Scop: completarea probei rămase din audit, fără modificarea codului. JAWS 2026 era pornit. Prima lansare prin calea simplă a pornit copia instalată din LocalAppData; calea a fost identificată, actualizarea de pornire s-a încheiat (7 feeduri reușite, 0 articole noi), iar acea copie a fost închisă normal. Rezultatul A03 de mai jos aparține numai copiei autonome din locația permanentă, lansată explicit prin identificatorul `process:<calea locală>`.
+- A doua lansare a aceleiași copii locale a afișat dialogul „Orizont RSS is already open. Only one instance is allowed”, cu buton OK; utilizatorul a confirmat anunțul prin JAWS. După dispariția dialogului a rămas un singur proces Orizont din calea locală, iar utilizatorul a confirmat că navigarea prin articole în prima fereastră funcționează normal. Prima instanță a fost închisă normal, procesul s-a terminat, apoi aceeași copie a repornit și a afișat listele de feeduri/articole. Aplicația a fost lăsată deschisă. La această ultimă repornire, sincronizarea automată autorizată a raportat 1 articol importat din NewsBlur și 2 stări trimise; nu s-au schimbat manual feeduri sau setări. Acești contori nu verifică singuri identitatea ori propagarea unei stări pentru A02. Nu s-a testat NVDA și nu s-a comparat întregul profil înainte/după.
+- Actualizate numai `WORKLOG.md`, `docs/ACCEPTANCE-STATUS.md`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md` și `docs/MANUAL-REGRESSION-CHECKLIST.md`. A03 este închis local; A02 rămâne P1 deschis. Nu a fost nevoie de compilare pentru documentare: executabilul existent din `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe` rămâne cel de test, fără distribuție nouă.
+
 ## 2026-10-01 — Diagnosticarea erorii TLS din auditul NuGet
 
 - Investigație fără schimbarea configurației Windows: în terminalul izolat, `curl.exe` a returnat `SEC_E_NO_CREDENTIALS` pentru `api.nuget.org`, `data.nuget.org`, GitHub și Microsoft. Aceeași cerere către `api.nuget.org` în afara izolării a primit HTTP 200, `ssl_verify_result=0`. Sursa NuGet activă este adresa oficială V3; ceasul local și UTC sunt coerente.
