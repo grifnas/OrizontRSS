@@ -30,7 +30,7 @@
       <li><a href="#articole">Citirea și organizarea articolelor</a></li>
       <li><a href="#cautare">Căutare și filtre</a></li>
       <li><a href="#voce">Citire vocală SAPI5, eSpeak NG și Gemini</a></li>
-      <li><a href="#ai">Gemini și conversațiile AI</a></li>
+      <li><a href="#ai">Furnizori AI, conversații și traducere</a></li>
       <li><a href="#date">Import, backup și curățare</a></li>
       <li><a href="#stare">Stare, erori și rezolvarea problemelor</a></li>
       <li><a href="#licenta">Licență și contribuții</a></li>
@@ -40,7 +40,7 @@
   <main id="continut">
     <section id="inceput">
       <h2>1. Prima deschidere</h2>
-      <p>Orizont RSS pornește direct în fereastra principală. Dacă nu există feeduri, folosește meniul Feeduri, opțiunea Adaugă feed, sau importă un fișier OPML. Datele, setările și cheia Gemini sunt păstrate în profilul contului Windows; ele nu sunt incluse în arhiva de distribuție.</p>
+      <p>Orizont RSS pornește direct în fereastra principală. Dacă nu există feeduri, folosește meniul Feeduri, opțiunea Adaugă feed, sau importă un fișier OPML. Datele, setările și cheile API configurate sunt păstrate în profilul contului Windows; ele nu sunt incluse în arhiva de distribuție.</p>
       <p>Limba interfeței se alege din Setări aplicație. Sunt disponibile româna, engleza, spaniola, franceza, germana, portugheza, maghiara și italiana. Modificarea se aplică după repornirea aplicației. La o instalare nouă, opțiunea Automată folosește limba Windows când aceasta este acceptată și engleza în celelalte cazuri.</p>
       <p class="note"><strong>Accesibilitate:</strong> Interfața este compatibilă cu cititoarele de ecran. Motorul vocal ales este opțional și citește conținut numai la comanda utilizatorului.</p>
     </section>
@@ -86,6 +86,7 @@
       <p>La etichetare poți alege etichetele deja create sau poți introduce una nouă. Dialogul permite și ștergerea definitivă a etichetelor din toate articolele.</p>
       <h3>Deschiderea fără reclame în browser</h3>
       <p>Din meniul contextual al articolului sau al conținutului, alege <strong>Deschide articolul în cititorul Orizont</strong>. Aplicația descarcă și curăță pagina, apoi afișează titlul, sursa și textul principal într-o fereastră accesibilă, fără reclame, bare laterale și navigare inutilă. Opțiunile pentru copierea selecției, copierea articolului complet și citirea vocală rămân disponibile. <strong>Deschide pagina originală în browser</strong> rămâne disponibilă separat.</p>
+      <p>În Cititor Orizont poți comuta între Text simplu și WebReader prin scurtătura implicită <kbd>Ctrl+Shift+F8</kbd>. Din meniul contextual sau meniul Cititor poți salva articolul afișat ca TXT ori RTF în folderul ales în Setări aplicație. Sursa și, pentru traduceri, furnizorul rămân în document.</p>
     </section>
     <section id="cautare">
       <h2>5. Căutare și filtre</h2>
@@ -111,8 +112,9 @@
       <p>Toate cele trei motoare folosesc aceleași comenzi de pornire, pauză, continuare și oprire, atât în articole, cât și în conversațiile Gemini. Starea motorului activ și erorile de cheie, cotă sau conexiune apar în bara de stare.</p>
     </section>
     <section id="ai">
-      <h2>7. Gemini și conversațiile AI</h2>
-      <p>Gemini este opțional și necesită o cheie API configurată de utilizator. La întrebarea AI este inclus întregul conținut afișat al articolului. Conversația poate continua și poate fi copiată, salvată, exportată sau trimisă integral. Comenzile Rezumat, Traducere, Explicație și Ideile principale solicită răspunsul în limba interfeței.</p>
+      <h2>7. Furnizori AI, conversații și traducere</h2>
+      <p>Gemini, OpenAI, Mistral și DeepSeek sunt furnizori opționali. În Setări → Inteligență artificială poți introduce cheia API pentru fiecare și alege furnizorul implicit. Conversația despre articol poate continua și poate fi copiată, salvată sau distribuită. Comenzile Rezumat, Traducere, Explicație și Ideile principale solicită răspunsul în limba interfeței.</p>
+      <p>Traducerea prin Google Translate este separată de conversația AI: folosește un serviciu online neoficial fără cheie API și cere confirmare înainte de trimiterea textului. DeepL necesită cheia API a utilizatorului. La copiere, salvare sau distribuire, textul tradus include mențiunea furnizorului și adresa sursei articolului.</p>
       <p>În fereastra conversației, <kbd>F9</kbd> citește selecția sau întreaga discuție cu vocea configurată. <kbd>F9</kbd> întrerupe sau continuă, iar <kbd>Escape</kbd> oprește citirea. Meniul contextual oferă și citirea de la cursor.</p>
       <p>Orizont RSS afișează starea cererii și un mesaj clar dacă serviciul nu răspunde, cheia este respinsă sau conexiunea nu este disponibilă.</p>
     </section>
@@ -121,7 +123,7 @@
       <h3>OPML</h3>
       <p>Din meniul Feeduri poți importa sau exporta un fișier OPML. Importul evită adresele deja existente.</p>
       <h3>Copie de siguranță</h3>
-      <p>Copia de siguranță include feedurile, articolele, folderele, etichetele, stările și notițele AI. Cheile secrete nu sunt exportate în clar.</p>
+      <p>Copia de siguranță include feedurile, articolele, folderele, etichetele, stările, notițele AI și preferințele nesensibile. Cheile API și sesiunea NewsBlur nu sunt incluse.</p>
       <h3>Articole vechi</h3>
       <p>Curățarea automată este configurabilă. Favoritele și articolele De citit mai târziu sunt protejate. Aplicația memorează articolele eliminate prin regula de vechime și nu le importă din nou la următoarea actualizare.</p>
     </section>
@@ -135,7 +137,7 @@
       <h3>Dacă ghidul nu se deschide</h3>
       <p>Verifică dacă fișierul Ghid-utilizator-Orizont-RSS.html și ghidurile traduse se află lângă Orizont.exe. Extrage întreaga arhivă ZIP, nu numai executabilul.</p>
       <h3>Dacă apare o eroare neașteptată</h3>
-      <p>Aplicația oprește comanda curentă, afișează un mesaj accesibil și încearcă să salveze un raport tehnic în subfolderul diagnostic al datelor locale. Raportul nu include cheia Gemini. Închide și redeschide aplicația înainte de a repeta operația.</p>
+      <p>Aplicația oprește comanda curentă, afișează un mesaj accesibil și încearcă să salveze un raport tehnic în subfolderul diagnostic al datelor locale. Raportul poate conține detalii ale erorii: verifică-l înainte de a-l trimite și nu distribui chei API sau alte date sensibile. Închide și redeschide aplicația înainte de a repeta operația.</p>
     </section>
     <section id="licenta">
       <h2>10. Licență și contribuții</h2>

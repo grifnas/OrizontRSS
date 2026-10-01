@@ -1,6 +1,8 @@
-# Orizont RSS — stare și plan de proiect
+# Orizont RSS — stare și istoric de proiect
 
-Punct de revenire local: `checkpoint-local-2026-09-30`; inventarul, limitele și pașii de reparare sunt în `RECOVERY-2026-09-30.md`. Eticheta păstrează sursele acumulate, inclusiv lucrările de astăzi, fără să închidă verificările practice restante.
+Starea scurtă și probele pentru fiecare dintre cele 12 puncte sunt în [ACCEPTANCE-STATUS.md](ACCEPTANCE-STATUS.md). [ROADMAP.md](ROADMAP.md) păstrează ordinea și criteriile; [WORKLOG.md](../WORKLOG.md) păstrează cronologia intervențiilor. Notele datate de mai jos nu înlocuiesc registrul curent.
+
+Punct de revenire local: `checkpoint-local-2026-09-30`; inventarul, limitele și pașii de reparare sunt în `RECOVERY-2026-09-30.md`. Eticheta păstrează sursele acumulate până la 30 septembrie, nu și modificările ulterioare; verificările practice restante nu sunt închise.
 
 ## Build local de test — 30 septembrie 2026
 
@@ -10,7 +12,23 @@ Pornire verificată la 30 septembrie: executabilul din locația permanentă desc
 
 NuGet: accesul la index a eșuat din nou la negocierea TLS, cu `Win32Exception: No credentials are available in the security package`. Aceasta este limita observată a mediului de verificare; nu stabilește cauza completă și nu dovedește prezența sau absența vulnerabilităților. Nu s-au ocolit verificările certificatului.
 
-## Stare curentă — consolidare, 30 septembrie 2026
+## Punctul 12/A12 — 1 octombrie 2026
+
+[Registrul scurt de acceptare](ACCEPTANCE-STATUS.md) indică separat implementarea, testele automate, confirmările practice și lipsurile pentru fiecare dintre cele 12 puncte. Ghidurile în opt limbi au fost actualizate factual pentru AI, traducere, modurile Cititorului Orizont, export și backup; validatorul structural trece, dar naturalețea tuturor traducerilor nu a fost certificată de vorbitori nativi. Raportul tehnic de eroare poate include detalii din excepție, deci trebuie verificat înainte de partajare. Nu s-au schimbat codul aplicației, profilul, executabilul autonom sau distribuția publică. Runnerul Full nu a fost rerulat deoarece implicit ar suprascrie copia autonomă din locația standard; punctul 12 rămâne deschis până la verificarea completă pe un traseu sigur și acceptările practice restante.
+
+## Verificare țintită — 1 octombrie 2026
+
+`WorkflowSmoke` termina scenariile sintetice, dar așteptarea finală prin `DispatcherFrame` putea ține procesul deschis fără raport. Mecanismul de așteptare din `tests/WorkflowSmoke/Program.cs` folosește acum o coadă de continuări pe firul STA și raportează eroare după 45 de secunde dacă testul nu se încheie. Rularea după compilare și două relansări consecutive au trecut fiecare **148/148, exit code 0**. Nu s-au modificat scenariile sau codul aplicației. Copia standard `Orizont.exe` nu a fost recompilată, iar verificările practice JAWS rămân distincte.
+
+Eroarea de găsire a fișierului `CititorRSS.Jaws.csproj` când artefactele erau în afara proiectului a venit din `LocalizationSmoke`, nu din `WorkflowSmoke`. Verificările celorlalte suite consemnate la 30 septembrie rămân valabile; verificarea completă nu a fost reluată la 1 octombrie. Experimentul vizual a fost întrerupt de limita temporară a tokenilor ChatGPT; blocarea ulterioară a aplicației ChatGPT, semnalată de utilizator, nu este o eroare confirmată a Orizont RSS.
+
+## Verificări suplimentare — 30 septembrie 2026
+
+Au trecut verificările izolate: CoreSmoke 127, RulesSmoke 42, ShortcutsSmoke 95, OpenAiSmoke 47; LocalizationSmoke 1.419 resurse/1.294 șiruri UI pentru română și cele șapte culturi localizate; EspeakSmoke 132 voci/104 variante; ScaleSmoke 20 verificări cu 50.000 de articole sintetice și listă WPF de 1.000 de articole. Validatorii strict de localizare, ghiduri, codare, pagini publice și runner au trecut (28 verificări simulate). Testele nu au apelat furnizorii AI sau NewsBlur și nu au accesat profilul personal. Compilarea instalatorului în artefacte izolate a trecut cu 0 avertismente/erori. `verify-distribution.ps1` a trecut pe copia autonomă existentă (1.6.0.0, runtime .NET 8.0.31 inclus, 444 fișiere eSpeak), după eliminarea singurului fișier generat interzis `Orizont.pdb`. Executabilul standard nu a fost recompilat; se află în `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+
+`WorkflowSmoke` nu a produs raport în reluarea din 30 septembrie cu calea izolată sub proiect și a fost oprit după peste un minut. Eroarea anterioară de găsire a csproj-ului aparținea `LocalizationSmoke` rulat cu artefactele în afara proiectului; atribuirea ei către `WorkflowSmoke` a fost greșită. Utilizatorul a clarificat că experimentul vizual din sesiunea Codex a fost întrerupt de epuizarea temporară a tokenilor ChatGPT; acest lucru nu este dovadă a unei erori Orizont. Înaintea întreruperii, meniurile de context, salvare TXT/RTF și AI/traducere erau vizibile. Procesul nu a mai apărut în snapshotul ulterior, dar motivul nu a fost confirmat; nu s-a găsit raport nou sau eveniment Windows relevant. Această întrerupere este distinctă de rularea automată `WorkflowSmoke`, oprită separat după ce nu a mai produs raport. JAWS 2026 nu rula și nu există confirmare vocală; verificarea practică rămâne deschisă.
+
+## Stare la 30 septembrie 2026 — consolidare
 
 Progresul celor 12 puncte: **5/12 închise complet (1, 2, 5, 6 și 7); punctele 3–4 (A02–A03) au verificări practice parțiale și încă necesită confirmare; punctul 8/A08 este în lucru — implementarea și verificarea automată sunt extinse, dar acceptarea manuală este parțială; punctul 9/A09 este implementat local și trecut automat, iar verificarea practică JAWS 2026 este amânată la cererea utilizatorului; punctul 10/A07 este implementat local și trecut automat, dar așteaptă verificarea practică și revizie lingvistică; punctul 11/A11 are repere sintetice pentru date și lista WPF, dar interfața afișată/focusul/JAWS nu au fost măsurate; punctul 12 este deschis. Așadar, punctul 7 este ultimul închis complet.** Utilizatorul a confirmat practic A01 la 28 septembrie după scenariul recomandat cu JAWS. Confirmarea utilizatorului pentru punctul 4 este parțială. Punctul 7 este confirmat cu JAWS pe ambele trasee AI; punctul 8 are confirmări limitate la scenariile enumerate mai jos. Actualizatorul de la punctul 6 a fost confirmat funcțional în versiunea curentă; nu s-a făcut instalare reală de probă. Pentru A02, oprirea tuturor opțiunilor NewsBlur suprimă oglindirea; numai sincronizarea feedurilor/folderelor produce „56 reușite, 2 cu eroare”; numai sincronizarea articolelor/stărilor confirmă articolele, iar utilizatorul confirmă acum că rezumatul final cu stările preluate și trimise este auzit după actualizarea RSS. Transferul real al unei stări și sincronizarea periodică rămân de verificat; utilizatorul nu are momentan acces la două calculatoare, deci proba de propagare se amână. Cauzele celor două erori nu sunt stabilite. Actualizarea RSS rămâne separată.
 
@@ -34,7 +52,11 @@ Aceste rezultate confirmă acoperirea structurală și funcționarea codului loc
 
 `ScaleSmoke` măsoară, pe lângă colecția existentă de 50.000 de articole sintetice, un workload cu 24 de articole de câte 262.144 de caractere în `Content` și `FullContent`. La prima rulare medianele au fost: căutare locală 64,1 ms; serializare JSON indentată 58,1 ms; scriere/înlocuire snapshot 6,6 ms la 16.205.414 bytes; export TXT 2,2 ms; RTF 4,8 ms. Ultima rerulare a produs 79,1 ms, 112,0 ms, 12,8 ms la 16.205.415 bytes, 1,9 ms și 4,1 ms. Round-trip-ul păstrează textul integral, iar ambele exporturi păstrează URL-ul sursei. Lista Articole reală din `MainWindow.xaml` a fost aranjată off-screen cu 1.000 de articole sintetice: layout inițial 968,9 ms, respectiv 579,0 ms la rerulare; 5 containere din 1.000 materializate, iar testul verifică explicit `VirtualizingStackPanel` și materializarea limitată. Fereastra nu a fost afișată și evenimentul `Window_Loaded` nu a fost invocat; profilul nu a fost încărcat. Testul nu a accesat feeduri sau rețea. Valorile sunt orientative și variabile, nu praguri universale. Nu s-a optimizat codul.
 
-A11 nu este complet: măsurătoarea JSON folosește serializarea și scrierea într-un folder temporar, nu `FeedStore` cu profil separat; testul WPF este off-screen și nu măsoară latența percepută în fereastra afișată, focalizarea, tastatura sau JAWS. Aceste verificări rămân pentru o sesiune sigură cu profil de test și/sau confirmare practică. Copia autonomă este acum în locația standard; pornirea sa rămâne de verificat. Nu s-a creat distribuție nouă.
+A11 nu este complet: măsurătoarea JSON folosește serializarea și scrierea într-un folder temporar, nu `FeedStore` cu profil separat; testul WPF este off-screen și nu măsoară latența percepută în fereastra afișată, focalizarea, tastatura sau JAWS. Aceste verificări rămân pentru o sesiune sigură cu profil de test și/sau confirmare practică. Copia autonomă este în locația standard, iar pornirea ei a fost verificată ulterior, la 30 septembrie; navigarea și JAWS nu au fost confirmate în acea probă. Nu s-a creat distribuție nouă.
+
+## Cronologia anterioară — nu reprezintă singură starea curentă
+
+Secțiunile următoare păstrează dovezile și formulările din etapele respective. Pentru statutul de astăzi, inclusiv diferența dintre implementare, test automat și confirmare practică, consultă registrul de la începutul documentului.
 
 ### Punctul 8 — traducere, export și proveniență (27 septembrie 2026)
 
@@ -138,10 +160,10 @@ Eliminată salvarea în două etape: după acceptarea editorului, adăugarea/edi
 
 Fișiere: Views/ArticleRulesWindow.xaml(.cs), MainWindow.xaml.cs, Resources/UiStrings*.resx, tests/RulesSmoke/Program.cs. RulesSmoke 37/37 (inclusiv salvare/reîncărcare într-un fișier temporar și eșec de scriere simulat); CoreSmoke 103/103; LocalizationSmoke 1.299 resurse și 1.210 referințe. Verificarea manuală cu JAWS rămâne de făcut: salvare o singură dată, Escape, redeschidere și repornire. Executabilul local rămâne bin/Release/net8.0-windows10.0.17763.0/Orizont.exe. Fără distribuție nouă sau publicare.
 
-+## 26 septembrie 2026 — Rezultatele autoetichetării au devenit articole accesibile
+## 26 septembrie 2026 — Rezultatele autoetichetării au devenit articole accesibile
 
 Previzualizarea regulilor nu mai afișează un TextBox inert: articolele sunt rânduri selectabile, cu titlu și detalii sintetice. Enter/dublu-click deschide adresa articolului în browser; Shift+F10 oferă meniu contextual cu deschidere, copiere titlu și copiere adresă. Teste: build Release 0 erori/avertismente, RulesSmoke 32/32, CoreSmoke 103/103. Verificarea manuală JAWS rămâne necesară. Nu s-a creat distribuție.
-+## 25 septembrie 2026 — Reguli automate promovate în versiunea de lucru
+## 25 septembrie 2026 — Reguli automate promovate în versiunea de lucru
 
 La cererea utilizatorului, implementarea verificată în copia experimentală a fost integrată în sursele principale. Versiunea de lucru păstrează datele și folderul de export existente; nu s-a copiat ExperimentData și nu s-au importat reguli de test. Formularul clarifică „Ce să caute” și „Ce să facă”; acțiunea poate fi etichetare, Mai târziu sau ambele. Configurația nouă rămâne dezactivată până la activarea de către utilizator. Teste: RulesSmoke 32/32, CoreSmoke 103/103, LocalizationSmoke 1.294 resurse și 1.207 referințe, build Release 0 erori/avertismente. Verificarea manuală JAWS și prima utilizare cu datele reale rămân necesare. Nu s-a creat distribuție. Executabil local de test: bin/Release/net8.0-windows10.0.17763.0/Orizont.exe.
 
@@ -329,7 +351,6 @@ Lista Feeduri este acum ordonată alfabetic după nume, cu folderul și URL-ul d
 
 - îmbunătățiri ale cititorului și ale navigării accesibile;
 - extinderea testelor automate pentru colecții mari de articole;
-- autoetichetarea opțională a articolelor după reguli configurate pentru etichetele existente (cuvinte-cheie/expresii în titlu, descriere și conținut), cu normalizare și previzualizare înainte de aplicare;
 - eventuală reluare a proiectului Android, numai după stabilirea unei strategii tehnice verificabile;
 - funcții noi pentru partajare, traducere și conversații AI, dacă sunt solicitate.
 - API-ul NewsBlur nu expune ștergerea individuală a articolelor; textele adăugate recent trebuie traduse și verificate în toate limbile înaintea unei distribuții.

@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Globalization;
 using System.IO;
@@ -22,14 +23,10 @@ internal static class Program
         {
             // No App.Run, Window.Show or Loaded: never read the user's profile.
             var app = new App(); app.InitializeComponent(); UiCulture.Apply("ro-RO");
-            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
+            var synchronizationContext = new SmokeSynchronizationContext();
+            SynchronizationContext.SetSynchronizationContext(synchronizationContext);
             var task = RunAsync();
-            if (!task.IsCompleted)
-            {
-                var frame = new DispatcherFrame();
-                task.GetAwaiter().OnCompleted(() => frame.Continue = false);
-                Dispatcher.PushFrame(frame);
-            }
+            synchronizationContext.PumpUntil(task, TimeSpan.FromSeconds(45));
             task.GetAwaiter().GetResult();
             foreach (var failure in failures) Console.Error.WriteLine("FAIL: " + failure);
             Console.WriteLine($"WorkflowSmoke: {checks - failures.Count}/{checks} passed. Synthetic articles and callbacks only; no visible windows, profile access or network.");
@@ -39,6 +36,43 @@ internal static class Program
     }
 
     private static void Check(bool ok, string name) { checks++; if (!ok) failures.Add(name); }
+    private sealed class SmokeSynchronizationContext : SynchronizationContext
+    {
+        private readonly BlockingCollection<Action> _pending = new();
+        private readonly int _ownerThreadId = Environment.CurrentManagedThreadId;
+
+        public override void Post(SendOrPostCallback callback, object? state) => _pending.Add(() => callback(state));
+        public override void Send(SendOrPostCallback callback, object? state)
+        {
+            if (Environment.CurrentManagedThreadId == _ownerThreadId)
+            {
+                callback(state);
+                return;
+            }
+
+            var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            Post(_ =>
+            {
+                try { callback(state); completion.SetResult(); }
+                catch (Exception error) { completion.SetException(error); }
+            }, null);
+            completion.Task.GetAwaiter().GetResult();
+        }
+
+        public override SynchronizationContext CreateCopy() => this;
+
+        public void PumpUntil(Task task, TimeSpan timeout)
+        {
+            var deadline = DateTime.UtcNow + timeout;
+            while (!task.IsCompleted)
+            {
+                var remaining = deadline - DateTime.UtcNow;
+                if (remaining <= TimeSpan.Zero) throw new TimeoutException("WorkflowSmoke did not finish within 45 seconds.");
+                if (_pending.TryTake(out var action, Math.Min(100, Math.Max(1, (int)remaining.TotalMilliseconds))))
+                    action();
+            }
+        }
+    }
     private static void Set(object target, string name, object value) =>
         target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance)!.SetValue(target, value);
     private static void Select(MainWindow window, Article article)

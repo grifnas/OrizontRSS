@@ -30,7 +30,7 @@
       <li><a href="#articole">Cikkek olvasása, rendszerezése</a></li>
       <li><a href="#cautare">Keresés és szűrők</a></li>
       <li><a href="#voce">Hangolvasás SAPI5, eSpeak NG és Gemini</a></li>
-      <li><a href="#ai">Gemini és AI beszélgetések</a></li>
+      <li><a href="#ai">MI-szolgáltatók, beszélgetések és fordítás</a></li>
       <li><a href="#date">Importálás, biztonsági mentés és tisztítás</a></li>
       <li><a href="#stare">Állapot, hibák és hibaelhárítás</a></li>
       <li><a href="#licenta">Licenc és hozzájárulások</a></li>
@@ -40,7 +40,7 @@
   <main id="continut">
     <section id="inceput">
       <h2>1. Első nyitás</h2>
-      <p>Orizont A RSS közvetlenül a főablakból indul el. Ha nincsenek hírcsatornák, használja a Hírcsatornák menüt, a Hírcsatorna hozzáadása opciót, vagy importáljon egy OPML fájlt. A Gemini adatok, beállítások és kulcs a Windows fiókprofilban tárolódnak; nem szerepelnek a terjesztési archívumban.</p>
+      <p>Az Orizont RSS a főablakban indul. Ha még nincsenek hírcsatornák, adjon hozzá egyet a Hírcsatornák menüben, vagy importáljon egy OPML-fájlt. Az adatok, a beállítások és a megadott API-kulcsok a Windows-profilban maradnak; a terjesztési csomag nem tartalmazza őket.</p>
       <p>A felület nyelve az Alkalmazásbeállítások közül választható ki. Román, angol, spanyol, francia, német, portugál, magyar és olasz nyelven érhető el. A módosítás az alkalmazás újraindítása után kerül alkalmazásra. Új telepítéskor az Automatikus opció a Windows nyelvet használja, ha támogatott, és egyébként az angolt.</p>
       <p class="note"><strong>Kisegítő lehetőségek:</strong> A felület kompatibilis a képernyőolvasókkal. A kiválasztott hangmotor nem kötelező, és csak a felhasználói parancsra olvassa be a tartalmat.</p>
     </section>
@@ -86,6 +86,7 @@
       <p>Címkézéskor kiválaszthatja a már létrehozott címkéket, vagy beilleszthet újat. A párbeszédpanel lehetővé teszi a címkék végleges törlését is az összes cikkből.</p>
       <h3>Megnyitás hirdetések nélkül a böngészőben</h3>
       <p>A cikk vagy tartalom helyi menüjéből válassza a lehetőséget <strong>Nyissa meg a cikket a Orizont olvasóban</strong>. Az alkalmazás letölti és megtisztítja az oldalt, majd egy hozzáférhető ablakban megjeleníti a címet, a forrást és a fő szöveget, hirdetések, oldalsávok és szükségtelen navigáció nélkül. A kijelölés másolása, a teljes cikk másolása és a felolvasási lehetőségek továbbra is elérhetők. <strong>Nyissa meg az eredeti oldalt a böngészőben</strong> külön is elérhető marad.</p>
+      <p>Az Orizont olvasóban az alapértelmezett <kbd>Ctrl+Shift+F8</kbd> billentyűparancs vált az egyszerű szöveg és a WebReader között. A helyi menüből vagy az Olvasó menüből a megjelenített cikk TXT vagy RTF formátumban menthető az Alkalmazásbeállításokban kiválasztott mappába. A dokumentum megőrzi a forrás címét, fordítás esetén pedig a szolgáltatót is.</p>
     </section>
     <section id="cautare">
       <h2>5. Keresés és szűrők</h2>
@@ -111,8 +112,9 @@
       <p>Mindhárom motor ugyanazt az indítási, szüneteltetési, folytatási és leállítási vezérlőket használja, mind a cikkekben, mind a beszélgetésekben Gemini. Az aktív motor állapota és a kulcs-, méret- vagy csatlakozási hibák megjelennek az állapotsorban.</p>
     </section>
     <section id="ai">
-      <h2>7. Gemini és az AI beszélgetések</h2>
-      <p>A Gemini opcionális, és felhasználó által konfigurált API-kulcsot igényel. A cikk teljes megjelenített tartalma szerepel az AI-kérdésben. A beszélgetés folytatódhat, és teljes egészében másolható, menthető, exportálható vagy elküldhető. Az Összegzés, a Fordítás, a Magyarázat és a Fő ötletek parancsok a felület nyelvén kérik a választ.</p>
+      <h2>7. MI-szolgáltatók, beszélgetések és fordítás</h2>
+      <p>A Gemini, az OpenAI, a Mistral és a DeepSeek választható szolgáltatók. A Beállítások → Mesterséges intelligencia részben mindegyikhez megadható API-kulcs, és kiválasztható az alapértelmezett szolgáltató. A cikkről folytatott beszélgetés folytatható, másolható, menthető vagy megosztható. Az Összegzés, Fordítás, Magyarázat és Fő gondolatok parancs a felület nyelvén kéri a választ.</p>
+      <p>A Google Translate külön működik az MI-beszélgetésektől: nem hivatalos online szolgáltatást használ API-kulcs nélkül, és a szöveg elküldése előtt megerősítést kér. A DeepL saját API-kulcsot igényel. A másolt, mentett vagy megosztott fordítás megnevezi a szolgáltatót és tartalmazza az eredeti cikk címét.</p>
       <p>A beszélgetés ablakában <kbd>F9</kbd> olvassa el a kijelölést vagy a teljes beszélgetést a konfigurált hanggal. <kbd>F9</kbd> szüneteltesse vagy folytassa újra <kbd>Escape</kbd> hagyja abba az olvasást. A helyi menü a kurzorból való olvasást is lehetővé teszi.</p>
       <p>Orizont A RSS megjeleníti a kérés állapotát és egyértelmű üzenetet, ha a szolgáltatás nem válaszol, a kulcsot elutasították vagy a kapcsolat nem érhető el.</p>
     </section>
@@ -121,7 +123,7 @@
       <h3>OPML</h3>
       <p>A Feeds menüből importálhat vagy exportálhat egy OPML fájlt. Az importálás elkerüli a már meglévő címeket.</p>
       <h3>Biztonsági mentés</h3>
-      <p>A biztonsági másolat az AI hírcsatornáit, cikkeit, mappáit, címkéit, állapotait és megjegyzéseit tartalmazza. A titkos kulcsok nem kerülnek exportálásra az üresen.</p>
+      <p>A biztonsági mentés tartalmazza a hírcsatornákat, cikkeket, mappákat, címkéket, állapotokat, MI-jegyzeteket és nem érzékeny beállításokat. Az API-kulcsok és a NewsBlur-munkamenet nem kerülnek bele.</p>
       <h3>Régi cikkek</h3>
       <p>Az automatikus tisztítás konfigurálható. A kedvencek és az Olvasás később elemek védettek. Az alkalmazás megjegyzi az öregedési szabály által eltávolított cikkeket, és nem importálja őket újra a következő frissítéskor.</p>
     </section>
@@ -135,7 +137,7 @@
       <h3>Ha az útmutató nem nyílik ki</h3>
       <p>Ellenőrizze, hogy a Ghid-utilizator-Orizont-RSS.html fájl és a lefordított útmutatók a Orizont.exe mellett vannak-e. Bontsa ki a teljes ZIP-archívumot, ne csak a végrehajtható fájlt.</p>
       <h3>Ha váratlan hiba történik</h3>
-      <p>Az alkalmazás leállítja az aktuális parancsot, elérhető üzenetet jelenít meg, és megpróbálja elmenteni a műszaki jelentést a helyi adatdiagnosztikai almappába. A jelentés nem tartalmazza a Gemini kulcsot. A művelet megismétlése előtt zárja be, majd nyissa meg újra az alkalmazást.</p>
+      <p>Az alkalmazás leállítja az aktuális parancsot, akadálymentesen olvasható üzenetet jelenít meg, és megpróbál műszaki jelentést menteni a helyi diagnosztikai mappába. A jelentés a hiba részleteit tartalmazhatja: megosztás előtt ellenőrizze, és ne adjon ki API-kulcsokat vagy más érzékeny adatokat. Újrapróbálkozás előtt zárja be, majd nyissa meg az alkalmazást.</p>
     </section>
     <section id="licenta">
       <h2>10. Licenc és hozzájárulások</h2>

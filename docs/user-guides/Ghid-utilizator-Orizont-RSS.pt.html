@@ -30,7 +30,7 @@
       <li><a href="#articole">Lendo e organizando artigos</a></li>
       <li><a href="#cautare">Pesquisa e filtros</a></li>
       <li><a href="#voce">SAPI5, eSpeak NG e Gêmeos</a></li>
-      <li><a href="#ai">Conversas de Gêmeos e IA</a></li>
+      <li><a href="#ai">Provedores de IA, conversas e tradução</a></li>
       <li><a href="#date">Importar, fazer backup e limpar</a></li>
       <li><a href="#stare">Estado, erros e solução de problemas</a></li>
       <li><a href="#licenta">Licença e Contribuições</a></li>
@@ -40,7 +40,7 @@
   <main id="continut">
     <section id="inceput">
       <h2>1. Primeira abertura</h2>
-      <p>O Orizont RSS começa diretamente na janela principal. Se não houver feeds, use o menu Feeds, a opção Adicionar feed ou importar um arquivo OPML. Os dados, configurações e chaves do Gemini são mantidos no perfil da conta do Windows; eles não estão incluídos no arquivo de distribuição.</p>
+      <p>O Orizont RSS abre na janela principal. Se não houver feeds, use o menu Feeds para adicionar um ou importe um arquivo OPML. Os dados, as configurações e as chaves de API configuradas ficam no perfil do Windows; não são incluídos no pacote de distribuição.</p>
       <p>O idioma da interface é escolhido a partir de Configurações da Aplicação. Romeno, Inglês, Espanhol, Francês, Alemão, Português, Húngaro e Italiano estão disponíveis. A alteração é aplicada após reiniciar o aplicativo. Em uma nova instalação, a opção Automática usa o idioma Windows quando suportado e Inglês de outra forma.</p>
       <p class="note"><strong>Acessibilidade</strong> A interface é compatível com os leitores de tela. O motor de fala selecionado é opcional e lê conteúdo apenas no comando.</p>
     </section>
@@ -85,6 +85,7 @@
       <p>Ao rotular, você pode escolher os rótulos já criados ou você pode inserir um novo. A janela também permite a exclusão permanente de marcas de todos os artigos.</p>
       <h3>Abertura sem anúncios no navegador</h3>
       <p>No menu artigo ou contexto de conteúdo, escolha <strong>Abrir o artigo no modo Leitura</strong>. Orizont envia a página para o modo Microsoft Edge Reading, que remove anúncios, barras laterais e navegação desnecessária em páginas compatíveis. <strong>Abra a página original no navegador</strong> permanece disponível separadamente.</p>
+      <p>No leitor Orizont, o atalho padrão <kbd>Ctrl+Shift+F8</kbd> alterna entre texto simples e WebReader. Use o menu de contexto ou o menu Leitor para salvar o artigo exibido em TXT ou RTF na pasta escolhida nas Configurações do aplicativo. O documento mantém a fonte e, no caso de tradução, o provedor.</p>
     </section>
     <section id="cautare">
       <h2>5. Pesquisa e Filtros</h2>
@@ -110,8 +111,9 @@
       <p>O SAPI5 é reinicializado automaticamente após o sono quando necessário. O eSpeak NG sintetiza localmente e suporta os mesmos comandos de arranque, pausa, retoma e paragem. O motor activo informa o seu estado na barra de estado.</p>
     </section>
     <section id="ai">
-      <h2>7. Gemini e as conversas da IA</h2>
-      <p>O Gemini é opcional e requer uma chave API configurada pelo usuário. Todo o conteúdo exibido do artigo está incluído na questão de IA. A conversa pode continuar e pode ser copiada, salva, exportada ou enviada na sua totalidade. Os comandos Resumo, Tradução, Explicação e Ideias Principais alertam para a resposta na linguagem da interface.</p>
+      <h2>7. Provedores de IA, conversas e tradução</h2>
+      <p>Gemini, OpenAI, Mistral e DeepSeek são provedores opcionais. Em Configurações → Inteligência artificial, você pode informar uma chave de API para cada um e escolher o provedor padrão. É possível continuar uma conversa sobre um artigo e depois copiá-la, salvá-la ou compartilhá-la. Resumo, Tradução, Explicação e Ideias principais solicitam uma resposta no idioma da interface.</p>
+      <p>O Google Translate é separado das conversas de IA: usa um serviço on-line não oficial sem chave de API e pede confirmação antes de enviar o texto. O DeepL exige sua chave de API. Ao copiar, salvar ou compartilhar uma tradução, o provedor é identificado e o endereço do artigo original é incluído.</p>
       <p>Na janela da conversa, <kbd>F9</kbd> lê a seleção ou toda a conversa usando a voz configurada. <kbd>F9</kbd> pausas ou retomas, e <kbd>Escape</kbd> para de ler. O menu de contexto também fornece leitura do cursor.</p>
       <p>Orizont RSS exibe o status da solicitação e uma mensagem clara se o serviço não está respondendo, a chave é rejeitada ou a conexão não está disponível.</p>
     </section>
@@ -120,7 +122,7 @@
       <h3>OPML</h3>
       <p>No menu Fontes, você pode importar ou exportar um arquivo OPML. A importação evita endereços já existentes.</p>
       <h3>Cópia de Segurança</h3>
-      <p>O backup inclui feeds de IA, artigos, pastas, tags, status e notas. Chaves secretas não são exportadas no clear.</p>
+      <p>O backup inclui feeds, artigos, pastas, etiquetas, estados, notas de IA e preferências não confidenciais. As chaves de API e a sessão do NewsBlur não são incluídas.</p>
       <h3>Artigos antigos</h3>
       <p>A limpeza automática é configurável. Os itens Favoritos e Ler mais tarde estão protegidos. O aplicativo lembra os artigos removidos pela regra de envelhecimento e não os importa novamente na próxima atualização.</p>
     </section>
@@ -134,7 +136,7 @@
       <h3>Se o guia não abrir</h3>
       <p>Verifique se o arquivo Ghid-utilizator-Orizont-RSS.html e guias traduzidos estão ao lado de Orizont.exe. Extrair todo o arquivo ZIP, não apenas o executável.</p>
       <h3>Se ocorrer um erro inesperado</h3>
-      <p>A aplicativo interrompe o comando atual, mostra uma mensagem acessível e tenta gravar um relatório técnico na subpasta de diagnóstico de dados local. O relatório não inclui a chave Gemini. Feche e reabra a aplicativo antes de repetir a operação.</p>
+      <p>O aplicativo interrompe o comando atual, mostra uma mensagem acessível e tenta salvar um relatório técnico na pasta local de diagnóstico. O relatório pode conter detalhes do erro: revise-o antes de compartilhar e não divulgue chaves de API nem outros dados confidenciais. Feche e reabra o aplicativo antes de tentar novamente.</p>
     </section>
     <section id="licenta">
       <h2>10. Licença e Contribuições</h2>

@@ -30,7 +30,7 @@
       <li><a href="#articole">Lettura e organizzazione di articoli</a></li>
       <li><a href="#cautare">Cerca e filtra</a></li>
       <li><a href="#voce">Lettura vocale SAPI5, eSpeak NG e Gemini</a></li>
-      <li><a href="#ai">Gemini e conversazioni AI</a></li>
+      <li><a href="#ai">Fornitori IA, conversazioni e traduzione</a></li>
       <li><a href="#date">Importazione, backup e pulizia</a></li>
       <li><a href="#stare">Stato, errori e risoluzione dei problemi</a></li>
       <li><a href="#licenta">Licenza e Contributi</a></li>
@@ -40,7 +40,7 @@
   <main id="continut">
     <section id="inceput">
       <h2>1. Prima apertura</h2>
-      <p>Orizont RSS si avvia direttamente nella finestra principale. Se non sono presenti feed, utilizza il menu Feed, l'opzione Aggiungi feed o importa un file OPML. I dati, le impostazioni e la chiave Gemini vengono conservati nel profilo dell'account Windows; non sono inclusi nell'archivio di distribuzione.</p>
+      <p>Orizont RSS si apre nella finestra principale. Se non sono presenti feed, aggiungine uno dal menu Feed oppure importa un file OPML. I dati, le impostazioni e le chiavi API configurate restano nel profilo Windows; non sono inclusi nell'archivio di distribuzione.</p>
       <p>La lingua dell'interfaccia viene scelta da Impostazioni applicazione. Sono disponibili rumeno, inglese, spagnolo, francese, tedesco, portoghese, ungherese e italiano. La modifica viene applicata dopo il riavvio dell'applicazione. In una nuova installazione, l'opzione Automatica utilizza la lingua Windows quando supportata e l'inglese negli altri casi.</p>
       <p class="note"><strong>Accessibilità:</strong> L'interfaccia è compatibile con gli screen reader. Il motore vocale scelto è facoltativo e legge il contenuto solo su comando dell'utente.</p>
     </section>
@@ -86,6 +86,7 @@
       <p>Durante l'etichettatura è possibile scegliere le etichette già create oppure inserirne una nuova. La finestra di dialogo consente inoltre la cancellazione permanente dei tag da tutti gli articoli.</p>
       <h3>Apertura senza pubblicità nel browser</h3>
       <p>Dal menu contestuale dell'articolo o del contenuto, scegli <strong>Apri l'articolo nel lettore Orizont</strong>. L'applicazione scarica e pulisce la pagina, quindi visualizza il titolo, la fonte e il testo principale in una finestra accessibile, senza pubblicità, barre laterali e navigazione non necessaria. Le opzioni Copia selezione, Copia articolo completo e Leggi ad alta voce rimangono disponibili. <strong>Apri la pagina originale nel browser</strong> rimane disponibile separatamente.</p>
+      <p>Nel lettore Orizont, la scorciatoia predefinita <kbd>Ctrl+Shift+F8</kbd> passa dal testo semplice a WebReader e viceversa. Dal menu contestuale o dal menu Lettore puoi salvare l'articolo visualizzato come TXT o RTF nella cartella scelta nelle Impostazioni applicazione. Il documento conserva la fonte e, se tradotto, il fornitore.</p>
     </section>
     <section id="cautare">
       <h2>5. Ricerca e filtri</h2>
@@ -111,8 +112,9 @@
       <p>Tutti e tre i motori utilizzano gli stessi controlli di avvio, pausa, ripresa e arresto, sia negli articoli che nelle conversazioni Gemini. Nella barra di stato vengono visualizzati lo stato del motore attivo e gli errori di chiave, dimensione o connessione.</p>
     </section>
     <section id="ai">
-      <h2>7. Gemini e le conversazioni AI</h2>
-      <p>Gemini è opzionale e richiede una chiave API configurata dall'utente. L'intero contenuto visualizzato dell'articolo è incluso nella domanda AI. La conversazione può continuare e può essere copiata, salvata, esportata o inviata nella sua interezza. I comandi Riepilogo, Traduzione, Spiegazione e Idee principali richiedono la risposta nella lingua dell'interfaccia.</p>
+      <h2>7. Fornitori IA, conversazioni e traduzione</h2>
+      <p>Gemini, OpenAI, Mistral e DeepSeek sono fornitori facoltativi. In Impostazioni → Intelligenza artificiale puoi inserire una chiave API per ciascuno e scegliere il fornitore predefinito. Puoi proseguire una conversazione su un articolo e poi copiarla, salvarla o condividerla. Riepilogo, Traduzione, Spiegazione e Idee principali richiedono una risposta nella lingua dell'interfaccia.</p>
+      <p>Google Translate è separato dalle conversazioni IA: usa un servizio online non ufficiale senza chiave API e chiede conferma prima di inviare il testo. DeepL richiede la tua chiave API. Una traduzione copiata, salvata o condivisa indica il fornitore e include l'indirizzo dell'articolo originale.</p>
       <p>Nella finestra di conversazione, <kbd>F9</kbd> leggere la selezione o l'intera conversazione con la voce configurata. <kbd>F9</kbd> mettere in pausa o continuare di nuovo <kbd>Escape</kbd> smetti di leggere. Il menu contestuale fornisce anche la lettura dal cursore.</p>
       <p>Orizont RSS visualizza lo stato della richiesta e un messaggio chiaro se il servizio non risponde, la chiave viene rifiutata o la connessione non è disponibile.</p>
     </section>
@@ -121,7 +123,7 @@
       <h3>OPML</h3>
       <p>Dal menu Feed è possibile importare o esportare un file OPML. L'importazione evita gli indirizzi già esistenti.</p>
       <h3>Backup</h3>
-      <p>Il backup include feed, articoli, cartelle, tag, stati e note di AI. Le chiavi segrete non vengono esportate in chiaro.</p>
+      <p>Il backup include feed, articoli, cartelle, etichette, stati, note IA e preferenze non sensibili. Non include le chiavi API né la sessione NewsBlur.</p>
       <h3>Vecchi articoli</h3>
       <p>La pulizia automatica è configurabile. I Preferiti e gli elementi Leggi dopo sono protetti. L'applicazione ricorda gli articoli rimossi dalla regola di invecchiamento e non li importa nuovamente al successivo aggiornamento.</p>
     </section>
@@ -135,7 +137,7 @@
       <h3>Se la guida non si apre</h3>
       <p>Controlla che il file Ghid-utilizator-Orizont-RSS.html e le guide tradotte siano accanto a Orizont.exe. Estrai l'intero archivio ZIP, non solo l'eseguibile.</p>
       <h3>Se si verifica un errore imprevisto</h3>
-      <p>L'applicazione interrompe il comando corrente, visualizza un messaggio accessibile e tenta di salvare un rapporto tecnico nella sottocartella di diagnostica dei dati locali. Il rapporto non include la chiave Gemini. Chiudere e riaprire l'applicazione prima di ripetere l'operazione.</p>
+      <p>L'applicazione interrompe il comando corrente, mostra un messaggio accessibile e tenta di salvare un rapporto tecnico nella cartella locale di diagnostica. Il rapporto può contenere dettagli dell'errore: controllalo prima di condividerlo e non divulgare chiavi API o altri dati sensibili. Chiudi e riapri l'applicazione prima di riprovare.</p>
     </section>
     <section id="licenta">
       <h2>10. Licenza e Contributi</h2>

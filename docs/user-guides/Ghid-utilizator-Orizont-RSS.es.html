@@ -30,7 +30,7 @@
       <li><a href="#articole">Leer y organizar art&#237;culos.</a></li>
       <li><a href="#cautare">B&#250;squeda y filtros</a></li>
       <li><a href="#voce">Lectura con SAPI5, eSpeak NG y Gemini</a></li>
-      <li><a href="#ai">Conversaciones sobre Gemini y IA</a></li>
+      <li><a href="#ai">Proveedores de IA, conversaciones y traducción</a></li>
       <li><a href="#date">Importaci&#243;n, copia de seguridad y limpieza</a></li>
       <li><a href="#stare">Estado, errores y soluci&#243;n de problemas</a></li>
       <li><a href="#licenta">Licencia y Contribuciones</a></li>
@@ -40,7 +40,7 @@
   <main id="continut">
     <section id="inceput">
       <h2>1. Primera apertura</h2>
-      <p>Orizont RSS se inicia directamente en la ventana principal. Si no hay fuentes, use el men&#250; Fuentes, la opci&#243;n Agregar fuente o importe un archivo OPML. Los datos, la configuraci&#243;n y la clave de Gemini se guardan en el perfil de la cuenta Windows; no est&#225;n incluidos en el archivo de distribuci&#243;n.</p>
+      <p>Orizont RSS se inicia en la ventana principal. Si no hay fuentes, use el menú Fuentes para añadir una o importe un archivo OPML. Los datos, la configuración y las claves API configuradas se guardan en el perfil de Windows; no están incluidos en el archivo de distribución.</p>
       <p>El idioma de la interfaz se elige en Configuraci&#243;n de la aplicaci&#243;n. Est&#225;n disponibles rumano, ingl&#233;s, espa&#241;ol, franc&#233;s, alem&#225;n, portugu&#233;s, h&#250;ngaro e italiano. El cambio se aplica despu&#233;s de reiniciar la aplicaci&#243;n. En una instalaci&#243;n nueva, la opci&#243;n Autom&#225;tica usa el idioma Windows cuando es compatible y el ingl&#233;s en caso contrario.</p>
       <p class="note"><strong>Accesibilidad:</strong> La interfaz es compatible con lectores de pantalla. El motor de voz seleccionado es opcional y solo lee el contenido por orden del usuario.</p>
     </section>
@@ -85,6 +85,7 @@
       <p>Al etiquetar, puedes elegir las etiquetas ya creadas o puedes insertar una nueva. El cuadro de di&#225;logo tambi&#233;n permite la eliminaci&#243;n permanente de etiquetas de todos los art&#237;culos.</p>
       <h3>Abrir sin anuncios en el navegador</h3>
       <p>En el men&#250; contextual del art&#237;culo o del contenido, seleccione <strong>Abrir el art&#237;culo en modo lectura</strong>. Orizont env&#237;a la p&#225;gina al modo de lectura de Microsoft Edge, que elimina anuncios, barras laterales y navegaci&#243;n innecesaria en las p&#225;ginas compatibles. <strong>Abrir la p&#225;gina original en el navegador</strong> sigue disponible por separado.</p>
+      <p>En el lector Orizont, la combinación predeterminada <kbd>Ctrl+Shift+F8</kbd> alterna entre texto simple y WebReader. Desde el menú contextual o el menú Lector puede guardar el artículo mostrado como TXT o RTF en la carpeta elegida en Configuración de la aplicación. El documento conserva la fuente y, si es una traducción, el proveedor.</p>
     </section>
     <section id="cautare">
       <h2>5. B&#250;squeda y filtros</h2>
@@ -110,8 +111,9 @@
       <p>Si la aplicaci&#243;n ha estado abierta durante mucho tiempo o el Windows ha regresado del modo de suspensi&#243;n, cada nueva lectura recrea el motor SAPI5 y vuelve a aplicar voz, velocidad y volumen. Si la primera inicializaci&#243;n falla, la aplicaci&#243;n lo vuelve a intentar autom&#225;ticamente una vez y muestra el estado en la barra de estado.</p>
     </section>
     <section id="ai">
-      <h2>7. Gemini y las conversaciones de IA</h2>
-      <p>Gemini es opcional y requiere una clave API configurada por el usuario. Todo el contenido mostrado del art&#237;culo est&#225; incluido en la pregunta de IA. La conversaci&#243;n puede continuar y copiarse, guardarse, exportarse o enviarse en su totalidad. Los comandos Resumen, Traducci&#243;n, Explicaci&#243;n e Ideas principales solicitan la respuesta en el idioma de la interfaz.</p>
+      <h2>7. Proveedores de IA, conversaciones y traducción</h2>
+      <p>Gemini, OpenAI, Mistral y DeepSeek son proveedores opcionales. En Configuración → Inteligencia artificial puede introducir una clave API para cada uno y elegir el proveedor predeterminado. Puede continuar una conversación sobre un artículo y después copiarla, guardarla o compartirla. Resumen, Traducción, Explicación e Ideas principales solicitan la respuesta en el idioma de la interfaz.</p>
+      <p>Google Translate es independiente de las conversaciones de IA: utiliza un servicio en línea no oficial sin clave API y solicita confirmación antes de enviar el texto. DeepL requiere su clave API. Al copiar, guardar o compartir una traducción, se indica el proveedor y se incluye la dirección del artículo original.</p>
       <p>En la ventana de conversaci&#243;n, <kbd>F9</kbd> lee la selecci&#243;n o toda la conversaci&#243;n con la voz configurada. <kbd>F9</kbd> pausa o contin&#250;a y <kbd>Escape</kbd> detiene la lectura. El men&#250; contextual tambi&#233;n permite leer desde el cursor.</p>
       <p>Orizont RSS muestra el estado de la solicitud y un mensaje claro si el servicio no responde, la clave es rechazada o la conexi&#243;n no est&#225; disponible.</p>
     </section>
@@ -120,7 +122,7 @@
       <h3>OPML</h3>
       <p>Desde el men&#250; Feeds puede importar o exportar un archivo OPML. La importaci&#243;n evita direcciones ya existentes.</p>
       <h3>Copia de seguridad</h3>
-      <p>La copia de seguridad incluye feeds, art&#237;culos, carpetas, etiquetas, estados y notas de AI. Las claves secretas no se exportan sin cifrar.</p>
+      <p>La copia de seguridad incluye fuentes, artículos, carpetas, etiquetas, estados, notas de IA y preferencias no confidenciales. No incluye las claves API ni la sesión de NewsBlur.</p>
       <h3>articulos antiguos</h3>
       <p>La limpieza autom&#225;tica es configurable. Los elementos favoritos y Leer m&#225;s tarde est&#225;n protegidos. La aplicaci&#243;n recuerda los art&#237;culos eliminados por la regla de antig&#252;edad y no los vuelve a importar en la pr&#243;xima actualizaci&#243;n.</p>
     </section>
@@ -134,7 +136,7 @@
       <h3>Si la gu&#237;a no se abre</h3>
       <p>Verifique que el archivo Ghid-utilizator-Orizont-RSS.html y las gu&#237;as traducidas est&#233;n al lado de Orizont.exe. Extraiga el archivo ZIP completo, no solo el ejecutable.</p>
       <h3>Si ocurre un error inesperado</h3>
-      <p>La aplicaci&#243;n detiene el comando actual, muestra un mensaje accesible e intenta guardar un informe t&#233;cnico en la subcarpeta de diagn&#243;stico de datos local. El informe no incluye la clave Gemini. Cierre y vuelva a abrir la aplicaci&#243;n antes de repetir la operaci&#243;n.</p>
+      <p>La aplicación detiene el comando actual, muestra un mensaje accesible e intenta guardar un informe técnico en la carpeta local de diagnóstico. El informe puede contener detalles del error: revíselo antes de compartirlo y no divulgue claves API ni otros datos sensibles. Cierre y vuelva a abrir la aplicación antes de intentarlo de nuevo.</p>
     </section>
     <section id="licenta">
       <h2>10. Licencia y Contribuciones</h2>

@@ -30,7 +30,7 @@
       <li><a href="#articole">Reading and organizing articles</a></li>
       <li><a href="#cautare">Search and filters</a></li>
       <li><a href="#voce">SAPI5, eSpeak NG and Gemini speech</a></li>
-      <li><a href="#ai">Gemini and AI conversations</a></li>
+      <li><a href="#ai">AI providers, conversations and translation</a></li>
       <li><a href="#date">Import, backup and cleanup</a></li>
       <li><a href="#stare">Status, errors, and troubleshooting</a></li>
       <li><a href="#licenta">License and Contributions</a></li>
@@ -40,7 +40,7 @@
   <main id="continut">
     <section id="inceput">
       <h2>1. First opening</h2>
-      <p>Orizont RSS starts directly in the main window. If there are no feeds, use the Feeds menu, the Add feed option, or import a OPML file. Gemini data, settings and key are kept in Windows account profile; they are not included in the distribution archive.</p>
+      <p>Orizont RSS starts in the main window. If there are no feeds, use Feeds → Add feed or import an OPML file. Data, settings and configured API keys are kept in your Windows profile; they are not included in the distribution archive.</p>
       <p>The language of the interface is chosen from Application Settings. Romanian, English, Spanish, French, German, Portuguese, Hungarian and Italian are available. The change is applied after restarting the application. On a fresh install, the Automatic option uses the Windows language when supported and English otherwise.</p>
       <p class="note"><strong>Accessibility:</strong> The interface is compatible with screen readers. The selected speech engine is optional and reads content only on command.</p>
     </section>
@@ -85,6 +85,7 @@
       <p>When labeling, you can choose the already created labels or you can insert a new one. The dialog also allows permanent deletion of tags from all articles.</p>
       <h3>Opening without ads in the browser</h3>
       <p>From the article or content context menu, choose <strong>Open the article in Reading mode</strong>. Orizont sends the page to Microsoft Edge Reading mode, which removes ads, sidebars and unnecessary navigation on compatible pages. <strong>Open the original page in the browser</strong> remains available separately.</p>
+      <p>In Orizont Reader, the default <kbd>Ctrl+Shift+F8</kbd> shortcut switches between plain text and WebReader. Use the reader's context menu or Reader menu to save the displayed article as TXT or RTF in the folder chosen in Application Settings. The document retains the source and, for translations, the provider.</p>
     </section>
     <section id="cautare">
       <h2>5. Search and Filters</h2>
@@ -110,8 +111,9 @@
       <p>SAPI5 is reinitialized automatically after sleep when necessary. eSpeak NG synthesizes locally and supports the same start, pause, resume and stop commands. The active engine reports its state in the status bar.</p>
     </section>
     <section id="ai">
-      <h2>7. Gemini and the AI conversations</h2>
-      <p>Gemini is optional and requires a user configured API key. The entire displayed content of the article is included in the AI ​​question. The conversation can continue and can be copied, saved, exported or sent in its entirety. The commands Summary, Translation, Explanation and Main Ideas prompt for the response in the language of the interface.</p>
+      <h2>7. AI providers, conversations and translation</h2>
+      <p>Gemini, OpenAI, Mistral and DeepSeek are optional providers. In Settings → Artificial Intelligence, you can enter an API key for each and choose the default provider. You can continue a conversation about an article, then copy, save or share it. Summary, Translation, Explanation and Main Ideas request a response in the interface language.</p>
+      <p>Google Translate is separate from AI conversations: it uses an unofficial online service without an API key and asks for confirmation before sending text. DeepL requires your API key. When copied, saved or shared, translated content identifies the provider and includes the article source URL.</p>
       <p>In the conversation window, <kbd>F9</kbd> reads the selection or the entire conversation using the configured voice. <kbd>F9</kbd> pauses or resumes, and <kbd>Escape</kbd> stops reading. The context menu also provides reading from the cursor.</p>
       <p>Orizont RSS displays the status of the request and a clear message if the service is not responding, the key is rejected or the connection is not available.</p>
     </section>
@@ -120,7 +122,7 @@
       <h3>OPML</h3>
       <p>From the Feeds menu you can import or export a OPML file. The import avoids already existing addresses.</p>
       <h3>Backup</h3>
-      <p>The backup includes AI&#39;s feeds, articles, folders, tags, statuses, and notes. Secret keys are not exported in the clear.</p>
+      <p>The backup includes feeds, articles, folders, tags, statuses, AI notes and non-sensitive preferences. API keys and the NewsBlur session are not included.</p>
       <h3>Old articles</h3>
       <p>Automatic cleaning is configurable. Favorites and Read Later items are protected. The application remembers articles removed by the aging rule and does not import them again on the next update.</p>
     </section>
@@ -134,7 +136,7 @@
       <h3>If the guide does not open</h3>
       <p>Check that the Ghid-utilizator-Orizont-RSS.html file and translated guides are next to Orizont.exe. Extract the entire ZIP archive, not just the executable.</p>
       <h3>If an unexpected error occurs</h3>
-      <p>The application stops the current command, displays an accessible message, and attempts to save a technical report to the local data diagnostic subfolder. Report does not include key Gemini. Close and reopen the application before repeating the operation.</p>
+      <p>The application stops the current command, displays an accessible message, and attempts to save a technical report in the local diagnostic folder. The report may contain error details: review it before sharing and do not disclose API keys or other sensitive data. Close and reopen the application before trying again.</p>
     </section>
     <section id="licenta">
       <h2>10. License and Contributions</h2>
