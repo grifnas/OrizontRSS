@@ -1,5 +1,13 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-01 — Full sigur într-un checkout separat
+
+- La aprobarea utilizatorului, `tools/verify-source.ps1 -Mode Full` a fost rulat dintr-un worktree Git detașat de la commitul `a870078`, nu din locația copiei autonome de lucru. `NuGetAudit=false` a fost setat numai în procesul de verificare pentru blocajul TLS cunoscut; nu s-a făcut audit de vulnerabilități.
+- Aplicația și proiectul instalatorului au compilat cu 0 avertismente și 0 erori. Au trecut CoreSmoke 127/127, WorkflowSmoke 148/148, RulesSmoke 42/42, ShortcutsSmoke 95/95, AiProviderSmoke 47/47, LocalizationSmoke 1.419 resurse/1.294 șiruri UI în opt limbi, eSpeak 132 voci/104 variante, ScaleSmoke 20/20 cu 50.000 de articole sintetice și 1.000 de rânduri WPF off-screen. Au trecut validatorii stricți de localizare, ghiduri, codare, pagini publice și runnerul simulat 28/28. Rezultat final: `SOURCE VALIDATION PASSED (Full)`; nicio distribuție creată.
+- Executabilul principal `Orizont.exe` a păstrat SHA-256 `E4AE310314FB669677F394E3B271AE5EC9EC44CF5F61B0856B93CF7B52D3211C`, iar `Orizont.dll` hashul deja consemnat în `docs/ACCEPTANCE-STATUS.md`. Checkoutul de test nu avea modificări sau fișiere neignorate; a fost eliminat după verificarea că ținta este exact folderul temporar din spațiul proiectului. Profilul și conturile personale nu au fost accesate; nu s-a făcut verificare nouă cu JAWS.
+- Consemnată în `BUILDING.md` metoda reproductibilă pentru viitoarele rulări Full care să nu suprascrie copia autonomă. Actualizate registrul de acceptare, statusul și foaia de parcurs; A12 rămâne deschis pentru probele practice și revizia lingvistică.
+- Fișiere documentare atinse: `BUILDING.md`, `WORKLOG.md`, `docs/ACCEPTANCE-STATUS.md`, `docs/PROJECT-STATUS.md`, `docs/ROADMAP.md`. După aceste editări au trecut verificarea codării UTF-8 (zero mojibake) și `git diff --check` (fără erori de whitespace; numai avertismentele LF/CRLF existente). Nu era necesară recompilarea pentru editări de documentație: nu există executabil nou; linkul de test rămâne către copia autonomă existentă din locația standard.
+
 ## 2026-10-01 — Punctul 12/A12: registru de acceptare și ghiduri sincronizate
 
 - Scop: separarea stării curente a celor 12 puncte de istoric, fără schimbarea funcționalității aplicației. Creat `docs/ACCEPTANCE-STATUS.md` cu dovada, limita și pasul rămas pentru fiecare punct; legat din `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md`. Marcate explicit secțiunile istorice, corectată afirmația depășită că pornirea copiei autonome era încă neverificată și eliminate două prefixe `+##` greșite. Din lista curentă de idei a fost scoasă autoetichetarea deja implementată; intrările istorice au rămas.

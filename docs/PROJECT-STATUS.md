@@ -2,7 +2,7 @@
 
 Starea scurtă și probele pentru fiecare dintre cele 12 puncte sunt în [ACCEPTANCE-STATUS.md](ACCEPTANCE-STATUS.md). [ROADMAP.md](ROADMAP.md) păstrează ordinea și criteriile; [WORKLOG.md](../WORKLOG.md) păstrează cronologia intervențiilor. Notele datate de mai jos nu înlocuiesc registrul curent.
 
-Punct de revenire local: `checkpoint-local-2026-09-30`; inventarul, limitele și pașii de reparare sunt în `RECOVERY-2026-09-30.md`. Eticheta păstrează sursele acumulate până la 30 septembrie, nu și modificările ulterioare; verificările practice restante nu sunt închise.
+Punct de revenire local curent: `checkpoint-local-2026-10-01-a12`; eticheta anterioară `checkpoint-local-2026-09-30` și inventarul din `RECOVERY-2026-09-30.md` rămân disponibile. Verificările practice restante nu sunt închise.
 
 ## Build local de test — 30 septembrie 2026
 
@@ -15,6 +15,8 @@ NuGet: accesul la index a eșuat din nou la negocierea TLS, cu `Win32Exception: 
 ## Punctul 12/A12 — 1 octombrie 2026
 
 [Registrul scurt de acceptare](ACCEPTANCE-STATUS.md) indică separat implementarea, testele automate, confirmările practice și lipsurile pentru fiecare dintre cele 12 puncte. Ghidurile în opt limbi au fost actualizate factual pentru AI, traducere, modurile Cititorului Orizont, export și backup; validatorul structural trece, dar naturalețea tuturor traducerilor nu a fost certificată de vorbitori nativi. Raportul tehnic de eroare poate include detalii din excepție, deci trebuie verificat înainte de partajare. Nu s-au schimbat codul aplicației, profilul, executabilul autonom sau distribuția publică. Runnerul Full nu a fost rerulat deoarece implicit ar suprascrie copia autonomă din locația standard; punctul 12 rămâne deschis până la verificarea completă pe un traseu sigur și acceptările practice restante.
+
+Ulterior, verificarea `tools/verify-source.ps1 -Mode Full` a trecut într-un worktree Git detașat de la commitul `a870078`, cu `NuGetAudit=false` numai din cauza blocajului TLS al indexului de vulnerabilități. Aplicația și proiectul instalatorului au compilat cu 0 avertismente și 0 erori; au trecut CoreSmoke 127, WorkflowSmoke 148, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 47, LocalizationSmoke 1.419 resurse/1.294 șiruri în opt limbi, eSpeak 132 voci/104 variante, ScaleSmoke 20/50.000 de articole sintetice și validatorii de localizare, ghiduri, codare, pagini și runner. Lista WPF a fost măsurată off-screen, nu prin JAWS. Executabilul principal și biblioteca sa au păstrat hashurile consemnate în registrul de acceptare; worktree-ul temporar a fost eliminat după verificarea statusului Git. Nu s-au folosit profilul personal sau conturile externe, nu s-a creat distribuție și nu se declară audit NuGet reușit. A12 rămâne deschis numai pentru acceptările practice și lingvistice restante.
 
 ## Verificare țintită — 1 octombrie 2026
 

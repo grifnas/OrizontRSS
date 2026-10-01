@@ -23,7 +23,7 @@ dotnet build CititorRSS.Jaws.csproj -c Release
 
 Locația permanentă este `bin\Release\net8.0-windows10.0.17763.0\Orizont.exe`. După curățarea din 30 septembrie 2026 conține copia autonomă, cu .NET inclus. Păstrează toate fișierele din acest folder împreună.
 
-Un `dotnet build` sau un test care compilează aplicația ca referință poate înlocui această copie cu un build framework-dependent. După verificările sursei, înainte de predarea executabilului, refă copia autonomă locală:
+Un `dotnet build` sau un test care compilează aplicația ca referință poate înlocui această copie cu un build framework-dependent. Dacă ai compilat chiar în sursa principală, înainte de predarea executabilului refă copia autonomă locală:
 
 ```powershell
 dotnet publish CititorRSS.Jaws.csproj -c Release -r win-x64 --self-contained true -o bin\Release\net8.0-windows10.0.17763.0
@@ -35,11 +35,24 @@ Verifică runtimeconfig (`includedFrameworks`), conținutul folderului și porni
 
 ## Verificare comună a sursei, fără distribuție
 
+**Atenție:** următoarea comandă compilează în checkoutul curent. Dacă acesta conține copia autonomă păstrată a aplicației, folosește mai întâi procedura cu worktree separat de mai jos.
+
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\verify-source.ps1 -Mode Full
 ```
 
 Aceasta este și comanda din CI: compilează aplicația și instalatorul, rulează succesiv CoreSmoke, WorkflowSmoke, RulesSmoke, ShortcutsSmoke, AiProviderSmoke (proiectul OpenAiSmoke), LocalizationSmoke, EspeakSmoke și ScaleSmoke, apoi verifică localizările, ghidurile, codarea textelor, paginile locale și comportamentul orchestratorului la eșec. Se oprește la prima eroare. Nu creează o distribuție și nu contactează conturile personale pentru teste.
+
+**Protejarea executabilului autonom local:** comanda compilează în directorul din care este rulată. Dacă în sursa principală există deja copia autonomă din `bin\Release`, rulează Full într-un checkout Git separat, nu peste acea copie. La 1 octombrie 2026, acest flux a trecut integral pornind de la `checkpoint-local-2026-10-01-a12`; executabilul principal și-a păstrat suma SHA-256. Din sursa principală, după verificarea că folderul de test nu există deja:
+
+```powershell
+git worktree add --detach '..\Orizont RSS-verification-full' HEAD
+Push-Location '..\Orizont RSS-verification-full'
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\verify-source.ps1 -Mode Full
+Pop-Location
+```
+
+Verifică rezultatul, statusul Git al checkoutului de test și suma executabilului principal înainte de curățare. Elimină numai checkoutul de test identificat exact, prin `git worktree remove`, după ce te asiguri că nu conține modificări sau date de păstrat. Pe acest calculator, accesul TLS la indexul de vulnerabilități NuGet a impus rularea cu variabila de proces `NuGetAudit=false`; aceasta permite verificarea funcțională, **nu** validează vulnerabilitățile pachetelor. Nu prezenta rezultatul ca audit de securitate.
 
 `-Mode Quick` omite compilarea instalatorului, benchmarkul ScaleSmoke și verificarea paginilor publice; nu reprezintă validare completă. `-ListOnly` afișează pașii fără execuție. `-NoRestore` se folosește numai când dependențele tuturor proiectelor sunt deja restaurate. NU1900 înseamnă că auditul vulnerabilităților NuGet nu a obținut date, chiar dacă testele trec.
 
