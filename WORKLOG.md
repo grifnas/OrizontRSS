@@ -1,5 +1,11 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-01 — Diagnosticarea erorii TLS din auditul NuGet
+
+- Investigație fără schimbarea configurației Windows: în terminalul izolat, `curl.exe` a returnat `SEC_E_NO_CREDENTIALS` pentru `api.nuget.org`, `data.nuget.org`, GitHub și Microsoft. Aceeași cerere către `api.nuget.org` în afara izolării a primit HTTP 200, `ssl_verify_result=0`. Sursa NuGet activă este adresa oficială V3; ceasul local și UTC sunt coerente.
+- În afara izolării, `dotnet restore CititorRSS.Jaws.csproj --force-evaluate -p:NuGetAudit=true` a trecut fără NU1900, iar `dotnet list CititorRSS.Jaws.csproj package --vulnerable --include-transitive` a raportat zero pachete cu vulnerabilități cunoscute din sursa curentă. Rezultatul este limitat la data verificării și la pachetele aplicației; nu transformă Full-ul anterior, rulat cu `NuGetAudit=false`, într-un audit.
+- Actualizate `BUILDING.md`, `WORKLOG.md`, `docs/ACCEPTANCE-STATUS.md`, `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md` cu cauza observată și fluxul sigur de rerulare. Nu s-au modificat codul, sursele NuGet, TLS/certificatele, datele personale sau distribuțiile. Restore-ul a regenerat numai metadate de build ignorate de Git; executabilul autonom și biblioteca au păstrat hashurile anterioare. Nu este necesară recompilarea pentru aceste note și nu există un executabil nou de test.
+
 ## 2026-10-01 — Full sigur într-un checkout separat
 
 - La aprobarea utilizatorului, `tools/verify-source.ps1 -Mode Full` a fost rulat dintr-un worktree Git detașat de la commitul `a870078`, nu din locația copiei autonome de lucru. `NuGetAudit=false` a fost setat numai în procesul de verificare pentru blocajul TLS cunoscut; nu s-a făcut audit de vulnerabilități.

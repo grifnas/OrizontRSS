@@ -52,7 +52,16 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\verify-source.ps1 -Mod
 Pop-Location
 ```
 
-Verifică rezultatul, statusul Git al checkoutului de test și suma executabilului principal înainte de curățare. Elimină numai checkoutul de test identificat exact, prin `git worktree remove`, după ce te asiguri că nu conține modificări sau date de păstrat. Pe acest calculator, accesul TLS la indexul de vulnerabilități NuGet a impus rularea cu variabila de proces `NuGetAudit=false`; aceasta permite verificarea funcțională, **nu** validează vulnerabilitățile pachetelor. Nu prezenta rezultatul ca audit de securitate.
+Verifică rezultatul, statusul Git al checkoutului de test și suma executabilului principal înainte de curățare. Elimină numai checkoutul de test identificat exact, prin `git worktree remove`, după ce te asiguri că nu conține modificări sau date de păstrat. În terminalul izolat al agentului, conexiunile HTTPS prin Windows Schannel pot eșua cu `SEC_E_NO_CREDENTIALS`, inclusiv către NuGet; în afara acelei izolări, accesul a fost confirmat la 1 octombrie 2026. Pentru o verificare Full care include și auditul, rulează în checkoutul separat, dar într-un mediu de comandă cu acces HTTPS normal și fără `NuGetAudit=false`. Nu dezactiva verificarea certificatelor și nu modifica setările TLS globale pentru această eroare a izolării.
+
+Verificarea punctuală a pachetelor aplicației, fără recompilare, se poate repeta astfel:
+
+```powershell
+dotnet restore CititorRSS.Jaws.csproj --force-evaluate -p:NuGetAudit=true
+dotnet list CititorRSS.Jaws.csproj package --vulnerable --include-transitive
+```
+
+La 1 octombrie 2026, ambele comenzi au reușit în afara izolării și a doua nu a raportat pachete cu vulnerabilități cunoscute în sursele curente. Acesta este un rezultat datat, nu o garanție permanentă; avertismentul `NU1900` dintr-o rulare izolată înseamnă în continuare că acea rulare nu a obținut datele de audit. Vezi [explicația oficială pentru NU1900](https://learn.microsoft.com/en-us/nuget/reference/errors-and-warnings/nu1900) și [documentația auditului NuGet](https://learn.microsoft.com/en-us/nuget/concepts/auditing-packages).
 
 `-Mode Quick` omite compilarea instalatorului, benchmarkul ScaleSmoke și verificarea paginilor publice; nu reprezintă validare completă. `-ListOnly` afișează pașii fără execuție. `-NoRestore` se folosește numai când dependențele tuturor proiectelor sunt deja restaurate. NU1900 înseamnă că auditul vulnerabilităților NuGet nu a obținut date, chiar dacă testele trec.
 

@@ -12,6 +12,12 @@ Pornire verificată la 30 septembrie: executabilul din locația permanentă desc
 
 NuGet: accesul la index a eșuat din nou la negocierea TLS, cu `Win32Exception: No credentials are available in the security package`. Aceasta este limita observată a mediului de verificare; nu stabilește cauza completă și nu dovedește prezența sau absența vulnerabilităților. Nu s-au ocolit verificările certificatului.
 
+## Diagnostic NuGet/TLS — 1 octombrie 2026
+
+În terminalul izolat, chiar și `curl.exe` către NuGet, GitHub și Microsoft eșuează înaintea cererii HTTP cu `SEC_E_NO_CREDENTIALS`. Aceeași cerere către `https://api.nuget.org/v3/index.json`, executată în afara izolării și fără dezactivarea verificării certificatului, a primit HTTP 200 și verificare SSL reușită. Prin urmare, eroarea observată aici aparține izolării mediului de comandă, nu este dovadă că Windows sau nuget.org necesită o reconfigurare TLS.
+
+În afara izolării, `dotnet restore CititorRSS.Jaws.csproj --force-evaluate -p:NuGetAudit=true` a reușit fără NU1900; `dotnet list CititorRSS.Jaws.csproj package --vulnerable --include-transitive` a folosit sursa `https://api.nuget.org/v3/index.json` și a raportat că aplicația nu are pachete cu vulnerabilități cunoscute în sursele curente. Acest audit punctual este distinct de Full-ul anterior, efectuat în izolare cu auditul dezactivat. Nu s-au schimbat sursa, setările TLS/Windows sau executabilul autonom; pachetele trebuie reverificate periodic.
+
 ## Punctul 12/A12 — 1 octombrie 2026
 
 [Registrul scurt de acceptare](ACCEPTANCE-STATUS.md) indică separat implementarea, testele automate, confirmările practice și lipsurile pentru fiecare dintre cele 12 puncte. Ghidurile în opt limbi au fost actualizate factual pentru AI, traducere, modurile Cititorului Orizont, export și backup; validatorul structural trece, dar naturalețea tuturor traducerilor nu a fost certificată de vorbitori nativi. Raportul tehnic de eroare poate include detalii din excepție, deci trebuie verificat înainte de partajare. Nu s-au schimbat codul aplicației, profilul, executabilul autonom sau distribuția publică. Runnerul Full nu a fost rerulat deoarece implicit ar suprascrie copia autonomă din locația standard; punctul 12 rămâne deschis până la verificarea completă pe un traseu sigur și acceptările practice restante.

@@ -1,6 +1,6 @@
 # Foaia de parcurs Orizont RSS
 
-Verificare ulterioară curățării, 30 septembrie: copia autonomă din locația permanentă pornește efectiv, încarcă runtime-ul local și afișează feeduri/articole/status NewsBlur. Procesul răspunde. Nu se închid A11 sau verificările JAWS: controlul tastelor a fost întrerupt de protecția instrumentului la intervenția utilizatorului. Auditul NuGet rămâne blocat de eroarea TLS a mediului.
+Verificare ulterioară curățării, 30 septembrie: copia autonomă din locația permanentă pornește efectiv, încarcă runtime-ul local și afișează feeduri/articole/status NewsBlur. Procesul răspunde. Nu se închid A11 sau verificările JAWS: controlul tastelor a fost întrerupt de protecția instrumentului la intervenția utilizatorului. Eroarea TLS a auditului NuGet a fost clarificată ulterior: apare în terminalul izolat; verificarea punctuală a pachetelor aplicației a reușit la 1 octombrie în afara izolării, fără vulnerabilități cunoscute raportate.
 
 Curățare efectuată la 30 septembrie: eliminate 11.297 fișiere generate redundante (1.502.296.369 bytes); copia autonomă este unica aplicație locală în locația standard, verificată integral prin SHA-256. Sursele, testele, istoricul Git și datele personale sunt păstrate. Pornirea practică a fost verificată ulterior; navigarea și JAWS rămân de verificat.
 
@@ -26,6 +26,8 @@ Lista de mai jos este registrul curent al lucrărilor rezultate din audit. Secț
 12. [ ] **Trasabilitate, documentație și acceptare finală (A12) — în lucru.** [Registrul scurt de acceptare](ACCEPTANCE-STATUS.md) separă starea curentă de istoric și asociază fiecărui punct dovezile și limitele. Ghidurile au fost actualizate, există punctul local de revenire `checkpoint-local-2026-10-01-a12`, iar Full a trecut la 1 octombrie într-un worktree Git separat fără suprascrierea copiei autonome. Acceptare rămasă: confirmările practice și revizia lingvistică încă deschise trebuie atribuite exact; limitele rămase sunt enumerate. Normalizarea Git rămâne o lucrare separată, fără termen fix.
 
 ### Cum consemnăm progresul
+
+1 octombrie 2026 — diagnostic TLS/NuGet: `curl.exe` eșuează cu `SEC_E_NO_CREDENTIALS` către mai multe domenii HTTPS numai în terminalul izolat; către `api.nuget.org` răspunde HTTP 200, cu certificat verificat, în afara izolării. Restaurarea aplicației cu `NuGetAudit=true` și lista vulnerabilităților incluzând dependențele tranzitive au reușit; nu sunt vulnerabilități cunoscute raportate în sursa curentă. Nu schimbăm TLS global și nu dezactivăm auditul în proiect; Full-ul anterior rămâne valid ca test funcțional, dar nu ca audit. Verificarea trebuie repetată periodic într-un mediu cu acces HTTPS normal.
 
 1 octombrie 2026 — punctul 12/A12: Full reluat după corectarea `WorkflowSmoke`, într-un checkout Git detașat de la `a870078`, pentru a proteja executabilul autonom. Ambele builduri au avut 0 avertismente/erori; toate cele opt suite și validatorii au trecut, inclusiv WorkflowSmoke 148/148, ScaleSmoke 20/20 și localizarea strictă în opt limbi. `NuGetAudit=false` a evitat blocajul TLS al indexului, deci nu este audit de vulnerabilități. Hashurile copiei principale au rămas identice, folderul de test a fost verificat și eliminat, iar procedura sigură este în `BUILDING.md`. Fără distribuție sau test JAWS nou; A12 rămâne deschis pentru acceptările practice/lingvistice.
 
