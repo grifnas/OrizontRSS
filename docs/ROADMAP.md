@@ -2,7 +2,7 @@
 
 ## Actualizare — 8 octombrie 2026
 
-Domeniul candidatului local v1.6.1 este inventariat în RELEASE-NOTES-1.6.1.md și rezumat în CHANGELOG.md. La decizia utilizatorului, probele A02, A09, A07 și A11 sunt transferate în ciclul versiunii următoare; rămân deschise și neverificate, fără a fi declarate trecute, dar nu blochează pregătirea 1.6.1. Verificarea Full a sursei a trecut la 8 octombrie; validatorii confirmă catalogul și paginile în opt limbi, iar executabilul local autonom a fost refăcut în locația standard. NU1900 înseamnă că indexul online NuGet nu a fost accesibil, nu că s-a făcut un audit de securitate. Următorul pas este revizuirea diferențelor și delimitarea commiturilor locale. Pachete nu s-au creat și candidatul nu s-a publicat.
+Domeniul candidatului local v1.6.1 este inventariat în RELEASE-NOTES-1.6.1.md și rezumat în CHANGELOG.md. La decizia utilizatorului, probele A02, A09, A07 și A11 sunt transferate în ciclul versiunii următoare; rămân deschise și neverificate, fără a fi declarate trecute, dar nu blochează pregătirea 1.6.1. Verificarea Full a sursei a trecut la 8 octombrie; validatorii confirmă catalogul și paginile în opt limbi, iar executabilul local autonom a fost refăcut în locația standard. NU1900 înseamnă că indexul online NuGet nu a fost accesibil, nu că s-a făcut un audit de securitate. Commiturile locale sunt `3a176e9` pentru candidat și `40243b6` pentru monitorul descărcărilor; nu au fost împinse. Următorii pași sunt verificarea finală a notelor și pregătirea pachetelor de distribuție după cererea expresă. Release-ul public rămâne v1.6.0.
 
 ## Baseline de publicare — 1 octombrie 2026
 

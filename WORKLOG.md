@@ -1,5 +1,11 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-08 — Commituri locale separate
+
+- După Full validation, a fost creat commitul local `3a176e9` (`Prepare Orizont RSS 1.6.1 candidate`) cu sursa/testele, documentația pregătitoare și eliminările deliberate ale notelor/manifeste 1.5.x din arborele curent.
+- Utilitarul pentru contorizarea descărcărilor a fost păstrat și comis separat ca `40243b6` (`Add GitHub release downloads monitor`), fiind unealtă de monitorizare, nu componentă a aplicației.
+- Niciun commit nu a fost împins; nu s-au creat tag, installer, arhive, distribuție sau release. Ultimul release public rămâne v1.6.0.
+
 ## 2026-10-08 — Verificare completă a sursei și executabil local autonom
 
 - Rulat tools/verify-source.ps1 -Mode Full pe arborele actual. Au trecut buildurile aplicației și instalatorului; CoreSmoke 145, WorkflowSmoke 157, RulesSmoke 42, ShortcutsSmoke 95, OpenAiSmoke 47, LocalizationSmoke 1.435 resurse/1.308 șiruri în opt limbi, EspeakSmoke 132 voci/104 variante și ScaleSmoke 20 verificări/50.000 articole sintetice. Validatorii strict de localizare, ghiduri, encoding, pagini și release consistency au trecut; runnerul de validare 30/30. A11 a fost măsurat off-screen, nu s-a validat cu fereastra afișată sau JAWS.

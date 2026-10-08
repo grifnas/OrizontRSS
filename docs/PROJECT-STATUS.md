@@ -1,5 +1,9 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-10-08 — Commituri locale de pregătire
+
+Schimbările candidatului și curățarea istoriei locale înainte de 1.6.0 sunt în commitul `3a176e9` (`Prepare Orizont RSS 1.6.1 candidate`). Monitorul de descărcări GitHub a fost păstrat separat în `40243b6` (`Add GitHub release downloads monitor`), nu amestecat cu aplicația. Ambele sunt commituri locale pe main, fără push. Nu s-a creat tag, distribuție sau release; ultima versiune publică rămâne v1.6.0.
+
 ## 2026-10-08 — Validare completă a sursei 1.6.1
 
 Runnerul Full a trecut pe sursa curentă: build aplicație/installer; CoreSmoke 145, WorkflowSmoke 157, RulesSmoke 42, ShortcutsSmoke 95, OpenAiSmoke 47, LocalizationSmoke 1.435 resurse/1.308 șiruri în opt limbi, eSpeak NG 132 voci/104 variante și ScaleSmoke 20 verificări/50.000 articole sintetice. Validatorii stricți de localizare, ghiduri, codare, pagini, consistență de release și runner au trecut. A11 rămâne acceptat doar sintetic: nu s-a afișat fereastra și nu s-a făcut probă JAWS.
@@ -10,7 +14,7 @@ Buildul Full a înlocuit executabilul local autonom; restore pentru win-x64 și 
 
 Domeniul candidatului a fost organizat în notele de versiune de lucru și rezumat în CHANGELOG. El acoperă furnizorii AI, scurtăturile configurabile și accesibilitatea, Cititorul și traducerile, salvarea/partajarea cu proveniență, autoetichetarea, NewsBlur și testele/documentația. Alertele după cuvinte-cheie sunt excluse din sursa de lucru. Această etapă definește domeniul; nu transformă notele în note finale și nu declară acceptate funcțiile.
 
-Utilizatorul a ales să transfere probele practice restante în ciclul versiunii următoare. A02, A09, A07 și A11 rămân deschise și neverificate, nu sunt marcate ca acceptate, iar totalul rămâne 8/12. Această amânare nu blochează pregătirea 1.6.1; eventualele probleme descoperite ulterior vor fi triatate pentru versiunea următoare. Versiunea publică rămâne v1.6.0. Nu s-au creat pachete, installer, arhive sau release și nu s-au făcut commit ori push. Modificările din această etapă sunt documentare; nu a fost necesară compilarea.
+Utilizatorul a ales să transfere probele practice restante în ciclul versiunii următoare. A02, A09, A07 și A11 rămân deschise și neverificate, nu sunt marcate ca acceptate, iar totalul rămâne 8/12. Această amânare nu blochează pregătirea 1.6.1; eventualele probleme descoperite ulterior vor fi triatate pentru versiunea următoare. Versiunea publică rămâne v1.6.0. În această etapă documentară nu s-au creat pachete, installer, arhive sau release; commiturile locale ulterioare sunt consemnate în înregistrarea separată de mai sus. Nu a fost necesară compilarea pentru modificările exclusiv documentare.
 
 ## 2026-10-07 — Pregătirea candidatului local v1.6.1
 

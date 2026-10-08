@@ -15,7 +15,7 @@ Acestea sunt fișierele publicate. Nu șterge și nu înlocui release-ul sau tag
 
 ## Sursa și executabilul local
 
-Ramura main conține schimbări efectuate după publicarea v1.6.0. Ele sunt nepublicate; această curățare nu a creat distribuție, instalator, release, commit sau push.
+Ramura main conține schimbările nepublicate de după v1.6.0. Pregătirea locală este consemnată în commitul `3a176e9` (candidatul aplicației 1.6.1 și curățarea snapshoturilor 1.5.x); utilitarul de monitorizare a descărcărilor este separat în `40243b6`. Commiturile sunt numai locale, fără push. Nu s-au creat distribuție, installer, arhivă sau release; versiunea publică rămâne v1.6.0.
 
 Este în pregătire candidatul local **1.6.1**. Executabilul său de test va afișa versiunea de fișier 1.6.1.0, dar nu va fi un release și nu va fi publicat ori distribuit; nu este pachetul public v1.6.0. Versiunea publică rămâne v1.6.0. Înaintea oricărei distribuții viitoare sunt necesare acceptările rămase, verificarea tuturor limbilor, actualizarea notelor/manifeste/paginilor și o cerere expresă separată pentru distribuție.
 
