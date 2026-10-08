@@ -13,7 +13,7 @@ $requiredFragments = @(
     '<link rel="canonical"',
     'application/ld+json',
     'class="download-button"',
-    'releases/latest/download/OrizontSetup.exe',
+    "releases/latest/download/OrizontSetup-$publishedVersion.exe",
     "releases/latest/download/Orizont-RSS-$publishedVersion-win-x64.zip",
     'assets/screenshots/main-window.png',
     'assets/screenshots/reader.png',

@@ -1,5 +1,21 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-08 — Publicare și atașarea pachetelor v1.6.1
+
+- Utilizatorul a împins ramura `main` și tagul `v1.6.1` din PowerShell. Verificarea remote a confirmat că ramura și tagul peeled indică același commit `161eeff6db6d931130bf79ae6ca3f5e09ea7636b`; working tree-ul local era curat la acel punct.
+- Utilizatorul a apăsat „Publish release” pentru tagul `v1.6.1`. Release-ul public a fost apoi completat cu installerul offline, arhiva portabilă, arhiva sursă și cele trei fișiere `.sha256`; pagina GitHub confirmă cele șase atașamente și cele două arhive automate.
+- Hash-urile publicate corespund local: installer `59303ab255a00aa818790338c29024cd50999904cb29daea485cb8827e81bf4b`; portable `ebe60ba4c8bc1fab4109f957c430ff13783ccb1b09b36ff23697fd325485b34c`; sursă `82f80902638bd00f10ae4d51c0dee3b2ab7441fac260f152d097ac6ad8dfb230`.
+- Actualizate local paginile de prezentare în toate cele opt limbi, README, CHANGELOG, foaia de parcurs, raportul de stare, registrul de release și validatorul linkurilor către installer versionat. Eliminat snapshotul local al manifestelor WinGet 1.6.0, conform regulii validatorului; istoricul Git este păstrat.
+- Documentele și paginile au trecut validatorii după publicare. Executabilul autonom de test a fost refăcut în locația standard; nu s-a creat nicio nouă distribuție. Rămân push-ul pe `main`, verificarea GitHub Pages live și actualizarea PR-ului WinGet existent `microsoft/winget-pkgs#431971` la 1.6.1. A02, A09, A07 și A11 rămân deschise; `NU1900` rămâne limitarea auditului online NuGet.
+
+## 2026-10-08 — Validare post-publicare și limite de acces
+
+- `verify-release-consistency.ps1`: trecut după eliminarea directorului gol rămas la curățarea snapshotului WinGet 1.6.0. `verify-public-pages.ps1`: trecut pentru toate cele opt limbi, linkuri, SEO, capturi, robots și sitemap. `verify-text-encoding.ps1`: zero mojibake. `git diff --check`: fără erori de whitespace; Git emite doar avertismentul obișnuit LF/CRLF.
+- `dotnet publish` autonom în `bin\Release\net8.0-windows10.0.17763.0`: reușit. `verify-distribution.ps1`: complet, versiunea 1.6.1.0, 444 fișiere eSpeak. `CoreSmoke`: 145 verificări trecute. Executabil local: SHA-256 `94E91D2FDDEE19056D1915AACD2E51D9970C960AD710F41CB43A2B2D3ADB72DB`; acesta este build local de test, nu pachetul public al release-ului.
+- Reîncercarea `winget validate --manifest packaging\winget\Grifnas.OrizontRSS\1.6.1` nu a putut porni `winget.exe` din WindowsApps în mediul izolat. Validarea anterioară a manifestelor rămâne înregistrată, dar nu pretindem o repetare reușită în această sesiune.
+- PR-ul public `microsoft/winget-pkgs#431971` a fost verificat: este deschis și încă vizează 1.6.0. GitHub connector a respins crearea de fișiere în fork prin HTTP 403; verificarea a avut loc înaintea oricărei scrieri, deci ramura PR-ului nu a fost modificată. Pentru actualizare prin browser este necesară confirmarea utilizatorului la momentul acțiunii.
+- Paginile și documentația sunt încă modificări locale; push-ul pe `main` și verificarea paginilor live rămân de făcut. Nu s-a creat nicio nouă distribuție.
+
 ## 2026-10-08 — Reambalarea arhivei sursă 1.6.1
 
 - După adăugarea celor patru manifeste WinGet 1.6.1, arhiva sursă locală a fost refăcută din commitul pregătit cu `git archive`; verificarea ZIP a confirmat 755 intrări. Sidecar-ul SHA-256 va fi recalculat după tagul local final.

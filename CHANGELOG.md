@@ -2,26 +2,14 @@
 
 Acest fișier descrie numai ultima versiune publicată și lucrările ulterioare încă nepublicate. Istoricul mai vechi poate fi recuperat din istoricul Git și din release-urile publice anterioare; nu este copiat în această pagină activă.
 
-## Versiunea publicată v1.6.0 — 19 septembrie 2026
+## Versiunea publicată v1.6.1 — 8 octombrie 2026
 
-Release-ul public v1.6.0 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.0). Noutățile și verificările consemnate la publicare sunt în [notele v1.6.0](RELEASE-NOTES-1.6.0.md).
+Release-ul public v1.6.1 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.1). Notele complete, inclusiv limitele verificărilor, sunt în [RELEASE-NOTES-1.6.1.md](RELEASE-NOTES-1.6.1.md).
 
-Funcțiile livrate includ actualizarea automată, descoperirea feedurilor după subiect, reorganizarea meniurilor de căutare, navigarea River of News și alfabetică, semnale sonore pentru liste, alerte după cuvinte-cheie, sincronizare NewsBlur și ghiduri în opt limbi.
+Versiunea aduce furnizori AI configurabili (Gemini, OpenAI, Mistral și DeepSeek), scurtături configurabile, îmbunătățiri ale Cititorului Orizont și meniurilor contextuale, traducere și partajare cu proveniență, export TXT/RTF, autoetichetare și îmbunătățiri NewsBlur. Alertele după cuvinte-cheie nu sunt incluse în 1.6.1.
 
-## Candidat local v1.6.1 — pachete pregătite, publicare în așteptare
+Probele practice A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; auditul online NuGet (`NU1900`) nu a putut fi efectuat. Aceste limite sunt prezentate în notele release-ului și nu sunt declarate trecute.
 
-Domeniul candidatului este descris în [notițele v1.6.1](RELEASE-NOTES-1.6.1.md): furnizori AI suplimentari, scurtături configurabile, accesibilitate și Cititor Orizont, traducere/export/partajare cu proveniență, reguli de autoetichetare și îmbunătățiri NewsBlur. Pachetele 1.6.1 sunt pregătite local, dar nu au fost publicate. Registrul de acceptare arată încă patru puncte deschise; ele rămân amânate și neverificate, nu sunt marcate ca trecute. Versiunea publică rămâne v1.6.0 până la publicarea distinctă a release-ului.
+## Modificări nepublicate după tagul v1.6.1
 
-## Lucrări ulterioare pe ramura main — nepublicate
-
-Următoarele modificări sunt în sursa de lucru de după v1.6.0. Nu sunt incluse în pachetul public v1.6.0 și nu constituie o distribuție nouă:
-
-- selecția furnizorului AI: Gemini, OpenAI, Mistral și DeepSeek;
-- configurarea scurtăturilor de către utilizator și reguli de autoetichetare;
-- îmbunătățiri de accesibilitate, partajare cu proveniență și sincronizare NewsBlur;
-- îmbunătățiri ale modurilor Cititor Orizont, inclusiv WebReader;
-- verificări automate și documentare suplimentare.
-
-La cererea utilizatorului, alertele după cuvinte-cheie au fost eliminate din sursa de lucru după publicarea v1.6.0. Ele rămân doar în release-ul public istoric și în notele acelui release; nu sunt funcție a ramurii main curente.
-
-Versiunea fișierului executabil local de test poate rămâne 1.6.0.0, deoarece nu s-a creat un release nou. Acest număr de metadate nu identifică binarul public: executabilul de test este compilat din sursa main ulterioară și nu trebuie prezentat drept pachetul v1.6.0 publicat.
+După crearea tagului și a pachetelor release-ului, ramura `main` primește actualizări de documentație și de publicare, inclusiv pagina GitHub Pages și urmărirea manifestelor WinGet. Aceste schimbări de întreținere nu modifică pachetele atașate release-ului și nu constituie o nouă versiune a aplicației.

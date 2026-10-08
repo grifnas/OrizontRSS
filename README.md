@@ -6,51 +6,54 @@ Aplicația a fost inițiată și este coordonată de **Grigore Frișan**. Dezvol
 
 ## Versiunea publicată
 
-Cea mai recentă versiune publicată și verificată în acest depozit este **v1.6.0**, lansată la 19 septembrie 2026.
+Cea mai recentă versiune publicată este **v1.6.1**, lansată la 8 octombrie 2026.
 
 - [Pagina de prezentare și descărcare](https://grifnas.github.io/OrizontRSS/)
-- [Release-ul public v1.6.0 și toate fișierele sale](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.0)
-- [Instalatorul autonom v1.6.0](https://github.com/grifnas/OrizontRSS/releases/download/v1.6.0/OrizontSetup-1.6.0.exe)
-- [Varianta portabilă v1.6.0](https://github.com/grifnas/OrizontRSS/releases/download/v1.6.0/Orizont-RSS-1.6.0-win-x64.zip)
-- [Codul exact al release-ului v1.6.0](https://github.com/grifnas/OrizontRSS/tree/v1.6.0)
+- [Release-ul v1.6.1 și toate fișierele sale](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.1)
+- [Instalatorul autonom v1.6.1](https://github.com/grifnas/OrizontRSS/releases/download/v1.6.1/OrizontSetup-1.6.1.exe)
+- [Varianta portabilă v1.6.1](https://github.com/grifnas/OrizontRSS/releases/download/v1.6.1/Orizont-RSS-1.6.1-win-x64.zip)
+- [Codul exact al release-ului v1.6.1](https://github.com/grifnas/OrizontRSS/tree/v1.6.1)
 
-Arhiva sursă și sumele SHA-256 sunt atașate release-ului de mai sus. Linkurile sunt fixate la v1.6.0 pentru ca această pagină să nu sugereze accidental că modificările locale ulterioare au fost publicate.
+Arhiva sursă și fișierele cu sumele SHA-256 sunt atașate release-ului. Pentru instalare și descărcare folosește numai fișierele din release-ul oficial.
 
-## Pregătirea locală a versiunii 1.6.1
+## Limite cunoscute și acceptare
 
-Candidatul v1.6.1 și pachetele sale sunt pregătite local, dar **nu au fost încă publicate**. Versiunea publică rămâne v1.6.0 până când commitul, tagul și release-ul v1.6.1 sunt publicate pe GitHub. Notele pregătite sunt în [RELEASE-NOTES-1.6.1.md](RELEASE-NOTES-1.6.1.md); verificările practice A02, A09, A07 și A11 rămân deschise și nu sunt declarate trecute.
+Notele release-ului precizează deschis că probele practice A02 (NewsBlur pe două calculatoare), A09 (scenarii Google Translate), A07 (revizie lingvistică umană) și A11 (verificarea interfeței cu JAWS 2026) rămân pentru ciclul următor și nu sunt declarate trecute. Auditul online NuGet nu a putut fi încheiat (`NU1900`).
 
-## Sursa în lucru — modificări încă nepublicate
+## Sursa în lucru — după release-ul v1.6.1
 
-Copia locală de lucru a ramurii main conține și modificări realizate după release-ul v1.6.0. Acestea **nu fac parte din pachetele publice v1.6.0**. Un build local nu este binarul public al unui release; un număr de versiune mai nou sau un pachet pregătit local nu schimbă acest lucru. Pentru descărcare, folosește numai fișierele atașate unui release oficial pe GitHub.
+Tagul `v1.6.1` și pachetele release-ului sunt reperul exact al versiunii publice. Ramura `main` poate primi actualizări de documentație, pagini publice și manifeste WinGet după tag; acestea **nu fac parte din pachetele publice v1.6.1**. Un executabil recompilat local nu este binarul public v1.6.1. Pentru versiunea publică descarcă fișierele atașate release-ului.
 
-Printre schimbările ulterioare se numără alegerea între furnizori AI (Gemini, OpenAI, Mistral și DeepSeek), configurarea scurtăturilor, reguli de autoetichetare, îmbunătățiri NewsBlur și modul WebReader. Modul WebReader din ramura de lucru necesită Microsoft Edge WebView2 Runtime; acest lucru nu schimbă cerințele pachetului public v1.6.0. Alertele după cuvinte-cheie au existat în v1.6.0 public, dar au fost eliminate ulterior din ramura de lucru la cererea utilizatorului.
+Modul WebReader folosește Microsoft Edge WebView2 Runtime, disponibil în Windows/Edge. Alertele după cuvinte-cheie nu fac parte din versiunea 1.6.1.
 
-## Funcții incluse în versiunea publică v1.6.0
+## Funcții incluse în versiunea publică v1.6.1
 
 - organizarea feedurilor în foldere și import/export OPML;
 - descoperirea feedurilor și actualizarea lor simultană, cu posibilitate de anulare;
 - filtrarea articolelor după stare, perioadă, folder și etichetă;
-- favorite, lista „Mai târziu”, etichete și reguli de păstrare;
+- favorite, lista „Mai târziu”, etichete, autoetichetare și reguli de păstrare;
 - căutare locală, selecție multiplă și operații asupra articolelor;
 - sincronizare NewsBlur pentru feeduri, foldere, articole și stări;
-- discuții Gemini despre articol și traducere online prin Google Translate sau DeepL;
-- salvarea, copierea, exportul și partajarea articolelor și conversațiilor;
+- furnizori AI configurabili: Gemini, OpenAI, Mistral și DeepSeek;
+- traducere online prin Google Translate sau DeepL și discuții cu AI despre articol;
+- Cititor Orizont în modurile Text și WebReader, cu meniuri contextuale;
+- scurtături configurabile, export TXT/RTF și partajare cu indicarea sursei și traducătorului;
+- salvarea, copierea și partajarea articolelor și conversațiilor;
 - citire prin vocile locale SAPI5 și eSpeak NG, precum și Gemini TTS;
 - ajutor accesibil, ghiduri HTML și interfață în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană;
 - navigare cu tastatura, meniuri contextuale și focalizare concepute pentru cititoare de ecran.
 
-Lista completă a noutăților release-ului este în [RELEASE-NOTES-1.6.0.md](RELEASE-NOTES-1.6.0.md).
+Lista completă a noutăților release-ului este în [RELEASE-NOTES-1.6.1.md](RELEASE-NOTES-1.6.1.md).
 
 ## Instalare
 
 Poți instala aplicația cu instalatorul autonom sau o poți rula din arhiva portabilă:
 
-1. Descarcă fișierul dorit din release-ul v1.6.0.
+1. Descarcă fișierul dorit din release-ul v1.6.1.
 2. Pentru varianta portabilă, dezarhivează conținutul într-un folder și pornește Orizont.exe.
 3. Deschide Setări pentru limbă, voce, feeduri și configurarea opțională a cheilor API.
 
-Pachetele v1.6.0 includ runtime-ul .NET necesar și nu cer instalarea separată a .NET Desktop Runtime. Pentru siguranță, descarcă aplicația numai din release-ul oficial de mai sus.
+Pachetele v1.6.1 includ runtime-ul .NET necesar și nu cer instalarea separată a .NET Desktop Runtime. Pentru siguranță, descarcă aplicația numai din release-ul oficial de mai sus.
 
 ## Accesibilitate și raportarea problemelor
 
@@ -62,7 +65,7 @@ Aplicația este construită pentru tastatură și testare cu JAWS 2026 și NVDA.
 - pentru compilarea sursei: .NET 8 SDK;
 - conexiune la internet pentru RSS, sincronizare și traduceri;
 - chei API proprii pentru funcțiile AI care le solicită; acestea sunt opționale;
-- pentru SAPI5, cel puțin o voce compatibilă instalată în Windows. eSpeak NG este inclus în pachetul v1.6.0.
+- pentru SAPI5, cel puțin o voce compatibilă instalată în Windows. eSpeak NG este inclus în pachetul v1.6.1.
 
 ## Documentație și contribuții
 

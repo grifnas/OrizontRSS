@@ -2,7 +2,9 @@
 
 ## Actualizare — 8 octombrie 2026
 
-Domeniul v1.6.1 și pachetele sunt pregătite local; utilizatorul a autorizat continuarea spre publicare. Sursa Full, distribuția și localizarea în opt limbi au trecut verificările automate anterioare. A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; NU1900 înseamnă că auditul online al vulnerabilităților NuGet nu a putut fi verificat. Manifestele WinGet 1.6.1 sunt pregătite local, dar PR-ul public existent încă vizează 1.6.0. Pagina publică, commitul/tagul și release-ul încă nu au fost publicate. În această sesiune, GitHub CLI raportează un token invalid, iar browserul integrat nu are o filă deschisă; fluxul public este oprit până la restabilirea autentificării din mediul normal al utilizatorului. Ultimul release public verificat rămâne v1.6.0.
+Versiunea **v1.6.1 a fost publicată pe GitHub**. Ramura `main` și tagul `v1.6.1` indică commitul `161eeff6db6d931130bf79ae6ca3f5e09ea7636b`. Release-ul public conține installerul offline, arhiva portabilă, arhiva sursă și cele trei fișiere SHA-256; numele, dimensiunile și hash-urile sunt consemnate în [registrul de release](RELEASE-STATUS.json). A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; `NU1900` înseamnă că auditul online al vulnerabilităților NuGet nu a putut fi verificat.
+
+În această actualizare, cele opt pagini GitHub Pages, README și documentele de stare au fost sincronizate local cu v1.6.1 și au trecut validatorii. Buildul autonom local a fost refăcut și verificat, fără a genera o nouă distribuție. Urmează publicarea acestor modificări pe `main`, verificarea paginilor live și actualizarea PR-ului WinGet existent `microsoft/winget-pkgs#431971` la 1.6.1; nu se creează un PR duplicat. Înregistrările istorice de mai jos pot descrie stări anterioare, în care v1.6.0 era ultima versiune publică.
 
 ## Baseline de publicare — 1 octombrie 2026
 
