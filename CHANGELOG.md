@@ -8,9 +8,9 @@ Release-ul public v1.6.0 este disponibil pe [GitHub Releases](https://github.com
 
 Funcțiile livrate includ actualizarea automată, descoperirea feedurilor după subiect, reorganizarea meniurilor de căutare, navigarea River of News și alfabetică, semnale sonore pentru liste, alerte după cuvinte-cheie, sincronizare NewsBlur și ghiduri în opt limbi.
 
-## Candidat local v1.6.1 — domeniu definit, acceptare și publicare în așteptare
+## Candidat local v1.6.1 — pachete pregătite, publicare în așteptare
 
-Domeniul de lucru al candidatului local este descris în [notițele v1.6.1](RELEASE-NOTES-1.6.1.md): furnizori AI suplimentari, scurtături configurabile, accesibilitate și Cititor Orizont, traducere/export/partajare cu proveniență, reguli de autoetichetare și îmbunătățiri NewsBlur. Acesta este un rezumat al schimbărilor de după v1.6.0, nu o confirmare că toate verificările sunt închise. Registrul de acceptare arată încă patru puncte deschise. Versiunea publică rămâne v1.6.0; notele 1.6.1 sunt de lucru și pachete pentru acest candidat nu au fost create.
+Domeniul candidatului este descris în [notițele v1.6.1](RELEASE-NOTES-1.6.1.md): furnizori AI suplimentari, scurtături configurabile, accesibilitate și Cititor Orizont, traducere/export/partajare cu proveniență, reguli de autoetichetare și îmbunătățiri NewsBlur. Pachetele 1.6.1 sunt pregătite local, dar nu au fost publicate. Registrul de acceptare arată încă patru puncte deschise; ele rămân amânate și neverificate, nu sunt marcate ca trecute. Versiunea publică rămâne v1.6.0 până la publicarea distinctă a release-ului.
 
 ## Lucrări ulterioare pe ramura main — nepublicate
 

@@ -1,5 +1,14 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-08 — Pregătirea locală a pachetelor v1.6.1
+
+- Actualizate notele de versiune pentru a le face gata de folosit ca release notes, păstrând explicit faptul că probele practice A02, A09, A07 și A11 rămân deschise și transferate ciclului următor.
+- Separată starea "distribuție locală pregătită" de "release publicat" în `docs/RELEASE-STATUS.json` și `tools/verify-release-consistency.ps1`. Release-ul public 1.6.0 și pachetele sale nu sunt modificate.
+- `verify-source.ps1 -Mode Full` a trecut pe sursa curentă; suitele au raportat CoreSmoke 145, WorkflowSmoke 157, RulesSmoke 42, ShortcutsSmoke 95, OpenAiSmoke 47, LocalizationSmoke 1.435/1.308 în opt limbi, EspeakSmoke 132/104 și ScaleSmoke 20/50.000.
+- `verify-distribution.ps1` a validat folderul portabil autonom 1.6.1: runtime .NET/WindowsDesktop 8.0.31 inclus, ghiduri opt limbi, 444 fișiere eSpeak NG, fără date personale, PDB sau surse. Arhiva portabilă: 92.550.743 bytes, SHA-256 `ebe60ba4c8bc1fab4109f957c430ff13783ccb1b09b36ff23697fd325485b34c`.
+- Installerul autonom offline a fost construit cu arhiva portabilă și sidecar-ul ei încorporate. Resursele managed și hash-ul încorporat corespund arhivei portabile. Installer: 254.266.392 bytes, SHA-256 `59303ab255a00aa818790338c29024cd50999904cb29daea485cb8827e81bf4b`.
+- `NU1900` a blocat verificarea online a vulnerabilităților NuGet în mediul de lucru; nu s-a dezactivat auditul și nu se pretinde că auditul a trecut. Nu s-au făcut push, tag sau release public. Arhiva sursă se generează din commitul final local, iar `verify-all.ps1` rămâne controlul automat final al celor trei pachete.
+
 ## 2026-10-08 — Commituri locale separate
 
 - După Full validation, a fost creat commitul local `3a176e9` (`Prepare Orizont RSS 1.6.1 candidate`) cu sursa/testele, documentația pregătitoare și eliminările deliberate ale notelor/manifeste 1.5.x din arborele curent.

@@ -18,9 +18,7 @@ Arhiva sursă și sumele SHA-256 sunt atașate release-ului de mai sus. Linkuril
 
 ## Sursa în lucru — modificări încă nepublicate
 
-Copia locală de lucru a ramurii main conține și modificări realizate după release-ul v1.6.0. Acestea sunt în lucru și **nu fac parte din pachetele publice v1.6.0**; prezența lor locală nu înseamnă că au fost trimise în ramura publică GitHub. Nu a fost creată o nouă distribuție pentru ele.
-
-Executabilul local folosit pentru verificări este candidatul **1.6.1** (versiune de fișier 1.6.1.0), compilat din sursa de lucru. Nu este binarul public v1.6.0 și nu trebuie distribuit ca atare. Candidatul nu este publicat și nu există încă o distribuție 1.6.1.
+Copia locală de lucru a ramurii main conține și modificări realizate după release-ul v1.6.0. Acestea **nu fac parte din pachetele publice v1.6.0**. Un build local nu este binarul public al unui release; un număr de versiune mai nou sau un pachet pregătit local nu schimbă acest lucru. Pentru descărcare, folosește numai fișierele atașate unui release oficial pe GitHub.
 
 Printre schimbările ulterioare se numără alegerea între furnizori AI (Gemini, OpenAI, Mistral și DeepSeek), configurarea scurtăturilor, reguli de autoetichetare, îmbunătățiri NewsBlur și modul WebReader. Modul WebReader din ramura de lucru necesită Microsoft Edge WebView2 Runtime; acest lucru nu schimbă cerințele pachetului public v1.6.0. Alertele după cuvinte-cheie au existat în v1.6.0 public, dar au fost eliminate ulterior din ramura de lucru la cererea utilizatorului.
 

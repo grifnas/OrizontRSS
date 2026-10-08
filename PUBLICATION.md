@@ -15,9 +15,16 @@ Acestea sunt fișierele publicate. Nu șterge și nu înlocui release-ul sau tag
 
 ## Sursa și executabilul local
 
-Ramura main conține schimbările nepublicate de după v1.6.0. Pregătirea locală este consemnată în commitul `3a176e9` (candidatul aplicației 1.6.1 și curățarea snapshoturilor 1.5.x); utilitarul de monitorizare a descărcărilor este separat în `40243b6`. Commiturile sunt numai locale, fără push. Nu s-au creat distribuție, installer, arhivă sau release; versiunea publică rămâne v1.6.0.
+Ramura main conține schimbările nepublicate de după v1.6.0. Pregătirea candidatului aplicației 1.6.1 și curățarea snapshoturilor 1.5.x sunt în commitul local `3a176e9`; utilitarul de monitorizare a descărcărilor este separat în `40243b6`. Commiturile rămân locale, fără push.
 
-Este în pregătire candidatul local **1.6.1**. Executabilul său de test va afișa versiunea de fișier 1.6.1.0, dar nu va fi un release și nu va fi publicat ori distribuit; nu este pachetul public v1.6.0. Versiunea publică rămâne v1.6.0. Înaintea oricărei distribuții viitoare sunt necesare acceptările rămase, verificarea tuturor limbilor, actualizarea notelor/manifeste/paginilor și o cerere expresă separată pentru distribuție.
+Candidatul **1.6.1** are acum pachete pregătite local: `bin/Release/Orizont-RSS-1.6.1-win-x64.zip`, `bin/Release/Orizont-RSS-1.6.1-source.zip` și `bin/Release/OrizontSetup-1.6.1.exe`, fiecare cu fișier `.sha256` alăturat. Acestea nu sunt încă publicate; release-ul oficial și linkurile publice rămân v1.6.0. Nu au fost create tag sau release GitHub și nu s-a făcut push.
+
+- Portable: 92.550.743 bytes; SHA-256: `ebe60ba4c8bc1fab4109f957c430ff13783ccb1b09b36ff23697fd325485b34c`.
+- Installer offline: 254.266.392 bytes; SHA-256: `59303ab255a00aa818790338c29024cd50999904cb29daea485cb8827e81bf4b`.
+- Arhiva sursă este generată din commitul final local; suma sa este păstrată în `Orizont-RSS-1.6.1-source.zip.sha256`.
+- Buildul aplicației include Microsoft .NET 8.0.31 și Windows Desktop 8.0.31; nu cere instalarea separată a .NET Runtime. WebReader folosește WebView2 disponibil în Windows/Edge.
+
+Înaintea publicării efective rămân: acceptarea explicită a stării celor patru probe practice amânate (A02, A09, A07, A11), accesul la auditul online NuGet (ultima rulare a dat NU1900), actualizarea paginilor publice și a manifestelor WinGet la URL/hash-urile release-ului, apoi tag/release și push. Verificările automate de localizare pentru toate cele opt limbi au trecut; revizia lingvistică umană A07 rămâne deschisă. Acest fișier și registrul de stare nu substituie publicarea.
 
 ## Curățarea copiilor istorice
 

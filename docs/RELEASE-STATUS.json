@@ -4,9 +4,18 @@
   "latestPublishedDate": "2026-09-19",
   "workingBranch": "main",
   "workingTreeStatus": "unreleased-post-release-changes",
-  "postReleaseDistributionCreated": false,
+  "publishedBaselinePackageReplaced": false,
   "nextCandidateVersion": "1.6.1",
-  "candidateStatus": "preparation-in-progress",
-  "candidateDistributionCreated": false,
-  "candidateReleasePublished": false
+  "candidateStatus": "distribution-prepared",
+  "candidateDistributionCreated": true,
+  "candidateReleasePublished": false,
+  "candidatePreparationDate": "2026-10-08",
+  "candidateNuGetAuditStatus": "unavailable-NU1900",
+  "candidateManualAcceptanceStatus": "8-of-12-closed; A02,A09,A07,A11-open",
+  "candidatePortableArchive": "Orizont-RSS-1.6.1-win-x64.zip",
+  "candidateSourceArchive": "Orizont-RSS-1.6.1-source.zip",
+  "candidateInstaller": "OrizontSetup-1.6.1.exe",
+  "candidatePortableHash": "Orizont-RSS-1.6.1-win-x64.zip.sha256",
+  "candidateSourceHash": "Orizont-RSS-1.6.1-source.zip.sha256",
+  "candidateInstallerHash": "OrizontSetup-1.6.1.exe.sha256"
 }

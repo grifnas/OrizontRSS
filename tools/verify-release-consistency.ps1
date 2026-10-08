@@ -9,14 +9,17 @@ $tag = [string]$status.latestPublishedTag
 $candidateVersion = [string]$status.nextCandidateVersion
 if ($tag -ne "v$version") { throw "Tagul public ($tag) nu corespunde versiunii $version." }
 if ($status.workingTreeStatus -ne 'unreleased-post-release-changes') { throw 'Working branch must be marked as containing unpublished changes.' }
-if ($status.postReleaseDistributionCreated -ne $false) { throw 'Registry must confirm that no post-release distribution exists.' }
+if ($status.publishedBaselinePackageReplaced -ne $false) { throw 'The published baseline package must remain unchanged.' }
 
 $sourceVersion = $version.ToString()
 if (-not [string]::IsNullOrWhiteSpace($candidateVersion)) {
-    if ([string]$status.candidateStatus -ne 'preparation-in-progress' -or
-        $status.candidateDistributionCreated -ne $false -or
-        $status.candidateReleasePublished -ne $false) {
-        throw 'Candidate must be in preparation, with no distribution or publication.'
+    $candidateStatus = [string]$status.candidateStatus
+    $distributionCreated = [bool]$status.candidateDistributionCreated
+    $validCandidateState =
+        ($candidateStatus -eq 'preparation-in-progress' -and -not $distributionCreated) -or
+        ($candidateStatus -eq 'distribution-prepared' -and $distributionCreated)
+    if (-not $validCandidateState -or $status.candidateReleasePublished -ne $false) {
+        throw 'Candidate must be either in preparation or locally packaged, and must remain unpublished.'
     }
     if ($candidateVersion -notmatch '^(?<core>\d+\.\d+\.\d+)(?:-preview\.\d+)?$') {
         throw "Candidate version has an unsupported format: $candidateVersion."
@@ -64,8 +67,27 @@ if (-not [string]::IsNullOrWhiteSpace($candidateVersion)) {
     $candidateNotesPath = Join-Path $projectRoot "RELEASE-NOTES-$candidateCore.md"
     if (-not (Test-Path -LiteralPath $candidateNotesPath -PathType Leaf)) { throw "Lipsesc notele de lucru ale candidatului $candidateVersion." }
     $candidateNotes = Get-Content -LiteralPath $candidateNotesPath -Raw -Encoding utf8
-    if ($candidateNotes -notmatch [regex]::Escape($candidateVersion) -or $candidateNotes -notmatch '(?i)nepublicat') {
-        throw 'Candidate notes must identify the candidate version and clearly say it is unpublished.'
+    if ($candidateNotes -notmatch [regex]::Escape($candidateVersion)) {
+        throw 'Candidate notes must identify the candidate version.'
+    }
+    if ($candidateStatus -eq 'distribution-prepared') {
+        $artifactNames = @(
+            [string]$status.candidatePortableArchive,
+            [string]$status.candidateSourceArchive,
+            [string]$status.candidateInstaller,
+            [string]$status.candidatePortableHash,
+            [string]$status.candidateSourceHash,
+            [string]$status.candidateInstallerHash
+        )
+        if ($artifactNames | Where-Object { [string]::IsNullOrWhiteSpace($_) }) {
+            throw 'Prepared candidate registry is missing one or more artifact names.'
+        }
+        foreach ($artifact in $artifactNames) {
+            $artifactPath = Join-Path $projectRoot (Join-Path 'bin\Release' $artifact)
+            if (-not (Test-Path -LiteralPath $artifactPath -PathType Leaf)) {
+                throw "Prepared candidate artifact is missing: $artifact."
+            }
+        }
     }
 }
 
@@ -120,5 +142,5 @@ foreach ($name in $expectedManifests) {
     }
 }
 
-$candidateSummary = if ([string]::IsNullOrWhiteSpace($candidateVersion)) { 'no local candidate' } else { "local candidate $candidateVersion remains unpublished" }
+$candidateSummary = if ([string]::IsNullOrWhiteSpace($candidateVersion)) { 'no local candidate' } else { "local candidate $candidateVersion is $([string]$status.candidateStatus) and unpublished" }
 Write-Output "Release consistency passed: $tag is the published baseline; $candidateSummary; old local release notes and WinGet snapshots are absent."

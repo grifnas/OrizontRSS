@@ -1,5 +1,11 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-10-08 — Pregătirea locală a distribuțiilor 1.6.1
+
+Pachetele candidate sunt generate în `bin/Release/` și verificate: `Orizont-RSS-1.6.1-win-x64.zip` (portable), `OrizontSetup-1.6.1.exe` (installer autonom offline) și `Orizont-RSS-1.6.1-source.zip`, fiecare cu sidecar SHA-256. Folderul payload a trecut `verify-distribution.ps1`: versiunea 1.6.1.0/1.6.1, runtime .NET 8.0.31 inclus, toate cele opt limbi și 444 fișiere eSpeak NG; pachetul portabil are 92.550.743 bytes, installerul 254.266.392 bytes. Hash-urile portabil și installer sunt consemnate în `PUBLICATION.md`; hash-ul arhivei sursă este în sidecar-ul aferent.
+
+`verify-source.ps1 -Mode Full` a trecut: CoreSmoke 145, WorkflowSmoke 157, RulesSmoke 42, ShortcutsSmoke 95, OpenAiSmoke 47, LocalizationSmoke 1.435 resurse/1.308 șiruri în opt limbi, EspeakSmoke 132 voci/104 variante, ScaleSmoke 20 verificări/50.000 articole și validatorii stricți. `verify-all.ps1` va rula din nou după crearea arhivei sursă pentru controlul final al pachetelor. NU1900 a împiedicat accesul la feedul de vulnerabilități NuGet; nu se declară audit de vulnerabilități trecut. A02, A09, A07 și A11 rămân deschise, conform deciziei de a le transfera ciclului următor. Ultimul release public rămâne v1.6.0; nu s-au făcut push, tag sau release GitHub.
+
 ## 2026-10-08 — Commituri locale de pregătire
 
 Schimbările candidatului și curățarea istoriei locale înainte de 1.6.0 sunt în commitul `3a176e9` (`Prepare Orizont RSS 1.6.1 candidate`). Monitorul de descărcări GitHub a fost păstrat separat în `40243b6` (`Add GitHub release downloads monitor`), nu amestecat cu aplicația. Ambele sunt commituri locale pe main, fără push. Nu s-a creat tag, distribuție sau release; ultima versiune publică rămâne v1.6.0.
