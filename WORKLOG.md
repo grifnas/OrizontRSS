@@ -8,7 +8,9 @@
 - `verify-distribution.ps1` a validat folderul portabil autonom 1.6.1: runtime .NET/WindowsDesktop 8.0.31 inclus, ghiduri opt limbi, 444 fișiere eSpeak NG, fără date personale, PDB sau surse. Arhiva portabilă: 92.550.743 bytes, SHA-256 `ebe60ba4c8bc1fab4109f957c430ff13783ccb1b09b36ff23697fd325485b34c`.
 - Installerul autonom offline a fost construit cu arhiva portabilă și sidecar-ul ei încorporate. Resursele managed și hash-ul încorporat corespund arhivei portabile. Installer: 254.266.392 bytes, SHA-256 `59303ab255a00aa818790338c29024cd50999904cb29daea485cb8827e81bf4b`.
 - La controlul final, `verify-release-consistency.ps1` a identificat că `PUBLICATION.md` nu formula explicit diferența dintre candidatul local și pachetul public; fraza a fost corectată înainte de arhiva sursă finală.
-- `NU1900` a blocat verificarea online a vulnerabilităților NuGet în mediul de lucru; nu s-a dezactivat auditul și nu se pretinde că auditul a trecut. Nu s-au făcut push, tag sau release public. Arhiva sursă se generează din commitul final local, iar `verify-all.ps1` rămâne controlul automat final al celor trei pachete.
+- `verify-all.ps1` a fost încercat, dar restore-ul online s-a oprit înaintea testelor cu NU1801/NU1101 din cauza indisponibilității NuGet. După restore explicit win-x64 cu `--ignore-failed-sources`, `verify-source.ps1 -Mode Full -NoRestore` a trecut toate testele și validatorii; `verify-distribution.ps1` a trecut separat, iar intrările arhivei portabile corespund exact folderului validat. NU1900 înseamnă că auditul online al vulnerabilităților rămâne neverificat.
+- Arhiva sursă este generată prin `git archive` din commitul local final, fără `bin`, `obj`, date personale sau diagnostice; suma este verificată în sidecar-ul său.
+- Candidatul autonom de test a fost refăcut în locația permanentă `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`; `verify-distribution.ps1` a trecut, runtime .NET/WindowsDesktop 8.0.31 inclus. FileVersion 1.6.1.0, SHA-256 `94E91D2FDDEE19056D1915AACD2E51D9970C960AD710F41CB43A2B2D3ADB72DB`.
 
 ## 2026-10-08 — Commituri locale separate
 
