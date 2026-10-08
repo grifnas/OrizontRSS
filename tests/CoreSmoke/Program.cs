@@ -158,6 +158,28 @@ Check(NewsBlurFeedSnapshotPolicy.IsComplete(matchedNewsBlurSubscriptions, matche
 Check(NewsBlurFeedSnapshotPolicy.IsComplete([], [], out _), "un cont NewsBlur gol este o stare validă numai când ambele liste sunt goale");
 Check(!NewsBlurFeedSnapshotPolicy.IsComplete(matchedNewsBlurSubscriptions, matchedNewsBlurIndex[..1], out _), "un index NewsBlur incomplet blochează sincronizarea și ștergerile");
 Check(!NewsBlurFeedSnapshotPolicy.IsComplete(matchedNewsBlurSubscriptions, [.. matchedNewsBlurIndex, matchedNewsBlurIndex[0] with { FeedId = "99" }], out _), "adresele repetate în index blochează oglindirea");
+var mediafaxLocalOnly = new Feed { Name = "Mediafax -", Url = "http://www.mediafax.ro/rss/economic/" };
+var mediafaxRemoteAlias = new NewsBlurSubscription("Mediafax -", "http://feeds.feedburner.com/MediafaxEconomic", "Știri generale");
+var mediafaxNameAddressMismatch = NewsBlurFeedSnapshotPolicy.FindNameAddressMismatches([mediafaxLocalOnly], [mediafaxRemoteAlias]);
+Check(mediafaxNameAddressMismatch.Count == 1 && ReferenceEquals(mediafaxNameAddressMismatch[0].LocalFeed, mediafaxLocalOnly), "numele identic și URL-ul diferit opresc preventiv oglindirea înaintea importului aliasului");
+Check(NewsBlurFeedSnapshotPolicy.FindNameAddressMismatches(
+    [mediafaxLocalOnly, new Feed { Name = "Mediafax", Url = "https://other.example.test/rss" }], [mediafaxRemoteAlias]).Count == 0,
+    "potrivirea ambiguă a numelui nu atribuie automat un alias");
+Check(NewsBlurFeedSnapshotPolicy.FindNameAddressMismatches(
+    [new Feed { Name = "Același feed", Url = "https://example.test/rss" }], [new NewsBlurSubscription("Același-feed", "https://www.example.test/rss", "Actualitate")]).Count == 0,
+    "numele egal nu avertizează când URL-urile sunt echivalente prin aliasul www acceptat");
+var addBefore = new NewsBlurFeedInfo[] { new("7", "Alt feed", "https://other.example.test/rss", "Actualitate") };
+var newlyAddedWrongAlias = new NewsBlurFeedInfo("8", "Mediafax -", "http://feeds.feedburner.com/MediafaxEconomic", "Știri generale");
+Check(ReferenceEquals(NewsBlurFeedSnapshotPolicy.FindUniqueNewMismatchedFeed(addBefore, [.. addBefore, newlyAddedWrongAlias], mediafaxLocalOnly.Url, mediafaxLocalOnly.Name), newlyAddedWrongAlias),
+    "după un POST, aliasul nou cu nume unic poate fi identificat precis pentru revenire");
+Check(NewsBlurFeedSnapshotPolicy.FindUniqueNewMismatchedFeed([.. addBefore, newlyAddedWrongAlias], [.. addBefore, newlyAddedWrongAlias], mediafaxLocalOnly.Url, mediafaxLocalOnly.Name) is null,
+    "un alias existent înainte de POST nu este declarat nou și nu poate fi șters automat");
+Check(NewsBlurFeedSnapshotPolicy.FindUniqueNewMismatchedFeed(addBefore, [.. addBefore, newlyAddedWrongAlias, new NewsBlurFeedInfo("9", "Mediafax -", "https://another.example.test/feed", "Știri")], mediafaxLocalOnly.Url, mediafaxLocalOnly.Name) is null,
+    "mai multe abonamente noi cu același nume blochează ștergerea automată ambiguă");
+Check(NewsBlurFeedSnapshotPolicy.FindUniqueNewMismatchedFeed(addBefore, [.. addBefore, newlyAddedWrongAlias with { Name = "Mediafax Economic" }], mediafaxLocalOnly.Url, mediafaxLocalOnly.Name) is null,
+    "un nume doar asemănător nu este suficient pentru a elimina un feed remote");
+Check(NewsBlurFeedSnapshotPolicy.FindUniqueNewMismatchedFeed(addBefore, [.. addBefore, newlyAddedWrongAlias, new NewsBlurFeedInfo("10", "Mediafax -", mediafaxLocalOnly.Url, "Știri")], mediafaxLocalOnly.Url, mediafaxLocalOnly.Name) is null,
+    "confirmarea URL-ului exact prevalează și nu șterge niciun feed în plus");
 var localDuplicateGroups = NewsBlurFeedSnapshotPolicy.FindDuplicateLocalFeeds(
 [
     new Feed { Name = "Feed original", Folder = "Știri", Url = "https://example.test/rss/" },
@@ -181,6 +203,11 @@ Check(!NewsBlurFeedSnapshotPolicy.IsRemoteDeletion(new Feed { NewsBlurFeedId = "
 Check(!NewsBlurFeedSnapshotPolicy.IsRemoteDeletion(new Feed { Url = "https://example.test/rss" }, []), "un feed local neasociat nu este șters doar pentru că lipsește remote");
 Check(!NewsBlurBootstrapPolicy.IsSyncEligible(new Feed { IsDemo = true }), "feedurile demonstrative nu se trimit sau sincronizează ca date reale");
 Check(NewsBlurBootstrapPolicy.IsSyncEligible(new Feed { Url = "https://example.test/rss" }), "feedurile reale rămân eligibile pentru sincronizarea bidirecțională");
+Check(NewsBlurReadStatePolicy.Decide(true, false, false, false) == NewsBlurReadSyncAction.SendRead, "marcarea locală ca citit trimite citit către NewsBlur");
+Check(NewsBlurReadStatePolicy.Decide(false, true, true, true) == NewsBlurReadSyncAction.SendUnread, "marcarea locală ca necitit trimite necitit către NewsBlur");
+Check(NewsBlurReadStatePolicy.Decide(false, false, true, false) == NewsBlurReadSyncAction.ApplyRemote, "schimbarea remote se preia când localul nu s-a schimbat");
+Check(NewsBlurReadStatePolicy.Decide(true, false, true, false) == NewsBlurReadSyncAction.Conflict, "schimbările simultane păstrează politica de conflict existentă");
+Check(NewsBlurReadStatePolicy.Decide(false, false, false, false) == NewsBlurReadSyncAction.None, "starea neschimbată nu trimite comenzi");
 Check(NewsBlurFolderMapping.IsUnorganized(" neorganizate ") && !NewsBlurFolderMapping.IsNamedFolder("Neorganizate"), "Neorganizate este o categorie specială, nu folder NewsBlur propriu-zis");
 Check(NewsBlurFolderMapping.ToNewsBlurFolder("Neorganizate") == string.Empty && NewsBlurFolderMapping.FromNewsBlurFolder(null) == "Neorganizate", "feedurile fără folder NewsBlur se mapează la Neorganizate");
 var moveToRoot = NewsBlurFolderMapping.CreateMoveFeedParameters("42", "Știri", "Neorganizate");
@@ -282,6 +309,28 @@ Check(ArticleSharing.LimitForUri(contextShared, translatedFooter.Length + 30, tr
 
 var limitedShared = ArticleSharing.LimitForUri(fullShared, testFooter.Length + 30, testFooter);
 Check(limitedShared.EndsWith(testFooter), "limitarea pentru URI protejează întotdeauna footerul");
+const string shareBodyWithLineBreaks = "Linia unu\r\nLinia doi\nștire & link=ok";
+var mailtoShare = ArticleSharing.CreateMailto("Titlu & știre", shareBodyWithLineBreaks);
+var mailtoParts = mailtoShare.Split("&body=", 2, StringSplitOptions.None);
+Check(mailtoParts.Length == 2 && mailtoParts[0].StartsWith("mailto:?subject=", StringComparison.Ordinal) &&
+      !mailtoParts[0].Contains("Titlu & știre", StringComparison.Ordinal),
+    "linkul de e-mail encodează separat subiectul cu diacritice și caractere rezervate URI");
+Check(mailtoParts.Length == 2 && Uri.UnescapeDataString(mailtoParts[1]) == "Linia unu\r\nLinia doi\r\nștire & link=ok",
+    "corpul mailto poate fi recuperat integral, cu rânduri și diacritice normalizate");
+var whatsappShare = ArticleSharing.CreateWhatsApp(shareBodyWithLineBreaks);
+var whatsappTextStart = whatsappShare.IndexOf("?text=", StringComparison.Ordinal);
+Check(whatsappTextStart >= 0 && Uri.UnescapeDataString(whatsappShare[(whatsappTextStart + 6)..]) == "Linia unu\nLinia doi\nștire & link=ok",
+    "linkul WhatsApp păstrează rândurile, diacriticele și ampersandul după decodare");
+var longShared = ArticleSharing.BuildShareText("Titlu lung", new string('ș', 6000), "https://example.com/stire",
+    "Traducere automată realizată prin DeepL în limba română.", "Conținut preluat prin Orizont RSS:", "Sursa articolului:");
+var longFooter = ArticleSharing.BuildFooter("Conținut preluat prin Orizont RSS:", "Sursa articolului:",
+    "https://example.com/stire", "Traducere automată realizată prin DeepL în limba română.");
+var limitedEmailBody = ArticleSharing.LimitForUri(longShared, ArticleSharing.EmailBodyLimit, longFooter);
+Check(limitedEmailBody.Length <= ArticleSharing.EmailBodyLimit && limitedEmailBody.EndsWith(longFooter, StringComparison.Ordinal),
+    "corpul e-mailului pentru articol lung respectă limita și păstrează integral furnizorul și sursa");
+var limitedWhatsAppBody = ArticleSharing.LimitForUri(longShared, ArticleSharing.WhatsAppBodyLimit, longFooter);
+Check(limitedWhatsAppBody.Length <= ArticleSharing.WhatsAppBodyLimit && limitedWhatsAppBody.EndsWith(longFooter, StringComparison.Ordinal),
+    "corpul WhatsApp pentru articol lung respectă limita și păstrează integral furnizorul și sursa");
 
 await RunUpdaterSmokeAsync();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");

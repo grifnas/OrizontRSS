@@ -4,92 +4,71 @@ Orizont RSS este un cititor RSS accesibil pentru Windows, proiectat pentru utili
 
 Aplicația a fost inițiată și este coordonată de **Grigore Frișan**. Dezvoltarea a fost realizată în colaborare cu **OpenAI Codex**, care a oferit asistență pentru proiectarea aplicației, programare, depanare, testare, documentare și pregătirea versiunilor de distribuție.
 
-## Pagina publică și descărcare
+## Versiunea publicată
 
-- [Pagina publică Orizont RSS](https://grifnas.github.io/OrizontRSS/), disponibilă în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană;
-- [Ultimul Release stabil pentru Windows x64](https://github.com/grifnas/OrizontRSS/releases/latest);
-- [Descarcă instalatorul autonom pentru Windows x64](https://github.com/grifnas/OrizontRSS/releases/latest/download/OrizontSetup.exe);
-- [Codul-sursă al versiunii 1.5.4](https://github.com/grifnas/OrizontRSS/tree/v1.5.4);
-- [Codul-sursă și documentația](https://github.com/grifnas/OrizontRSS).
+Cea mai recentă versiune publicată și verificată în acest depozit este **v1.6.0**, lansată la 19 septembrie 2026.
 
-### Instalare rapidă
+- [Pagina de prezentare și descărcare](https://grifnas.github.io/OrizontRSS/)
+- [Release-ul public v1.6.0 și toate fișierele sale](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.0)
+- [Instalatorul autonom v1.6.0](https://github.com/grifnas/OrizontRSS/releases/download/v1.6.0/OrizontSetup-1.6.0.exe)
+- [Varianta portabilă v1.6.0](https://github.com/grifnas/OrizontRSS/releases/download/v1.6.0/Orizont-RSS-1.6.0-win-x64.zip)
+- [Codul exact al release-ului v1.6.0](https://github.com/grifnas/OrizontRSS/tree/v1.6.0)
 
-Poți alege instalatorul autonom de mai sus sau varianta portabilă:
+Arhiva sursă și sumele SHA-256 sunt atașate release-ului de mai sus. Linkurile sunt fixate la v1.6.0 pentru ca această pagină să nu sugereze accidental că modificările locale ulterioare au fost publicate.
 
-1. Descarcă arhiva Windows x64 din Release.
-2. Dezarhivează conținutul într-un folder ales de tine.
-3. Pornește `Orizont.exe`.
-4. Deschide `Setări` pentru limba interfeței, voce, feeduri și, opțional, cheile API Gemini și DeepL.
+## Sursa în lucru — modificări încă nepublicate
 
-Pachetul Windows este autonom și nu necesită instalarea separată a .NET Runtime. Pentru probleme de securitate afișate de Windows, verifică mai întâi că arhiva provine de pe pagina oficială de Release de mai sus.
+Copia locală de lucru a ramurii main conține și modificări realizate după release-ul v1.6.0. Acestea sunt în lucru și **nu fac parte din pachetele publice v1.6.0**; prezența lor locală nu înseamnă că au fost trimise în ramura publică GitHub. Nu a fost creată o nouă distribuție pentru ele.
 
-## Funcții principale
+Executabilul local folosit pentru verificări este candidatul **1.6.1** (versiune de fișier 1.6.1.0), compilat din sursa de lucru. Nu este binarul public v1.6.0 și nu trebuie distribuit ca atare. Candidatul nu este publicat și nu există încă o distribuție 1.6.1.
 
-- organizarea feedurilor în foldere;
-- import și export OPML;
-- descoperirea feedurilor dintr-o pagină web sau din catalogul local;
-- actualizarea simultană și anulabilă a feedurilor;
+Printre schimbările ulterioare se numără alegerea între furnizori AI (Gemini, OpenAI, Mistral și DeepSeek), configurarea scurtăturilor, reguli de autoetichetare, îmbunătățiri NewsBlur și modul WebReader. Modul WebReader din ramura de lucru necesită Microsoft Edge WebView2 Runtime; acest lucru nu schimbă cerințele pachetului public v1.6.0. Alertele după cuvinte-cheie au existat în v1.6.0 public, dar au fost eliminate ulterior din ramura de lucru la cererea utilizatorului.
+
+## Funcții incluse în versiunea publică v1.6.0
+
+- organizarea feedurilor în foldere și import/export OPML;
+- descoperirea feedurilor și actualizarea lor simultană, cu posibilitate de anulare;
 - filtrarea articolelor după stare, perioadă, folder și etichetă;
-- favorite, lista „Mai târziu” și etichete;
-- identificarea feedurilor care necesită atenție;
-- prevenirea și curățarea feedurilor și articolelor duplicate;
-- reguli de păstrare și curățare a articolelor vechi;
-- conversații Gemini despre conținutul integral al articolului;
-- traducere online opțională prin DeepL, din meniul contextual al articolului;
-- salvarea, copierea, exportul și partajarea conversațiilor AI;
-- backup și restaurare;
-- citire prin vocile locale SAPI5 și eSpeak NG sau prin cele 30 de voci online Gemini TTS;
-- ajutor accesibil cu `F1` și ghiduri HTML cu titluri în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană;
-- control complet din tastatură și restaurarea focalizării după citirea unui articol;
-- scurtături documentate pentru panouri (`F6`), căutare (`Ctrl+F` și `F3`), citire vocală (`F9` pentru citire/pauză/continuare, `Escape` pentru oprire), setări voce (`Shift+F9`) și maximizare/restaurare (`F11`);
-- interfață în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană, cu alegere automată după limba Windows sau selecție explicită în Setări.
+- favorite, lista „Mai târziu”, etichete și reguli de păstrare;
+- căutare locală, selecție multiplă și operații asupra articolelor;
+- sincronizare NewsBlur pentru feeduri, foldere, articole și stări;
+- discuții Gemini despre articol și traducere online prin Google Translate sau DeepL;
+- salvarea, copierea, exportul și partajarea articolelor și conversațiilor;
+- citire prin vocile locale SAPI5 și eSpeak NG, precum și Gemini TTS;
+- ajutor accesibil, ghiduri HTML și interfață în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană;
+- navigare cu tastatura, meniuri contextuale și focalizare concepute pentru cititoare de ecran.
 
-Resursele interfeței și ghidurile HTML sunt verificate automat pentru toate cele opt limbi înaintea unei distribuții.
+Lista completă a noutăților release-ului este în [RELEASE-NOTES-1.6.0.md](RELEASE-NOTES-1.6.0.md).
 
-## Accesibilitate
+## Instalare
 
-Aplicația este construită pentru navigare cu tastatura și testare cu JAWS 2026 și NVDA. Listele, meniurile contextuale, bara de stare, cititorul integrat și dialogurile au etichete accesibile și păstrează focalizarea cât mai predictibil. Comenzile importante sunt documentate în ajutorul inclus în aplicație și în ghidurile HTML din depozit.
+Poți instala aplicația cu instalatorul autonom sau o poți rula din arhiva portabilă:
 
-Feedbackul privind focalizarea, anunțurile vocale sau comportamentul cu un anumit cititor de ecran este deosebit de util. La raportare, menționează versiunea Windows, cititorul de ecran și pașii care reproduc problema.
+1. Descarcă fișierul dorit din release-ul v1.6.0.
+2. Pentru varianta portabilă, dezarhivează conținutul într-un folder și pornește Orizont.exe.
+3. Deschide Setări pentru limbă, voce, feeduri și configurarea opțională a cheilor API.
+
+Pachetele v1.6.0 includ runtime-ul .NET necesar și nu cer instalarea separată a .NET Desktop Runtime. Pentru siguranță, descarcă aplicația numai din release-ul oficial de mai sus.
+
+## Accesibilitate și raportarea problemelor
+
+Aplicația este construită pentru tastatură și testare cu JAWS 2026 și NVDA. Automatizarea nu înlocuiește verificarea practică cu cititorul de ecran. Pentru a raporta o problemă, menționează versiunea Windows, versiunea Orizont RSS, cititorul de ecran și pașii exacți de reproducere. Folosește [Issues pe GitHub](https://github.com/grifnas/OrizontRSS/issues).
 
 ## Cerințe
 
 - Windows 10 sau Windows 11 pe 64 de biți;
-- pentru compilare: .NET 8 SDK;
-- pentru funcțiile Gemini: conexiune la internet și o cheie API configurată de utilizator;
-- pentru traducerea DeepL: conexiune la internet și o cheie API DeepL configurată de utilizator;
-- pentru citirea SAPI5: cel puțin o voce SAPI5 instalată în Windows; eSpeak NG nu necesită instalare separată; Gemini TTS necesită internet și o cheie API Gemini.
+- pentru compilarea sursei: .NET 8 SDK;
+- conexiune la internet pentru RSS, sincronizare și traduceri;
+- chei API proprii pentru funcțiile AI care le solicită; acestea sunt opționale;
+- pentru SAPI5, cel puțin o voce compatibilă instalată în Windows. eSpeak NG este inclus în pachetul v1.6.0.
 
-Distribuția Windows x64 este autonomă și nu necesită instalarea separată a .NET Runtime.
+## Documentație și contribuții
 
-## Configurare DeepL
+- [Instrucțiuni de compilare](BUILDING.md)
+- [Starea publicării și a ramurii de lucru](PUBLICATION.md)
+- [Foaia de parcurs](docs/ROADMAP.md)
+- [Contribuții](CONTRIBUTING.md)
+- [Licența GPL-3.0-or-later](LICENSE)
+- [Notificări privind componentele terțe](THIRD-PARTY-NOTICES.md)
 
-În aplicație, deschide `Setări` → `Inteligență artificială`. Apasă `Obține cheie API DeepL`; pagina oficială DeepL pentru dezvoltatori conține opțiunea de creare a unui cont API Free și fila `API Keys & Limits`. Creează cheia, copiaz-o în câmpul `Cheie API DeepL`, apasă `Testează conexiunea DeepL`, apoi `Salvează`. Testul verifică utilizarea contului fără să trimită un articol. Traducerea pornește ulterior din meniul contextual al articolului și folosește limba interfeței ca limbă țintă.
-
-## Confidențialitate
-
-Feedurile, articolele, setările, notițele și cheia Gemini sunt păstrate în profilul local al utilizatorului și nu fac parte din distribuție sau din codul-sursă. Cheia Gemini este protejată prin mecanismul Windows DPAPI pentru contul curent.
-
-Textul este trimis către Google numai atunci când utilizatorul pornește explicit o funcție Gemini, inclusiv citirea Gemini TTS. Citirea SAPI5 și eSpeak NG este locală. Gemini TTS poate consuma cota sau creditele API ale utilizatorului.
-
-DeepL rulează online atunci când utilizatorul pornește explicit traducerea. Textul articolului este trimis către DeepL și poate consuma limita contului API. Cheia este protejată local prin mecanismul Windows DPAPI.
-
-## Compilare
-
-Instrucțiunile complete sunt în [BUILDING.md](BUILDING.md).
-
-## Contribuții
-
-Rapoartele de probleme, corecțiile, traducerile și îmbunătățirile de accesibilitate sunt binevenite. Deschide un [issue pe GitHub](https://github.com/grifnas/OrizontRSS/issues) sau consultă [CONTRIBUTING.md](CONTRIBUTING.md) înainte de a trimite o contribuție.
-
-## Publicare
-
-Starea și pașii rămași pentru publicare sunt în [PUBLICATION.md](PUBLICATION.md), iar foaia de parcurs este în [docs/ROADMAP.md](docs/ROADMAP.md).
-
-## Licență
-
-Copyright © 2026 Grigore Frișan.
-
-Orizont RSS este software liber, distribuit în condițiile GNU General Public License, versiunea 3 sau, la alegerea utilizatorului, orice versiune ulterioară (`GPL-3.0-or-later`). Textul integral se află în [LICENSE](LICENSE).
-
-Componentele și serviciile terțe sunt descrise în [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+Resursele și ghidurile de interfață sunt verificate automat pentru toate cele opt limbi înaintea unei distribuții.

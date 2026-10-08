@@ -12,6 +12,8 @@ foreach ($suite in @('CoreSmoke', 'WorkflowSmoke', 'RulesSmoke', 'ShortcutsSmoke
 }
 Check (@($quick | Where-Object Name -eq 'ScaleSmoke').Count -eq 0) 'Quick must omit the scale benchmark.'
 Check (@($full | Where-Object Name -eq 'verify-public-pages').Count -eq 1) 'Full must validate public pages.'
+Check (@($full | Where-Object Name -eq 'verify-release-consistency').Count -eq 1) 'Full must validate release consistency.'
+Check (@($quick | Where-Object Name -eq 'verify-release-consistency').Count -eq 1) 'Quick must validate release consistency.'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 foreach ($project in Get-ChildItem -Path (Join-Path $projectRoot 'tests') -Filter '*.csproj' -Recurse) {
     Check (@($full | Where-Object Name -eq $project.BaseName).Count -eq 1) "Unregistered test project: $($project.BaseName)"

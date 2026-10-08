@@ -3,22 +3,43 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Traducere Google Translate" Width="850" Height="650"
         MinWidth="520" MinHeight="360" WindowStartupLocation="CenterOwner">
+  <Window.Resources>
+    <ContextMenu x:Key="TranslationContextMenu" AutomationProperties.Name="Comenzi cititor"
+                 Opened="TranslationContextMenu_Opened">
+      <MenuItem Header="Copiere și distribuire">
+        <MenuItem Header="Copiază selecția" Click="CopySelection_Click" />
+        <MenuItem Header="Copiază articolul complet" Click="CopyFromContextMenu_Click" />
+        <MenuItem Header="Copiază adresa articolului" Click="CopyLink_Click" />
+        <Separator />
+        <MenuItem Header="Distribuie prin e-mail" Click="ShareByEmail_Click" />
+        <MenuItem Header="Distribuie prin WhatsApp" Click="ShareByWhatsApp_Click" />
+      </MenuItem>
+    </ContextMenu>
+  </Window.Resources>
   <Grid Margin="16">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
     <TextBlock Text="Traducerea articolului" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,12" />
     <TextBox x:Name="TranslatedText" Grid.Row="1" IsReadOnly="True" IsReadOnlyCaretVisible="True"
              AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
              FontSize="18" AutomationProperties.Name="Text tradus cu Google Translate"
-             AutomationProperties.HelpText="Folosește săgețile pentru a citi traducerea. Escape închide fereastra și revine la articol." />
+             AutomationProperties.HelpText="Folosește săgețile pentru a citi traducerea. Escape închide fereastra și revine la articol."
+             ContextMenuOpening="TranslatedText_ContextMenuOpening"
+             ContextMenu="{StaticResource TranslationContextMenu}" />
     <WrapPanel Grid.Row="2" HorizontalAlignment="Right" Margin="0,12,0,0">
       <Button x:Name="EmailButton" Content="Distribuie prin e-mail" Click="ShareByEmail_Click" MinWidth="170" Margin="0,0,8,0" />
       <Button x:Name="WhatsAppButton" Content="Distribuie prin WhatsApp" Click="ShareByWhatsApp_Click" MinWidth="190" Margin="0,0,8,0" />
       <Button x:Name="CopyButton" Content="Copiază articolul complet" Click="CopyTranslation_Click" MinWidth="190" Margin="0,0,8,0" />
       <Button x:Name="CloseButton" Content="Închide" IsCancel="True" MinWidth="110" />
     </WrapPanel>
+    <StatusBar x:Name="TranslationStatusBar" Grid.Row="3" Margin="0,8,0,0" Focusable="False" IsTabStop="False" AutomationProperties.LiveSetting="Polite">
+      <StatusBarItem Focusable="False" IsTabStop="False">
+        <TextBlock x:Name="TranslationStatus" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+      </StatusBarItem>
+    </StatusBar>
   </Grid>
 </Window>

@@ -3,6 +3,8 @@ param()
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $docsRoot = Join-Path $projectRoot 'docs'
+$releaseStatus = Get-Content -LiteralPath (Join-Path $docsRoot 'RELEASE-STATUS.json') -Raw -Encoding utf8 | ConvertFrom-Json
+$publishedVersion = [version]$releaseStatus.latestPublishedVersion
 $pages = @(Get-ChildItem -LiteralPath $docsRoot -File | Where-Object { $_.Name -like 'index*.html' })
 $expectedLanguages = @('index.html', 'index.en.html', 'index.es.html', 'index.fr.html', 'index.de.html', 'index.pt.html', 'index.hu.html', 'index.it.html')
 $requiredFragments = @(
@@ -12,7 +14,7 @@ $requiredFragments = @(
     'application/ld+json',
     'class="download-button"',
     'releases/latest/download/OrizontSetup.exe',
-    'releases/latest/download/Orizont-RSS-1.6.0-win-x64.zip',
+    "releases/latest/download/Orizont-RSS-$publishedVersion-win-x64.zip",
     'assets/screenshots/main-window.png',
     'assets/screenshots/reader.png',
     'assets/screenshots/settings.png'

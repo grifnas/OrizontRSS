@@ -24,7 +24,7 @@ foreach ($suite in @('CoreSmoke', 'WorkflowSmoke', 'RulesSmoke', 'ShortcutsSmoke
     if ($NoRestore) { $arguments += '--no-restore' }
     Add-Step $suite 'dotnet' $arguments
 }
-foreach ($validator in @('verify-localization', 'verify-user-guides', 'verify-text-encoding', 'verify-public-pages', 'test-validation-runner')) {
+foreach ($validator in @('verify-localization', 'verify-user-guides', 'verify-text-encoding', 'verify-public-pages', 'verify-release-consistency', 'test-validation-runner')) {
     if ($Mode -eq 'Quick' -and $validator -eq 'verify-public-pages') { continue }
     $arguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', ".\tools\$validator.ps1")
     if ($validator -eq 'verify-localization') { $arguments += '-RequireComplete' }

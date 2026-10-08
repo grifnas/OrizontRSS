@@ -32,6 +32,7 @@ public partial class ArticleReaderWindow : Window
     public ArticleReaderWindow(Article article, string readableText, AppSettings settings, Func<Task<string>> refresh, Func<Task> saveSettings, SpeechService speech, Func<Task>? saveArticle = null)
     {
         InitializeComponent();
+        ArticleText.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler(ArticleText_PreviewKeyDown), true);
         _article = article;
         _link = article.Link;
         _settings = settings;
@@ -51,9 +52,13 @@ public partial class ArticleReaderWindow : Window
         ArticleDetails.Text = string.IsNullOrWhiteSpace(article.SourceName)
             ? article.Published.ToString("dd MMMM yyyy, HH:mm")
             : $"{article.SourceName} · {article.Published:dd MMMM yyyy, HH:mm}";
+        ArticleText.SetValue(System.Windows.Automation.AutomationProperties.HelpTextProperty,
+            $"{T("Folosește săgețile pentru citire. Shift+F10 deschide comenzile articolului. Ctrl+Shift+F8 comută modul WebReader. Bara de stare anunță încărcarea și acțiunile în curs.")} {T("Tasta Application sau Shift+F10 deschide meniul contextual.")}");
+        ArticleWebView.SetValue(System.Windows.Automation.AutomationProperties.HelpTextProperty,
+            $"{T("Folosește tastele de navigare web (H pentru titluri, P pentru paragrafe, Tab pentru linkuri). Shift+F10 deschide comenzile articolului. Ctrl+Shift+F8 comută modul text.")} {T("Tasta Application sau Shift+F10 deschide meniul contextual.")}");
         ArticleText.Text = RssReader.CleanReadableContent(readableText, article.Title);
         _originalReadableText = ArticleText.Text;
-        Status.Text = T("Articolul este deschis în cititorul Orizont.");
+        SetStatus(T("Articolul este deschis în cititorul Orizont."));
 
         ShortcutBindings.RefreshMenuHints(this);
 
@@ -113,11 +118,11 @@ public partial class ArticleReaderWindow : Window
         try
         {
             Process.Start(new ProcessStartInfo(e.Uri) { UseShellExecute = true });
-            StatusAnnouncer.Set(Status, T("Linkul a fost deschis în browserul implicit."), ReaderStatusBar);
+            SetStatus(T("Linkul a fost deschis în browserul implicit."));
         }
         catch (Exception ex)
         {
-            StatusAnnouncer.Set(Status, F("Nu s-a putut deschide linkul: {0}", ex.Message), ReaderStatusBar);
+            SetStatus(F("Nu s-a putut deschide linkul: {0}", ex.Message));
         }
     }
 
@@ -130,14 +135,14 @@ public partial class ArticleReaderWindow : Window
         {
             try
             {
-                StatusAnnouncer.Set(Status, T("Se încarcă modul WebReader..."), ReaderStatusBar);
+                SetStatus(T("Se încarcă modul WebReader..."));
                 await EnsureWebViewInitializedAsync();
                 await LoadWebViewContentAsync();
                 _isWebViewActive = true;
                 ArticleText.Visibility = Visibility.Collapsed;
                 ArticleWebView.Visibility = Visibility.Visible;
                 ArticleWebView.Focus();
-                StatusAnnouncer.Set(Status, T("Articolul este afișat în modul WebReader."), ReaderStatusBar);
+                SetStatus(T("Articolul este afișat în modul WebReader."));
             }
             catch (Exception ex)
             {
@@ -145,7 +150,7 @@ public partial class ArticleReaderWindow : Window
                 ArticleWebView.Visibility = Visibility.Collapsed;
                 ArticleText.Visibility = Visibility.Visible;
                 ArticleText.Focus();
-                StatusAnnouncer.Set(Status, F("Modul WebReader nu a putut fi inițializat ({0}); se revine la modul text.", ex.Message), ReaderStatusBar);
+                SetStatus(F("Modul WebReader nu a putut fi inițializat ({0}); se revine la modul text.", ex.Message));
             }
         }
         else
@@ -154,7 +159,7 @@ public partial class ArticleReaderWindow : Window
             ArticleWebView.Visibility = Visibility.Collapsed;
             ArticleText.Visibility = Visibility.Visible;
             ArticleText.Focus();
-            StatusAnnouncer.Set(Status, T("Articolul este afișat în modul text simplu."), ReaderStatusBar);
+            SetStatus(T("Articolul este afișat în modul text simplu."));
         }
 
         UpdateModeMenuText();
@@ -316,11 +321,21 @@ public partial class ArticleReaderWindow : Window
         }
     }
 
+    private void ArticleText_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        var key = ContextMenuKeyboard.Normalize(e.Key, e.SystemKey);
+        // In text mode, let WPF's ContextMenuService handle the Application key natively.
+        if (key == Key.Apps) return;
+        if (!ContextMenuKeyboard.IsMenuShortcut(key, e.KeyboardDevice.Modifiers)) return;
+        if (Resources["ReaderContextMenu"] is not ContextMenu menu || !menu.IsOpen) OpenContextMenu();
+        e.Handled = true;
+    }
+
     private async void Refresh_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            Status.Text = T("Se pregătește articolul în cititorul Orizont.");
+            SetStatus(T("Se pregătește articolul în cititorul Orizont."));
             ArticleText.Text = RssReader.CleanReadableContent(await _refresh(), _article.Title);
             _originalReadableText = ArticleText.Text;
             _translationProvider = null;
@@ -333,12 +348,12 @@ public partial class ArticleReaderWindow : Window
             {
                 ArticleText.Focus(); ArticleText.CaretIndex = 0; ArticleText.Select(0, 0);
             }
-            Status.Text = T("Articolul este deschis în cititorul Orizont.");
+            SetStatus(T("Articolul este deschis în cititorul Orizont."));
         }
         catch (Exception exception)
         {
             var message = F("Articolul nu a putut fi reîncărcat: {0}", exception.Message);
-            Status.Text = message;
+            SetStatus(message);
             MessageBox.Show(this, message, T("Deschidere nereușită"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
@@ -375,8 +390,10 @@ public partial class ArticleReaderWindow : Window
 
     private void SpeechStateChanged(string message)
     {
-        Dispatcher.Invoke(() => StatusAnnouncer.Set(Status, message, ReaderStatusBar));
+        Dispatcher.Invoke(() => SetStatus(message));
     }
+
+    private void SetStatus(string message) => StatusAnnouncer.Set(Status, message, ReaderStatusBar);
 
     private void Content_ContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
@@ -444,7 +461,7 @@ public partial class ArticleReaderWindow : Window
         };
         try
         {
-            Status.Text = T("Se pregătește articolul în cititorul Orizont.");
+            SetStatus(T("Se pregătește articolul în cititorul Orizont."));
             var response = await new AiProviderService().GenerateAsync(provider, key, model, _settings.AiInstructions, prompt);
             var responseWindow = CreateAiResponseWindow(
                 title,
@@ -463,9 +480,9 @@ public partial class ArticleReaderWindow : Window
             responseWindow.Owner = this;
             responseWindow.ShowDialog();
         }
-        catch (TaskCanceledException) { Status.Text = F("{0} nu a răspuns în 45 de secunde. Încearcă din nou mai târziu.", providerName); ShowAiProblem(Status.Text); }
-        catch (HttpRequestException) { Status.Text = F("Nu s-a putut ajunge la {0}. Verifică internetul, firewall-ul sau proxy-ul.", providerName); ShowAiProblem(Status.Text); }
-        catch (Exception exception) { Status.Text = F("Furnizorul {0} nu a putut executa comanda {1}. Detalii: {2}", providerName, title, exception.Message); ShowAiProblem(Status.Text); }
+        catch (TaskCanceledException) { var message = F("{0} nu a răspuns în 45 de secunde. Încearcă din nou mai târziu.", providerName); SetStatus(message); ShowAiProblem(message); }
+        catch (HttpRequestException) { var message = F("Nu s-a putut ajunge la {0}. Verifică internetul, firewall-ul sau proxy-ul.", providerName); SetStatus(message); ShowAiProblem(message); }
+        catch (Exception exception) { var message = F("Furnizorul {0} nu a putut executa comanda {1}. Detalii: {2}", providerName, title, exception.Message); SetStatus(message); ShowAiProblem(message); }
     }
 
     private AiResponseWindow CreateAiResponseWindow(
@@ -501,7 +518,7 @@ public partial class ArticleReaderWindow : Window
         {
             var source = await ArticleTranslationSource.ResolveAsync(_article.FullContent, _originalReadableText, _refresh, _article.Title);
             if (string.IsNullOrWhiteSpace(source)) { ShowAiProblem(T("Articolul nu conține text pentru traducere.")); return; }
-            Status.Text = T("Se traduce articolul cu DeepL în limba interfeței. Așteaptă.");
+            SetStatus(T("Se traduce articolul cu DeepL în limba interfeței. Așteaptă."));
             var targetLanguage = DeepLConnection.TargetLanguageForUi();
             var translated = await new DeepLConnection().TranslateAsync(key, source, targetLanguage);
             ArticleText.Text = translated;
@@ -517,9 +534,9 @@ public partial class ArticleReaderWindow : Window
                 ArticleText.CaretIndex = 0;
                 ArticleText.Select(0, 0);
             }
-            Status.Text = T("Articolul a fost tradus cu DeepL.");
+            SetStatus(T("Articolul a fost tradus cu DeepL."));
         }
-        catch (Exception exception) { Status.Text = F("DeepL nu a putut traduce articolul: {0}", exception.Message); ShowAiProblem(Status.Text); }
+        catch (Exception exception) { var message = F("DeepL nu a putut traduce articolul: {0}", exception.Message); SetStatus(message); ShowAiProblem(message); }
     }
 
     private async void GoogleTranslate_Click(object sender, RoutedEventArgs e)
@@ -528,7 +545,7 @@ public partial class ArticleReaderWindow : Window
         using var requestLease = GoogleTranslateRequestGate.TryAcquire();
         if (requestLease is null)
         {
-            StatusAnnouncer.Set(Status, T("Se traduce articolul cu Google Translate. Așteaptă."), ReaderStatusBar);
+            SetStatus(T("Se traduce articolul cu Google Translate. Așteaptă."));
             return;
         }
 
@@ -553,14 +570,14 @@ public partial class ArticleReaderWindow : Window
                 MessageBoxResult.No);
             if (confirmation != MessageBoxResult.Yes)
             {
-                StatusAnnouncer.Set(Status, T("Traducerea Google Translate a fost anulată."), ReaderStatusBar);
+                SetStatus(T("Traducerea Google Translate a fost anulată."));
                 return;
             }
 
             cancellationToken.ThrowIfCancellationRequested();
             var selectionStart = ArticleText.SelectionStart;
             var selectionLength = ArticleText.SelectionLength;
-            StatusAnnouncer.Set(Status, T("Se traduce articolul cu Google Translate. Așteaptă."), ReaderStatusBar);
+            SetStatus(T("Se traduce articolul cu Google Translate. Așteaptă."));
             var source = await ArticleTranslationSource.ResolveAsync(_article.FullContent, textToTranslate, _refresh, _article.Title);
             cancellationToken.ThrowIfCancellationRequested();
             if (string.IsNullOrWhiteSpace(source))
@@ -587,7 +604,7 @@ public partial class ArticleReaderWindow : Window
                     ArticleText.Focus();
                     ArticleText.Select(selectionStart, selectionLength);
                 }
-                StatusAnnouncer.Set(Status, T("Traducerea Google Translate s-a încheiat. Rezultatul este într-o fereastră separată."), ReaderStatusBar);
+                SetStatus(T("Traducerea Google Translate s-a încheiat. Rezultatul este într-o fereastră separată."));
             }
         }
         catch (OperationCanceledException) when (_readerLifetime.IsCancellationRequested)
@@ -599,24 +616,24 @@ public partial class ArticleReaderWindow : Window
         catch (TaskCanceledException)
         {
             var message = T("Google Translate nu a răspuns în 45 de secunde. Încearcă din nou mai târziu.");
-            StatusAnnouncer.Set(Status, message, ReaderStatusBar);
+            SetStatus(message);
             MessageBox.Show(this, message, T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (HttpRequestException)
         {
             var message = T("Nu s-a putut ajunge la Google Translate. Verifică internetul și încearcă din nou.");
-            StatusAnnouncer.Set(Status, message, ReaderStatusBar);
+            SetStatus(message);
             MessageBox.Show(this, message, T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (InvalidOperationException exception)
         {
-            StatusAnnouncer.Set(Status, exception.Message, ReaderStatusBar);
+            SetStatus(exception.Message);
             MessageBox.Show(this, exception.Message, T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (Exception exception)
         {
             var message = F("Google Translate nu a putut traduce articolul: {0}", exception.Message);
-            StatusAnnouncer.Set(Status, message, ReaderStatusBar);
+            SetStatus(message);
             MessageBox.Show(this, message, T("Traducere Google Translate"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
@@ -661,11 +678,11 @@ public partial class ArticleReaderWindow : Window
         {
             var path = ArticleExportService.Save(_article, context, _settings.ArticleExportFolder, _article.SourceName, format,
                 T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:"), translationNote);
-            StatusAnnouncer.Set(Status, F("Articol salvat: {0}", path), ReaderStatusBar);
+            SetStatus(F("Articol salvat: {0}", path));
         }
         catch (Exception exception)
         {
-            StatusAnnouncer.Set(Status, F("Articolul nu a putut fi salvat: {0}", exception.Message), ReaderStatusBar);
+            SetStatus(F("Articolul nu a putut fi salvat: {0}", exception.Message));
         }
     }
 
@@ -678,7 +695,7 @@ public partial class ArticleReaderWindow : Window
             e.Handled = true;
             return;
         }
-        if (key == Key.Apps || (key == Key.F10 && Keyboard.Modifiers == ModifierKeys.Shift))
+        if (ContextMenuKeyboard.ShouldHandleReaderWindowShortcut(key, Keyboard.Modifiers, _isWebViewActive))
         {
             OpenContextMenu();
             e.Handled = true;
@@ -697,7 +714,7 @@ public partial class ArticleReaderWindow : Window
             var message = WindowState == WindowState.Maximized
                 ? T("Fereastra a fost maximizată.")
                 : T("Fereastra a fost restabilită.");
-            StatusAnnouncer.Set(Status, message, ReaderStatusBar);
+            SetStatus(message);
             e.Handled = true;
             return;
         }
@@ -715,31 +732,31 @@ public partial class ArticleReaderWindow : Window
 
     private async void SpeakContent_Click(object sender, RoutedEventArgs e)
     {
-        if (!_speech.EnsureAvailable()) { StatusAnnouncer.Set(Status, T("Motorul vocal selectat nu este disponibil. Verifică motorul și vocea în Setări."), ReaderStatusBar); return; }
+        if (!_speech.EnsureAvailable()) { SetStatus(T("Motorul vocal selectat nu este disponibil. Verifică motorul și vocea în Setări.")); return; }
         var selected = await GetSelectedTextAsync();
         var text = !string.IsNullOrWhiteSpace(selected) ? selected : ArticleSpeechDocument();
-        if (string.IsNullOrWhiteSpace(text)) { StatusAnnouncer.Set(Status, T("Nu există conținut de citit cu voce."), ReaderStatusBar); return; }
+        if (string.IsNullOrWhiteSpace(text)) { SetStatus(T("Nu există conținut de citit cu voce.")); return; }
         _speech.Speak(text);
     }
 
     private void SpeakFromCursor_Click(object sender, RoutedEventArgs e)
     {
-        if (!_speech.EnsureAvailable()) { StatusAnnouncer.Set(Status, T("Motorul vocal selectat nu este disponibil. Verifică motorul și vocea în Setări."), ReaderStatusBar); return; }
+        if (!_speech.EnsureAvailable()) { SetStatus(T("Motorul vocal selectat nu este disponibil. Verifică motorul și vocea în Setări.")); return; }
         var start = Math.Clamp(ArticleText.CaretIndex, 0, ArticleText.Text.Length);
         var text = ArticleText.Text[start..];
-        if (string.IsNullOrWhiteSpace(text)) { StatusAnnouncer.Set(Status, T("Cursorul se află la sfârșitul conținutului."), ReaderStatusBar); return; }
+        if (string.IsNullOrWhiteSpace(text)) { SetStatus(T("Cursorul se află la sfârșitul conținutului.")); return; }
         _speech.Speak(text);
     }
 
     private void PauseResumeSpeech_Click(object sender, RoutedEventArgs e)
     {
         if (!_speech.EnsureAvailable() || !_speech.PauseOrResume())
-            StatusAnnouncer.Set(Status, T("Nu există o citire vocală în curs pentru pauză sau continuare."), ReaderStatusBar);
+            SetStatus(T("Nu există o citire vocală în curs pentru pauză sau continuare."));
     }
 
     private void StopSpeech_Click(object sender, RoutedEventArgs e)
     {
-        if (!_speech.IsSpeaking && !_speech.IsPaused) { StatusAnnouncer.Set(Status, T("Nu există o citire vocală în curs."), ReaderStatusBar); return; }
+        if (!_speech.IsSpeaking && !_speech.IsPaused) { SetStatus(T("Nu există o citire vocală în curs.")); return; }
         _speech.Stop();
     }
 
@@ -765,7 +782,7 @@ public partial class ArticleReaderWindow : Window
         var context = CreateArticleDistributionContext(ArticleText.Text);
         var note = context.BuildTranslationNote(T("Traducere automată realizată prin {0} în limba {1}."));
         Clipboard.SetText(ArticleSharing.BuildShareText(context, note, T("Conținut preluat prin Orizont RSS:"), T("Sursa articolului:")));
-        Status.Text = T("Articolul complet a fost copiat în clipboard.");
+        SetStatus(T("Articolul complet a fost copiat în clipboard."));
     }
 
     private void CopyLink_Click(object sender, RoutedEventArgs e)
@@ -786,14 +803,15 @@ public partial class ArticleReaderWindow : Window
         try
         {
             Process.Start(new ProcessStartInfo(mailto) { UseShellExecute = true });
-            Status.Text = truncated
+            SetStatus(truncated
                 ? F("{0} {1}", T("A fost deschisă aplicația de e-mail pentru distribuirea articolului."), T("Articolul complet a fost copiat în clipboard."))
-                : T("A fost deschisă aplicația de e-mail pentru distribuirea articolului.");
+                : T("A fost deschisă aplicația de e-mail pentru distribuirea articolului."));
         }
         catch (Exception exception)
         {
-            Status.Text = F("Aplicația de e-mail nu a putut fi deschisă: {0}", exception.Message);
-            MessageBox.Show(this, Status.Text, T("Distribuire nereușită"), MessageBoxButton.OK, MessageBoxImage.Error);
+            var message = F("Aplicația de e-mail nu a putut fi deschisă: {0}", exception.Message);
+            SetStatus(message);
+            MessageBox.Show(this, message, T("Distribuire nereușită"), MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
@@ -810,14 +828,15 @@ public partial class ArticleReaderWindow : Window
         try
         {
             Process.Start(new ProcessStartInfo(address) { UseShellExecute = true });
-            Status.Text = truncated
+            SetStatus(truncated
                 ? F("{0} {1}", T("WhatsApp a fost deschis pentru distribuirea articolului."), T("Articolul complet a fost copiat în clipboard."))
-                : T("WhatsApp a fost deschis pentru distribuirea articolului.");
+                : T("WhatsApp a fost deschis pentru distribuirea articolului."));
         }
         catch (Exception exception)
         {
-            Status.Text = F("WhatsApp nu a putut fi deschis: {0}", exception.Message);
-            MessageBox.Show(this, Status.Text, T("Distribuire nereușită"), MessageBoxButton.OK, MessageBoxImage.Error);
+            var message = F("WhatsApp nu a putut fi deschis: {0}", exception.Message);
+            SetStatus(message);
+            MessageBox.Show(this, message, T("Distribuire nereușită"), MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 }

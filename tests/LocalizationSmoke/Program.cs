@@ -55,7 +55,7 @@ Check("resources", "base resource contains no mojibake", CountMojibake(baseResou
 Check("resources", "obsolete resource keys are absent", string.Join(" | ", obsoleteKeys.Where(baseResources.ContainsKey)), _ => obsoleteKeys.All(key => !baseResources.ContainsKey(key)));
 Check("encoding", "detector catches typical mojibake", "fÃ¼r â€™", HasMojibake);
 Check("encoding", "detector accepts valid accented text", "Alemão, über, français, español, magyar, italiano", value => !HasMojibake(value));
-Check("version", "final product title", AppVersionInfo.ProductTitle, value => value == "Orizont RSS 1.6.0");
+Check("version", "final product title", AppVersionInfo.ProductTitle, value => value == "Orizont RSS 1.6.1");
 var mainWindowXaml = XDocument.Load(Path.Combine(projectRoot, "MainWindow.xaml"));
 var articleReaderXaml = XDocument.Load(Path.Combine(projectRoot, "Views", "ArticleReaderWindow.xaml"));
 XNamespace xaml = "http://schemas.microsoft.com/winfx/2006/xaml";

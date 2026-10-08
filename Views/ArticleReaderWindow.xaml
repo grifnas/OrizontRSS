@@ -68,7 +68,8 @@
       <TextBlock x:Name="ArticleTitle" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.Name="Titlul articolului" />
       <TextBlock x:Name="ArticleDetails" Margin="0,6,0,0" Foreground="{DynamicResource ThemeSecondaryTextBrush}" AutomationProperties.Name="Sursa și data articolului" />
     </StackPanel>
-    <StatusBar x:Name="ReaderStatusBar" DockPanel.Dock="Bottom" Margin="0,8,0,0">
+    <StatusBar x:Name="ReaderStatusBar" DockPanel.Dock="Bottom" Margin="0,8,0,0"
+               Focusable="False" IsTabStop="False" AutomationProperties.LiveSetting="Polite">
       <StatusBarItem Focusable="False" IsTabStop="False">
         <TextBlock x:Name="Status" AutomationProperties.LiveSetting="Polite" />
       </StatusBarItem>

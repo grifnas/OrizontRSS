@@ -308,6 +308,17 @@ internal static class Program
             };
             var articleReader = new ArticleReaderWindow(readerArticle, readerArticle.FullContent!, new AppSettings(),
                 () => Task.FromResult(readerArticle.FullContent!), () => Task.CompletedTask, distributionSpeech);
+            var readerStatus = (TextBlock)articleReader.FindName("Status")!;
+            var readerStatusBar = (System.Windows.Controls.Primitives.StatusBar)articleReader.FindName("ReaderStatusBar")!;
+            var readerStatusItem = (System.Windows.Controls.Primitives.StatusBarItem)readerStatusBar.Items[0];
+            Check(System.Windows.Automation.AutomationProperties.GetLiveSetting(readerStatus) == System.Windows.Automation.AutomationLiveSetting.Polite &&
+                  System.Windows.Automation.AutomationProperties.GetLiveSetting(readerStatusBar) == System.Windows.Automation.AutomationLiveSetting.Polite &&
+                  !readerStatusBar.Focusable && !readerStatusBar.IsTabStop && !readerStatusItem.Focusable && !readerStatusItem.IsTabStop,
+                "Cititor Orizont status bar is a polite live region and never takes keyboard focus");
+            typeof(ArticleReaderWindow).GetMethod("SetStatus", BindingFlags.NonPublic | BindingFlags.Instance)!
+                .Invoke(articleReader, new object?[] { "Se traduce articolul cu DeepL în limba interfeței. Așteaptă." });
+            Check(readerStatus.Text == "Se traduce articolul cu DeepL în limba interfeței. Așteaptă.",
+                "Cititor Orizont routes DeepL progress through the shared status update path");
             ((TextBox)articleReader.FindName("ArticleText")).Text = "Traducere Reader";
             Set(articleReader, "_translationProvider", "DeepL");
             Set(articleReader, "_translationLanguage", "română");
@@ -319,6 +330,22 @@ internal static class Program
                 "Cititor Orizont distribution context preserves original, translated display and source");
 
             var readerContextMenu = (ContextMenu)articleReader.Resources["ReaderContextMenu"];
+            var readerText = (TextBox)articleReader.FindName("ArticleText");
+            Check(readerText.ContextMenu == readerContextMenu,
+                "DeepL text reader keeps the existing article context menu directly attached to its read-only text control");
+            var contextMenuKeyboard = typeof(ArticleReaderWindow).Assembly.GetType("CititorRSS.Jaws.ContextMenuKeyboard")!;
+            var isMenuShortcut = contextMenuKeyboard.GetMethod("IsMenuShortcut", BindingFlags.NonPublic | BindingFlags.Static)!;
+            var shouldHandleReaderShortcut = contextMenuKeyboard.GetMethod("ShouldHandleReaderWindowShortcut", BindingFlags.NonPublic | BindingFlags.Static)!;
+            var normalizeMenuKey = contextMenuKeyboard.GetMethod("Normalize", BindingFlags.NonPublic | BindingFlags.Static)!;
+            Check((bool)isMenuShortcut.Invoke(null, [System.Windows.Input.Key.Apps, System.Windows.Input.ModifierKeys.None])! &&
+                  (bool)isMenuShortcut.Invoke(null, [System.Windows.Input.Key.F10, System.Windows.Input.ModifierKeys.Shift])! &&
+                  !(bool)isMenuShortcut.Invoke(null, [System.Windows.Input.Key.F10, System.Windows.Input.ModifierKeys.None])! &&
+                  (System.Windows.Input.Key)normalizeMenuKey.Invoke(null, [System.Windows.Input.Key.System, System.Windows.Input.Key.Apps])! == System.Windows.Input.Key.Apps,
+                "Application and Shift+F10 use one normalized context-menu keyboard policy");
+            Check(!(bool)shouldHandleReaderShortcut.Invoke(null, [System.Windows.Input.Key.Apps, System.Windows.Input.ModifierKeys.None, false])! &&
+                  (bool)shouldHandleReaderShortcut.Invoke(null, [System.Windows.Input.Key.Apps, System.Windows.Input.ModifierKeys.None, true])! &&
+                  (bool)shouldHandleReaderShortcut.Invoke(null, [System.Windows.Input.Key.F10, System.Windows.Input.ModifierKeys.Shift, false])!,
+                "Text mode leaves Application to WPF while Shift+F10 and WebReader shortcuts remain handled");
             var contextSaveMenu = readerContextMenu.Items.OfType<MenuItem>()
                 .FirstOrDefault(item => string.Equals(item.Header?.ToString(), "Salvează articolul", StringComparison.Ordinal));
             var readerMenu = (Menu)articleReader.FindName("ReaderMenu");
@@ -376,6 +403,23 @@ internal static class Program
 
             var translationWindow = new ArticleTranslationWindow("Traducere Google", "Google article",
                 "https://example.test/google-article", "Google Translate", "Original Google article", "română");
+            var translationStatus = (TextBlock)translationWindow.FindName("TranslationStatus")!;
+            var translationStatusBar = (System.Windows.Controls.Primitives.StatusBar)translationWindow.FindName("TranslationStatusBar")!;
+            var translationStatusItem = (System.Windows.Controls.Primitives.StatusBarItem)translationStatusBar.Items[0];
+            var translatedText = (TextBox)translationWindow.FindName("TranslatedText")!;
+            var translationContextMenu = translatedText.ContextMenu;
+            var translationCopyMenu = translationContextMenu?.Items.OfType<MenuItem>().FirstOrDefault();
+            Check(translationContextMenu != null &&
+                  translationCopyMenu?.Items.OfType<MenuItem>().Select(item => item.Header?.ToString()).SequenceEqual(
+                      ["Copiază selecția", "Copiază articolul complet", "Copiază adresa articolului", "Distribuie prin e-mail", "Distribuie prin WhatsApp"]) == true,
+                "Google translation read-only text exposes its localized copy and sharing context menu");
+            Check(translationStatus.Text == "Traducerea articolului s-a încheiat. Furnizor: Google Translate. Limba rezultatului: română.",
+                "translation result status names provider and target language");
+            Check(System.Windows.Automation.AutomationProperties.GetLiveSetting(translationStatus) == System.Windows.Automation.AutomationLiveSetting.Polite &&
+                  System.Windows.Automation.AutomationProperties.GetLiveSetting(translationStatusBar) == System.Windows.Automation.AutomationLiveSetting.Polite &&
+                  !translationStatusBar.Focusable && !translationStatusBar.IsTabStop &&
+                  !translationStatusItem.Focusable && !translationStatusItem.IsTabStop,
+                "translation result status bar exposes a polite live region without taking keyboard focus");
             var translationShare = (string)typeof(ArticleTranslationWindow)
                 .GetMethod("ShareText", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(translationWindow, null)!;
             Check(translationShare.Contains("Traducere Google") && translationShare.Contains("Google Translate") &&
@@ -386,6 +430,13 @@ internal static class Program
             var translatedAiWindow = new AiResponseWindow("Traducere", "Răspuns tradus", "AI article",
                 "https://example.test/ai-article", _ => Task.FromResult("Follow-up"), _ => Task.CompletedTask,
                 distributionSpeech, "DeepSeek", true, "Original AI article", "română");
+            var responseStatusBar = (System.Windows.Controls.Primitives.StatusBar)translatedAiWindow.FindName("ResponseStatusBar")!;
+            var responseStatus = (TextBlock)translatedAiWindow.FindName("SpeechStatus")!;
+            var responseStatusItem = (System.Windows.Controls.Primitives.StatusBarItem)responseStatusBar.Items[0];
+            Check(System.Windows.Automation.AutomationProperties.GetLiveSetting(responseStatus) == System.Windows.Automation.AutomationLiveSetting.Polite &&
+                  System.Windows.Automation.AutomationProperties.GetLiveSetting(responseStatusBar) == System.Windows.Automation.AutomationLiveSetting.Polite &&
+                  !responseStatusBar.Focusable && !responseStatusBar.IsTabStop && !responseStatusItem.Focusable && !responseStatusItem.IsTabStop,
+                "AI response status bar follows the same accessible non-focusable live-region contract");
             var translatedAiDocument = (string)typeof(AiResponseWindow)
                 .GetMethod("ResponseDocument", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(translatedAiWindow, null)!;
             Check(translatedAiDocument.Contains("Răspuns tradus") && translatedAiDocument.Contains("DeepSeek") &&

@@ -26,8 +26,12 @@ Locația permanentă este `bin\Release\net8.0-windows10.0.17763.0\Orizont.exe`. 
 Un `dotnet build` sau un test care compilează aplicația ca referință poate înlocui această copie cu un build framework-dependent. Dacă ai compilat chiar în sursa principală, înainte de predarea executabilului refă copia autonomă locală:
 
 ```powershell
-dotnet publish CititorRSS.Jaws.csproj -c Release -r win-x64 --self-contained true -o bin\Release\net8.0-windows10.0.17763.0
+dotnet publish CititorRSS.Jaws.csproj -c Release -r win-x64 -p:SelfContained=true -p:PublishSelfContained=true -p:AppendRuntimeIdentifierToOutputPath=false -p:PublishSingleFile=false -p:DebugType=None -p:DebugSymbols=false --no-restore -o bin\Release\net8.0-windows10.0.17763.0
 ```
+
+Pentru această copie standard sunt necesare proprietățile explicite de mai sus. Fără `-p:AppendRuntimeIdentifierToOutputPath=false`, buildul obișnuit și publicarea cu RID pot concura asupra aceluiași director, iar un `Orizont.runtimeconfig.json` framework-dependent, mai nou, poate rămâne în rădăcină.
+
+Înainte de a preda executabilul, verifică `Orizont.runtimeconfig.json`: trebuie să conțină `includedFrameworks` cu versiunile runtime incluse, nu numai `frameworks` care cer runtime instalat separat.
 
 Verifică runtimeconfig (`includedFrameworks`), conținutul folderului și pornirea; compilarea singură nu validează pornirea sau JAWS. Nu redirecționa `OutputPath`, `OutDir` sau `--output` ale instalatorului ori ale unei soluții întregi spre folderul aplicației. Instalatorul și proiectele de test folosesc directoarele lor proprii. Fișierele intermediare eliminate la curățare se regenerează la restore/build; prima verificare ulterioară necesită restore, nu `-NoRestore`.
 
@@ -100,10 +104,10 @@ Acest director nu trebuie inclus într-o distribuție sau într-un raport public
 Validarea completă, inclusiv testele automate pentru logică, 1.200 de articole, localizare, eSpeak NG, ghiduri și distribuție, se rulează astfel:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\verify-all.ps1 -DistributionPath .\bin\Release\final-1.6.0-win-x64
+powershell -ExecutionPolicy Bypass -File tools\verify-all.ps1 -DistributionPath .\bin\Release\final-1.6.1-win-x64
 ```
 
-Comanda verifică distribuția locală pentru versiunea 1.6.0.
+Comanda folosește candidatul indicat de `docs\RELEASE-STATUS.json` (în prezent 1.6.1); pentru altă versiune se transmite și `-ExpectedProductVersion`.
 
 Pentru installerul offline local, construiește mai întâi arhiva portabilă și fișierul
 `.sha256`, apoi publică proiectul `packaging\installer\OrizontSetup.csproj` cu

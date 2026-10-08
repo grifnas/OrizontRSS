@@ -15,6 +15,6 @@
       <Button x:Name="WhatsAppResponseButton" Content="Distribuie prin WhatsApp" Click="WhatsAppResponse_Click" AutomationProperties.Name="Distribuie conversația AI prin WhatsApp" />
       <Button Content="Închide" IsCancel="True" />
     </WrapPanel>
-    <StatusBar x:Name="ResponseStatusBar" Grid.Row="4" Margin="0,8,0,0" AutomationProperties.LiveSetting="Polite"><StatusBarItem Focusable="False" IsTabStop="False"><TextBlock x:Name="SpeechStatus" Text="Citire vocală" AutomationProperties.LiveSetting="Polite" /></StatusBarItem></StatusBar>
+    <StatusBar x:Name="ResponseStatusBar" Grid.Row="4" Margin="0,8,0,0" Focusable="False" IsTabStop="False" AutomationProperties.LiveSetting="Polite"><StatusBarItem Focusable="False" IsTabStop="False"><TextBlock x:Name="SpeechStatus" Text="Citire vocală" AutomationProperties.LiveSetting="Polite" /></StatusBarItem></StatusBar>
   </Grid>
 </Window>

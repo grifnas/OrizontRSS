@@ -1,67 +1,32 @@
-# Publicarea Orizont RSS — versiunea 1.5.4
+# Publicare și stare de lucru — Orizont RSS
 
-Acest document consemnează pachetele și verificările release-ului. Nu conține chei API,
-date ale utilizatorilor sau feeduri personale.
+## Ultimul release public
 
-## Starea versiunii
+- Versiune: **v1.6.0**, publicată la 19 septembrie 2026.
+- Release oficial: [github.com/grifnas/OrizontRSS/releases/tag/v1.6.0](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.0)
+- Pagina de prezentare: [grifnas.github.io/OrizontRSS](https://grifnas.github.io/OrizontRSS/)
+- Codul exact al versiunii: [tagul v1.6.0](https://github.com/grifnas/OrizontRSS/tree/v1.6.0)
+- Instalator autonom: OrizontSetup-1.6.0.exe
+- Variantă portabilă: Orizont-RSS-1.6.0-win-x64.zip
+- Arhivă sursă: Orizont-RSS-1.6.0-source.zip
+- Fișierele SHA-256 sunt atașate release-ului împreună cu pachetele.
 
-- versiune stabilă descărcabilă: `1.5.3`;
-- versiune-sursă pregătită: `1.5.4` (tag publicat; Release-ul cu binarele este în curs);
-- platformă: Windows x64;
-- pachet binar: `Orizont-RSS-1.5.4-win-x64.zip`;
-- installer offline: `OrizontSetup.exe`;
-- arhivă sursă: `Orizont-RSS-1.5.4-source.zip`;
-- licență: GPL-3.0-or-later;
-- limbi: română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană.
+Acestea sunt fișierele publicate. Nu șterge și nu înlocui release-ul sau tagul pentru a curăța copiile locale.
 
-## Depozit GitHub public
+## Sursa și executabilul local
 
-Depozitul public este `grifnas/OrizontRSS`; sursa, documentația, licența și notificările
-terțe sunt publicate acolo. Pagina de prezentare este
-<https://grifnas.github.io/OrizontRSS/>.
+Ramura main conține schimbări efectuate după publicarea v1.6.0. Ele sunt nepublicate; această curățare nu a creat distribuție, instalator, release, commit sau push.
 
-## Pachetul pregătit pentru Release 1.5.4
+Este în pregătire candidatul local **1.6.1**. Executabilul său de test va afișa versiunea de fișier 1.6.1.0, dar nu va fi un release și nu va fi publicat ori distribuit; nu este pachetul public v1.6.0. Versiunea publică rămâne v1.6.0. Înaintea oricărei distribuții viitoare sunt necesare acceptările rămase, verificarea tuturor limbilor, actualizarea notelor/manifeste/paginilor și o cerere expresă separată pentru distribuție.
 
-După autentificarea proprietarului, Release-ul `v1.5.4` va conține:
+## Curățarea copiilor istorice
 
-- `Orizont-RSS-1.5.4-win-x64.zip` și fișierul său `.sha256`;
-- `OrizontSetup.exe` și fișierul său `.sha256`;
-- `Orizont-RSS-1.5.4-source.zip` și fișierul său `.sha256`;
-- `RELEASE-NOTES-1.5.4.md`.
-
-Pachetul portabil și installerul sunt autonome pentru Windows x64. Cheile API sunt
-opționale și furnizate de utilizator; datele aplicației rămân în profilul local Windows.
-
-## GitHub Pages
-
-Pagina din `docs/index.html` este punctul de pornire pentru prezentare și descărcare;
-publicarea este configurată din ramura principală și directorul `/docs`. Sunt disponibile
-opt limbi și linkul stabil către installerul `OrizontSetup.exe`.
+Au fost eliminate din arborele curent notele de versiune 1.5.2, 1.5.3 și 1.5.4 și copiile locale ale manifestelor WinGet 1.5.3/1.5.4. Au rămas notele și manifestele 1.6.0, precum și tot codul și documentația de după release. Tagurile Git și release-urile GitHub anterioare nu au fost șterse; ele păstrează sursele și pachetele istorice.
 
 ## WinGet
 
-Manifestul pentru `Grifnas.OrizontRSS` a fost trimis prin PR-ul
-`microsoft/winget-pkgs#431971`; integrarea în catalog și verificările Microsoft sunt
-urmărite separat de acest Release.
+Manifestele locale păstrate sunt numai cele din packaging/winget/Grifnas.OrizontRSS/1.6.0/. PR-ul asociat este [microsoft/winget-pkgs#431971](https://github.com/microsoft/winget-pkgs/pull/431971). Starea din acest fișier este un reper documentar, nu o verificare live a PR-ului.
 
-## Etapa 5 — Microsoft Store
+## Regula pentru documentația de release
 
-Microsoft Store rămâne o etapă ulterioară. Pentru WPF este preferat un pachet MSIX,
-semnat și verificat, deoarece permite instalare/dezinstalare curată și actualizări
-gestionate de Store.
-
-## Checklist înainte de publicare
-
-- [ ] nu există `settings.json`, `feeds.json`, backupuri, jurnale sau chei API în sursă;
-- [x] toate cele opt limbi sunt complete și verificate automat;
-- [ ] ghidurile HTML și notele de lansare sunt actualizate;
-- [ ] testele automate sunt trecute;
-- [ ] verificarea manuală cu JAWS/NVDA și testul pe un al doilea calculator rămân de confirmat separat;
-- [ ] hash-urile SHA-256 corespund arhivelor publicate;
-- [ ] licența GPL și notificările terțe sunt incluse;
-- [ ] pagina publică explică cerințele, confidențialitatea și modul de raportare a problemelor.
-
-Verificarea manuală JAWS/NVDA pentru interacțiunile NewsBlur din 1.5.4 și confirmarea
-sincronizării pe al doilea calculator rămân de efectuat; nu sunt declarate drept trecute.
-Înaintea finalizării Release-ului, API-ul GitHub a confirmat că tagul există, dar
-Release-ul și asseturile binare încă nu sunt publicate.
+Fișierul docs/RELEASE-STATUS.json este registrul canonic al ultimei versiuni publicate și al stării sursei main. Înaintea publicării viitoare, actualizează registrul, README.md, CHANGELOG.md, notele de versiune, manifeste WinGet și paginile publice; apoi rulează verify-release-consistency.ps1 și verificările de publicare. Modificările nepublicate trebuie etichetate clar ca atare până la apariția unui release real.

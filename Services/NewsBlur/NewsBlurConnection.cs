@@ -10,6 +10,7 @@ namespace CititorRSS.Jaws;
 public sealed record NewsBlurSession(string Username, string SessionId);
 public sealed record NewsBlurSubscription(string Name, string Url, string Folder);
 public sealed record NewsBlurFeedInfo(string FeedId, string Name, string Url, string Folder);
+public sealed record NewsBlurNameAddressMismatch(Feed LocalFeed, NewsBlurSubscription RemoteFeed);
 public sealed record NewsBlurStory(string StoryHash, string Title, string Link, DateTimeOffset? Published, bool IsRead, bool IsStarred, IReadOnlyList<string> UserTags, string Content);
 
 /// <summary>Fails closed unless OPML and NewsBlur's feed index describe the same complete subscription set.</summary>
@@ -25,6 +26,55 @@ public static class NewsBlurFeedSnapshotPolicy
         if (string.IsNullOrWhiteSpace(leftKey) || string.IsNullOrWhiteSpace(rightKey)) return false;
         if (string.Equals(leftKey, rightKey, StringComparison.OrdinalIgnoreCase)) return true;
         return string.Equals(RemoveWwwPrefix(leftKey), RemoveWwwPrefix(rightKey), StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>Finds unique local/remote name matches that point to different feed addresses.</summary>
+    public static IReadOnlyList<NewsBlurNameAddressMismatch> FindNameAddressMismatches(
+        IEnumerable<Feed> localFeeds,
+        IEnumerable<NewsBlurSubscription> remoteFeeds)
+    {
+        var localGroups = localFeeds
+            .Select(feed => (Feed: feed, NameKey: NormalizeFeedName(feed.Name)))
+            .Where(item => item.NameKey.Length > 0)
+            .GroupBy(item => item.NameKey, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.Select(item => item.Feed).ToList(), StringComparer.OrdinalIgnoreCase);
+        var remoteGroups = remoteFeeds
+            .Select(feed => (Feed: feed, NameKey: NormalizeFeedName(feed.Name)))
+            .Where(item => item.NameKey.Length > 0)
+            .GroupBy(item => item.NameKey, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.Select(item => item.Feed).ToList(), StringComparer.OrdinalIgnoreCase);
+
+        var mismatches = new List<NewsBlurNameAddressMismatch>();
+        foreach (var (nameKey, localMatches) in localGroups)
+        {
+            if (localMatches.Count != 1 || !remoteGroups.TryGetValue(nameKey, out var remoteMatches) || remoteMatches.Count != 1)
+                continue;
+            if (AddressesMatch(localMatches[0].Url, remoteMatches[0].Url)) continue;
+            mismatches.Add(new NewsBlurNameAddressMismatch(localMatches[0], remoteMatches[0]));
+        }
+        return mismatches;
+    }
+
+    /// <summary>
+    /// Identifies a newly appeared wrong-address feed only when its normalized name is unique
+    /// across the complete post-add snapshot. Ambiguous candidates are never returned for deletion.
+    /// </summary>
+    public static NewsBlurFeedInfo? FindUniqueNewMismatchedFeed(
+        IReadOnlyCollection<NewsBlurFeedInfo> before,
+        IReadOnlyCollection<NewsBlurFeedInfo> after,
+        string requestedUrl,
+        string expectedName)
+    {
+        if (after.Any(feed => AddressesMatch(feed.Url, requestedUrl))) return null;
+        var nameKey = NormalizeFeedName(expectedName);
+        if (nameKey.Length == 0) return null;
+
+        var matchingAfter = after.Where(feed =>
+            string.Equals(NormalizeFeedName(feed.Name), nameKey, StringComparison.OrdinalIgnoreCase)).ToList();
+        if (matchingAfter.Count != 1 || AddressesMatch(matchingAfter[0].Url, requestedUrl)) return null;
+
+        var previousIds = before.Select(feed => feed.FeedId).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return !previousIds.Contains(matchingAfter[0].FeedId) ? matchingAfter[0] : null;
     }
 
     /// <summary>
@@ -170,6 +220,21 @@ public static class NewsBlurStartupSyncPolicy
 
     public static bool ShouldSyncArticlesAndStates(AppSettings settings, bool sessionAvailable, bool initialImportRequired) =>
         sessionAvailable && settings.NewsBlurSyncArticlesAndStatesAtStartup && !initialImportRequired;
+}
+
+public enum NewsBlurReadSyncAction { None, SendRead, SendUnread, ApplyRemote, Conflict }
+
+public static class NewsBlurReadStatePolicy
+{
+    public static NewsBlurReadSyncAction Decide(bool localRead, bool lastLocalRead, bool remoteRead, bool lastRemoteRead)
+    {
+        var localChanged = localRead != lastLocalRead;
+        var remoteChanged = remoteRead != lastRemoteRead;
+        if (localChanged && remoteChanged) return NewsBlurReadSyncAction.Conflict;
+        if (localChanged) return localRead ? NewsBlurReadSyncAction.SendRead : NewsBlurReadSyncAction.SendUnread;
+        if (remoteChanged) return NewsBlurReadSyncAction.ApplyRemote;
+        return NewsBlurReadSyncAction.None;
+    }
 }
 
 /// <summary>Maps Orizont's unorganized category to NewsBlur's top-level feeds.</summary>
@@ -352,13 +417,58 @@ public sealed class NewsBlurConnection
     }
 
     /// <summary>Adds a feed to the authenticated NewsBlur account.</summary>
-    public async Task AddFeedAsync(string sessionId, string url, string? folder = null, CancellationToken cancellationToken = default)
+    public async Task<NewsBlurFeedInfo> AddFeedAsync(string sessionId, string url, string? folder = null, string? expectedName = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(url)) throw new ArgumentException(T("Adresa feedului este obligatorie."), nameof(url));
+        var before = await GetFeedIndexAsync(sessionId, cancellationToken);
+        var existing = before.Where(feed => NewsBlurFeedSnapshotPolicy.AddressesMatch(feed.Url, url)).ToList();
+        if (existing.Count == 1) return existing[0];
+        if (existing.Count > 1) throw new InvalidOperationException(F("NewsBlur nu a confirmat adresa exactă cerută pentru feedul „{0}”. Nu l-am asociat local. Verifică abonamentele NewsBlur înainte de o nouă încercare.", expectedName ?? url));
+
         var values = new List<KeyValuePair<string, string>> { new("url", url.Trim()) };
         var remoteFolder = NewsBlurFolderMapping.ToNewsBlurFolder(folder);
         if (!string.IsNullOrWhiteSpace(remoteFolder)) values.Add(new("folder", remoteFolder));
         await PostAccountChangeAsync(sessionId, "/reader/add_url", values, T("Feedul nu a putut fi adăugat în NewsBlur."), cancellationToken);
+
+        IReadOnlyList<NewsBlurFeedInfo> after;
+        try { after = await GetFeedIndexAsync(sessionId, cancellationToken); }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            throw new InvalidOperationException(
+                F("NewsBlur nu a confirmat adresa exactă cerută pentru feedul „{0}”. Nu l-am asociat local. Verifică abonamentele NewsBlur înainte de o nouă încercare.", expectedName ?? url),
+                exception);
+        }
+
+        var exactMatches = after.Where(feed => NewsBlurFeedSnapshotPolicy.AddressesMatch(feed.Url, url)).ToList();
+        if (exactMatches.Count == 1) return exactMatches[0];
+        if (exactMatches.Count > 1)
+            throw new InvalidOperationException(F("NewsBlur nu a confirmat adresa exactă cerută pentru feedul „{0}”. Nu l-am asociat local. Verifică abonamentele NewsBlur înainte de o nouă încercare.", expectedName ?? url));
+
+        var unexpected = NewsBlurFeedSnapshotPolicy.FindUniqueNewMismatchedFeed(before, after, url, expectedName ?? string.Empty);
+        if (unexpected is not null)
+        {
+            IReadOnlyList<NewsBlurFeedInfo> verifiedFeeds;
+            IReadOnlyList<NewsBlurSubscription> verifiedSubscriptions;
+            try
+            {
+                await DeleteFeedAsync(sessionId, unexpected.FeedId, unexpected.Folder, cancellationToken);
+                verifiedFeeds = await GetFeedIndexAsync(sessionId, cancellationToken);
+                verifiedSubscriptions = await GetSubscriptionsAsync(sessionId, cancellationToken);
+            }
+            catch (Exception exception) when (exception is not OperationCanceledException)
+            {
+                throw new InvalidOperationException(
+                    F("NewsBlur a returnat altă adresă decât cea cerută; eliminarea abonamentului neașteptat nu a putut fi confirmată pentru feedul „{0}”. Verifică NewsBlur înainte de o nouă încercare.", expectedName ?? url),
+                    exception);
+            }
+            if (verifiedFeeds.Any(feed => string.Equals(feed.FeedId, unexpected.FeedId, StringComparison.OrdinalIgnoreCase)) ||
+                verifiedSubscriptions.Any(feed => NewsBlurFeedSnapshotPolicy.AddressesMatch(feed.Url, unexpected.Url)) ||
+                !NewsBlurFeedSnapshotPolicy.IsComplete(verifiedSubscriptions, verifiedFeeds, out _))
+                throw new InvalidOperationException(F("NewsBlur a returnat altă adresă decât cea cerută; eliminarea abonamentului neașteptat nu a putut fi confirmată pentru feedul „{0}”. Verifică NewsBlur înainte de o nouă încercare.", expectedName ?? url));
+            throw new InvalidOperationException(F("NewsBlur a returnat altă adresă decât cea cerută. Abonamentul neașteptat a fost eliminat și verificat; feedul „{0}” nu a fost asociat local.", expectedName ?? url));
+        }
+
+        throw new InvalidOperationException(F("NewsBlur nu a confirmat adresa exactă cerută pentru feedul „{0}”. Nu l-am asociat local. Verifică abonamentele NewsBlur înainte de o nouă încercare.", expectedName ?? url));
     }
 
     /// <summary>Creates a NewsBlur folder. Empty folders have no local equivalent, but nested folders are supported.</summary>
@@ -694,4 +804,5 @@ public sealed class NewsBlurConnection
     }
 
     private static string T(string source) => UiText.Translate(source);
+    private static string F(string source, params object?[] arguments) => UiText.Format(source, arguments);
 }

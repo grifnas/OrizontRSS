@@ -1,0 +1,12 @@
+{
+  "latestPublishedVersion": "1.6.0",
+  "latestPublishedTag": "v1.6.0",
+  "latestPublishedDate": "2026-09-19",
+  "workingBranch": "main",
+  "workingTreeStatus": "unreleased-post-release-changes",
+  "postReleaseDistributionCreated": false,
+  "nextCandidateVersion": "1.6.1",
+  "candidateStatus": "preparation-in-progress",
+  "candidateDistributionCreated": false,
+  "candidateReleasePublished": false
+}

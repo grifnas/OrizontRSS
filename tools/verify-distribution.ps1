@@ -9,8 +9,20 @@ $ErrorActionPreference = 'Stop'
 $path = [System.IO.Path]::GetFullPath($DistributionPath)
 if (-not (Test-Path -LiteralPath $path -PathType Container))
 {
-    throw "Directorul de distribuție nu există: $path"
+    throw "Distribution directory not found: $path"
 }
+
+$executablePath = Join-Path $path 'Orizont.exe'
+if (-not (Test-Path -LiteralPath $executablePath -PathType Leaf))
+{
+    throw 'Distribution is missing Orizont.exe.'
+}
+$version = (Get-Item -LiteralPath $executablePath).VersionInfo
+if ([string]::IsNullOrWhiteSpace($ExpectedFileVersion)) { $ExpectedFileVersion = $version.FileVersion }
+if ([string]::IsNullOrWhiteSpace($ExpectedProductVersion)) { $ExpectedProductVersion = $version.ProductVersion }
+$releaseNotesMatch = [regex]::Match($ExpectedProductVersion, '^(?<version>\d+\.\d+\.\d+)')
+if (-not $releaseNotesMatch.Success) { throw "Product version is not a valid release version: $ExpectedProductVersion" }
+$requiredReleaseNotes = "RELEASE-NOTES-$($releaseNotesMatch.Groups['version'].Value).md"
 
 $requiredFiles = @(
     'Orizont.exe',
@@ -38,20 +50,20 @@ $requiredFiles = @(
     'pt-BR\Orizont.resources.dll',
     'hu-HU\Orizont.resources.dll',
     'it-IT\Orizont.resources.dll',
-    'RELEASE-NOTES-1.6.0.md'
+    $requiredReleaseNotes
 )
 
 $missing = @($requiredFiles | Where-Object { -not (Test-Path -LiteralPath (Join-Path $path $_) -PathType Leaf) })
 if ($missing.Count -gt 0)
 {
-    Write-Error ("Distribuția este incompletă. Lipsesc: " + ($missing -join ', '))
+    Write-Error ("Distribution is incomplete. Missing: " + ($missing -join ', '))
     exit 1
 }
 
 $dataFiles = @(Get-ChildItem -LiteralPath (Join-Path $path 'SpeechEngines\eSpeakNG\espeak-ng-data') -Recurse -File)
 if ($dataFiles.Count -lt 400)
 {
-    Write-Error "Datele eSpeak NG sunt incomplete: numai $($dataFiles.Count) fișiere."
+    Write-Error "eSpeak NG data is incomplete: only $($dataFiles.Count) files."
     exit 1
 }
 
@@ -62,19 +74,18 @@ $forbidden = @(Get-ChildItem -LiteralPath $path -Recurse -File | Where-Object {
 })
 if ($forbidden.Count -gt 0)
 {
-    Write-Error ("Distribuția conține fișiere interzise sau date locale: " + (($forbidden | ForEach-Object Name) -join ', '))
+    Write-Error ("Distribution contains forbidden files or local data: " + (($forbidden | ForEach-Object Name) -join ', '))
     exit 1
 }
 
-$version = (Get-Item -LiteralPath (Join-Path $path 'Orizont.exe')).VersionInfo
-if (-not [string]::IsNullOrWhiteSpace($ExpectedFileVersion) -and $version.FileVersion -ne $ExpectedFileVersion)
+if ($version.FileVersion -ne $ExpectedFileVersion)
 {
-    Write-Error "Versiunea fișierului este $($version.FileVersion), dar era așteptată $ExpectedFileVersion."
+    Write-Error "File version is $($version.FileVersion); expected $ExpectedFileVersion."
     exit 1
 }
-if (-not [string]::IsNullOrWhiteSpace($ExpectedProductVersion) -and $version.ProductVersion -ne $ExpectedProductVersion)
+if ($version.ProductVersion -ne $ExpectedProductVersion)
 {
-    Write-Error "Versiunea produsului este $($version.ProductVersion), dar era așteptată $ExpectedProductVersion."
+    Write-Error "Product version is $($version.ProductVersion); expected $ExpectedProductVersion."
     exit 1
 }
 [pscustomobject]@{
@@ -82,5 +93,5 @@ if (-not [string]::IsNullOrWhiteSpace($ExpectedProductVersion) -and $version.Pro
     FileVersion = $version.FileVersion
     ProductVersion = $version.ProductVersion
     EspeakDataFiles = $dataFiles.Count
-    Status = 'completă'
+    Status = 'complete'
 }
