@@ -1,5 +1,11 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-08 — Reambalarea arhivei sursă 1.6.1
+
+- După adăugarea celor patru manifeste WinGet 1.6.1, arhiva sursă locală a fost refăcută din commitul pregătit cu `git archive`; verificarea ZIP a confirmat 755 intrări. Sidecar-ul SHA-256 va fi recalculat după tagul local final.
+- `docs/PROJECT-STATUS.md` și `PUBLICATION.md` consemnează numărul nou de intrări. Pachetele binare portabil și installer nu s-au modificat; modificările din această etapă sunt documentație/manifeste.
+- Publicarea GitHub și pagina de prezentare rămân neefectuate din cauza autentificării Git invalide în terminalul agentului. Nu s-a făcut push sau modificare externă.
+
 ## 2026-10-08 — Pregătire locală pentru publicarea 1.6.1; publicarea externă blocată
 
 - Pregătite cele patru manifeste WinGet pentru 1.6.1, cu URL-ul portabilului și SHA-256 verificat; `winget validate --manifest packaging\winget\Grifnas.OrizontRSS\1.6.1` a reușit. Cele patru fișiere 1.6.0 rămân până când 1.6.1 devine versiunea publică.
