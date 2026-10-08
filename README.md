@@ -16,6 +16,10 @@ Cea mai recentă versiune publicată și verificată în acest depozit este **v1
 
 Arhiva sursă și sumele SHA-256 sunt atașate release-ului de mai sus. Linkurile sunt fixate la v1.6.0 pentru ca această pagină să nu sugereze accidental că modificările locale ulterioare au fost publicate.
 
+## Pregătirea locală a versiunii 1.6.1
+
+Candidatul v1.6.1 și pachetele sale sunt pregătite local, dar **nu au fost încă publicate**. Versiunea publică rămâne v1.6.0 până când commitul, tagul și release-ul v1.6.1 sunt publicate pe GitHub. Notele pregătite sunt în [RELEASE-NOTES-1.6.1.md](RELEASE-NOTES-1.6.1.md); verificările practice A02, A09, A07 și A11 rămân deschise și nu sunt declarate trecute.
+
 ## Sursa în lucru — modificări încă nepublicate
 
 Copia locală de lucru a ramurii main conține și modificări realizate după release-ul v1.6.0. Acestea **nu fac parte din pachetele publice v1.6.0**. Un build local nu este binarul public al unui release; un număr de versiune mai nou sau un pachet pregătit local nu schimbă acest lucru. Pentru descărcare, folosește numai fișierele atașate unui release oficial pe GitHub.

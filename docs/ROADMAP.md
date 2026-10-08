@@ -2,7 +2,7 @@
 
 ## Actualizare — 8 octombrie 2026
 
-Domeniul candidatului local v1.6.1 este inventariat în RELEASE-NOTES-1.6.1.md și rezumat în CHANGELOG.md. La decizia utilizatorului, probele A02, A09, A07 și A11 sunt transferate în ciclul versiunii următoare; rămân deschise și neverificate, fără a fi declarate trecute. Sursa Full a trecut; toate cele opt limbi, ghidurile și arhiva portabilă au fost validate automat. Pachetele candidate sunt pregătite numai local; nu s-au făcut push, tag sau release GitHub. NU1900 arată că indexul online NuGet nu a fost accesibil, deci auditul de vulnerabilități rămâne neverificat în această sesiune. La publicarea efectivă trebuie clarificată această limită și starea probelor amânate, actualizate paginile și manifestele WinGet, apoi creat release-ul. Release-ul public rămâne v1.6.0.
+Domeniul v1.6.1 și pachetele sunt pregătite local; utilizatorul a autorizat continuarea spre publicare. Sursa Full, distribuția și localizarea în opt limbi au trecut verificările automate anterioare. A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; NU1900 înseamnă că auditul online al vulnerabilităților NuGet nu a putut fi verificat. Manifestele WinGet 1.6.1 sunt pregătite local, dar PR-ul public existent încă vizează 1.6.0. Pagina publică, commitul/tagul și release-ul încă nu au fost publicate. În această sesiune, GitHub CLI raportează un token invalid, iar browserul integrat nu are o filă deschisă; fluxul public este oprit până la restabilirea autentificării din mediul normal al utilizatorului. Ultimul release public verificat rămâne v1.6.0.
 
 ## Baseline de publicare — 1 octombrie 2026
 

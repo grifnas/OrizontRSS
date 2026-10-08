@@ -1,5 +1,13 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-08 — Pregătire locală pentru publicarea 1.6.1; publicarea externă blocată
+
+- Pregătite cele patru manifeste WinGet pentru 1.6.1, cu URL-ul portabilului și SHA-256 verificat; `winget validate --manifest packaging\winget\Grifnas.OrizontRSS\1.6.1` a reușit. Cele patru fișiere 1.6.0 rămân până când 1.6.1 devine versiunea publică.
+- Actualizate `README.md`, `PUBLICATION.md` și `docs/ROADMAP.md` pentru a păstra clară diferența dintre v1.6.0 publică și pachetele 1.6.1 locale. PR-ul existent microsoft/winget-pkgs#431971 este deschis și încă vizează 1.6.0; nu s-a creat o dublură.
+- Reconfirmat: `gh auth status` indică token invalid pentru contul grifnas; proba neinteractivă `git push --dry-run` nu s-a încheiat în mediul curent. Procesele Git pornite de această probă au fost oprite punctual. Nu s-a cerut, citit sau copiat niciun token și nu s-a făcut nicio scriere publică.
+- Paginile GitHub Pages, tagul/release-ul GitHub și PR-ul WinGet nu au fost încă publicate ori modificate. Versiunea publică rămâne v1.6.0; următoarea etapă externă cere push din shell-ul normal, cu GCM conectat, conform AGENTS.md.
+- Verificarea manuală A02, A09, A07 și A11 rămâne amânată și neacceptată; `NU1900` menține auditul online NuGet neverificat. Executabilul local autonom de test din locația standard nu a fost recompilat, deoarece schimbările de aici sunt doar documentație și manifeste.
+
 ## 2026-10-08 — Pregătirea locală a pachetelor v1.6.1
 
 - Actualizate notele de versiune pentru a le face gata de folosit ca release notes, păstrând explicit faptul că probele practice A02, A09, A07 și A11 rămân deschise și transferate ciclului următor.
