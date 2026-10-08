@@ -17,7 +17,7 @@ Acestea sunt fișierele publicate. Nu șterge și nu înlocui release-ul sau tag
 
 Ramura main conține schimbările nepublicate de după v1.6.0. Pregătirea candidatului aplicației 1.6.1 și curățarea snapshoturilor 1.5.x sunt în commitul local `3a176e9`; utilitarul de monitorizare a descărcărilor este separat în `40243b6`. Commiturile rămân locale, fără push.
 
-Candidatul **1.6.1** are acum pachete pregătite local: `bin/Release/Orizont-RSS-1.6.1-win-x64.zip`, `bin/Release/Orizont-RSS-1.6.1-source.zip` și `bin/Release/OrizontSetup-1.6.1.exe`, fiecare cu fișier `.sha256` alăturat. Acestea nu sunt încă publicate; release-ul oficial și linkurile publice rămân v1.6.0. Nu au fost create tag sau release GitHub și nu s-a făcut push.
+Candidatul **1.6.1** are acum pachete pregătite local: `bin/Release/Orizont-RSS-1.6.1-win-x64.zip`, `bin/Release/Orizont-RSS-1.6.1-source.zip` și `bin/Release/OrizontSetup-1.6.1.exe`, fiecare cu fișier `.sha256` alăturat. Acestea nu sunt încă publicate; candidatul local nu este pachetul public până la atașarea fișierelor la un release GitHub. Release-ul oficial și linkurile publice rămân v1.6.0. Nu au fost create tag sau release GitHub și nu s-a făcut push.
 
 - Portable: 92.550.743 bytes; SHA-256: `ebe60ba4c8bc1fab4109f957c430ff13783ccb1b09b36ff23697fd325485b34c`.
 - Installer offline: 254.266.392 bytes; SHA-256: `59303ab255a00aa818790338c29024cd50999904cb29daea485cb8827e81bf4b`.
