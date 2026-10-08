@@ -24,7 +24,7 @@ Candidatul **1.6.1** are acum pachete pregătite local: `bin/Release/Orizont-RSS
 - Arhiva sursă: 750 intrări; suma și dimensiunea curente se află în sidecar și în fișierul local `bin/Release/Orizont-RSS-1.6.1-source.zip`.
 - Buildul aplicației include Microsoft .NET 8.0.31 și Windows Desktop 8.0.31; nu cere instalarea separată a .NET Runtime. WebReader folosește WebView2 disponibil în Windows/Edge.
 
-Înaintea publicării efective rămân: acceptarea explicită a stării celor patru probe practice amânate (A02, A09, A07, A11), accesul la auditul online NuGet (ultima rulare a dat NU1900), actualizarea paginilor publice și a manifestelor WinGet la URL/hash-urile release-ului, apoi tag/release și push. Verificările automate de localizare pentru toate cele opt limbi au trecut; revizia lingvistică umană A07 rămâne deschisă. Acest fișier și registrul de stare nu substituie publicarea.
+Probele A02, A09, A07 și A11 sunt transferate explicit în ciclul următor; dacă 1.6.1 se publică înaintea lor, notele păstrează această limită și nu le declară trecute. Auditul online NuGet nu a putut fi efectuat (`NU1900`), deci nu este prezentat ca verificat. Pentru publicarea efectivă mai trebuie actualizate paginile publice și manifestele WinGet cu URL-urile/hash-urile release-ului, apoi create tagul și release-ul și împinse commiturile. Paginile și manifestele rămân momentan la v1.6.0; nu s-a făcut nicio operație publică.
 
 ## Curățarea copiilor istorice
 
