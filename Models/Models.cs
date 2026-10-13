@@ -25,6 +25,9 @@ public sealed class Feed
     public string ArticleOpenMode { get; set; } = ArticleOpenModeIds.Default;
     /// <summary>Local metadata must be sent after this feed has first been added to NewsBlur.</summary>
     public bool NewsBlurPendingLocalMetadataSync { get; set; }
+    /// <summary>Versiunea fluxului confirmată de server (ETag / Last-Modified), pentru răspunsul „nimic nou”.</summary>
+    public string? RssETag { get; set; }
+    public DateTimeOffset? RssLastModified { get; set; }
     public List<Article> Articles { get; set; } = [];
     public HashSet<string> AutomationSeen { get; set; } = [];
     public bool HasThreeMonthSilence => DateTimeOffset.Now - (LastArticleReceivedOn ?? LastSuccessfulUpdate ?? AddedOn) >= TimeSpan.FromDays(90);

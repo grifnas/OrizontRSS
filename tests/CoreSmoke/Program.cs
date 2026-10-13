@@ -338,6 +338,7 @@ RunNewsBlurConvergenceSmoke();
 RunReadableCleanupSmoke();
 RunNativePathSmoke();
 RunReadabilitySmoke();
+await RunParallelRefreshSmokeAsync();
 await RunUpdaterSmokeAsync();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
@@ -446,6 +447,74 @@ void RunNewsBlurConvergenceSmoke()
     article.Tags = ["nou"];
     result = NewsBlurArticleStateReconciler.Reconcile(article, Story(read: false), Saved, ApplySaved);
     Check(result.SkippedTags && !result.SendStarForTags, "etichetele unui articol nesalvat rămân amânate");
+}
+
+// Actualizare rapidă: descărcări paralele limitate și răspunsul „nimic nou” (HTTP 304).
+async Task RunParallelRefreshSmokeAsync()
+{
+    var empty = new RssLoadResult(false, [], null, null);
+    var feeds = Enumerable.Range(0, 12).Select(i => new Feed { Name = $"F{i}", Url = $"https://site{i % 3}.example.test/rss{i}" }).ToList();
+    int running = 0, maxRunning = 0;
+    var perHost = new System.Collections.Concurrent.ConcurrentDictionary<string, int>();
+    var maxPerHost = 0;
+    var watch = System.Diagnostics.Stopwatch.StartNew();
+    var downloads = FeedDownloadScheduler.Start(feeds, async (feed, token) =>
+    {
+        var host = new Uri(feed.Url).Host;
+        var now = Interlocked.Increment(ref running);
+        var hostNow = perHost.AddOrUpdate(host, 1, (_, value) => value + 1);
+        lock (perHost) { maxRunning = Math.Max(maxRunning, now); maxPerHost = Math.Max(maxPerHost, hostNow); }
+        await Task.Delay(150, token);
+        perHost.AddOrUpdate(host, 0, (_, value) => value - 1);
+        Interlocked.Decrement(ref running);
+        return empty;
+    }, CancellationToken.None);
+    var results = await Task.WhenAll(downloads);
+    watch.Stop();
+    Check(results.All(result => result.Error is null && result.Result is not null), "toate descărcările paralele se termină");
+    Check(maxPerHost <= FeedDownloadScheduler.MaximumPerHost && maxRunning <= FeedDownloadScheduler.MaximumParallel, "descărcările respectă limita generală și limita pe site");
+    Check(watch.ElapsedMilliseconds < 12 * 150, "descărcările paralele sunt mai rapide decât cele succesive");
+
+    var order = new List<string>();
+    var mixed = new List<Feed> { new() { Name = "lent", Url = "https://lent.example.test/rss" }, new() { Name = "rapid1", Url = "https://a.example.test/rss" }, new() { Name = "rapid2", Url = "https://b.example.test/rss" } };
+    var mixedDownloads = FeedDownloadScheduler.Start(mixed, async (feed, token) =>
+    {
+        await Task.Delay(feed.Name == "lent" ? 600 : 30, token);
+        if (feed.Name == "rapid2") throw new HttpRequestException("server indisponibil");
+        return empty;
+    }, CancellationToken.None);
+    while (mixedDownloads.Count > 0)
+    {
+        var done = await Task.WhenAny(mixedDownloads);
+        mixedDownloads.Remove(done);
+        order.Add((await done).Feed.Name);
+    }
+    Check(order.Last() == "lent", "un feed lent nu blochează prelucrarea celorlalte");
+    var failedDownload = (await FeedDownloadScheduler.Start([mixed[2]], async (_, _) => { await Task.Yield(); throw new HttpRequestException("x"); }, CancellationToken.None)[0]);
+    Check(failedDownload.Error?.SourceException is HttpRequestException, "eroarea unei descărcări este păstrată pentru tratarea obișnuită");
+    using var cancelled = new CancellationTokenSource();
+    cancelled.Cancel();
+    var cancelledDownload = await FeedDownloadScheduler.Start([mixed[1]], (_, _) => Task.FromResult(empty), cancelled.Token)[0];
+    Check(cancelledDownload.Error?.SourceException is OperationCanceledException, "anularea oprește descărcările care nu au început");
+
+    const string feedXml = "<rss><channel><item><guid>a1</guid><title>Primul</title><link>https://n.example.test/a1</link><description>Text</description></item></channel></rss>";
+    var conditionalHeaders = new List<string>();
+    var reader = new RssReader(new UpdateSmokeHttpHandler(request =>
+    {
+        conditionalHeaders.Add($"{request.Headers.IfNoneMatch}|{request.Headers.IfModifiedSince?.ToString("R")}");
+        if (request.Headers.IfNoneMatch.Count > 0) return new HttpResponseMessage(HttpStatusCode.NotModified);
+        var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(feedXml, Encoding.UTF8, "application/rss+xml") };
+        response.Headers.ETag = new System.Net.Http.Headers.EntityTagHeaderValue("\"v1\"");
+        response.Content.Headers.LastModified = new DateTimeOffset(2026, 10, 13, 8, 0, 0, TimeSpan.Zero);
+        return response;
+    }));
+    var first = await reader.LoadIfChangedAsync("https://n.example.test/rss", null, null);
+    Check(!first.NotModified && first.Articles.Count == 1 && first.ETag == "\"v1\"" && first.LastModified is not null, "prima descărcare citește articolele și reține versiunea serverului");
+    Check(conditionalHeaders[0] == "|", "fără versiune reținută nu se trimit antete condiționate");
+    var second = await reader.LoadIfChangedAsync("https://n.example.test/rss", first.ETag, first.LastModified);
+    Check(second.NotModified && second.Articles.Count == 0 && second.ETag == first.ETag, "la „nimic nou” (304) fluxul nu este descărcat din nou");
+    Check(conditionalHeaders[1].StartsWith("\"v1\"|", StringComparison.Ordinal) && conditionalHeaders[1].EndsWith("GMT", StringComparison.Ordinal), "versiunea reținută este trimisă serverului");
+    Check((await reader.LoadAsync("https://n.example.test/rss")).Count == 1, "descărcarea obișnuită rămâne neschimbată");
 }
 
 // Textul integral: SmartReader alege articolul; paginile nerecunoscute folosesc extractorul existent.

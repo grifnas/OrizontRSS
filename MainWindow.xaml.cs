@@ -3319,6 +3319,14 @@ public partial class MainWindow : Window
             feed.NewsBlurLastFolder = null;
             feed.NewsBlurPendingLocalMetadataSync = false;
         }
+        var previousRssETag = feed.RssETag;
+        var previousRssLastModified = feed.RssLastModified;
+        if (urlChanged)
+        {
+            // Versiunea reținută aparține vechii adrese; noua adresă se descarcă integral.
+            feed.RssETag = null;
+            feed.RssLastModified = null;
+        }
         feed.Name = dialog.FeedName;
         feed.Url = dialog.FeedUrl;
         feed.Folder = dialog.FolderName;
@@ -3331,6 +3339,8 @@ public partial class MainWindow : Window
         }
         catch (Exception exception)
         {
+            feed.RssETag = previousRssETag;
+            feed.RssLastModified = previousRssLastModified;
             feed.Name = previousName;
             feed.Url = previousUrl;
             feed.Folder = previousFolder;
@@ -3788,14 +3798,42 @@ public partial class MainWindow : Window
             var failedFeeds = new List<Feed>();
             var cancelled = false;
             Say(F("Se actualizează {0} feeduri. Procesul poate dura câteva minute. Escape poate opri procesul și întrerupe conexiunea curentă.", feedsToUpdate.Count));
-            foreach (var feed in feedsToUpdate)
+            // Descărcările rulează în paralel; fiecare feed este prelucrat aici, pe firul interfeței,
+            // în ordinea în care se termină. Versiunea reținută se trimite numai dacă feedul are articole.
+            var downloadRequests = feedsToUpdate.ToDictionary(
+                feed => feed,
+                feed => (Url: feed.Url, ETag: feed.Articles.Count > 0 ? feed.RssETag : null, LastModified: feed.Articles.Count > 0 ? feed.RssLastModified : null));
+            var pendingDownloads = FeedDownloadScheduler.Start(
+                feedsToUpdate,
+                (feed, token) =>
+                {
+                    var request = downloadRequests[feed];
+                    return _rss.LoadIfChangedAsync(request.Url, request.ETag, request.LastModified, token);
+                },
+                _refreshCancellation.Token);
+            while (pendingDownloads.Count > 0)
             {
                 if (_refreshCancellation.IsCancellationRequested) { cancelled = true; break; }
+                var completedDownload = await Task.WhenAny(pendingDownloads);
+                pendingDownloads.Remove(completedDownload);
+                var download = await completedDownload;
+                var feed = download.Feed;
                 var failed = false;
                 var feedCancelled = false;
                 try
                 {
-                    var downloaded = DuplicateCleaner.DeduplicateArticles(await _rss.LoadAsync(feed.Url, _refreshCancellation.Token), out _);
+                    download.Error?.Throw();
+                    var downloadResult = download.Result!;
+                    if (downloadResult.NotModified)
+                    {
+                        // Serverul a confirmat că fluxul nu s-a schimbat: articolele rămân, feedul este la zi.
+                        feed.ConsecutiveFailures = 0;
+                        feed.LastError = null;
+                        feed.LastSuccessfulUpdate = DateTimeOffset.Now;
+                        successes++;
+                        continue;
+                    }
+                    var downloaded = DuplicateCleaner.DeduplicateArticles(downloadResult.Articles, out _);
                     ArticleRules.SeedExisting(feed);
                     // Fluxul RSS conține doar ultimele articole; cele ieșite din flux rămân local.
                     DateTimeOffset? retentionCutoff = _settings.AutoCleanupEnabled ? DateTimeOffset.Now.AddDays(-_settings.RetentionDays) : null;
@@ -3806,6 +3844,9 @@ public partial class MainWindow : Window
                     var newlyReceived = merge.NewlyReceived;
                     articlesAdded += newlyReceived;
                     feed.Articles = accepted;
+                    // Versiunea serverului se reține numai după îmbinarea reușită a articolelor.
+                    feed.RssETag = downloadResult.ETag;
+                    feed.RssLastModified = downloadResult.LastModified;
                     feed.ConsecutiveFailures = 0;
                     feed.LastError = null;
                     feed.LastSuccessfulUpdate = DateTimeOffset.Now;

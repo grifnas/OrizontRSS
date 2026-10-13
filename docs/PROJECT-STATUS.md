@@ -1,5 +1,11 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-10-13 — Pregătire v1.6.2: actualizare paralelă și condiționată a feedurilor
+
+La cererea utilizatorului (propunere din audit), după măsurare conform regulii 15. Pe 39 de fluxuri publice (catalogul demonstrativ plus 9 site-uri), actualizarea succesivă dura 32–36 de secunde, din care 21 de secunde erau un singur site care nu răspundea; fără el, 10,5–12 secunde. 21 din 39 de fluxuri publică ETag/Last-Modified, iar 19 au răspuns cu 304 la a doua cerere.
+
+Implementare locală: `FeedDownloadScheduler` (maximum 6 descărcări simultane, 2 pe site), `RssReader.LoadIfChangedAsync` (antete condiționate, 304, citire XML în afara firului interfeței) și `Feed.RssETag`/`RssLastModified`. Versiunea se reține numai după îmbinarea reușită, se trimite numai dacă feedul are articole și se șterge la schimbarea adresei. `RefreshFeedsViaRssAsync` prelucrează feedurile pe firul interfeței, în ordinea terminării, cu aceeași tratare a erorilor, anulării, păstrării și mesajelor. Măsurat cu codul nou pe 38 de fluxuri: 12,0 s înainte, 1,4 s la prima actualizare, 1,0 s la a doua (17 „nimic nou”). CoreSmoke: 238; ScaleSmoke trecut. Quick a trecut, iar executabilul autonom de test a fost refăcut. Rămâne proba practică cu JAWS 2026 pe profilul utilizatorului. Nu s-a creat distribuție.
+
 ## 2026-10-13 — Pregătire v1.6.2: textul integral extras cu SmartReader
 
 La cererea utilizatorului (propunere din auditul din 13 octombrie), extragerea textului integral folosește SmartReader 0.9.6, cu extractorul existent ca rezervă. Prototip și comparație pe 24 de articole reale de pe 12 site-uri (GSMArena, HotNews, Digi24, Adevărul, G4Media, El País, Der Spiegel, heise, BBC, ANSA, Index.hu, g1). SmartReader elimină meniurile, listele laterale și rândurile de autor. Repară Digi24 (articol tăiat de extractorul vechi) și g1 (0 cuvinte înainte); toate frazele reale verificate sunt prezente. Index.hu (live) și heise (nerecunoscut de 0.9.6) folosesc rezerva, cu text identic celui de dinainte.

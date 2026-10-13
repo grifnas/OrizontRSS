@@ -37,23 +37,50 @@ public sealed class RssReader
 
     private readonly HttpClient _client;
     public RssReader()
+        : this(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All, AllowAutoRedirect = true, CheckCertificateRevocationList = true })
     {
-        _client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All, AllowAutoRedirect = true, CheckCertificateRevocationList = true }) { Timeout = TimeSpan.FromSeconds(30) };
+    }
+
+    /// <summary>Allows tests to supply a simulated server.</summary>
+    public RssReader(HttpMessageHandler handler)
+    {
+        _client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
         _client.DefaultRequestHeaders.UserAgent.ParseAdd("CititorRSS-JAWS/1.0");
         _client.DefaultRequestHeaders.Accept.ParseAdd("application/rss+xml, application/atom+xml, application/xml, text/xml, */*");
     }
-    public async Task<List<Article>> LoadAsync(string url, CancellationToken cancellationToken = default)
+
+    public async Task<List<Article>> LoadAsync(string url, CancellationToken cancellationToken = default) =>
+        (await LoadIfChangedAsync(url, null, null, cancellationToken).ConfigureAwait(false)).Articles;
+
+    /// <summary>
+    /// Descarcă fluxul numai dacă s-a schimbat: trimite versiunea reținută (ETag / Last-Modified);
+    /// la răspunsul 304 nu se descarcă și nu se citește nimic. Citirea XML-ului se face în afara
+    /// firului interfeței.
+    /// </summary>
+    public async Task<RssLoadResult> LoadIfChangedAsync(string url, string? etag, DateTimeOffset? lastModified, CancellationToken cancellationToken = default)
     {
-        using var response = await _client.GetAsync(url, cancellationToken);
+        using var request = new HttpRequestMessage(HttpMethod.Get, url);
+        if (!string.IsNullOrWhiteSpace(etag) && System.Net.Http.Headers.EntityTagHeaderValue.TryParse(etag, out var entityTag))
+            request.Headers.IfNoneMatch.Add(entityTag);
+        if (lastModified is not null) request.Headers.IfModifiedSince = lastModified;
+        using var response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+        if (response.StatusCode == HttpStatusCode.NotModified)
+            return new RssLoadResult(true, [], etag, lastModified);
         response.EnsureSuccessStatusCode();
-        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        var articles = await ParseFeedAsync(stream, cancellationToken).ConfigureAwait(false);
+        return new RssLoadResult(false, articles, response.Headers.ETag?.ToString(), response.Content.Headers.LastModified);
+    }
+
+    private static async Task<List<Article>> ParseFeedAsync(System.IO.Stream stream, CancellationToken cancellationToken)
+    {
         using var xmlReader = System.Xml.XmlReader.Create(stream, new System.Xml.XmlReaderSettings
         {
             CheckCharacters = false,
             DtdProcessing = System.Xml.DtdProcessing.Ignore,
             Async = true
         });
-        var xml = await XDocument.LoadAsync(xmlReader, LoadOptions.None, cancellationToken);
+        var xml = await XDocument.LoadAsync(xmlReader, LoadOptions.None, cancellationToken).ConfigureAwait(false);
         var records = xml.Descendants().Where(element => element.Name.LocalName is "item" or "entry").ToList();
         if (records.Count == 0) throw new InvalidOperationException(UiText.Translate("Adresa nu conține un flux RSS sau Atom cu articole."));
         return records.Select(record =>
@@ -253,3 +280,6 @@ public sealed class RssReader
         return text.Trim();
     }
 }
+
+/// <summary>Rezultatul unei descărcări condiționate: NotModified înseamnă că serverul a confirmat că fluxul nu s-a schimbat.</summary>
+public sealed record RssLoadResult(bool NotModified, List<Article> Articles, string? ETag, DateTimeOffset? LastModified);
