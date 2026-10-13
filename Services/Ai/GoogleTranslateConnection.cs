@@ -20,19 +20,20 @@ public sealed class GoogleTranslateConnection
 
     public static IReadOnlyList<GoogleTranslateLanguage> SupportedLanguages { get; } =
     [
-        new("ar", "Arabic (العربية)"), new("bg", "Bulgarian (Български)"), new("ca", "Catalan (Català)"),
-        new("zh-CN", "Chinese, simplified (简体中文)"), new("zh-TW", "Chinese, traditional (繁體中文)"),
-        new("hr", "Croatian (Hrvatski)"), new("cs", "Czech (Čeština)"), new("da", "Danish (Dansk)"),
-        new("nl", "Dutch (Nederlands)"), new("en", "English"), new("et", "Estonian (Eesti)"),
-        new("fi", "Finnish (Suomi)"), new("fr", "French (Français)"), new("de", "German (Deutsch)"),
-        new("el", "Greek (Ελληνικά)"), new("he", "Hebrew (עברית)"), new("hi", "Hindi (हिन्दी)"),
-        new("hu", "Hungarian (Magyar)"), new("id", "Indonesian (Bahasa Indonesia)"), new("it", "Italian (Italiano)"),
-        new("ja", "Japanese (日本語)"), new("ko", "Korean (한국어)"), new("lv", "Latvian (Latviešu)"),
-        new("lt", "Lithuanian (Lietuvių)"), new("ms", "Malay (Bahasa Melayu)"), new("no", "Norwegian (Norsk)"),
-        new("pl", "Polish (Polski)"), new("pt", "Portuguese (Português)"), new("ro", "Romanian (Română)"),
-        new("ru", "Russian (Русский)"), new("sk", "Slovak (Slovenčina)"), new("sl", "Slovenian (Slovenščina)"),
-        new("es", "Spanish (Español)"), new("sv", "Swedish (Svenska)"), new("th", "Thai (ไทย)"),
-        new("tr", "Turkish (Türkçe)"), new("uk", "Ukrainian (Українська)"), new("vi", "Vietnamese (Tiếng Việt)")
+        // Numele românesc este cheia de traducere; numele nativ rămâne între paranteze.
+        new("ar", "Arabă", "العربية"), new("bg", "Bulgară", "Български"), new("ca", "Catalană", "Català"),
+        new("zh-CN", "Chineză simplificată", "简体中文"), new("zh-TW", "Chineză tradițională", "繁體中文"),
+        new("hr", "Croată", "Hrvatski"), new("cs", "Cehă", "Čeština"), new("da", "Daneză", "Dansk"),
+        new("nl", "Olandeză", "Nederlands"), new("en", "Engleză", "English"), new("et", "Estonă", "Eesti"),
+        new("fi", "Finlandeză", "Suomi"), new("fr", "Franceză", "Français"), new("de", "Germană", "Deutsch"),
+        new("el", "Greacă", "Ελληνικά"), new("he", "Ebraică", "עברית"), new("hi", "Hindi", "हिन्दी"),
+        new("hu", "Maghiară", "Magyar"), new("id", "Indoneziană", "Bahasa Indonesia"), new("it", "Italiană", "Italiano"),
+        new("ja", "Japoneză", "日本語"), new("ko", "Coreeană", "한국어"), new("lv", "Letonă", "Latviešu"),
+        new("lt", "Lituaniană", "Lietuvių"), new("ms", "Malaeză", "Bahasa Melayu"), new("no", "Norvegiană", "Norsk"),
+        new("pl", "Poloneză", "Polski"), new("pt", "Portugheză", "Português"), new("ro", "Română", "Română"),
+        new("ru", "Rusă", "Русский"), new("sk", "Slovacă", "Slovenčina"), new("sl", "Slovenă", "Slovenščina"),
+        new("es", "Spaniolă", "Español"), new("sv", "Suedeză", "Svenska"), new("th", "Thailandeză", "ไทย"),
+        new("tr", "Turcă", "Türkçe"), new("uk", "Ucraineană", "Українська"), new("vi", "Vietnameză", "Tiếng Việt")
     ];
 
     public GoogleTranslateConnection(HttpClient? client = null) => _client = client ?? SharedClient;
@@ -192,4 +193,15 @@ public sealed class GoogleTranslateConnection
     private sealed record TranslationChunk(string Text, string SeparatorBefore);
 }
 
-public sealed record GoogleTranslateLanguage(string Code, string DisplayName);
+/// <summary>O limbă Google Translate: numele se traduce în limba interfeței, iar numele nativ se adaugă dacă diferă.</summary>
+public sealed record GoogleTranslateLanguage(string Code, string Name, string NativeName)
+{
+    public string DisplayName
+    {
+        get
+        {
+            var name = UiText.Translate(Name);
+            return string.Equals(name, NativeName, StringComparison.CurrentCultureIgnoreCase) ? name : $"{name} ({NativeName})";
+        }
+    }
+}

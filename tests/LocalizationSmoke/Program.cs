@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.Collections;
+using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Resources;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -242,11 +244,28 @@ Check("ro-RO", "DeepL accessible instructions are Romanian", UiText.Translate("D
 foreach (var emptyState in emptyStates)
     Check("ro-RO", $"empty-state Romanian resource: {emptyState}", UiText.Translate(emptyState), value => value == emptyState);
 
+var catalogQualityChecks = RunCatalogQualityChecks();
+var (scannedWindows, scannedTexts) = RunWindowLanguageScan();
+// Lista limbilor Google Translate: numele limbii în limba interfeței, cu numele nativ când diferă.
+foreach (var culture in cultureNames)
+{
+    UiCulture.Apply(culture);
+    foreach (var language in GoogleTranslateConnection.SupportedLanguages)
+        Check(culture, $"translation language name is translated: {language.Name}", language.DisplayName, value => !HasRomanianLeftover(value));
+}
+UiCulture.Apply("en-US");
+Check("en-US", "language list shows English names with native names", GoogleTranslateConnection.SupportedLanguages.First(language => language.Code == "ar").DisplayName, value => value == "Arabic (العربية)");
+Check("en-US", "a language named like the interface language has no duplicate in parentheses", GoogleTranslateConnection.SupportedLanguages.First(language => language.Code == "en").DisplayName, value => value == "English");
+UiCulture.Apply("ro-RO");
+Check("ro-RO", "language list shows Romanian names", GoogleTranslateConnection.SupportedLanguages.First(language => language.Code == "ar").DisplayName, value => value == "Arabă (العربية)");
+Check("ro-RO", "Romanian is shown once in the Romanian interface", GoogleTranslateConnection.SupportedLanguages.First(language => language.Code == "ro").DisplayName, value => value == "Română");
+
 if (failures.Count > 0)
 {
     Console.Error.WriteLine(string.Join(Environment.NewLine, failures));
     return 1;
 }
+Console.WriteLine($"Translation quality: {catalogQualityChecks} catalog values checked for truncation, Romanian leftovers and keyboard shortcuts; {scannedWindows} windows and {scannedTexts} visible or accessible texts checked in {cultureNames.Length} languages.");
 
 Console.WriteLine($"Localization smoke passed: {baseResources.Count} resources and {sourceKeys.Count} source UI strings, ro-RO plus {string.Join(", ", cultureNames)}.");
 return 0;
@@ -254,6 +273,171 @@ return 0;
 void Check(string culture, string test, string value, Func<string, bool> predicate)
 {
     if (!predicate(value)) failures.Add($"{culture}: {test} failed; value: {value}");
+}
+
+// Calitatea traducerilor din catalog: valori trunchiate (de exemplu „A” pentru „Toate folderele”),
+// cuvinte românești rămase și combinații de taste schimbate față de textul sursă.
+int RunCatalogQualityChecks()
+{
+    var shortcut = new Regex(@"(?:(?:Ctrl|Alt|Shift|Insert)\+)+[A-Z0-9]+\b|\bF(?:[1-9]|1[0-2])\b");
+    static string NormalizeKeys(string value) =>
+        Regex.Replace(Regex.Replace(value, @"\b(Strg|Contrôle|Control)\+", "Ctrl+"), @"\b(Umschalt|Maj|Mayús|Maiusc)\+", "Shift+");
+    var checkedValues = 0;
+    foreach (var culture in cultureNames)
+    {
+        var map = ReadResourceMap(Path.Combine(projectRoot, "Resources", $"UiStrings.{culture}.resx"));
+        foreach (var (key, value) in map)
+        {
+            checkedValues++;
+            if (key.Length >= 10 && Regex.IsMatch(key, @"\p{L}{3}"))
+                Check(culture, $"translation is not truncated: {key}", value, translated => translated.Trim().Length * 3 >= key.Length);
+            Check(culture, $"translation has no Romanian words left: {key}", value, translated => !HasRomanianLeftover(translated));
+            var shortcutKeys = shortcut.Matches(key).Select(match => match.Value).OrderBy(item => item, StringComparer.Ordinal).ToList();
+            if (shortcutKeys.Count > 0)
+                Check(culture, $"translation keeps the keyboard shortcuts of: {key}", value, translated =>
+                    shortcut.Matches(NormalizeKeys(translated)).Select(match => match.Value).OrderBy(item => item, StringComparer.Ordinal).SequenceEqual(shortcutKeys));
+        }
+    }
+    return checkedValues;
+}
+
+// Fiecare fereastră este construită cu date de probă (fără afișare, profil sau rețea), tradusă ca în aplicație,
+// apoi sunt citite titlurile, butoanele, meniurile (inclusiv cele contextuale), numele și ajutorul accesibil.
+(int Windows, int Texts) RunWindowLanguageScan()
+{
+    var windows = 0;
+    var texts = 0;
+    Exception? fatal = null;
+    var thread = new Thread(() =>
+    {
+        try
+        {
+            var app = new App();
+            app.InitializeComponent();
+            var feed = new Feed { Name = "Demo", Url = "https://demo.example.test/rss" };
+            var article = new Article { Id = "a", Title = "Demo", Content = "Demo", Link = "https://demo.example.test/a", DisplayIndex = 3, DisplayTotal = 50 };
+            feed.Articles.Add(article);
+            var windowTypes = typeof(App).Assembly.GetTypes().Where(type => typeof(System.Windows.Window).IsAssignableFrom(type) && !type.IsAbstract).OrderBy(type => type.Name).ToList();
+            foreach (var culture in cultureNames)
+            {
+                UiCulture.Apply(culture);
+                foreach (var model in new[] { feed.DisplayName, feed.VisualDetails, article.DisplayName, article.StatusTitlePosition, article.VisualState })
+                    Check(culture, "feed and article texts read by the screen reader are translated", model, value => !HasRomanianLeftover(value));
+                foreach (var type in windowTypes)
+                {
+                    var window = CreateSample(type, feed, article, 0) as System.Windows.Window;
+                    Check(culture, $"window can be built for the language scan: {type.Name}", window is null ? "not built" : "built", value => value == "built");
+                    if (window is null) continue;
+                    if (culture == cultureNames[0]) windows++;
+                    UiLocalizer.Apply(window);
+                    foreach (var (where, text) in CollectWindowTexts(window))
+                    {
+                        texts++;
+                        Check(culture, $"{type.Name} {where} is translated", text, value => !HasRomanianLeftover(value));
+                    }
+                }
+            }
+        }
+        catch (Exception exception)
+        {
+            fatal = exception;
+        }
+    });
+    thread.SetApartmentState(ApartmentState.STA);
+    thread.Start();
+    thread.Join();
+    if (fatal is not null) failures.Add($"window language scan stopped: {fatal}");
+    return (windows, texts);
+}
+
+// Cuvinte românești rămase netraduse. Literele â și î există și în franceză sau portugheză, deci nu sunt folosite.
+// Excepții: numele autorului și numele limbii române din listele de limbi.
+static bool HasRomanianLeftover(string value)
+{
+    var text = Regex.Replace(value, @"Fri[șş]an|\(Română\)", string.Empty);
+    return Regex.IsMatch(text, "[ăĂșȘțȚşŞţŢ]") ||
+        Regex.IsMatch(text, @"(?i)(?<![\p{L}])(și|sau|pentru|sunt|nu există|articole|articolul|feeduri|feedul|feedurile|folderul|setări|setările|alege|apasă|selectat|citește|din (?:\d|\{))(?![\p{L}])");
+}
+
+static List<(string Where, string Text)> CollectWindowTexts(System.Windows.Window window)
+{
+    var texts = new List<(string, string)>();
+    var seen = new HashSet<object>(ReferenceEqualityComparer.Instance);
+    void Add(string where, object? value) { if (value is string text && text.Trim().Length > 0) texts.Add((where, text)); }
+    void Walk(object node)
+    {
+        if (!seen.Add(node)) return;
+        if (node is System.Windows.Window current) Add("title", current.Title);
+        if (node is System.Windows.Controls.HeaderedItemsControl headeredItems) Add("menu or header", headeredItems.Header);
+        if (node is System.Windows.Controls.HeaderedContentControl headeredContent) Add("header", headeredContent.Header);
+        if (node is System.Windows.Controls.ContentControl content && node is not System.Windows.Window) Add(node.GetType().Name, content.Content);
+        if (node is System.Windows.Controls.TextBlock textBlock) Add("text", textBlock.Text);
+        if (node is System.Windows.DependencyObject element)
+        {
+            Add("accessible name", System.Windows.Automation.AutomationProperties.GetName(element));
+            Add("accessible help", System.Windows.Automation.AutomationProperties.GetHelpText(element));
+        }
+        if (node is System.Windows.FrameworkElement framework)
+        {
+            Add("tooltip", framework.ToolTip);
+            if (framework.ContextMenu is not null) Walk(framework.ContextMenu);
+        }
+        if (node is System.Windows.Controls.ItemsControl items)
+            foreach (var item in items.Items) { if (item is string text) Add("list item", text); else if (item is not null) Walk(item); }
+        if (node is System.Windows.DependencyObject parent)
+            foreach (var child in System.Windows.LogicalTreeHelper.GetChildren(parent)) Walk(child);
+    }
+    Walk(window);
+    return texts;
+}
+
+// Date de probă pentru constructori: setări implicite, un feed, un articol, liste cu un element și delegați goi.
+static object? CreateSample(Type type, Feed feed, Article article, int depth)
+{
+    if (type == typeof(string)) return "Demo";
+    if (type == typeof(AppSettings)) return new AppSettings();
+    if (type == typeof(Feed)) return feed;
+    if (type == typeof(Article)) return article;
+    if (type.IsAssignableFrom(typeof(List<Feed>))) return new List<Feed> { feed };
+    if (type.IsAssignableFrom(typeof(List<string>))) return new List<string> { "Demo" };
+    if (type.IsAssignableFrom(typeof(List<ArticleRule>))) return new List<ArticleRule>();
+    if (type.IsAssignableFrom(typeof(Dictionary<string, string>))) return new Dictionary<string, string>();
+    if (type == typeof(Uri)) return new Uri("https://demo.example.test/");
+    if (type == typeof(Version)) return new Version(9, 9, 9);
+    if (type.IsEnum) return Enum.GetValues(type).GetValue(0);
+    if (type.IsValueType) return Activator.CreateInstance(type);
+    if (type.IsGenericType && type.IsInterface && type.GetGenericArguments().Length == 1)
+    {
+        var elementType = type.GetGenericArguments()[0];
+        var list = Array.CreateInstance(elementType, 1);
+        list.SetValue(CreateSample(elementType, feed, article, depth + 1), 0);
+        if (type.IsAssignableFrom(list.GetType())) return list;
+    }
+    if (type.IsArray)
+    {
+        var array = Array.CreateInstance(type.GetElementType()!, 1);
+        array.SetValue(CreateSample(type.GetElementType()!, feed, article, depth + 1), 0);
+        return array;
+    }
+    if (typeof(Delegate).IsAssignableFrom(type))
+    {
+        var invoke = type.GetMethod("Invoke")!;
+        var parameters = invoke.GetParameters().Select(parameter => System.Linq.Expressions.Expression.Parameter(parameter.ParameterType)).ToArray();
+        return System.Linq.Expressions.Expression.Lambda(type, System.Linq.Expressions.Expression.Default(invoke.ReturnType), parameters).Compile();
+    }
+    if (depth > 3 || type.IsAbstract || type.IsInterface) return null;
+    foreach (var constructor in type.GetConstructors().OrderBy(constructor => constructor.GetParameters().Length))
+    {
+        try
+        {
+            return constructor.Invoke(constructor.GetParameters().Select(parameter => parameter.HasDefaultValue ? parameter.DefaultValue : CreateSample(parameter.ParameterType, feed, article, depth + 1)).ToArray());
+        }
+        catch
+        {
+            // Se încearcă următorul constructor.
+        }
+    }
+    return null;
 }
 
 static string FindProjectRoot()

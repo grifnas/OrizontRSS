@@ -1,5 +1,9 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-10-13 — Verificare automată extinsă a traducerilor
+
+La cererea utilizatorului, localizarea a fost verificată în toate limbile interfeței și transformată în teste permanente în LocalizationSmoke: verificarea calității catalogului (trunchiere, cuvinte românești rămase, combinații de taste, cu numele locale ale tastelor: Strg, Umschalt, Maj, Mayús, Maiusc) și scanarea ferestrelor (toate cele 24, construite cu date de probă, fără afișare, profil sau rețea), plus textele modelelor citite de JAWS. Rezultat pe sursa curentă: nicio problemă în 10.129 de valori și 5.607 texte de interfață, în șapte limbi. Testul a fost validat pe resursele versiunii publice 1.6.1, unde prinde „Toate folderele” trunchiat, și pe erori introduse temporar în engleză, prinse în catalog și în trei locuri din ferestre. Lista limbilor pentru Google Translate afișa numele în engleză în toate interfețele (de exemplu „Romanian (Română)”). La cererea utilizatorului, numele sunt acum traduse în limba interfeței, cu numele nativ între paranteze când diferă: 37 de chei noi în cele opt limbi, „Română” fiind refolosită. Quick a trecut (LocalizationSmoke: 1.484 resurse, 10.388 de valori de catalog verificate), iar executabilul autonom de test a fost refăcut. A07 rămâne deschis pentru proba JAWS și revizia umană.
+
 ## 2026-10-13 — Pregătire v1.6.2: actualizare paralelă și condiționată a feedurilor
 
 La cererea utilizatorului (propunere din audit), după măsurare conform regulii 15. Pe 39 de fluxuri publice (catalogul demonstrativ plus 9 site-uri), actualizarea succesivă dura 32–36 de secunde, din care 21 de secunde erau un singur site care nu răspundea; fără el, 10,5–12 secunde. 21 din 39 de fluxuri publică ETag/Last-Modified, iar 19 au răspuns cu 304 la a doua cerere.
