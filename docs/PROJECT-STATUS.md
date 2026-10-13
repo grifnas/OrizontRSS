@@ -1,5 +1,57 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-10-13 — Pregătire v1.6.2: textul integral extras cu SmartReader
+
+La cererea utilizatorului (propunere din auditul din 13 octombrie), extragerea textului integral folosește SmartReader 0.9.6, cu extractorul existent ca rezervă. Prototip și comparație pe 24 de articole reale de pe 12 site-uri (GSMArena, HotNews, Digi24, Adevărul, G4Media, El País, Der Spiegel, heise, BBC, ANSA, Index.hu, g1). SmartReader elimină meniurile, listele laterale și rândurile de autor. Repară Digi24 (articol tăiat de extractorul vechi) și g1 (0 cuvinte înainte); toate frazele reale verificate sunt prezente. Index.hu (live) și heise (nerecunoscut de 0.9.6) folosesc rezerva, cu text identic celui de dinainte.
+
+Alegerea versiunii a aparținut utilizatorului: 0.9.6 aduce System.Text.Json 8.0.5, deci aplicația rămâne pe biblioteca JSON a runtime-ului .NET 8 (8.0.31 verificat în build), fără efect asupra salvării feedurilor și setărilor. Versiunea 0.11.1 (cu rezultate mai bune pe heise) ar fi adus System.Text.Json 10 pentru toată aplicația și rămâne opțiune la trecerea pe .NET 10. CoreSmoke: 227. Quick a trecut, iar executabilul autonom de test a fost refăcut. Licențele au fost adăugate în `Licenses/` și `THIRD-PARTY-NOTICES.md`. Rămâne proba practică în Cititor Orizont. Nu s-a creat distribuție.
+
+## 2026-10-13 — Pregătire v1.6.2: Gemini mai robust și oprirea cererilor AI cu Escape
+
+Problema 6 din auditul din 13 octombrie. `GeminiConnection` folosea `maxOutputTokens = 2048`, din care modelele Gemini recente consumă și pentru gândire. Nu citea `finishReason`, deci un răspuns gol din cauza limitei era raportat ca „filtrat de regulile de siguranță”. Lista modelelor se cerea înaintea fiecărei întrebări, iar cererea nu putea fi anulată.
+
+Corecția este integrată local. Conexiunea folosește un client comun, injectabil în teste, și limita 8.192. Modelul ales este păstrat pe sesiune, pentru aceeași cheie (doar amprenta SHA-256 a cheii), și este ales din nou o dată la 404. `ReadResponseText` explică `MAX_TOKENS` (textul rămâne, cu notă), filtrele de siguranță (cu motivul) și `RECITATION`; părțile de gândire nu ajung în răspuns; cheia este ascunsă din erori. `AiProviderService` transmite anularea tuturor furnizorilor. În fereastra principală, Escape oprește cererea AI în curs; o a doua cerere simultană este refuzată cu anunț. Cititorul Orizont și întrebările de continuare din fereastra de răspuns nu au încă oprire cu Escape. Zece mesaje noi sunt traduse în cele opt limbi. AiProviderSmoke: 76. LocalizationSmoke: 1.447/1.318. Quick a trecut, iar executabilul autonom de test a fost refăcut. Rămâne proba reală cu cheia utilizatorului și verificarea Escape cu JAWS 2026. Nu s-a creat distribuție.
+
+## 2026-10-13 — Pregătire v1.6.2: volum eSpeak NG mai mare
+
+La cererea utilizatorului (vocea eSpeak este prea încetă), setarea „Volum” (0–100) este mapată acum pe întreaga gamă eSpeak NG (0–200), prin `EspeakVolume.FromSetting`. Măsurătoare pe vocea română, pentru aceeași frază: la eSpeak 100 (maximul anterior), vârful este de 91% și RMS 2.923; la eSpeak 200 (noul maxim), RMS este 5.491, adică circa ×1,9 (+5,5 dB), cu 0,10% eșantioane peste 32.000 (limitare internă eSpeak, fără tăiere dură). SAPI5 și Gemini nu sunt afectate. CoreSmoke: 222. Quick a trecut, iar executabilul autonom de test a fost refăcut. Rămâne confirmarea auditivă a utilizatorului. Nu s-a creat distribuție.
+
+## 2026-10-13 — Pregătire v1.6.2: eSpeak NG din foldere cu diacritice
+
+Problema 7 din auditul din 13 octombrie a fost confirmată experimental. Copiat în trei foldere, testul eSpeak a trecut în folderul ASCII. În folderul cu „î” a eșuat, pentru că eSpeak raportează `Illegal byte sequence` la citirea `phontab`. În folderul cu „ș ț” procesul s-a oprit cu eroarea de acces 0xC0000005. Instalatorul pune aplicația sub `%LOCALAPPDATA%\Programs`, deci un nume de utilizator Windows cu diacritice ajunge în cale.
+
+Corecția este integrată local: `NativePath.ForAnsiNativeApi` transmite neschimbate căile ASCII, folosește altfel numele scurt Windows (8.3) dacă este ASCII, iar în caz contrar motorul este raportat indisponibil, fără apel nativ și fără oprirea aplicației. EspeakSmoke folosește aceeași funcție și trece acum în toate cele trei foldere. CoreSmoke: 220. Quick a trecut, iar executabilul autonom de test a fost refăcut. Limitare: pe volumele cu numele 8.3 dezactivate, eSpeak rămâne indisponibil într-o cale cu diacritice, dar aplicația nu se mai oprește. Nu s-a creat distribuție.
+
+## 2026-10-13 — Pregătire v1.6.2: localizarea poziției și a folderului implicit; cod mort eliminat
+
+Problema 4 din auditul din 13 octombrie a fost reclasificată: funcția `FindRemoteForPendingDeletion`, cu potrivire parțială după nume, nu era apelată nicăieri. Dezabonarea reală caută numai după ID și adresă exactă. La cererea utilizatorului, funcția nefolosită a fost ștearsă, ca să nu fie reutilizată cu riscul ei.
+
+Problema 5 este corectată local. Poziția din listă trece prin resurse („3 of 50” în engleză). Folderul implicit păstrează cheia internă „Neorganizate”, dar este afișat tradus în listă, filtru, dialogul de feed și mesajul de feed duplicat; filtrul este sortat după numele afișat. Exportul OPML pune feedurile neorganizate la rădăcină (`OpmlExport`), iar importul existent le readuce în „Neorganizate”. Pe parcurs s-a găsit și corectat valoarea trunchiată a resursei „Toate folderele” („A” în en/de/pt, „T” în es/fr). CoreSmoke: 217 verificări (15 noi). LocalizationSmoke: 1.437 resurse și 1.310 șiruri. Quick a trecut, iar executabilul autonom de test a fost refăcut. Rămâne proba practică cu JAWS 2026 în interfața engleză. Nu s-a creat distribuție.
+
+## 2026-10-13 — Pregătire v1.6.2: curățarea textului nu mai șterge cuvinte din articole
+
+Problema 3 din auditul din 13 octombrie: `RssReader.ExtractReadableText` elimina etichetele de reclamă și comentarii oriunde apăreau în text (de exemplu „publicidad”, „commento”, „Kommentar”) și tăia articolul până la final la expresii precum „Articole înrudite”, „Comentariile cititorilor” sau „o campanie editorială” aflate în frază. Curățarea afectează Cititorul Orizont și sursa trimisă la DeepL/Google Translate.
+
+Corecția este integrată local. Etichetele se elimină numai când stau singure pe linie; marcajele de reclamă scrise integral cu majuscule se elimină și în interiorul rândului. Tăierile de final pornesc numai de la un titlu de secțiune aflat singur pe linie, inclusiv antetul GSMArena „Total reader comments: N”. Titlurile HTML încep pe linie nouă. Testele de curățare lipseau din CoreSmoke: au fost adăugate 33 de verificări, care acoperă cazurile istorice GSMArena și etichetele în cele opt limbi, plus fraze obișnuite care trebuie păstrate. Pe codul vechi, toate cele 10 fraze obișnuite și cazul „Postați comentariul dvs.” eșuau. CoreSmoke: 202. Comparația vechi/nou pe 12 pagini reale (GSMArena, HotNews, El País, Der Spiegel) arată texte identice, cu o singură excepție: la El País rămâne întreg butonul „Ir a los comentarios”, în locul fragmentului „Ir a los”. Quick a trecut, iar executabilul autonom de test a fost refăcut. Rămâne verificarea practică în Cititor Orizont. Nu s-a creat distribuție.
+
+## 2026-10-13 — Pregătire v1.6.2: convergența stărilor NewsBlur nu mai este conflict
+
+Problema 2 din auditul din 13 octombrie: când un articol era marcat citit (sau favorit, sau cu aceleași etichete) și în Orizont, și în NewsBlur, sincronizarea raporta conflict și nu actualiza bazele de comparație. Conflictul se repeta la fiecare sincronizare, iar o schimbare ulterioară de pe alt dispozitiv putea fi anulată; de exemplu, „necitit” pe telefon era transformat înapoi în „citit”. Testul CoreSmoke existent consfințea acest comportament.
+
+Corecția este integrată local: `NewsBlurReadStatePolicy` întoarce `AlreadyAligned` pentru valori egale, iar decizia pe articol este mutată, cu aceeași logică, în `NewsBlurArticleStateReconciler`, unde este testată și pentru favorite și etichete. Conflictele reale (valori diferite) rămân neschimbate. CoreSmoke are 169 de verificări; testele noi eșuează pe comportamentul vechi și trec pe cel nou. Quick a trecut, iar executabilul autonom de test a fost refăcut. Aplicația nu a fost pornită după această modificare, pentru a nu declanșa o sincronizare reală fără utilizator. Rămâne proba practică: un articol citit pe ambele părți, apoi necitit pe telefon. Nu s-a creat distribuție.
+
+## 2026-10-13 — Pregătire v1.6.2: articolele ieșite din fluxul RSS rămân local
+
+Un audit al sursei (raportul `Audit Orizont RSS 2026-10-13.md`, păstrat în afara proiectului, în `Documents\Claude`) a arătat că actualizarea prin RSS înlocuia lista articolelor unui feed cu fereastra curentă a fluxului. Articolele ieșite din flux erau șterse, inclusiv favoritele, „Mai târziu”, etichetele și notițele AI; erau protejate doar articolele NewsBlur și, cu regula de păstrare activă, favoritele mai vechi decât limita.
+
+Corecția este integrată local, ca pregătire pentru v1.6.2: îmbinarea este mutată în `ArticleRefreshMerge`, iar articolele ieșite din flux rămân. Ștergerea după vechime rămâne exclusiv a regulii de păstrare. CoreSmoke are 12 verificări noi (157 în total), care eșuează pe comportamentul vechi și trec pe cel nou. Quick a trecut integral. Executabilul autonom de test a fost refăcut în locația standard. Verificarea practică cu JAWS 2026 și observarea pe câteva zile a unui feed fără NewsBlur rămân de făcut. Nu s-a creat distribuție, tag sau release; v1.6.1 rămâne versiunea publică.
+
+## 2026-10-09 — Confirmare practică a actualizării 1.6.0 → 1.6.1
+
+Utilizatorul confirmă că actualizarea instalării existente de la 1.6.0 la 1.6.1 funcționează bine. Aceasta este o verificare practică a traseului real de upgrade. Nu dovedește instalarea prin WinGet și nu schimbă starea PR-ului WinGet, care necesită validarea și examinarea Microsoft.
+
+**Direcția versiunii următoare:** la decizia utilizatorului, toate modificările și îmbunătățirile noi se vor trata ca pregătire pentru v1.6.2. v1.6.1 rămâne versiunea publică de referință; nu se creează distribuție, tag sau release v1.6.2 fără cerere expresă. Follow-up-urile strict legate de publicarea 1.6.1 rămân separate și etichetate ca atare.
+
 ## 2026-10-08 — Publicarea GitHub v1.6.1
 
 Release-ul public [v1.6.1](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.1) este publicat. Utilizatorul a apăsat „Publish release”; după aceea au fost atașate și verificate toate cele șase fișiere pregătite: `OrizontSetup-1.6.1.exe`, `Orizont-RSS-1.6.1-win-x64.zip`, `Orizont-RSS-1.6.1-source.zip` și sidecar-urile SHA-256. Pagina GitHub afișează opt elemente în total, incluzând cele două arhive automate ale sursei. Tagul și ramura `main` indică commitul `161eeff6db6d931130bf79ae6ca3f5e09ea7636b`; hash-urile și dimensiunile pachetelor sunt în `docs/RELEASE-STATUS.json` și `PUBLICATION.md`.

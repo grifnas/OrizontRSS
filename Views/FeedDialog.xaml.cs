@@ -93,6 +93,6 @@ public partial class FeedDialog : Window
     private static string T(string source) => UiText.Translate(source);
     private sealed record FolderChoice(string Name, bool IsCreate)
     {
-        public override string ToString() => Name;
+        public override string ToString() => IsCreate ? Name : NewsBlurFolderMapping.DisplayName(Name);
     }
 }

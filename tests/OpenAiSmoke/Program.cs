@@ -212,6 +212,79 @@ using (var http = new HttpClient(new StubHandler((_, _) => JsonResponse(HttpStat
     }
 }
 
+// Gemini: header key, larger output limit, model cached per session, finish reasons explained, cancellation.
+GeminiConnection.ForgetModel();
+var geminiModelCalls = 0;
+var geminiGenerateCalls = 0;
+var geminiReply = "{\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"gândire\",\"thought\":true},{\"text\":\"Gemini response\"}]},\"finishReason\":\"STOP\"}]}";
+var geminiStatus = HttpStatusCode.OK;
+using (var http = new HttpClient(new StubHandler((request, _) =>
+{
+    Check(request.Headers.TryGetValues("x-goog-api-key", out var keys) && keys.Single() == "gemini-test-secret", "Gemini key is sent in the request header");
+    Check(!request.RequestUri!.ToString().Contains("gemini-test-secret", StringComparison.Ordinal), "Gemini key is never placed in the URL");
+    if (request.Method == HttpMethod.Get)
+    {
+        geminiModelCalls++;
+        return JsonResponse(HttpStatusCode.OK, "{\"models\":[{\"name\":\"models/gemini-2.5-flash\",\"supportedGenerationMethods\":[\"generateContent\"]}]}");
+    }
+    geminiGenerateCalls++;
+    var body = JsonDocument.Parse(request.Content!.ReadAsStringAsync().GetAwaiter().GetResult()).RootElement;
+    Check(body.GetProperty("generationConfig").GetProperty("maxOutputTokens").GetInt32() == GeminiConnection.MaximumOutputTokens && GeminiConnection.MaximumOutputTokens >= 8192, "Gemini receives room for reasoning and the answer");
+    if (geminiStatus == HttpStatusCode.NotFound) { geminiStatus = HttpStatusCode.OK; return JsonResponse(HttpStatusCode.NotFound, "{\"error\":{\"message\":\"model not found\"}}"); }
+    return JsonResponse(geminiStatus, geminiReply);
+})))
+{
+    var provider = new AiProviderService(gemini: new GeminiConnection(http));
+    Check(await provider.GenerateAsync(AiProviderIds.Gemini, "gemini-test-secret", string.Empty, "Be clear", "Article text") == "Gemini response", "Gemini answer text is returned without internal thought parts");
+    await provider.GenerateAsync(AiProviderIds.Gemini, "gemini-test-secret", string.Empty, "Be clear", "Article text");
+    Check(geminiModelCalls == 1 && geminiGenerateCalls == 2, "Gemini model list is requested once per session, not before every question");
+
+    geminiStatus = HttpStatusCode.NotFound;
+    Check(await provider.GenerateAsync(AiProviderIds.Gemini, "gemini-test-secret", string.Empty, "Be clear", "Article text") == "Gemini response" && geminiModelCalls == 2, "a vanished cached model is chosen again once");
+
+    using var cancelled = new CancellationTokenSource();
+    cancelled.Cancel();
+    try
+    {
+        await provider.GenerateAsync(AiProviderIds.Gemini, "gemini-test-secret", string.Empty, "Be clear", "Article text", cancelled.Token);
+        throw new InvalidOperationException("Expected Gemini cancellation.");
+    }
+    catch (OperationCanceledException)
+    {
+        Check(true, "a cancelled Gemini request stops instead of waiting for the timeout");
+    }
+}
+
+var truncated = GeminiConnection.ReadResponseText("{\"candidates\":[{\"content\":{\"parts\":[{\"text\":\"Partial answer\"}]},\"finishReason\":\"MAX_TOKENS\"}]}");
+Check(truncated.StartsWith("Partial answer", StringComparison.Ordinal) && truncated.Length > "Partial answer".Length + 10, "a truncated Gemini answer keeps its text and adds a clear note");
+Check(GeminiThrows("{\"candidates\":[{\"content\":{\"parts\":[]},\"finishReason\":\"MAX_TOKENS\"}]}") == CititorRSS.Jaws.Localization.UiText.Translate("Gemini a atins limita de lungime înainte să scrie răspunsul. Încearcă o cerere mai scurtă sau un articol mai scurt."), "an empty answer at the length limit is not reported as a safety filter");
+Check(GeminiThrows("{\"candidates\":[{\"finishReason\":\"SAFETY\"}]}").Contains("SAFETY", StringComparison.Ordinal), "a safety block names its reason");
+Check(GeminiThrows("{\"promptFeedback\":{\"blockReason\":\"PROHIBITED_CONTENT\"}}").Contains("PROHIBITED_CONTENT", StringComparison.Ordinal), "a blocked prompt names its reason");
+Check(GeminiThrows("{\"candidates\":[{\"finishReason\":\"RECITATION\"}]}") == CititorRSS.Jaws.Localization.UiText.Translate("Gemini a oprit răspunsul deoarece reproducea un text protejat. Cere un rezumat cu propriile cuvinte."), "a recitation stop is explained");
+
+var geminiSecret = "gemini-must-not-leak";
+GeminiConnection.ForgetModel();
+using (var http = new HttpClient(new StubHandler((_, _) => JsonResponse(HttpStatusCode.BadRequest, $"{{\"error\":{{\"message\":\"bad key {geminiSecret}\"}}}}"))))
+{
+    try
+    {
+        await new GeminiConnection(http).GenerateAsync(geminiSecret, "Be clear", "Article text");
+        throw new InvalidOperationException("Expected a Gemini error.");
+    }
+    catch (InvalidOperationException exception)
+    {
+        Check(!exception.Message.Contains(geminiSecret, StringComparison.Ordinal), "Gemini API key is redacted from error details");
+    }
+}
+GeminiConnection.ForgetModel();
+
+static string GeminiThrows(string body)
+{
+    try { GeminiConnection.ReadResponseText(body); }
+    catch (InvalidOperationException exception) { return exception.Message; }
+    throw new InvalidOperationException("Expected Gemini to report a problem.");
+}
+
 Console.WriteLine($"AiProviderSmoke: {checks} checks passed.");
 
 static HttpResponseMessage JsonResponse(HttpStatusCode status, string json) => new(status)

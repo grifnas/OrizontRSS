@@ -206,7 +206,8 @@ Check(NewsBlurBootstrapPolicy.IsSyncEligible(new Feed { Url = "https://example.t
 Check(NewsBlurReadStatePolicy.Decide(true, false, false, false) == NewsBlurReadSyncAction.SendRead, "marcarea locală ca citit trimite citit către NewsBlur");
 Check(NewsBlurReadStatePolicy.Decide(false, true, true, true) == NewsBlurReadSyncAction.SendUnread, "marcarea locală ca necitit trimite necitit către NewsBlur");
 Check(NewsBlurReadStatePolicy.Decide(false, false, true, false) == NewsBlurReadSyncAction.ApplyRemote, "schimbarea remote se preia când localul nu s-a schimbat");
-Check(NewsBlurReadStatePolicy.Decide(true, false, true, false) == NewsBlurReadSyncAction.Conflict, "schimbările simultane păstrează politica de conflict existentă");
+Check(NewsBlurReadStatePolicy.Decide(true, false, true, false) == NewsBlurReadSyncAction.AlreadyAligned, "aceeași schimbare pe ambele părți nu este conflict");
+Check(NewsBlurReadStatePolicy.Decide(true, false, false, true) == NewsBlurReadSyncAction.Conflict, "schimbările simultane cu valori diferite rămân conflict");
 Check(NewsBlurReadStatePolicy.Decide(false, false, false, false) == NewsBlurReadSyncAction.None, "starea neschimbată nu trimite comenzi");
 Check(NewsBlurFolderMapping.IsUnorganized(" neorganizate ") && !NewsBlurFolderMapping.IsNamedFolder("Neorganizate"), "Neorganizate este o categorie specială, nu folder NewsBlur propriu-zis");
 Check(NewsBlurFolderMapping.ToNewsBlurFolder("Neorganizate") == string.Empty && NewsBlurFolderMapping.FromNewsBlurFolder(null) == "Neorganizate", "feedurile fără folder NewsBlur se mapează la Neorganizate");
@@ -332,8 +333,235 @@ var limitedWhatsAppBody = ArticleSharing.LimitForUri(longShared, ArticleSharing.
 Check(limitedWhatsAppBody.Length <= ArticleSharing.WhatsAppBodyLimit && limitedWhatsAppBody.EndsWith(longFooter, StringComparison.Ordinal),
     "corpul WhatsApp pentru articol lung respectă limita și păstrează integral furnizorul și sursa");
 
+RunRefreshMergeSmoke();
+RunNewsBlurConvergenceSmoke();
+RunReadableCleanupSmoke();
+RunNativePathSmoke();
+RunReadabilitySmoke();
 await RunUpdaterSmokeAsync();
+RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
+
+// Actualizarea RSS: articolele ieșite din flux rămân local; ștergerea după vechime aparține regulii de păstrare.
+void RunRefreshMergeSmoke()
+{
+    var day = DateTimeOffset.Now;
+    Article Item(string id, int ageDays, bool favorite = false, bool later = false, string? hash = null) =>
+        new() { Id = id, Title = id, Content = "vechi", Published = day.AddDays(-ageDays), IsFavorite = favorite, ReadLater = later, NewsBlurStoryHash = hash };
+
+    var favorite = Item("favorit-iesit", 1, favorite: true);
+    favorite.Tags = ["important"];
+    favorite.AiNotes = [new AiNote { Title = "Rezumat", Content = "notă" }];
+    var plain = Item("obisnuit-iesit", 2);
+    var stillThere = Item("inca-in-flux", 1);
+    stillThere.IsRead = true;
+    var fresh = Item("inca-in-flux", 1);
+    fresh.Content = "conținut nou";
+    var brandNew = Item("nou", 0);
+
+    var merged = ArticleRefreshMerge.Merge([favorite, plain, stillThere], [fresh, brandNew], retentionCutoff: null);
+    var byId = merged.Articles.ToDictionary(article => article.Id);
+    Check(byId.ContainsKey("favorit-iesit"), "fără regulă de păstrare, favoritul ieșit din fluxul RSS rămâne local");
+    Check(byId["favorit-iesit"].Tags.SequenceEqual(["important"]) && byId["favorit-iesit"].AiNotes.Count == 1, "favoritul păstrat își păstrează etichetele și notițele AI");
+    Check(byId.ContainsKey("obisnuit-iesit"), "fără regulă de păstrare, articolul obișnuit ieșit din flux rămâne local");
+    Check(merged.Articles.Count(article => article.Id == "inca-in-flux") == 1 && ReferenceEquals(byId["inca-in-flux"], fresh), "articolul încă în flux apare o singură dată, cu versiunea descărcată");
+    Check(fresh.IsRead && fresh.Content == "conținut nou", "versiunea descărcată preia starea locală și păstrează conținutul nou");
+    Check(merged.NewlyReceived == 1 && merged.IgnoredByRetention == 0 && merged.Articles.Count == 4, "numărătoarea articolelor noi nu include articolele păstrate");
+
+    var cutoff = day.AddDays(-30);
+    var recentFavorite = Item("favorit-recent", 3, favorite: true);
+    var recentPlain = Item("obisnuit-recent", 5);
+    var expiredPlain = Item("obisnuit-expirat", 60);
+    var expiredLater = Item("mai-tarziu-expirat", 60, later: true);
+    var expiredNewsBlur = Item("newsblur-expirat", 60, hash: "hash-1");
+    var expiredStillListed = Item("expirat-in-flux", 60);
+    var expiredDownloaded = Item("expirat-in-flux", 60);
+    var withRetention = ArticleRefreshMerge.Merge(
+        [recentFavorite, recentPlain, expiredPlain, expiredLater, expiredNewsBlur, expiredStillListed],
+        [expiredDownloaded],
+        cutoff);
+    var keptIds = withRetention.Articles.Select(article => article.Id).ToHashSet();
+    Check(keptIds.Contains("favorit-recent"), "cu regulă de păstrare, favoritul recent ieșit din flux rămâne local");
+    Check(keptIds.Contains("obisnuit-recent"), "cu regulă de păstrare, articolul obișnuit din perioada de păstrare rămâne local");
+    Check(!keptIds.Contains("obisnuit-expirat"), "articolul obișnuit expirat și ieșit din flux nu este readus");
+    Check(keptIds.Contains("mai-tarziu-expirat"), "articolul Mai târziu expirat rămâne protejat");
+    Check(keptIds.Contains("newsblur-expirat"), "articolul NewsBlur rămâne pentru sincronizarea pe mai multe calculatoare");
+    Check(!keptIds.Contains("expirat-in-flux") && withRetention.IgnoredByRetention == 1, "articolul expirat încă publicat în flux este ignorat și numărat ca atare");
+}
+
+// Sincronizarea NewsBlur: aceeași schimbare pe ambele părți actualizează bazele, fără conflict și fără comenzi.
+void RunNewsBlurConvergenceSmoke()
+{
+    static Article Synced(bool read = false, bool favorite = false, List<string>? tags = null) => new()
+    {
+        Id = "nb", IsRead = read, IsFavorite = favorite, Tags = tags ?? [],
+        NewsBlurStoryHash = "hash", NewsBlurLastRead = read, NewsBlurLastLocalRead = read,
+        NewsBlurLastStarred = favorite, NewsBlurLastLocalStarred = favorite, NewsBlurLastLocalSaved = favorite,
+        NewsBlurLastTags = (tags ?? []).ToList(), NewsBlurLastLocalTags = (tags ?? []).ToList()
+    };
+    static NewsBlurStory Story(bool read, bool starred = false, List<string>? tags = null) =>
+        new("hash", "Titlu", "https://example.test/a", null, read, starred, tags ?? [], string.Empty);
+    static bool Saved(Article article) => article.IsFavorite;
+    static void ApplySaved(Article article, bool saved) => article.IsFavorite = saved;
+
+    // Citit pe telefon și pe calculator.
+    var article = Synced();
+    article.IsRead = true;
+    var result = NewsBlurArticleStateReconciler.Reconcile(article, Story(read: true), Saved, ApplySaved);
+    Check(result.ReadAction == NewsBlurReadSyncAction.AlreadyAligned && result.Conflicts == 0, "citit pe ambele părți nu raportează conflict");
+    Check(article.NewsBlurLastRead == true && article.NewsBlurLastLocalRead == true, "citit pe ambele părți actualizează ambele baze");
+    // Apoi necitit pe telefon: se preia, nu se retrimite citit.
+    result = NewsBlurArticleStateReconciler.Reconcile(article, Story(read: false), Saved, ApplySaved);
+    Check(result.ReadAction == NewsBlurReadSyncAction.ApplyRemote && !article.IsRead, "necititul ulterior de pe telefon este preluat local, nu anulat");
+
+    // Favorit pe ambele părți.
+    article = Synced();
+    article.IsFavorite = true;
+    result = NewsBlurArticleStateReconciler.Reconcile(article, Story(read: false, starred: true), Saved, ApplySaved);
+    Check(result.Conflicts == 0 && !result.SendStar && !result.SendUnstar, "favoritul pe ambele părți nu raportează conflict și nu trimite comenzi");
+    Check(article.NewsBlurLastStarred == true && article.NewsBlurLastLocalSaved == true, "favoritul pe ambele părți actualizează bazele");
+
+    // Aceleași etichete pe ambele părți, cu diferență de majuscule.
+    article = Synced(favorite: true);
+    article.Tags = ["Tehnologie"];
+    result = NewsBlurArticleStateReconciler.Reconcile(article, Story(read: false, starred: true, tags: ["tehnologie"]), Saved, ApplySaved);
+    Check(result.Conflicts == 0 && !result.SendStarForTags, "aceleași etichete pe ambele părți nu raportează conflict");
+    Check(NewsBlurArticleStateReconciler.SameTags(article.NewsBlurLastLocalTags, ["Tehnologie"]) && NewsBlurArticleStateReconciler.SameTags(article.NewsBlurLastTags, ["tehnologie"]), "etichetele convergente actualizează bazele");
+
+    // Conflictele reale rămân neschimbate.
+    article = Synced(favorite: true);
+    article.Tags = ["local"];
+    result = NewsBlurArticleStateReconciler.Reconcile(article, Story(read: false, starred: true, tags: ["remote"]), Saved, ApplySaved);
+    Check(result.Conflicts == 1 && article.NewsBlurLastLocalTags!.Count == 0, "etichetele diferite pe ambele părți rămân conflict, cu bazele neschimbate");
+
+    // Comportamente existente păstrate.
+    article = Synced();
+    article.IsRead = true;
+    result = NewsBlurArticleStateReconciler.Reconcile(article, Story(read: false), Saved, ApplySaved);
+    Check(result.ReadAction == NewsBlurReadSyncAction.SendRead && article.NewsBlurLastLocalRead == false, "citirea locală se trimite, iar baza se actualizează abia după confirmarea NewsBlur");
+    article = Synced();
+    result = NewsBlurArticleStateReconciler.Reconcile(article, Story(read: false, starred: true), Saved, ApplySaved);
+    Check(article.IsFavorite && result.AppliedRemote == 1, "favoritul adăugat în NewsBlur este preluat local");
+    article = Synced();
+    article.Tags = ["nou"];
+    result = NewsBlurArticleStateReconciler.Reconcile(article, Story(read: false), Saved, ApplySaved);
+    Check(result.SkippedTags && !result.SendStarForTags, "etichetele unui articol nesalvat rămân amânate");
+}
+
+// Textul integral: SmartReader alege articolul; paginile nerecunoscute folosesc extractorul existent.
+void RunReadabilitySmoke()
+{
+    string[] paragraphs =
+    [
+        "Primăria a anunțat marți că lucrările de reabilitare a podului vor începe în noiembrie, după finalizarea licitației, iar traficul va fi deviat pe străzile paralele timp de trei luni.",
+        "Potrivit proiectului, structura metalică va fi consolidată, iar trotuarele vor fi lărgite pentru a permite accesul persoanelor cu dizabilități, inclusiv al celor care folosesc fotolii rulante.",
+        "Constructorul trebuie să respecte un calendar strict, cu penalități pentru fiecare zi de întârziere, a explicat directorul tehnic, care a adăugat că inspecțiile vor fi săptămânale.",
+        "Locuitorii din zonă au cerut informații clare despre rutele ocolitoare și despre programul transportului public; formula afișată în stații va fi: timp < 30 de minute & frecvență mare."
+    ];
+    var page = "<html><head><title>Podul va fi reabilitat</title></head><body>" +
+        "<nav><a href=\"/\">Acasă</a> <a href=\"/sport\">Sport</a> <a href=\"/meteo\">Meteo</a></nav>" +
+        "<article><h1>Podul va fi reabilitat</h1>" + string.Concat(paragraphs.Select(p => $"<p>{System.Net.WebUtility.HtmlEncode(p)}</p>")) + "</article>" +
+        "<aside><h3>Cele mai citite</h3><ul><li><a href=\"/a\">Alt titlu</a></li><li><a href=\"/b\">Încă un titlu</a></li></ul></aside>" +
+        "<footer>Toate drepturile rezervate. Politica de cookie-uri.</footer></body></html>";
+    var text = RssReader.ExtractReadableArticle("https://stiri.example.test/pod", page);
+    Check(paragraphs.All(p => text.Contains(p, StringComparison.Ordinal)), "articolul extras conține toate paragrafele, inclusiv caracterele < și &");
+    Check(!text.Contains("Meteo", StringComparison.Ordinal) && !text.Contains("Cele mai citite", StringComparison.Ordinal) && !text.Contains("drepturile rezervate", StringComparison.Ordinal), "meniul, lista laterală și subsolul nu intră în textul articolului");
+    Check(text.Split('\n').Count(line => line.Trim().Length > 0) >= paragraphs.Length, "paragrafele rămân pe linii separate pentru navigarea cu cititorul de ecran");
+
+    var linkList = "<html><body><ul>" + string.Concat(Enumerable.Range(1, 8).Select(i => $"<li><a href=\"/s{i}\">Știre {i}</a></li>")) + "</ul></body></html>";
+    Check(RssReader.ExtractReadableArticle("https://stiri.example.test/", linkList) == RssReader.CleanReadableContent(linkList), "o pagină care nu este articol folosește extractorul existent");
+    Check(RssReader.ExtractReadableArticle("https://stiri.example.test/", string.Empty) == string.Empty, "pagina goală produce text gol");
+}
+
+// eSpeak NG primește calea ca șir de 8 biți: rezolvarea nu întoarce niciodată o cale cu diacritice.
+void RunNativePathSmoke()
+{
+    Check(EspeakVolume.FromSetting(100) == 200 && EspeakVolume.FromSetting(50) == 100 && EspeakVolume.FromSetting(0) == 0, "volumul aplicației acoperă întreaga gamă eSpeak NG (0–200)");
+    Check(EspeakVolume.FromSetting(150) == 200 && EspeakVolume.FromSetting(-5) == 0, "volumul eSpeak NG rămâne în limitele motorului");
+    Check(NativePath.ForAnsiNativeApi(@"C:\Program Files\Orizont RSS\SpeechEngines\eSpeakNG") == @"C:\Program Files\Orizont RSS\SpeechEngines\eSpeakNG", "calea ASCII este transmisă neschimbată");
+    Check(NativePath.ForAnsiNativeApi(Path.Combine(Path.GetTempPath(), $"lipsește-{Guid.NewGuid():N}-ș")) is null, "o cale inexistentă cu diacritice nu este transmisă motorului");
+    var folder = Path.Combine(Path.GetTempPath(), $"Orizont-test-Frișan-ț-{Guid.NewGuid():N}");
+    Directory.CreateDirectory(folder);
+    try
+    {
+        var resolved = NativePath.ForAnsiNativeApi(folder);
+        Check(resolved is null || (NativePath.IsAscii(resolved) && Directory.Exists(resolved)), "calea cu ș/ț devine nume scurt ASCII existent sau este refuzată");
+    }
+    finally
+    {
+        Directory.Delete(folder);
+    }
+}
+
+// Localizarea poziției și a folderului implicit; exportul OPML pune feedurile neorganizate la rădăcină.
+// Rulează ultima, deoarece schimbă limba interfeței.
+void RunFolderLocalizationSmoke()
+{
+    foreach (var culture in new[] { "en-US", "es-ES", "fr-FR", "de-DE", "pt-BR", "hu-HU", "it-IT" })
+    {
+        UiCulture.Apply(culture);
+        Check(UiText.Translate("Toate folderele").Length > 3 && UiText.Translate("Neorganizate") != "Neorganizate", $"„Toate folderele” și „Neorganizate” sunt traduse complet în {culture}");
+    }
+
+    UiCulture.Apply("en-US");
+    var positioned = new Article { Title = "Test", DisplayIndex = 3, DisplayTotal = 50 };
+    Check(positioned.DisplayName.Contains("3 of 50", StringComparison.Ordinal) && !positioned.DisplayName.Contains(" din ", StringComparison.Ordinal), "poziția articolului se citește în limba interfeței");
+    var unorganized = new Feed { Name = "Demo" };
+    Check(unorganized.DisplayName.Contains("folder: Unorganized", StringComparison.Ordinal) && unorganized.VisualDetails.Contains("Unorganized", StringComparison.Ordinal), "folderul implicit este afișat tradus");
+    Check(NewsBlurFolderMapping.DisplayName("Neorganizate") == "Unorganized" && NewsBlurFolderMapping.DisplayName(null) == "Unorganized" && NewsBlurFolderMapping.DisplayName("Tehnologie") == "Tehnologie", "numai folderul implicit este tradus la afișare");
+    Check(unorganized.Folder == "Neorganizate" && NewsBlurFolderMapping.IsUnorganized(unorganized.Folder), "cheia internă a folderului implicit rămâne neschimbată");
+    UiCulture.Apply("ro-RO");
+    Check(new Feed { Name = "Demo" }.DisplayName.Contains("folder: Neorganizate", StringComparison.Ordinal), "în română folderul implicit rămâne Neorganizate");
+
+    var body = OpmlExport.CreateBody([
+        new Feed { Name = "B", Url = "https://b.example.test/rss", Folder = "Tehnologie" },
+        new Feed { Name = "A", Url = "https://a.example.test/rss", Folder = "Neorganizate" },
+        new Feed { Name = "C", Url = "https://c.example.test/rss", Folder = "tehnologie" }]);
+    var groups = body.Elements("outline").Where(outline => outline.Attribute("xmlUrl") is null).ToList();
+    var rootFeeds = body.Elements("outline").Where(outline => outline.Attribute("xmlUrl") is not null).ToList();
+    Check(groups.Count == 1 && groups[0].Elements("outline").Count() == 2, "exportul OPML grupează feedurile pe foldere numite");
+    Check(rootFeeds.Count == 1 && rootFeeds[0].Attribute("xmlUrl")!.Value == "https://a.example.test/rss", "feedurile neorganizate sunt exportate la rădăcina OPML");
+    Check(!body.Descendants("outline").Any(outline => (string?)outline.Attribute("text") == "Neorganizate"), "exportul OPML nu mai creează folderul „Neorganizate”");
+}
+
+// Curățarea textului lizibil: elimină marcajele paginii, dar nu cuvintele obișnuite din articol.
+void RunReadableCleanupSmoke()
+{
+    static string Clean(string html) => RssReader.CleanReadableContent($"<html><body><article>{html}</article></body></html>");
+    static string Words(string text) => System.Text.RegularExpressions.Regex.Replace(text, @"\s+", " ").Trim();
+
+    // Marcaje de pagină care trebuie eliminate în continuare.
+    foreach (var label in new[] { "Publicitate", "Advertisement", "Werbung", "Publicidad", "Publicité", "Publicidade", "Hirdetés", "Pubblicità" })
+        Check(Words(Clean($"<p>Paragraf unu.</p><div class=\"ad\">{label}</div><p>Paragraf doi.</p>")) == "Paragraf unu. Paragraf doi.", $"eticheta de reclamă „{label}” pe linie proprie este eliminată");
+    Check(Words(Clean("<p>Text înainte <span>PUBLICITATE</span> text după.</p>")) == "Text înainte text după.", "marcajul de reclamă cu majuscule din interiorul rândului este eliminat");
+    foreach (var label in new[] { "Postați comentariul dvs.", "Leave a comment", "Kommentare", "Commentaires", "Hozzászólás írása" })
+        Check(Words(Clean($"<p>Corp.</p><div>{label}</div><p>Final.</p>")) == "Corp. Final.", $"eticheta de comentarii „{label}” pe linie proprie este eliminată");
+    Check(Words(Clean("<p>Corp.</p><a>Comments (12)</a>")) == "Corp.", "numărul de comentarii este eliminat");
+    Check(Words(Clean("<p>Corp articol.</p><h2>Related articles</h2><ul><li>Alt articol</li></ul>")) == "Corp articol.", "blocul de articole înrudite de la final este tăiat");
+    Check(Words(Clean("<p>Corp articol.</p><span>x</span><h2>Reader comments</h2><p>Primul comentariu</p>")) == "Corp articol. x", "comentariile cititorilor sunt tăiate și după un element inline");
+    Check(Words(Clean("<p>Corp articol.</p><div id=\"opinions-total\">Total reader comments: <b>2</b></div><p>Recommended</p>")) == "Corp articol.", "antetul GSMArena „Total reader comments: N” taie comentariile și recomandările");
+    Check(Words(Clean("<p>Corp articol.</p><p>These are the best offers from our affiliate partners</p><p>Ofertă</p>")) == "Corp articol.", "oferta afiliată de la final este tăiată");
+    Check(Words(Clean("<p>Corp articol.</p><p>Add as a preferred source on Google</p><p>Meniu</p>")) == "Corp articol.", "îndemnul de sursă preferată Google este tăiat");
+    Check(Words(Clean("<p>Corp articol.</p><div>O campanie editorială Exemplu</div><p>Politici</p>")) == "Corp articol.", "subsolul „O campanie editorială” este tăiat");
+    Check(Words(Clean("<p>Corp articol.</p><div>1 / 5</div><p>Final.</p>")) == "Corp articol. Final.", "contorul de galerie este eliminat");
+    Check(!Clean("<p>Corp.</p><p>googletag.cmd.push(function() { googletag.display('ad'); });</p>").Contains("googletag", StringComparison.Ordinal), "codul de reclamă rămas ca text este eliminat");
+
+    // Fraze obișnuite care trebuie păstrate întocmai.
+    foreach (var sentence in new[]
+    {
+        "La industria de la publicidad creció un 5% este año.",
+        "Il ministro ha rifiutato ogni commento sulla vicenda.",
+        "Der Kommentar des Ministers war deutlich.",
+        "Laissez votre commentaire sur le site officiel.",
+        "O comentário do presidente foi longo.",
+        "A megjegyzés fontos volt.",
+        "The advertising market grew this year.",
+        "Primul paragraf. Articole înrudite cu tema au mai apărut. Al doilea paragraf important.",
+        "Comentariile cititorilor au fost moderate ieri, iar discuția continuă.",
+        "A fost doar o campanie editorială reușită, spune autorul, și urmează alta."
+    })
+        Check(Words(Clean($"<p>{sentence}</p>")) == sentence, $"fraza obișnuită rămâne intactă: {sentence}");
+}
 
 async Task RunUpdaterSmokeAsync()
 {

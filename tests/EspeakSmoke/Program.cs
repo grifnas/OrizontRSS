@@ -5,7 +5,10 @@ var samples = 0;
 Native.SynthCallback callback = (wave, count, events) => { samples += Math.Max(0, count); return 0; };
 var engineDirectory = Path.Combine(AppContext.BaseDirectory, "SpeechEngines", "eSpeakNG");
 var variantDirectory = Path.Combine(engineDirectory, "espeak-ng-data", "voices", "!v");
-var sampleRate = Native.espeak_Initialize(1, 0, engineDirectory, 0);
+// Aceeași rezolvare a căii ca aplicația: căile cu diacritice trec prin numele scurt Windows.
+var nativeEngineDirectory = CititorRSS.Jaws.NativePath.ForAnsiNativeApi(engineDirectory);
+if (nativeEngineDirectory is null) return Fail("Calea eSpeak NG conține caractere non-ASCII și nu are nume scurt Windows.");
+var sampleRate = Native.espeak_Initialize(1, 0, nativeEngineDirectory, 0);
 if (sampleRate <= 0) return Fail("Inițializarea eSpeak NG a eșuat.");
 Native.espeak_SetSynthCallback(callback);
 var voices = Native.espeak_ListVoices(IntPtr.Zero);

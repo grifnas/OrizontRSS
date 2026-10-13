@@ -7,12 +7,12 @@ public sealed class AiProviderService(GeminiConnection? gemini = null, OpenAiCon
     private readonly MistralConnection _mistral = mistral ?? new MistralConnection();
     private readonly DeepSeekConnection _deepSeek = deepSeek ?? new DeepSeekConnection();
 
-    public Task<string> GenerateAsync(string provider, string key, string model, string instructions, string prompt) =>
+    public Task<string> GenerateAsync(string provider, string key, string model, string instructions, string prompt, CancellationToken cancellationToken = default) =>
         AiProviderIds.Normalize(provider) switch
         {
-            AiProviderIds.OpenAI => _openAi.GenerateAsync(key, model, instructions, prompt),
-            AiProviderIds.Mistral => _mistral.GenerateAsync(key, model, instructions, prompt),
-            AiProviderIds.DeepSeek => _deepSeek.GenerateAsync(key, model, instructions, prompt),
-            _ => _gemini.GenerateAsync(key, instructions, prompt)
+            AiProviderIds.OpenAI => _openAi.GenerateAsync(key, model, instructions, prompt, cancellationToken),
+            AiProviderIds.Mistral => _mistral.GenerateAsync(key, model, instructions, prompt, cancellationToken),
+            AiProviderIds.DeepSeek => _deepSeek.GenerateAsync(key, model, instructions, prompt, cancellationToken),
+            _ => _gemini.GenerateAsync(key, instructions, prompt, cancellationToken)
         };
 }

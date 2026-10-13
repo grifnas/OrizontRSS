@@ -30,8 +30,8 @@ public sealed class Feed
     public bool HasThreeMonthSilence => DateTimeOffset.Now - (LastArticleReceivedOn ?? LastSuccessfulUpdate ?? AddedOn) >= TimeSpan.FromDays(90);
     public bool NeedsAttention => ConsecutiveFailures >= 3 || HasThreeMonthSilence;
     public string AttentionReason => ConsecutiveFailures >= 3 ? UiText.Translate("după 3 erori consecutive") : UiText.Translate("nu a primit articole de peste 3 luni");
-    public string DisplayName => UiText.Format("{0}{1}{2}, folder: {3}, {4} articole", IsDemo ? UiText.Format("{0}: ", UiText.Translate("Exemplu demonstrativ")) : string.Empty, NeedsAttention ? UiText.Format("Necesită atenție: {0}. ", AttentionReason) : string.Empty, Name, Folder, Articles.Count);
-    public string VisualDetails => UiText.Format("{0}Folder: {1} · {2} articole", IsDemo ? UiText.Format("{0} · ", UiText.Translate("Exemplu demonstrativ")) : string.Empty, Folder, Articles.Count);
+    public string DisplayName => UiText.Format("{0}{1}{2}, folder: {3}, {4} articole", IsDemo ? UiText.Format("{0}: ", UiText.Translate("Exemplu demonstrativ")) : string.Empty, NeedsAttention ? UiText.Format("Necesită atenție: {0}. ", AttentionReason) : string.Empty, Name, NewsBlurFolderMapping.DisplayName(Folder), Articles.Count);
+    public string VisualDetails => UiText.Format("{0}Folder: {1} · {2} articole", IsDemo ? UiText.Format("{0} · ", UiText.Translate("Exemplu demonstrativ")) : string.Empty, NewsBlurFolderMapping.DisplayName(Folder), Articles.Count);
     public string VisualWarning => NeedsAttention ? UiText.Format("Necesită atenție: {0}", AttentionReason) : string.Empty;
 }
 
@@ -86,7 +86,7 @@ public sealed class Article
     [JsonIgnore] public int DisplayIndex { get; set; }
     [JsonIgnore] public int DisplayTotal { get; set; }
     public string PositionSummary => DisplayIndex > 0 && DisplayTotal > 0
-        ? $"{DisplayIndex} din {DisplayTotal}"
+        ? UiText.Format("{0} din {1}", DisplayIndex, DisplayTotal)
         : string.Empty;
     public string StatusTitlePosition => string.Join(". ", new[] { StatusSummary, Title, PositionSummary }.Where(s => !string.IsNullOrWhiteSpace(s)));
     public string StatusSummary => string.Join(", ", new[] {

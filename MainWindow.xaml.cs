@@ -57,6 +57,7 @@ public partial class MainWindow : Window
     private bool _isRefreshing;
     private CancellationTokenSource? _refreshCancellation;
     private CancellationTokenSource? _googleTranslationCancellation;
+    private CancellationTokenSource? _aiCancellation;
     private TaskCompletionSource<bool>? _refreshCompletion;
     private CancellationTokenSource? _newsBlurStateSyncCancellation;
     private TaskCompletionSource<bool>? _newsBlurStateSyncCompletion;
@@ -922,6 +923,10 @@ public partial class MainWindow : Window
         {
             StopRefresh_Click(this, e); e.Handled = true; return;
         }
+        if (key == Key.Escape && Keyboard.Modifiers == ModifierKeys.None && _aiCancellation is { IsCancellationRequested: false } aiCancellation)
+        {
+            aiCancellation.Cancel(); e.Handled = true; return;
+        }
         if (key == Key.Escape && Keyboard.Modifiers == ModifierKeys.None && (_speech?.IsSpeaking == true || _speech?.IsPaused == true))
         {
             _speech.Stop(); if (!Reader.IsKeyboardFocusWithin) e.Handled = true; return;
@@ -1114,7 +1119,7 @@ public partial class MainWindow : Window
         if (duplicate is not null)
         {
             Say(F("Feedul nu a fost adăugat deoarece adresa este deja abonată: {0}.", duplicate.Name));
-            MessageBox.Show(this, F("Această adresă este deja folosită de feedul „{0}”, în folderul „{1}”.\n\nOrizont RSS nu permite adăugarea aceluiași feed de două ori.", duplicate.Name, duplicate.Folder), T("Feed deja existent"), MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, F("Această adresă este deja folosită de feedul „{0}”, în folderul „{1}”.\n\nOrizont RSS nu permite adăugarea aceluiași feed de două ori.", duplicate.Name, NewsBlurFolderMapping.DisplayName(duplicate.Folder)), T("Feed deja existent"), MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
         var feed = new Feed { Name = dialog.FeedName, Url = dialog.FeedUrl, Folder = dialog.FolderName, ArticleOpenMode = dialog.SelectedArticleOpenMode };
@@ -2271,54 +2276,15 @@ public partial class MainWindow : Window
                     continue;
                 }
 
-                var localReadChanged = article.IsRead != article.NewsBlurLastLocalRead!.Value;
-                var remoteReadChanged = story.IsRead != article.NewsBlurLastRead.GetValueOrDefault();
-                switch (NewsBlurReadStatePolicy.Decide(article.IsRead, article.NewsBlurLastLocalRead.Value, story.IsRead, article.NewsBlurLastRead.GetValueOrDefault()))
-                {
-                    case NewsBlurReadSyncAction.Conflict: conflicts++; break;
-                    case NewsBlurReadSyncAction.SendRead: toRead.Add((article, story.StoryHash)); break;
-                    case NewsBlurReadSyncAction.SendUnread: toUnread.Add((article, story.StoryHash)); break;
-                    case NewsBlurReadSyncAction.ApplyRemote: article.IsRead = story.IsRead; appliedRemote++; break;
-                }
-
-                var localSaved = NewsBlurSavedState(article);
-                var localStarredChanged = localSaved != article.NewsBlurLastLocalSaved!.Value;
-                var remoteStarredChanged = story.IsStarred != article.NewsBlurLastStarred.GetValueOrDefault();
-                if (localStarredChanged && remoteStarredChanged) conflicts++;
-                else if (localStarredChanged)
-                {
-                    if (localSaved) toStar.Add((article, story.StoryHash));
-                    else toUnstar.Add((article, story.StoryHash));
-                }
-                else if (remoteStarredChanged) { ApplyNewsBlurSavedState(article, story.IsStarred); appliedRemote++; }
-
-                var localTagsChanged = !SameTags(article.Tags, article.NewsBlurLastLocalTags!);
-                var remoteTagsChanged = !SameTags(story.UserTags, article.NewsBlurLastTags!);
-                if (localTagsChanged && remoteTagsChanged) conflicts++;
-                else if (localTagsChanged && localSaved) toStar.Add((article, story.StoryHash));
-                else if (localTagsChanged) skippedTags++;
-                else if (remoteTagsChanged) { article.Tags = story.UserTags.ToList(); appliedRemote++; }
-
-                if (!localReadChanged && !remoteReadChanged) article.NewsBlurLastRead = story.IsRead;
-                if (!localReadChanged && !remoteReadChanged) article.NewsBlurLastLocalRead = article.IsRead;
-                if (!localStarredChanged && !remoteStarredChanged) article.NewsBlurLastStarred = story.IsStarred;
-                if (!localStarredChanged && !remoteStarredChanged)
-                {
-                    article.NewsBlurLastLocalStarred = article.IsFavorite;
-                    article.NewsBlurLastLocalSaved = NewsBlurSavedState(article);
-                }
-                if (!localTagsChanged && !remoteTagsChanged) article.NewsBlurLastTags = story.UserTags.ToList();
-                if (!localTagsChanged && !remoteTagsChanged) article.NewsBlurLastLocalTags = (article.Tags ?? []).ToList();
-                if (remoteReadChanged && !localReadChanged) article.NewsBlurLastRead = story.IsRead;
-                if (remoteReadChanged && !localReadChanged) article.NewsBlurLastLocalRead = story.IsRead;
-                if (remoteStarredChanged && !localStarredChanged) article.NewsBlurLastStarred = story.IsStarred;
-                if (remoteStarredChanged && !localStarredChanged)
-                {
-                    article.NewsBlurLastLocalStarred = article.IsFavorite;
-                    article.NewsBlurLastLocalSaved = NewsBlurSavedState(article);
-                }
-                if (remoteTagsChanged && !localTagsChanged) article.NewsBlurLastTags = story.UserTags.ToList();
-                if (remoteTagsChanged && !localTagsChanged) article.NewsBlurLastLocalTags = story.UserTags.ToList();
+                var reconciliation = NewsBlurArticleStateReconciler.Reconcile(article, story, NewsBlurSavedState, ApplyNewsBlurSavedState);
+                if (reconciliation.ReadAction == NewsBlurReadSyncAction.SendRead) toRead.Add((article, story.StoryHash));
+                if (reconciliation.ReadAction == NewsBlurReadSyncAction.SendUnread) toUnread.Add((article, story.StoryHash));
+                if (reconciliation.SendStar) toStar.Add((article, story.StoryHash));
+                if (reconciliation.SendUnstar) toUnstar.Add((article, story.StoryHash));
+                if (reconciliation.SendStarForTags) toStar.Add((article, story.StoryHash));
+                if (reconciliation.SkippedTags) skippedTags++;
+                appliedRemote += reconciliation.AppliedRemote;
+                conflicts += reconciliation.Conflicts;
             }
             if (!cancelled)
             {
@@ -2450,10 +2416,6 @@ public partial class MainWindow : Window
         return articles.FirstOrDefault(article => string.Equals(article.Title.Trim(), story.Title.Trim(), StringComparison.CurrentCultureIgnoreCase) &&
             (!story.Published.HasValue || Math.Abs((article.Published - story.Published.Value).TotalDays) <= 2));
     }
-
-    private static bool SameTags(IEnumerable<string>? left, IEnumerable<string>? right) =>
-        (left ?? []).Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()).ToHashSet(StringComparer.CurrentCultureIgnoreCase)
-            .SetEquals((right ?? []).Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()));
 
     private static void SetNewsBlurFeedBaseline(Feed feed, NewsBlurSubscription remote)
     {
@@ -3019,11 +2981,23 @@ public partial class MainWindow : Window
             AiProviderIds.DeepSeek => _settings.DeepSeekModel,
             _ => _settings.OpenAiModel
         };
-        Say(F("AI: {0} pregătește {1} pentru: {2}. Așteaptă.", providerName, title.ToLower(CultureInfo.CurrentCulture), article.Title));
+        if (_aiCancellation is not null) { Say(T("O cerere AI este deja în curs. Apasă Escape pentru a o opri.")); return; }
+        Say(F("AI: {0} pregătește {1} pentru: {2}. Așteaptă sau apasă Escape pentru a opri.", providerName, title.ToLower(CultureInfo.CurrentCulture), article.Title));
+        var cancellation = new CancellationTokenSource();
+        _aiCancellation = cancellation;
         try
         {
             var prompt = $"Limba interfeței: {CultureInfo.CurrentUICulture.NativeName}\nTitlu articol: {article.Title}\nSursă: {article.Link}\n\nCerere: {request}\n\nArticol:\n{source}";
-            var response = await new AiProviderService().GenerateAsync(provider, key, model, _settings.AiInstructions, prompt);
+            string response;
+            try
+            {
+                response = await new AiProviderService().GenerateAsync(provider, key, model, _settings.AiInstructions, prompt, cancellation.Token);
+            }
+            finally
+            {
+                _aiCancellation = null;
+                cancellation.Dispose();
+            }
             var initialPrompt = prompt;
             new AiResponseWindow(
                 title,
@@ -3044,6 +3018,7 @@ public partial class MainWindow : Window
                 isTranslation ? CultureInfo.CurrentUICulture.NativeName : null) { Owner = this }.ShowDialog();
             Say(T("Răspunsul AI a fost închis. Ești înapoi la lista de articole."));
         }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { Say(T("Cererea AI a fost oprită. Nu s-a afișat niciun răspuns.")); }
         catch (TaskCanceledException) { ShowAiProblem(F("{0} nu a răspuns în 45 de secunde. Încearcă din nou mai târziu.", providerName), MessageBoxImage.Error); }
         catch (HttpRequestException) { ShowAiProblem(F("Nu s-a putut ajunge la {0}. Verifică internetul, firewall-ul sau proxy-ul.", providerName), MessageBoxImage.Error); }
         catch (Exception exception) { ShowAiProblem(F("Furnizorul {0} nu a putut executa comanda {1}. Detalii: {2}", providerName, title, exception.Message), MessageBoxImage.Error); }
@@ -3144,7 +3119,7 @@ public partial class MainWindow : Window
         if (dialog.ShowDialog(this) != true) return;
         try
         {
-            var body = new XElement("body", _feeds.GroupBy(feed => string.IsNullOrWhiteSpace(feed.Folder) ? "Neorganizate" : feed.Folder).OrderBy(group => group.Key).Select(group => new XElement("outline", new XAttribute("text", group.Key), new XAttribute("title", group.Key), group.OrderBy(feed => feed.Name).Select(feed => new XElement("outline", new XAttribute("text", feed.Name), new XAttribute("title", feed.Name), new XAttribute("type", "rss"), new XAttribute("xmlUrl", feed.Url))))));
+            var body = OpmlExport.CreateBody(_feeds);
             var document = new XDocument(new XDeclaration("1.0", "utf-8", null), new XElement("opml", new XAttribute("version", "2.0"), new XElement("head", new XElement("title", "Abonamente Orizont RSS"), new XElement("dateCreated", DateTimeOffset.Now.ToString("R"))), body));
             document.Save(dialog.FileName);
             Say(F("Export OPML încheiat. {0} feeduri au fost salvate în fișier.", _feeds.Count));
@@ -3822,48 +3797,13 @@ public partial class MainWindow : Window
                 {
                     var downloaded = DuplicateCleaner.DeduplicateArticles(await _rss.LoadAsync(feed.Url, _refreshCancellation.Token), out _);
                     ArticleRules.SeedExisting(feed);
-                    var old = feed.Articles
-                        .Where(article => !string.IsNullOrWhiteSpace(article.Id))
-                        .GroupBy(article => article.Id, StringComparer.OrdinalIgnoreCase)
-                        .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
-                    foreach (var article in downloaded.Where(article => old.TryGetValue(article.Id, out _)))
-                    {
-                        article.IsRead = old[article.Id].IsRead;
-                        article.IsFavorite = old[article.Id].IsFavorite;
-                        article.ReadLater = old[article.Id].ReadLater;
-                        article.Tags = old[article.Id].Tags ?? [];
-                        article.AiNotes = old[article.Id].AiNotes ?? [];
-                        article.FullContent = old[article.Id].FullContent;
-                        article.AutomationPendingNewsBlurBaseline = old[article.Id].AutomationPendingNewsBlurBaseline;
-                        article.AutomationAddedReadLater = old[article.Id].AutomationAddedReadLater;
-                        article.NewsBlurStoryHash = old[article.Id].NewsBlurStoryHash;
-                        article.NewsBlurLastRead = old[article.Id].NewsBlurLastRead;
-                        article.NewsBlurLastStarred = old[article.Id].NewsBlurLastStarred;
-                        article.NewsBlurLastTags = old[article.Id].NewsBlurLastTags;
-                        article.NewsBlurLastLocalRead = old[article.Id].NewsBlurLastLocalRead;
-                        article.NewsBlurLastLocalStarred = old[article.Id].NewsBlurLastLocalStarred;
-                        article.NewsBlurLastLocalTags = old[article.Id].NewsBlurLastLocalTags;
-                        article.NewsBlurLastLocalSaved = old[article.Id].NewsBlurLastLocalSaved;
-                    }
-                    var accepted = downloaded;
-                    if (_settings.AutoCleanupEnabled)
-                    {
-                        var cutoff = DateTimeOffset.Now.AddDays(-_settings.RetentionDays);
-                        accepted = downloaded.Where(article => article.Published >= cutoff || (old.TryGetValue(article.Id, out var previous) && (previous.IsFavorite || previous.ReadLater))).ToList();
-                        articlesIgnoredByRetention += downloaded.Count - accepted.Count;
-                        var protectedSaved = feed.Articles.Where(article => article.Published < cutoff && (article.IsFavorite || article.ReadLater))
-                            .Where(article => string.IsNullOrWhiteSpace(article.Id) || !accepted.Any(current => string.Equals(current.Id, article.Id, StringComparison.OrdinalIgnoreCase)));
-                        accepted.AddRange(protectedSaved);
-                    }
-                    // Articolele importate din NewsBlur trebuie păstrate chiar dacă RSS-ul
-                    // publică doar o fereastră scurtă de articole. Altfel, următoarea
-                    // actualizare locală ar face imposibilă sincronizarea pe mai multe PC-uri.
-                    var preservedNewsBlur = feed.Articles.Where(article => !string.IsNullOrWhiteSpace(article.NewsBlurStoryHash))
-                        .Where(article => !accepted.Any(current => string.Equals(current.Id, article.Id, StringComparison.OrdinalIgnoreCase)))
-                        .ToList();
-                    accepted.AddRange(preservedNewsBlur);
+                    // Fluxul RSS conține doar ultimele articole; cele ieșite din flux rămân local.
+                    DateTimeOffset? retentionCutoff = _settings.AutoCleanupEnabled ? DateTimeOffset.Now.AddDays(-_settings.RetentionDays) : null;
+                    var merge = ArticleRefreshMerge.Merge(feed.Articles, downloaded, retentionCutoff);
+                    articlesIgnoredByRetention += merge.IgnoredByRetention;
+                    var accepted = merge.Articles;
                     foreach (var article in accepted) ArticleRules.ApplyIncoming(_settings.ArticleRules, feed, article);
-                    var newlyReceived = accepted.Count(article => !old.ContainsKey(article.Id));
+                    var newlyReceived = merge.NewlyReceived;
                     articlesAdded += newlyReceived;
                     feed.Articles = accepted;
                     feed.ConsecutiveFailures = 0;
@@ -3970,7 +3910,8 @@ public partial class MainWindow : Window
         _suppressFolderFilter = true;
         var priorFolder = SelectedFolder();
         var folders = _feeds.Select(feed => feed.Folder).Where(folder => !string.IsNullOrWhiteSpace(folder)).Distinct(StringComparer.CurrentCultureIgnoreCase).OrderBy(folder => folder).ToList();
-        var folderChoices = folders.Select(folder => new FolderChoice(folder, folder))
+        var folderChoices = folders.Select(folder => new FolderChoice(folder, NewsBlurFolderMapping.DisplayName(folder)))
+            .OrderBy(choice => choice.Label, StringComparer.CurrentCulture)
             .Prepend(new FolderChoice(AllFoldersKey, T("Toate folderele")))
             .ToList();
         FolderFilter.ItemsSource = folderChoices;

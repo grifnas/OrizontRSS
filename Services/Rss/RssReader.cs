@@ -7,11 +7,16 @@ namespace CititorRSS.Jaws;
 
 public sealed class RssReader
 {
-    private static readonly System.Text.RegularExpressions.Regex InlineAdLabels = new(
-        @"(?i)\b(?:publicitate|publicidade|advertisement|advertising|werbung|publicidad|publicité|hirdetés|pubblicità)\b",
+    // Etichetele de pagină se elimină numai când stau singure pe linie; în frazele articolului sunt cuvinte obișnuite.
+    private static readonly System.Text.RegularExpressions.Regex AdLabelLines = new(
+        @"(?im)^[ \t]*(?:publicitate|publicidade|advertisement|advertising|werbung|publicidad|publicité|hirdetés|pubblicità)[ \t]*[:.]?[ \t\r]*$",
+        System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+    // Marcajele de reclamă scrise integral cu majuscule apar și în interiorul rândului.
+    private static readonly System.Text.RegularExpressions.Regex UppercaseAdLabels = new(
+        @"\b(?:PUBLICITATE|PUBLICIDADE|ADVERTISEMENT|WERBUNG|PUBLICIDAD|PUBLICITÉ|HIRDETÉS|PUBBLICITÀ)\b",
         System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
     private static readonly System.Text.RegularExpressions.Regex CommentLabels = new(
-        @"(?i)\b(?:Postați comentariul(?: dvs\.)?|Post a comment|Post your commen\w*|Leave a comment|Kommentar schreiben|Kommentieren|Kommentar|Kommentare|Publicar un comentario|Dejar un comentario|Comentario|Comentarios|Publier un commentaire|Laisser un commentaire|Commentaire|Commentaires|Publicar um comentário|Deixe um comentário|Comentário|Comentários|Hozzászólás írása|Megjegyzés|Megjegyzések|Pubblica un commento|Lascia un commento|Commento|Commenti)\b",
+        @"(?im)^[ \t]*(?:Postați comentariul(?: dvs\.)?|Post a comment|Post your commen\w*|Leave a comment|Kommentar schreiben|Kommentieren|Kommentar|Kommentare|Publicar un comentario|Dejar un comentario|Comentario|Comentarios|Publier un commentaire|Laisser un commentaire|Commentaire|Commentaires|Publicar um comentário|Deixe um comentário|Comentário|Comentários|Hozzászólás írása|Megjegyzés|Megjegyzések|Pubblica un commento|Lascia un commento|Commento|Commenti)[ \t]*[:.]?[ \t\r]*$",
         System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
     private static readonly System.Text.RegularExpressions.Regex CommentCounts = new(
         @"(?i)\b(?:Comentarii|Comments|Kommentare|Comentarios|Commentaires|Comentários|Megjegyzések|Commenti)\s*\(\s*\d+\s*\)",
@@ -22,8 +27,9 @@ public sealed class RssReader
     private static readonly System.Text.RegularExpressions.Regex PreferredSourceBlocks = new(
         @"(?is)\b(?:(?:Adaugă|Adăugați) ca sursă preferată pe Google|Add\s+as\s+(?:a\s+)?preferred\s+source\s+on\s+Google|Als bevorzugte Quelle bei Google hinzufügen|Añadir como fuente preferida en Google|Ajouter comme source préférée sur Google|Adicionar como fonte preferida no Google|Hozzáadás preferált forrásként a Google-ben|Aggiungi come fonte preferita su Google)\b.*$",
         System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+    // Tăierea până la final pornește numai de la un titlu de secțiune aflat singur pe linie.
     private static readonly System.Text.RegularExpressions.Regex RelatedArticleBlocks = new(
-        @"(?is)\b(?:Articole înrudite|Related articles|Verwandte Artikel|Artículos relacionados|Articles connexes|Artigos relacionados|Kapcsolódó cikkek|Articoli correlati|Comentariile cititorilor|Reader comments|Leserkommentare|Comentarios de los lectores|Commentaires des lecteurs|Comentários dos leitores|Olvasói hozzászólások|Commenti dei lettori)\b.*$",
+        @"(?im)^[ \t]*(?:Total[ \t]+)?(?:Articole înrudite|Related articles|Verwandte Artikel|Artículos relacionados|Articles connexes|Artigos relacionados|Kapcsolódó cikkek|Articoli correlati|Comentariile cititorilor|Reader comments|Leserkommentare|Comentarios de los lectores|Commentaires des lecteurs|Comentários dos leitores|Olvasói hozzászólások|Commenti dei lettori)[ \t]*(?::[ \t]*\d*)?[ \t\r]*$(?s:.*)",
         System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
     private static readonly System.Text.RegularExpressions.Regex HomeNavigationBlocks = new(
         @"(?is)\b(?:Anunțuri de acasă|Home\s+News\s+Reviews|Advertisements?\s+from\s+home|Werbung von der Startseite|Anuncios de inicio|Publicités de la page d’accueil|Anúncios da página inicial|Kezdőlap hirdetések|Pubblicità dalla home)\b.*$",
@@ -113,7 +119,43 @@ public sealed class RssReader
         using var response = await _client.GetAsync(articleUrl);
         response.EnsureSuccessStatusCode();
         var html = await response.Content.ReadAsStringAsync();
-        return await Task.Run(() => CleanReadableContent(html));
+        var pageUrl = response.RequestMessage?.RequestUri?.ToString() ?? articleUrl;
+        return await Task.Run(() => ExtractReadableArticle(pageUrl, html));
+    }
+
+    /// <summary>Minimum length for a SmartReader result; shorter results fall back to the existing extractor.</summary>
+    public const int MinimumReadableArticleCharacters = 300;
+
+    /// <summary>
+    /// Text lizibil dintr-o pagină HTML: întâi SmartReader (algoritmul Readability), care alege
+    /// conținutul articolului fără meniuri și liste laterale; dacă pagina nu este recunoscută ca articol
+    /// sau rezultatul este prea scurt, extractorul existent. Ambele trec prin aceeași curățare.
+    /// </summary>
+    public static string ExtractReadableArticle(string pageUrl, string html)
+    {
+        if (string.IsNullOrWhiteSpace(html)) return string.Empty;
+        var readable = TryExtractWithReadability(pageUrl, html);
+        return readable is not null ? CleanReadableContent(readable) : CleanReadableContent(html);
+    }
+
+    private static string? TryExtractWithReadability(string pageUrl, string html)
+    {
+        try
+        {
+            var article = new SmartReader.Reader(pageUrl, html).GetArticle();
+            if (!article.IsReadable || string.IsNullOrWhiteSpace(article.TextContent)) return null;
+            // Un paragraf pe linie; liniile goale multiple se reduc la una.
+            var text = System.Text.RegularExpressions.Regex.Replace(article.TextContent, @"[ \t ]+", " ");
+            text = System.Text.RegularExpressions.Regex.Replace(text, @" ?\r?\n ?", "\n");
+            text = System.Text.RegularExpressions.Regex.Replace(text, @"\n{3,}", "\n\n").Trim();
+            if (text.Length < MinimumReadableArticleCharacters) return null;
+            // Rezultatul este text simplu; entitățile sunt păstrate ca text de curățarea ulterioară.
+            return WebUtility.HtmlEncode(text).Replace("\n", "<br>");
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     /// <summary>Applies the same readable-content cleanup to cached HTML or text.</summary>
@@ -184,6 +226,8 @@ public sealed class RssReader
         article = System.Text.RegularExpressions.Regex.Replace(article, "background-(?:position|repeat|image|size|color)\\s*:[^;]+;?", " ", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         article = System.Text.RegularExpressions.Regex.Replace(article, @"\+(?=[<>])", string.Empty);
         article = System.Text.RegularExpressions.Regex.Replace(article, "<!--[\\s\\S]*?-->", " ");
+        // Titlurile încep pe linie nouă, ca etichetele de secțiune să fie recunoscute și după un element inline.
+        article = System.Text.RegularExpressions.Regex.Replace(article, @"<(?=h[1-6]\b)", Environment.NewLine + "<", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         article = System.Text.RegularExpressions.Regex.Replace(article, "<(br|/p|/div|/li|/h[1-6])[^>]*>", Environment.NewLine, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
         var text = WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(article, "<[^>]+>", " "));
         text = WebUtility.HtmlDecode(text);
@@ -191,8 +235,9 @@ public sealed class RssReader
         text = System.Text.RegularExpressions.Regex.Replace(text, @"(?is)googletag\.cmd\.push\(function\(\).*?(?:\}\);|$)", " ");
         text = System.Text.RegularExpressions.Regex.Replace(text, @"(?is)<text\b.*?</svg>", " ");
         text = System.Text.RegularExpressions.Regex.Replace(text, @"\s*""\);\s*""\s*>\s*", " ");
-        text = InlineAdLabels.Replace(text, " ");
-        text = CommentLabels.Replace(text, " ");
+        text = AdLabelLines.Replace(text, string.Empty);
+        text = UppercaseAdLabels.Replace(text, " ");
+        text = CommentLabels.Replace(text, string.Empty);
         text = CommentCounts.Replace(text, " ");
         text = HomeNavigationBlocks.Replace(text, " ");
         text = AffiliateBlocks.Replace(text, " ");
@@ -201,7 +246,7 @@ public sealed class RssReader
         text = RelatedArticleBlocks.Replace(text, " ");
         text = System.Text.RegularExpressions.Regex.Replace(text, @"(?im)^\s*\d+\s*/\s*\d+\s*$", " ");
         // Subsolurile editoriale și meniurile de politică nu fac parte din articol.
-        text = System.Text.RegularExpressions.Regex.Replace(text, @"(?is)\bO campanie editorială\b.*$", " ");
+        text = System.Text.RegularExpressions.Regex.Replace(text, @"(?m)^[ \t]*O campanie editorială\b(?s:.*)", " ");
         text = System.Text.RegularExpressions.Regex.Replace(text, "[ \\t]+", " ");
         text = System.Text.RegularExpressions.Regex.Replace(text, @"[ \t]*\r?\n[ \t]*", Environment.NewLine);
         text = System.Text.RegularExpressions.Regex.Replace(text, "(\\r?\\n\\s*){2,}", Environment.NewLine + Environment.NewLine);

@@ -22,6 +22,33 @@ Orizont RSS include biblioteca `libespeak-ng.dll` și datele vocilor eSpeak NG 1
 - Licență principală: GPL-3.0-or-later
 - Orizont RSS nu include și nu folosește executabilul de linie de comandă eSpeak NG.
 
+## Microsoft Edge WebView2 SDK 1.0.2903.40
+
+Modul de citire WebReader folosește controlul Microsoft Edge WebView2. Orizont RSS include bibliotecile SDK-ului WebView2 (`Microsoft.Web.WebView2.Core.dll`, `Microsoft.Web.WebView2.Wpf.dll`, `Microsoft.Web.WebView2.WinForms.dll`) și `WebView2Loader.dll`. Motorul WebView2 Runtime nu este inclus: aplicația folosește runtime-ul instalat în Windows. Textul licenței și notificările terțe ale pachetului sunt incluse în `Licenses/WebView2`.
+
+- Proiect: https://aka.ms/webview
+- Versiune inclusă: 1.0.2903.40
+- Licență: licența Microsoft pentru WebView2 SDK (tip BSD), din `Licenses/WebView2/LICENSE.txt`
+- Copyright (C) Microsoft Corporation
+
+## SmartReader 0.9.6
+
+Pentru textul integral al articolelor, Orizont RSS folosește biblioteca SmartReader, o adaptare .NET a algoritmului Readability de la Mozilla. Biblioteca alege conținutul articolului dintr-o pagină web, fără meniuri și liste laterale. Textul licenței este inclus în `Licenses/SmartReader`.
+
+- Proiect: https://github.com/strumenta/SmartReader
+- Versiune inclusă: 0.9.6
+- Licență: Apache-2.0
+- Copyright: Strumenta
+
+## AngleSharp 1.1.2
+
+AngleSharp este analizorul HTML folosit de SmartReader. Textul licenței este inclus în `Licenses/AngleSharp`.
+
+- Proiect: https://github.com/AngleSharp/AngleSharp
+- Versiune inclusă: 1.1.2
+- Licență: MIT
+- Copyright (c) 2013 - 2024 AngleSharp
+
 ## Google Gemini API
 
 Funcțiile AI sunt opționale și folosesc serviciul Google Gemini prin cheia furnizată de utilizator. Gemini este un serviciu online separat și nu este inclus în codul sau în licența Orizont RSS. Utilizarea sa este supusă condițiilor și limitelor stabilite de Google.

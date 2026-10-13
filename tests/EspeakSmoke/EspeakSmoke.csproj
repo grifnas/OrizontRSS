@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\Services\Speech\NativePath.cs" Link="NativePath.cs" />
     <Content Include="..\..\ThirdParty\eSpeakNG\libespeak-ng.dll">
       <Link>libespeak-ng.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -197,7 +197,7 @@ internal sealed class EspeakSpeechEngine : ISpeechEngine
                     }
                 }
                 NativeMethods.espeak_SetParameter(1, Math.Clamp(175 + _rate * 15, 80, 450), 0);
-                NativeMethods.espeak_SetParameter(2, _volume, 0);
+                NativeMethods.espeak_SetParameter(2, EspeakVolume.FromSetting(_volume), 0);
                 NativeMethods.espeak_SetParameter(3, _pitch, 0);
                 NativeMethods.espeak_SetParameter(4, _inflection, 0);
 
@@ -311,7 +311,10 @@ internal sealed class EspeakSpeechEngine : ISpeechEngine
             if (_nativeInitialized) return true;
             try
             {
-                _sampleRate = NativeMethods.espeak_Initialize(1, 0, EngineDirectory(), 0);
+                // Calea trebuie să fie ASCII; altfel eSpeak NG nu își găsește datele sau oprește procesul.
+                var nativeDirectory = NativePath.ForAnsiNativeApi(EngineDirectory());
+                if (nativeDirectory is null) return false;
+                _sampleRate = NativeMethods.espeak_Initialize(1, 0, nativeDirectory, 0);
                 _nativeInitialized = _sampleRate > 0;
                 if (_nativeInitialized) NativeMethods.espeak_SetSynthCallback(SynthCallback);
                 return _nativeInitialized;

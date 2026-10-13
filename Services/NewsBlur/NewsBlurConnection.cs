@@ -77,38 +77,6 @@ public static class NewsBlurFeedSnapshotPolicy
         return !previousIds.Contains(matchingAfter[0].FeedId) ? matchingAfter[0] : null;
     }
 
-    /// <summary>
-    /// Finds a unique remote feed for a locally queued deletion. URL equality is
-    /// preferred; a unique normalized-name match is the fallback for providers
-    /// that publish the same feed through a FeedBurner/canonical URL.
-    /// </summary>
-    public static NewsBlurFeedInfo? FindRemoteForPendingDeletion(
-        NewsBlurPendingFeedDeletion pending,
-        IEnumerable<NewsBlurFeedInfo> remoteFeeds)
-    {
-        var feeds = remoteFeeds.ToList();
-        if (!string.IsNullOrWhiteSpace(pending.FeedId))
-        {
-            var byId = feeds.FirstOrDefault(feed => string.Equals(feed.FeedId, pending.FeedId, StringComparison.OrdinalIgnoreCase));
-            if (byId is not null) return byId;
-        }
-
-        var byAddress = feeds.Where(feed => AddressesMatch(pending.Url, feed.Url)).ToList();
-        if (byAddress.Count == 1) return byAddress[0];
-
-        var pendingName = NormalizeFeedName(pending.Name);
-        if (pendingName.Length < 6) return null;
-        var byName = feeds.Where(feed =>
-        {
-            var remoteName = NormalizeFeedName(feed.Name);
-            return remoteName.Length >= 6 &&
-                (string.Equals(remoteName, pendingName, StringComparison.OrdinalIgnoreCase) ||
-                 remoteName.Contains(pendingName, StringComparison.OrdinalIgnoreCase) ||
-                 pendingName.Contains(remoteName, StringComparison.OrdinalIgnoreCase));
-        }).ToList();
-        return byName.Count == 1 ? byName[0] : null;
-    }
-
     private static string RemoveWwwPrefix(string key)
     {
         var separator = key.IndexOf('/');
@@ -222,7 +190,8 @@ public static class NewsBlurStartupSyncPolicy
         sessionAvailable && settings.NewsBlurSyncArticlesAndStatesAtStartup && !initialImportRequired;
 }
 
-public enum NewsBlurReadSyncAction { None, SendRead, SendUnread, ApplyRemote, Conflict }
+/// <summary>AlreadyAligned: both sides changed to the same value; only the baselines must be updated.</summary>
+public enum NewsBlurReadSyncAction { None, SendRead, SendUnread, ApplyRemote, Conflict, AlreadyAligned }
 
 public static class NewsBlurReadStatePolicy
 {
@@ -230,7 +199,8 @@ public static class NewsBlurReadStatePolicy
     {
         var localChanged = localRead != lastLocalRead;
         var remoteChanged = remoteRead != lastRemoteRead;
-        if (localChanged && remoteChanged) return NewsBlurReadSyncAction.Conflict;
+        if (localChanged && remoteChanged)
+            return localRead == remoteRead ? NewsBlurReadSyncAction.AlreadyAligned : NewsBlurReadSyncAction.Conflict;
         if (localChanged) return localRead ? NewsBlurReadSyncAction.SendRead : NewsBlurReadSyncAction.SendUnread;
         if (remoteChanged) return NewsBlurReadSyncAction.ApplyRemote;
         return NewsBlurReadSyncAction.None;
@@ -244,6 +214,10 @@ public static class NewsBlurFolderMapping
 
     public static bool IsUnorganized(string? folder) =>
         string.Equals(folder?.Trim(), UnorganizedFolder, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Numele afișat al folderului; „Neorganizate” rămâne cheia internă și este tradus doar la afișare.</summary>
+    public static string DisplayName(string? folder) =>
+        string.IsNullOrWhiteSpace(folder) || IsUnorganized(folder) ? UiText.Translate("Neorganizate") : folder.Trim();
 
     public static bool IsNamedFolder(string? folder) =>
         !string.IsNullOrWhiteSpace(folder) && !IsUnorganized(folder);
