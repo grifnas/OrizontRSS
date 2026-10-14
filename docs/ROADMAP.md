@@ -1,5 +1,17 @@
 # Foaia de parcurs Orizont RSS
 
+## Lucrare aprobată și amânată — semnarea digitală a instalatorului (14 octombrie 2026)
+
+Utilizatorul agreează propunerea de semnare digitală și a decis amânarea ei pentru o dată ulterioară. Nu se începe fără o nouă cerere expresă.
+
+Varianta aprobată, în ordinea preferinței:
+
+1. **SignPath Foundation** (gratuit, pentru proiecte open source). Editorul afișat va fi „SignPath Foundation”. Condiții: toate componentele open source; versiunile compilate automat în GitHub Actions, din sursa proiectului; aprobare manuală pentru fiecare semnare; autentificare în doi pași pentru toți membrii; secțiunea „Code signing policy” pe pagina proiectului și a descărcărilor, cu rolurile echipei și declarația privind confidențialitatea. Pași tehnici la reluare: compilarea instalatorului și a pachetului portabil mutată în GitHub Actions, integrarea semnării SignPath, pagina „Code signing policy” în cele opt limbi. Pasul utilizatorului: cererea de aderare și aprobarea fiecărei versiuni.
+2. **Rezervă: Certum „Open Source Code Signing in the Cloud”** (49 €/an la 14 octombrie 2026, editor „Open Source Developer, Grigore Frișan”, verificarea identității, semnare prin SimplySign; certificat valabil cel mult 459 de zile). Înainte de cumpărare trebuie verificată accesibilitatea SimplySign cu JAWS 2026.
+3. **Opțional, separat: Microsoft Store** (înregistrare gratuită pentru persoane fizice, semnare făcută de Microsoft). Necesită împachetare MSIX, actualizări prin Store în locul actualizatorului propriu și verificarea locației datelor; nu semnează instalatorul de pe GitHub.
+
+Nepotrivite la data deciziei: Azure Artifact Signing (pentru persoane fizice doar în SUA și Canada) și certificatele OV/EV obișnuite (cost mai mare, fără avantaj față de Certum Open Source). Un certificat nou nu elimină imediat avertismentul SmartScreen: reputația se acumulează în timp. Condițiile și prețurile trebuie reverificate la reluare.
+
 ## Actualizare — 9 octombrie 2026
 
 Versiunea **v1.6.1 a fost publicată pe GitHub**. Ramura `main` și tagul `v1.6.1` indică commitul `161eeff6db6d931130bf79ae6ca3f5e09ea7636b`. Release-ul public conține installerul offline, arhiva portabilă, arhiva sursă și cele trei fișiere SHA-256; numele, dimensiunile și hash-urile sunt consemnate în [registrul de release](RELEASE-STATUS.json). Utilizatorul a confirmat la 9 octombrie că actualizarea instalării existente de la 1.6.0 la 1.6.1 funcționează bine. A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; `NU1900` înseamnă că auditul online al vulnerabilităților NuGet nu a putut fi verificat.

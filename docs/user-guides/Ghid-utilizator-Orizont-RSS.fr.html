@@ -64,7 +64,7 @@
       <h3>Vue d&#39;un dossier</h3>
       <p>Lorsque vous choisissez un dossier, la liste Articles combine les articles de tous ses flux et les classe du plus r&#233;cent au plus ancien. Le lecteur d&#39;&#233;cran annonce la source de chaque article et la barre d&#39;&#233;tat indique le nombre de flux et les totaux d&#39;articles.</p>
       <h3>D&#233;couvrir de nouvelles sources</h3>
-      <p>Vous pouvez rechercher des flux par th&#232;me dans le catalogue v&#233;rifi&#233; ou demander &#224; l&#39;application de rechercher les flux d&#233;clar&#233;s par un site sp&#233;cifique.</p>
+      <p>Depuis le menu Flux, vous pouvez trouver de nouvelles sources de deux façons. <strong>Trouver des flux sur un site</strong> accepte l'adresse d'un site, d'un article, d'une chaîne YouTube, d'un subreddit, d'un projet GitHub ou d'un profil Mastodon. L'application recherche les flux, les vérifie automatiquement et n'affiche que ceux qui fonctionnent, avec le nombre d'articles et la date du dernier article ; les flux de commentaires sont signalés et apparaissent à la fin. <strong>Rechercher des flux par sujet</strong> propose le catalogue vérifié, filtré par catégorie, et le bouton <strong>Rechercher sur Internet</strong>, qui utilise le service Feedly : les mots recherchés sont envoyés à Feedly uniquement lorsque vous appuyez sur le bouton, et les résultats sont vérifiés avant d'être affichés. Vous pouvez aussi saisir un domaine, par exemple heise.de. Dans les deux fenêtres, le premier résultat reçoit le focus et <strong>Ajouter un flux vérifié</strong> ajoute le flux choisi.</p>
       <h3>Flux qui n&#233;cessitent une attention particuli&#232;re</h3>
       <p>Le bouton du panneau Flux affiche les flux qui comportent au moins trois erreurs cons&#233;cutives ou qui n&#39;ont pas re&#231;u d&#39;articles depuis plus de 90 jours. Lorsque le filtre est actif, le m&#234;me bouton renvoie &#224; tous les flux.</p>
       <h3>Doublons</h3>
@@ -84,7 +84,7 @@
       <h3>&#201;tiquettes</h3>
       <p>Lors de l&#39;&#233;tiquetage, vous pouvez choisir les &#233;tiquettes d&#233;j&#224; cr&#233;&#233;es ou en ins&#233;rer une nouvelle. La bo&#238;te de dialogue permet &#233;galement la suppression permanente des balises de tous les articles.</p>
       <h3>Ouvrir sans publicit&#233;s dans le navigateur</h3>
-      <p>Dans le menu contextuel de l&#39;article ou du contenu, choisissez <strong>Ouvrir l&#39;article en mode Lecture</strong>. Orizont envoie la page au mode Lecture de Microsoft Edge, qui supprime les publicit&#233;s, les barres lat&#233;rales et la navigation inutile sur les pages compatibles. <strong>Ouvrir la page d&#39;origine dans le navigateur</strong> reste disponible s&#233;par&#233;ment.</p>
+      <p>Dans le menu contextuel de l&#39;article ou du contenu, choisissez <strong>Ouvrir l&#39;article en mode Lecture</strong>. Orizont envoie la page au mode Lecture de Microsoft Edge, qui supprime les publicit&#233;s, les barres lat&#233;rales et la navigation inutile sur les pages compatibles. <strong>Ouvrir la page d&#39;origine dans le navigateur</strong> reste disponible s&#233;par&#233;ment. Pour le texte intégral, l'application ne conserve que l'article : les menus, les listes latérales et les sections de commentaires ne sont pas inclus. Si la page n'est pas reconnue comme un article, l'ancienne méthode d'extraction est utilisée.</p>
       <p>Dans le lecteur Orizont, le raccourci par défaut <kbd>Ctrl+Shift+F8</kbd> permet de passer du texte simple à WebReader. Le menu contextuel ou le menu Lecteur permet d’enregistrer l’article affiché au format TXT ou RTF dans le dossier choisi dans les paramètres de l’application. Le document conserve la source et, pour une traduction, le fournisseur.</p>
     </section>
     <section id="cautare">
@@ -97,7 +97,7 @@
       <h2>6. Lecture vocale SAPI5, eSpeak NG et Gemini</h2>
       <p>Orizont RSS peut utiliser les voix SAPI5 de Windows, le moteur local eSpeak NG ou 30 voix Gemini TTS en ligne. SAPI5 et eSpeak fonctionnent localement. Avec Gemini TTS, le texte est envoy&#233; &#224; Google et peut consommer le quota ou les cr&#233;dits de l&#39;API.</p>
       <h3>Configuration vocale</h3>
-      <p>Ouvrez les param&#232;tres de l&#39;application et la section Lecture vocale. Choisissez SAPI5, eSpeak NG ou Gemini TTS, puis la voix, la vitesse et le volume. Gemini TTS utilise la cl&#233; enregistr&#233;e dans les param&#232;tres IA. Testez la voix, puis enregistrez.</p>
+      <p>Ouvrez les param&#232;tres de l&#39;application et la section Lecture vocale. Choisissez SAPI5, eSpeak NG ou Gemini TTS, puis la voix, la vitesse et le volume. Gemini TTS utilise la cl&#233; enregistr&#233;e dans les param&#232;tres IA. Testez la voix, puis enregistrez. Pour eSpeak NG, le volume couvre toute la plage du moteur ; si la voix est trop forte, baissez le volume avec le même réglage.</p>
       <h3>Commandes de lecture</h3>
       <ul>
         <li><kbd>F9</kbd> lire la s&#233;lection du contenu&#160;; s&#39;il n&#39;y a pas de s&#233;lection, lisez le titre, la source, la date et l&#39;article complet affich&#233;s.</li>
@@ -115,16 +115,16 @@
       <p>Gemini, OpenAI, Mistral et DeepSeek sont facultatifs. Dans Paramètres → Intelligence artificielle, vous pouvez saisir une clé API pour chacun et choisir le fournisseur par défaut. Vous pouvez poursuivre une conversation au sujet d’un article, puis la copier, l’enregistrer ou la partager. Résumé, Traduction, Explication et Idées principales demandent une réponse dans la langue de l’interface.</p>
       <p>Google Translate est distinct des conversations IA : il utilise un service en ligne non officiel sans clé API et demande confirmation avant l’envoi du texte. DeepL nécessite votre clé API. Une traduction copiée, enregistrée ou partagée indique le fournisseur et contient l’adresse de l’article source.</p>
       <p>Dans la fen&#234;tre de conversation, <kbd>F9</kbd> lit la s&#233;lection ou toute la conversation avec la voix configur&#233;e. <kbd>F9</kbd> met en pause ou reprend et <kbd>Escape</kbd> arr&#234;te la lecture. Le menu contextuel permet aussi de lire &#224; partir du curseur.</p>
-      <p>Orizont RSS affiche l&#39;&#233;tat de la demande et un message clair si le service ne r&#233;pond pas, la cl&#233; est rejet&#233;e ou la connexion n&#39;est pas disponible.</p>
+      <p>Orizont RSS affiche l&#39;&#233;tat de la demande et un message clair si le service ne r&#233;pond pas, la cl&#233; est rejet&#233;e ou la connexion n&#39;est pas disponible. Dans la fenêtre principale, <kbd>Escape</kbd> arrête une requête d'IA en cours. Si une réponse de Gemini atteint la limite de longueur, le texte reçu est conservé, accompagné d'une note qui le signale.</p>
     </section>
     <section id="date">
       <h2>8. Importation, sauvegarde et nettoyage</h2>
       <h3>OPML</h3>
-      <p>Depuis le menu Flux, vous pouvez importer ou exporter un fichier OPML. L&#39;importation &#233;vite les adresses d&#233;j&#224; existantes.</p>
+      <p>Depuis le menu Flux, vous pouvez importer ou exporter un fichier OPML. L&#39;importation &#233;vite les adresses d&#233;j&#224; existantes. À l'export, les flux non organisés sont placés à la racine du fichier, comme dans les autres lecteurs RSS.</p>
       <h3>Sauvegarde</h3>
       <p>La sauvegarde comprend les flux, les articles, les dossiers, les étiquettes, les états, les notes IA et les préférences non sensibles. Elle ne contient ni les clés API ni la session NewsBlur.</p>
       <h3>Anciens articles</h3>
-      <p>Le nettoyage automatique est configurable. Les &#233;l&#233;ments Favoris et Lire plus tard sont prot&#233;g&#233;s. L&#39;application m&#233;morise les articles supprim&#233;s par la r&#232;gle de vieillissement et ne les r&#233;importe pas lors de la prochaine mise &#224; jour.</p>
+      <p>Le nettoyage automatique est configurable. Les &#233;l&#233;ments Favoris et Lire plus tard sont prot&#233;g&#233;s. L&#39;application m&#233;morise les articles supprim&#233;s par la r&#232;gle de vieillissement et ne les r&#233;importe pas lors de la prochaine mise &#224; jour. Les articles restent dans l'application même après avoir disparu du flux du site ; seuls le nettoyage automatique ou la suppression manuelle les retirent.</p>
     </section>
     <section id="stare">
       <h2>9. &#201;tat, erreurs et d&#233;pannage</h2>
@@ -132,7 +132,7 @@
       <h3>Si la voix n&#39;appara&#238;t pas</h3>
       <p>V&#233;rifiez si le synth&#233;tiseur est install&#233; en tant que voix SAPI5 pour la m&#234;me architecture Windows. Red&#233;marrez Orizont RSS apr&#232;s avoir install&#233; une nouvelle voix.</p>
       <h3>Si la mise &#224; jour prend beaucoup de temps</h3>
-      <p>La barre d&#39;&#233;tat affiche la progression. Escape peut arr&#234;ter le processus et mettre fin &#224; la connexion en cours, en conservant les donn&#233;es d&#233;j&#224; re&#231;ues. Dans le menu Flux, vous pouvez r&#233;essayer uniquement les sources qui ont g&#233;n&#233;r&#233; une erreur.</p>
+      <p>La barre d&#39;&#233;tat affiche la progression. Escape peut arr&#234;ter le processus et mettre fin &#224; la connexion en cours, en conservant les donn&#233;es d&#233;j&#224; re&#231;ues. Dans le menu Flux, vous pouvez r&#233;essayer uniquement les sources qui ont g&#233;n&#233;r&#233; une erreur. Les flux sont téléchargés en parallèle : un site lent ne retarde plus les autres. Les flux qui n'ont pas changé depuis la dernière mise à jour ne sont pas téléchargés à nouveau.</p>
       <h3>Si le guide ne s&#39;ouvre pas</h3>
       <p>V&#233;rifiez que le fichier Ghid-utilizator-Orizont-RSS.html et les guides traduits se trouvent &#224; c&#244;t&#233; de Orizont.exe. Extrayez l&#39;int&#233;gralit&#233; de l&#39;archive ZIP, pas seulement l&#39;ex&#233;cutable.</p>
       <h3>Si une erreur inattendue se produit</h3>

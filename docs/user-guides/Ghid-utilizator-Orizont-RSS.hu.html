@@ -65,7 +65,7 @@
       <h3>Mappa megtekintése</h3>
       <p>Amikor kiválaszt egy mappát, a Cikkek lista egyesíti az összes hírfolyam cikkeit, és a legújabbtól a legrégebbiig rendezi őket. A képernyőolvasó bejelenti az egyes cikkek forrását, az állapotsor pedig a hírcsatornák számát és a cikkek összegét mutatja.</p>
       <h3>Új források felfedezése</h3>
-      <p>Kereshet hírcsatornákat téma szerint az ellenőrzött katalógusban, vagy megkérheti az alkalmazást, hogy keresse meg az adott webhely által deklarált hírcsatornákat.</p>
+      <p>A Feedek menüből kétféleképpen találhat új forrásokat. A <strong>Keressen feedeket a webhelyen</strong> elfogadja egy webhely, egy cikk, egy YouTube-csatorna, egy subreddit, egy GitHub-projekt vagy egy Mastodon-profil címét. Az alkalmazás megkeresi a hírcsatornákat, automatikusan ellenőrzi őket, és csak a működőket jeleníti meg, a cikkek számával és a legutóbbi cikk dátumával; a hozzászólások hírcsatornái meg vannak jelölve, és a lista végén szerepelnek. A <strong>Hírcsatornák keresése témakörök szerint</strong> az ellenőrzött katalógust kínálja kategóriák szerint szűrve, valamint a <strong>Keresés az interneten</strong> gombot, amely a Feedly szolgáltatást használja: a keresett szavakat a Feedly csak a gomb megnyomásakor kapja meg, az eredményeket pedig megjelenítés előtt ellenőrizzük. Egy tartományt is beírhat, például heise.de. Mindkét ablakban az első találat kapja a fókuszt, az <strong>Ellenőrzött hírcsatorna hozzáadása</strong> pedig hozzáadja a kiválasztott hírcsatornát.</p>
       <h3>Figyelmet igénylő tápok</h3>
       <p>A Hírcsatornák panel gombja azokat a hírcsatornákat jeleníti meg, amelyekben legalább három egymást követő hiba van, vagy amelyek 90 napnál hosszabb ideig nem kaptak cikket. Ha a szűrő aktív, ugyanaz a gomb visszatér az összes hírcsatornához.</p>
       <h3>Ismétlődések</h3>
@@ -85,7 +85,7 @@
       <h3>Címkék</h3>
       <p>Címkézéskor kiválaszthatja a már létrehozott címkéket, vagy beilleszthet újat. A párbeszédpanel lehetővé teszi a címkék végleges törlését is az összes cikkből.</p>
       <h3>Megnyitás hirdetések nélkül a böngészőben</h3>
-      <p>A cikk vagy tartalom helyi menüjéből válassza a lehetőséget <strong>Nyissa meg a cikket a Orizont olvasóban</strong>. Az alkalmazás letölti és megtisztítja az oldalt, majd egy hozzáférhető ablakban megjeleníti a címet, a forrást és a fő szöveget, hirdetések, oldalsávok és szükségtelen navigáció nélkül. A kijelölés másolása, a teljes cikk másolása és a felolvasási lehetőségek továbbra is elérhetők. <strong>Nyissa meg az eredeti oldalt a böngészőben</strong> külön is elérhető marad.</p>
+      <p>A cikk vagy tartalom helyi menüjéből válassza a lehetőséget <strong>Nyissa meg a cikket a Orizont olvasóban</strong>. Az alkalmazás letölti és megtisztítja az oldalt, majd egy hozzáférhető ablakban megjeleníti a címet, a forrást és a fő szöveget, hirdetések, oldalsávok és szükségtelen navigáció nélkül. A kijelölés másolása, a teljes cikk másolása és a felolvasási lehetőségek továbbra is elérhetők. <strong>Nyissa meg az eredeti oldalt a böngészőben</strong> külön is elérhető marad. A teljes szövegnél az alkalmazás csak a cikket tartja meg: a menük, az oldalsó listák és a hozzászólások nem kerülnek bele. Ha az oldal nem ismerhető fel cikként, a korábbi kinyerési módszer működik.</p>
       <p>Az Orizont olvasóban az alapértelmezett <kbd>Ctrl+Shift+F8</kbd> billentyűparancs vált az egyszerű szöveg és a WebReader között. A helyi menüből vagy az Olvasó menüből a megjelenített cikk TXT vagy RTF formátumban menthető az Alkalmazásbeállításokban kiválasztott mappába. A dokumentum megőrzi a forrás címét, fordítás esetén pedig a szolgáltatót is.</p>
     </section>
     <section id="cautare">
@@ -98,7 +98,7 @@
       <h2>6. Hangolvasás SAPI5, eSpeak NG és Gemini</h2>
       <p>A Orizont A RSS használhatja a SAPI5 Windows-ben rögzített hangokat, a helyi eSpeak NG motort vagy a 30 online Gemini TTS hangot. A SAPI5 és az eSpeak helyileg működik. A Gemini TTS használatakor az olvasott szöveg elküldésre kerül a Google-nak, és felemelheti az API-kulcs kvótáját vagy jóváírásait.</p>
       <h3>Hangkonfiguráció</h3>
-      <p>Nyissa meg az Alkalmazásbeállításokat, majd a Felolvasás részt. Válassza a SAPI5, az eSpeak NG vagy a Gemini TTS lehetőséget, majd a hangot, a sebességet és a hangerőt. Az eSpeak esetében a hang magasságát is beállíthatja. A Gemini TTS a mesterséges intelligencia beállításaiban mentett kulcsot használja. Használja a Teszthangot, majd a Mentés lehetőséget.</p>
+      <p>Nyissa meg az Alkalmazásbeállításokat, majd a Felolvasás részt. Válassza a SAPI5, az eSpeak NG vagy a Gemini TTS lehetőséget, majd a hangot, a sebességet és a hangerőt. Az eSpeak esetében a hang magasságát is beállíthatja. A Gemini TTS a mesterséges intelligencia beállításaiban mentett kulcsot használja. Használja a Teszthangot, majd a Mentés lehetőséget. Az eSpeak NG esetében a hangerő a motor teljes tartományát lefedi; ha a hang túl hangos, csökkentse ugyanazzal a beállítással.</p>
       <h3>Parancsok olvasása</h3>
       <ul>
         <li><kbd>F9</kbd> olvassa el a válogatást a tartalomból; ha nincs kijelölés, olvassa el a címet, a forrást, a dátumot és a teljes cikket.</li>
@@ -116,16 +116,16 @@
       <p>A Gemini, az OpenAI, a Mistral és a DeepSeek választható szolgáltatók. A Beállítások → Mesterséges intelligencia részben mindegyikhez megadható API-kulcs, és kiválasztható az alapértelmezett szolgáltató. A cikkről folytatott beszélgetés folytatható, másolható, menthető vagy megosztható. Az Összegzés, Fordítás, Magyarázat és Fő gondolatok parancs a felület nyelvén kéri a választ.</p>
       <p>A Google Translate külön működik az MI-beszélgetésektől: nem hivatalos online szolgáltatást használ API-kulcs nélkül, és a szöveg elküldése előtt megerősítést kér. A DeepL saját API-kulcsot igényel. A másolt, mentett vagy megosztott fordítás megnevezi a szolgáltatót és tartalmazza az eredeti cikk címét.</p>
       <p>A beszélgetés ablakában <kbd>F9</kbd> olvassa el a kijelölést vagy a teljes beszélgetést a konfigurált hanggal. <kbd>F9</kbd> szüneteltesse vagy folytassa újra <kbd>Escape</kbd> hagyja abba az olvasást. A helyi menü a kurzorból való olvasást is lehetővé teszi.</p>
-      <p>Orizont A RSS megjeleníti a kérés állapotát és egyértelmű üzenetet, ha a szolgáltatás nem válaszol, a kulcsot elutasították vagy a kapcsolat nem érhető el.</p>
+      <p>Orizont A RSS megjeleníti a kérés állapotát és egyértelmű üzenetet, ha a szolgáltatás nem válaszol, a kulcsot elutasították vagy a kapcsolat nem érhető el. A főablakban az <kbd>Escape</kbd> leállítja a folyamatban lévő MI-kérést. Ha egy Gemini-válasz eléri a hosszkorlátot, a kapott szöveg megmarad, egy erre utaló megjegyzéssel együtt.</p>
     </section>
     <section id="date">
       <h2>8. Importálás, biztonsági mentés és tisztítás</h2>
       <h3>OPML</h3>
-      <p>A Feeds menüből importálhat vagy exportálhat egy OPML fájlt. Az importálás elkerüli a már meglévő címeket.</p>
+      <p>A Feeds menüből importálhat vagy exportálhat egy OPML fájlt. Az importálás elkerüli a már meglévő címeket. Exportáláskor a rendezetlen hírcsatornák a fájl gyökerébe kerülnek, ahogy más RSS-olvasókban is.</p>
       <h3>Biztonsági mentés</h3>
       <p>A biztonsági mentés tartalmazza a hírcsatornákat, cikkeket, mappákat, címkéket, állapotokat, MI-jegyzeteket és nem érzékeny beállításokat. Az API-kulcsok és a NewsBlur-munkamenet nem kerülnek bele.</p>
       <h3>Régi cikkek</h3>
-      <p>Az automatikus tisztítás konfigurálható. A kedvencek és az Olvasás később elemek védettek. Az alkalmazás megjegyzi az öregedési szabály által eltávolított cikkeket, és nem importálja őket újra a következő frissítéskor.</p>
+      <p>Az automatikus tisztítás konfigurálható. A kedvencek és az Olvasás később elemek védettek. Az alkalmazás megjegyzi az öregedési szabály által eltávolított cikkeket, és nem importálja őket újra a következő frissítéskor. A cikkek akkor is az alkalmazásban maradnak, ha már eltűntek a webhely hírcsatornájából; csak az automatikus tisztítás vagy a kézi törlés távolítja el őket.</p>
     </section>
     <section id="stare">
       <h2>9. Állapot, hibák és hibaelhárítás</h2>
@@ -133,7 +133,7 @@
       <h3>Ha a hang nem jelenik meg</h3>
       <p>SAPI5 esetén ellenőrizze, hogy a szintetizátor ugyanahhoz a Windows architektúrához van-e telepítve. Az eSpeak NG esetében nem szükséges hangot telepíteni; ha a lista hiányzik, töltse le újra a Orizont RSS teljes disztribúcióját.</p>
       <h3>Ha a frissítés sokáig tart</h3>
-      <p>Az állapotsor mutatja az előrehaladást. Az Escape leállíthatja a folyamatot és megszakíthatja az aktuális kapcsolatot, megtartva a már fogadott adatokat. A Feeds menüből csak a hibát adó forrásokkal próbálkozhat újra.</p>
+      <p>Az állapotsor mutatja az előrehaladást. Az Escape leállíthatja a folyamatot és megszakíthatja az aktuális kapcsolatot, megtartva a már fogadott adatokat. A Feeds menüből csak a hibát adó forrásokkal próbálkozhat újra. A hírcsatornák letöltése párhuzamosan történik, így egy lassú webhely már nem késlelteti a többit. A legutóbbi frissítés óta nem változott hírcsatornákat az alkalmazás nem tölti le újra.</p>
       <h3>Ha az útmutató nem nyílik ki</h3>
       <p>Ellenőrizze, hogy a Ghid-utilizator-Orizont-RSS.html fájl és a lefordított útmutatók a Orizont.exe mellett vannak-e. Bontsa ki a teljes ZIP-archívumot, ne csak a végrehajtható fájlt.</p>
       <h3>Ha váratlan hiba történik</h3>

@@ -64,7 +64,7 @@
       <h3>Ordneransicht</h3>
       <p>Wenn Sie einen Ordner w&#228;hlen, kombiniert die Artikelliste die Artikel aller enthaltenen Feeds und sortiert sie vom neuesten zum &#228;ltesten. Der Screenreader nennt die Quelle jedes Artikels; die Statusleiste meldet die Anzahl der Feeds und die Artikelsummen.</p>
       <h3>Neue Quellen entdecken</h3>
-      <p>Sie k&#246;nnen im verifizierten Katalog nach Themen nach Feeds suchen oder die App bitten, die von einer bestimmten Website deklarierten Feeds zu finden.</p>
+      <p>Über das Menü Feeds finden Sie neue Quellen auf zwei Wegen. <strong>Feeds auf einer Website suchen</strong> akzeptiert die Adresse einer Website, eines Artikels, eines YouTube-Kanals, eines Subreddits, eines GitHub-Projekts oder eines Mastodon-Profils. Die Anwendung sucht die Feeds, prüft sie automatisch und zeigt nur funktionierende Feeds an, mit der Anzahl der Artikel und dem Datum des neuesten Artikels; Kommentar-Feeds werden gekennzeichnet und stehen am Ende. <strong>Durchsuchen Sie Feeds nach Thema</strong> bietet den geprüften Katalog, nach Kategorien gefiltert, und die Schaltfläche <strong>Im Internet suchen</strong>, die den Dienst Feedly verwendet: Die Suchbegriffe werden nur beim Drücken der Schaltfläche an Feedly gesendet, und die Ergebnisse werden vor der Anzeige geprüft. Sie können auch eine Domain eingeben, zum Beispiel heise.de. In beiden Fenstern erhält das erste Ergebnis den Fokus, und <strong>Verifizierten Feed hinzufügen</strong> fügt den gewählten Feed hinzu.</p>
       <h3>Feeds, die Aufmerksamkeit erfordern</h3>
       <p>&#220;ber die Schaltfl&#228;che im Bereich „Feeds“ werden Feeds angezeigt, die mindestens drei aufeinanderfolgende Fehler aufweisen oder seit mehr als 90 Tagen keine Artikel mehr erhalten haben. Wenn der Filter aktiv ist, kehrt die gleiche Schaltfl&#228;che zu allen Feeds zur&#252;ck.</p>
       <h3>Duplikate</h3>
@@ -84,7 +84,7 @@
       <h3>Etiketten</h3>
       <p>Bei der Beschriftung k&#246;nnen Sie die bereits erstellten Beschriftungen ausw&#228;hlen oder eine neue einf&#252;gen. Der Dialog erm&#246;glicht auch das dauerhafte L&#246;schen von Tags aus allen Artikeln.</p>
       <h3>Ohne Werbung im Browser &#246;ffnen</h3>
-      <p>W&#228;hlen Sie im Kontextmen&#252; des Artikels oder Inhalts <strong>Artikel im Lesemodus &#246;ffnen</strong>. Orizont sendet die Seite an den Lesemodus von Microsoft Edge, der auf kompatiblen Seiten Werbung, Seitenleisten und unn&#246;tige Navigation entfernt. <strong>Originalseite im Browser &#246;ffnen</strong> bleibt separat verf&#252;gbar.</p>
+      <p>W&#228;hlen Sie im Kontextmen&#252; des Artikels oder Inhalts <strong>Artikel im Lesemodus &#246;ffnen</strong>. Orizont sendet die Seite an den Lesemodus von Microsoft Edge, der auf kompatiblen Seiten Werbung, Seitenleisten und unn&#246;tige Navigation entfernt. <strong>Originalseite im Browser &#246;ffnen</strong> bleibt separat verf&#252;gbar. Für den Volltext behält die Anwendung nur den Artikel: Menüs, Seitenlisten und Kommentarbereiche werden nicht übernommen. Wird die Seite nicht als Artikel erkannt, wird die bisherige Extraktionsmethode verwendet.</p>
       <p>Im Orizont Reader wechselt die voreingestellte Tastenkombination <kbd>Ctrl+Shift+F8</kbd> zwischen einfachem Text und WebReader. Über das Kontextmenü oder das Menü Reader lässt sich der angezeigte Artikel als TXT oder RTF im unter Anwendungseinstellungen gewählten Ordner speichern. Quelle und bei Übersetzungen auch der Anbieter bleiben im Dokument erhalten.</p>
     </section>
     <section id="cautare">
@@ -97,7 +97,7 @@
       <h2>6. Sprachausgabe mit SAPI5, eSpeak NG und Gemini</h2>
       <p>Orizont RSS kann Windows-SAPI5-Stimmen, die lokale eSpeak NG-Engine oder 30 Online-Stimmen von Gemini TTS verwenden. SAPI5 und eSpeak arbeiten lokal. Bei Gemini TTS wird der gelesene Text an Google gesendet und kann API-Kontingent oder Guthaben verbrauchen.</p>
       <h3>Sprachkonfiguration</h3>
-      <p>&#214;ffnen Sie die Anwendungseinstellungen und den Bereich Sprachausgabe. W&#228;hlen Sie SAPI5, eSpeak NG oder Gemini TTS sowie Stimme, Geschwindigkeit und Lautst&#228;rke. Gemini TTS verwendet den in den KI-Einstellungen gespeicherten Schl&#252;ssel. Testen und speichern Sie die Stimme.</p>
+      <p>&#214;ffnen Sie die Anwendungseinstellungen und den Bereich Sprachausgabe. W&#228;hlen Sie SAPI5, eSpeak NG oder Gemini TTS sowie Stimme, Geschwindigkeit und Lautst&#228;rke. Gemini TTS verwendet den in den KI-Einstellungen gespeicherten Schl&#252;ssel. Testen und speichern Sie die Stimme. Bei eSpeak NG umfasst die Lautstärke den gesamten Bereich der Sprachausgabe; ist die Stimme zu laut, verringern Sie die Lautstärke mit derselben Einstellung.</p>
       <h3>Lesebefehle</h3>
       <ul>
         <li><kbd>F9</kbd> Lesen Sie die Auswahl aus dem Inhalt. Wenn keine Auswahl vorhanden ist, lesen Sie den angezeigten Titel, die Quelle, das Datum und den vollst&#228;ndigen Artikel.</li>
@@ -115,16 +115,16 @@
       <p>Gemini, OpenAI, Mistral und DeepSeek sind optionale Anbieter. Unter Einstellungen → Künstliche Intelligenz können Sie für jeden einen API-Schlüssel eingeben und einen Standardanbieter wählen. Ein Gespräch über einen Artikel lässt sich fortsetzen, kopieren, speichern oder teilen. Zusammenfassung, Übersetzung, Erklärung und Hauptideen fordern eine Antwort in der Sprache der Benutzeroberfläche an.</p>
       <p>Google Translate ist von KI-Gesprächen getrennt: Es nutzt einen inoffiziellen Onlinedienst ohne API-Schlüssel und verlangt vor dem Senden des Textes eine Bestätigung. DeepL benötigt Ihren API-Schlüssel. Beim Kopieren, Speichern oder Teilen einer Übersetzung werden Anbieter und Quelladresse des Artikels angegeben.</p>
       <p>Im Gespr&#228;chsfenster liest <kbd>F9</kbd> die Auswahl oder die gesamte Unterhaltung mit der konfigurierten Stimme vor. <kbd>F9</kbd> pausiert oder setzt fort und <kbd>Escape</kbd> beendet das Vorlesen. Das Kontextmen&#252; bietet auch das Vorlesen ab der Cursorposition.</p>
-      <p>Orizont RSS zeigt den Status der Anfrage und eine klare Meldung an, wenn der Dienst nicht antwortet, der Schl&#252;ssel abgelehnt wird oder die Verbindung nicht verf&#252;gbar ist.</p>
+      <p>Orizont RSS zeigt den Status der Anfrage und eine klare Meldung an, wenn der Dienst nicht antwortet, der Schl&#252;ssel abgelehnt wird oder die Verbindung nicht verf&#252;gbar ist. Im Hauptfenster bricht <kbd>Escape</kbd> eine laufende KI-Anfrage ab. Erreicht eine Gemini-Antwort die Längengrenze, bleibt der empfangene Text erhalten, zusammen mit einem entsprechenden Hinweis.</p>
     </section>
     <section id="date">
       <h2>8. Importieren, Sichern und Bereinigen</h2>
       <h3>OPML</h3>
-      <p>&#220;ber das Men&#252; „Feeds“ k&#246;nnen Sie eine OPML-Datei importieren oder exportieren. Der Import vermeidet bereits vorhandene Adressen.</p>
+      <p>&#220;ber das Men&#252; „Feeds“ k&#246;nnen Sie eine OPML-Datei importieren oder exportieren. Der Import vermeidet bereits vorhandene Adressen. Beim Export werden nicht organisierte Feeds wie in anderen RSS-Readern auf der obersten Ebene der Datei abgelegt.</p>
       <h3>Sicherung</h3>
       <p>Die Sicherung enthält Feeds, Artikel, Ordner, Schlagwörter, Status, KI-Notizen und nicht vertrauliche Einstellungen. API-Schlüssel und die NewsBlur-Sitzung sind nicht enthalten.</p>
       <h3>Alte Artikel</h3>
-      <p>Automatische Reinigung ist konfigurierbar. Favoriten und „Sp&#228;ter lesen“-Elemente sind gesch&#252;tzt. Die Anwendung merkt sich Artikel, die durch die Alterungsregel entfernt wurden, und importiert sie beim n&#228;chsten Update nicht erneut.</p>
+      <p>Automatische Reinigung ist konfigurierbar. Favoriten und „Sp&#228;ter lesen“-Elemente sind gesch&#252;tzt. Die Anwendung merkt sich Artikel, die durch die Alterungsregel entfernt wurden, und importiert sie beim n&#228;chsten Update nicht erneut. Artikel bleiben in der Anwendung, auch wenn sie aus dem Feed der Website verschwunden sind; nur die automatische Bereinigung oder das manuelle Löschen entfernt sie.</p>
     </section>
     <section id="stare">
       <h2>9. Status, Fehler und Fehlerbehebung</h2>
@@ -132,7 +132,7 @@
       <h3>Wenn die Stimme nicht erscheint</h3>
       <p>&#220;berpr&#252;fen Sie, ob der Synthesizer als SAPI5-Stimme f&#252;r dieselbe Windows-Architektur installiert ist. Starten Sie Orizont RSS neu, nachdem Sie eine neue Stimme installiert haben.</p>
       <h3>Wenn das Update lange dauert</h3>
-      <p>Die Statusleiste zeigt den Fortschritt an. Escape kann den Prozess stoppen und die aktuelle Verbindung beenden, wobei die bereits empfangenen Daten erhalten bleiben. Im Men&#252; „Feeds“ k&#246;nnen Sie nur die Quellen erneut versuchen, bei denen ein Fehler aufgetreten ist.</p>
+      <p>Die Statusleiste zeigt den Fortschritt an. Escape kann den Prozess stoppen und die aktuelle Verbindung beenden, wobei die bereits empfangenen Daten erhalten bleiben. Im Men&#252; „Feeds“ k&#246;nnen Sie nur die Quellen erneut versuchen, bei denen ein Fehler aufgetreten ist. Feeds werden parallel heruntergeladen, sodass eine langsame Website die anderen nicht mehr aufhält. Feeds, die sich seit der letzten Aktualisierung nicht geändert haben, werden nicht erneut heruntergeladen.</p>
       <h3>Wenn sich die Anleitung nicht &#246;ffnet</h3>
       <p>&#220;berpr&#252;fen Sie, ob sich die Ghid-utilizator-Orizont-RSS.html-Datei und die &#252;bersetzten Anleitungen neben Orizont.exe befinden. Extrahieren Sie das gesamte ZIP-Archiv, nicht nur die ausf&#252;hrbare Datei.</p>
       <h3>Wenn ein unerwarteter Fehler auftritt</h3>

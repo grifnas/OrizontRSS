@@ -64,7 +64,7 @@
       <h3>Visualização de pastas</h3>
       <p>Quando você escolhe uma pasta, a lista de artigos combina artigos de todas as suas fontes de notícias e ordena- os da mais recente para a mais antiga. O leitor de tela anuncia cada fonte de artigo, enquanto a barra de status relata o número de fontes e totais de artigos.</p>
       <h3>Descobrir novas fontes</h3>
-      <p>Você pode procurar feeds por tópico no catálogo verificado ou pedir ao aplicativo para encontrar os feeds declarados por um site específico.</p>
+      <p>No menu Feeds, você pode encontrar novas fontes de duas formas. <strong>Encontrar feeds em um site</strong> aceita o endereço de um site, de um artigo, de um canal do YouTube, de um subreddit, de um projeto do GitHub ou de um perfil do Mastodon. O aplicativo procura os feeds, verifica-os automaticamente e mostra apenas os que funcionam, com o número de artigos e a data do artigo mais recente; os feeds de comentários são marcados e aparecem no final. <strong>Encontrar feeds por tópico</strong> oferece o catálogo verificado, filtrado por categoria, e o botão <strong>Pesquisar na internet</strong>, que usa o serviço Feedly: as palavras pesquisadas são enviadas ao Feedly somente quando você pressiona o botão, e os resultados são verificados antes de serem exibidos. Você também pode digitar um domínio, por exemplo heise.de. Nas duas janelas, o primeiro resultado recebe o foco, e <strong>Adicionar fonte verificada</strong> adiciona o feed escolhido.</p>
       <h3>Alimentos que precisam de atenção</h3>
       <p>O botão no painel Feeds mostra feeds que têm pelo menos três erros consecutivos ou que não receberam artigos em mais de 90 dias. Quando o filtro está ativo, o mesmo botão retorna a todos os feeds.</p>
       <h3>Duplicados</h3>
@@ -84,7 +84,7 @@
       <h3>Rótulos</h3>
       <p>Ao rotular, você pode escolher os rótulos já criados ou você pode inserir um novo. A janela também permite a exclusão permanente de marcas de todos os artigos.</p>
       <h3>Abertura sem anúncios no navegador</h3>
-      <p>No menu artigo ou contexto de conteúdo, escolha <strong>Abrir o artigo no modo Leitura</strong>. Orizont envia a página para o modo Microsoft Edge Reading, que remove anúncios, barras laterais e navegação desnecessária em páginas compatíveis. <strong>Abra a página original no navegador</strong> permanece disponível separadamente.</p>
+      <p>No menu artigo ou contexto de conteúdo, escolha <strong>Abrir o artigo no modo Leitura</strong>. Orizont envia a página para o modo Microsoft Edge Reading, que remove anúncios, barras laterais e navegação desnecessária em páginas compatíveis. <strong>Abra a página original no navegador</strong> permanece disponível separadamente. Para o texto completo, o aplicativo mantém apenas o artigo: menus, listas laterais e seções de comentários não são incluídos. Se a página não for reconhecida como artigo, é usado o método de extração anterior.</p>
       <p>No leitor Orizont, o atalho padrão <kbd>Ctrl+Shift+F8</kbd> alterna entre texto simples e WebReader. Use o menu de contexto ou o menu Leitor para salvar o artigo exibido em TXT ou RTF na pasta escolhida nas Configurações do aplicativo. O documento mantém a fonte e, no caso de tradução, o provedor.</p>
     </section>
     <section id="cautare">
@@ -97,7 +97,7 @@
       <h2>6. SAPI5, eFale o discurso NG e Gêmeos</h2>
       <p>O Orizont RSS pode usar as vozes SAPI5 registadas no Windows, o motor local eSpeak NG, ou 30 vozes online Gemini TTS. O SAPI5 e o eSpeak trabalham localmente. Com o Gemini TTS, o texto que está a ser lido é enviado para o Google e pode consumir quotas de API ou créditos.</p>
       <h3>Configuração da voz</h3>
-      <p>Abra as configurações do aplicativo e a seção de fala. Escolha SAPI5, eSpeak NG ou Gemini TTS, seguido pela voz, taxa e volume. eSpeak também fornece um controle de pitch. Gemini TTS usa a chave salva em configurações de IA. Teste a voz e, em seguida, escolha Salvar.</p>
+      <p>Abra as configurações do aplicativo e a seção de fala. Escolha SAPI5, eSpeak NG ou Gemini TTS, seguido pela voz, taxa e volume. eSpeak também fornece um controle de pitch. Gemini TTS usa a chave salva em configurações de IA. Teste a voz e, em seguida, escolha Salvar. No eSpeak NG, o volume abrange toda a faixa do mecanismo; se a voz estiver alta demais, reduza o volume na mesma configuração.</p>
       <h3>Comandos de leitura</h3>
       <ul>
         <li><kbd>F9</kbd> ler a seleção do conteúdo; se não houver seleção, leia o título, fonte, data e artigo completo exibido.</li>
@@ -115,16 +115,16 @@
       <p>Gemini, OpenAI, Mistral e DeepSeek são provedores opcionais. Em Configurações → Inteligência artificial, você pode informar uma chave de API para cada um e escolher o provedor padrão. É possível continuar uma conversa sobre um artigo e depois copiá-la, salvá-la ou compartilhá-la. Resumo, Tradução, Explicação e Ideias principais solicitam uma resposta no idioma da interface.</p>
       <p>O Google Translate é separado das conversas de IA: usa um serviço on-line não oficial sem chave de API e pede confirmação antes de enviar o texto. O DeepL exige sua chave de API. Ao copiar, salvar ou compartilhar uma tradução, o provedor é identificado e o endereço do artigo original é incluído.</p>
       <p>Na janela da conversa, <kbd>F9</kbd> lê a seleção ou toda a conversa usando a voz configurada. <kbd>F9</kbd> pausas ou retomas, e <kbd>Escape</kbd> para de ler. O menu de contexto também fornece leitura do cursor.</p>
-      <p>Orizont RSS exibe o status da solicitação e uma mensagem clara se o serviço não está respondendo, a chave é rejeitada ou a conexão não está disponível.</p>
+      <p>Orizont RSS exibe o status da solicitação e uma mensagem clara se o serviço não está respondendo, a chave é rejeitada ou a conexão não está disponível. Na janela principal, <kbd>Escape</kbd> interrompe uma solicitação de IA em andamento. Se uma resposta do Gemini atingir o limite de tamanho, o texto recebido é mantido, junto com uma nota que indica isso.</p>
     </section>
     <section id="date">
       <h2>8. Importar, Backup e Limpeza</h2>
       <h3>OPML</h3>
-      <p>No menu Fontes, você pode importar ou exportar um arquivo OPML. A importação evita endereços já existentes.</p>
+      <p>No menu Fontes, você pode importar ou exportar um arquivo OPML. A importação evita endereços já existentes. Na exportação, os feeds não organizados ficam na raiz do arquivo, como em outros leitores de RSS.</p>
       <h3>Cópia de Segurança</h3>
       <p>O backup inclui feeds, artigos, pastas, etiquetas, estados, notas de IA e preferências não confidenciais. As chaves de API e a sessão do NewsBlur não são incluídas.</p>
       <h3>Artigos antigos</h3>
-      <p>A limpeza automática é configurável. Os itens Favoritos e Ler mais tarde estão protegidos. O aplicativo lembra os artigos removidos pela regra de envelhecimento e não os importa novamente na próxima atualização.</p>
+      <p>A limpeza automática é configurável. Os itens Favoritos e Ler mais tarde estão protegidos. O aplicativo lembra os artigos removidos pela regra de envelhecimento e não os importa novamente na próxima atualização. Os artigos continuam no aplicativo mesmo depois de desaparecerem do feed do site; somente a limpeza automática ou a exclusão manual os remove.</p>
     </section>
     <section id="stare">
       <h2>9. Status, Erros e Resolução de Problemas</h2>
@@ -132,7 +132,7 @@
       <h3>Se a voz não aparecer</h3>
       <p>Para SAPI5, verifique se o sintetizador está instalado para a mesma arquitetura do Windows. O eSpeak NG não precisa de instalação de voz; se sua lista estiver faltando, baixe a distribuição completa do Orizont RSS novamente.</p>
       <h3>Se a atualização levar muito tempo</h3>
-      <p>A barra de estado mostra o progresso. Escape pode parar o processo e terminar a ligação atual, mantendo os dados já recebidos. No menu de fontes de notícias, poderá tentar de novo apenas as fontes que deram um erro.</p>
+      <p>A barra de estado mostra o progresso. Escape pode parar o processo e terminar a ligação atual, mantendo os dados já recebidos. No menu de fontes de notícias, poderá tentar de novo apenas as fontes que deram um erro. Os feeds são baixados em paralelo, então um site lento não atrasa mais os outros. Feeds que não mudaram desde a última atualização não são baixados novamente.</p>
       <h3>Se o guia não abrir</h3>
       <p>Verifique se o arquivo Ghid-utilizator-Orizont-RSS.html e guias traduzidos estão ao lado de Orizont.exe. Extrair todo o arquivo ZIP, não apenas o executável.</p>
       <h3>Se ocorrer um erro inesperado</h3>

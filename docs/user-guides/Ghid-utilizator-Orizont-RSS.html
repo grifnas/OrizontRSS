@@ -65,7 +65,7 @@
       <h3>Vederea unui folder</h3>
       <p>Când alegi un folder, lista Articole combină articolele tuturor feedurilor sale și le ordonează de la cel mai nou la cel mai vechi. Cititorul de ecran anunță sursa fiecărui articol, iar bara de stare indică numărul feedurilor și totalurile articolelor.</p>
       <h3>Descoperirea unor surse noi</h3>
-      <p>Poți căuta feeduri după subiect în catalogul verificat sau poți cere aplicației să găsească feedurile declarate de un anumit site.</p>
+      <p>Din meniul Feeduri poți găsi surse noi în două feluri. <strong>Găsește feeduri pe site</strong> acceptă adresa unui site, a unui articol, a unui canal YouTube, a unui subreddit, a unui proiect GitHub sau a unui profil Mastodon. Aplicația caută feedurile, le verifică automat și afișează numai feedurile care funcționează, cu numărul de articole și data ultimului articol; feedurile de comentarii sunt marcate și apar la final. <strong>Caută feeduri după subiect</strong> oferă catalogul verificat, filtrat pe categorii, și butonul <strong>Caută pe internet</strong>, care folosește serviciul Feedly: cuvintele căutate sunt trimise la Feedly numai când apeși butonul, iar rezultatele sunt verificate înainte de afișare. Poți scrie și un domeniu, de exemplu heise.de. În ambele ferestre, primul rezultat primește focalizarea, iar <strong>Adaugă feed verificat</strong> adaugă feedul ales.</p>
       <h3>Feeduri care necesită atenție</h3>
       <p>Butonul din panoul Feeduri afișează sursele care au cel puțin trei erori consecutive sau nu au primit articole de peste 90 de zile. Când filtrul este activ, același buton revine la toate feedurile.</p>
       <h3>Duplicate</h3>
@@ -85,7 +85,7 @@
       <h3>Etichete</h3>
       <p>La etichetare poți alege etichetele deja create sau poți introduce una nouă. Dialogul permite și ștergerea definitivă a etichetelor din toate articolele.</p>
       <h3>Deschiderea fără reclame în browser</h3>
-      <p>Din meniul contextual al articolului sau al conținutului, alege <strong>Deschide articolul în cititorul Orizont</strong>. Aplicația descarcă și curăță pagina, apoi afișează titlul, sursa și textul principal într-o fereastră accesibilă, fără reclame, bare laterale și navigare inutilă. Opțiunile pentru copierea selecției, copierea articolului complet și citirea vocală rămân disponibile. <strong>Deschide pagina originală în browser</strong> rămâne disponibilă separat.</p>
+      <p>Din meniul contextual al articolului sau al conținutului, alege <strong>Deschide articolul în cititorul Orizont</strong>. Aplicația descarcă și curăță pagina, apoi afișează titlul, sursa și textul principal într-o fereastră accesibilă, fără reclame, bare laterale și navigare inutilă. Opțiunile pentru copierea selecției, copierea articolului complet și citirea vocală rămân disponibile. <strong>Deschide pagina originală în browser</strong> rămâne disponibilă separat. Pentru textul integral, aplicația păstrează doar articolul: meniurile, listele laterale și secțiunile de comentarii nu sunt incluse. Dacă pagina nu este recunoscută ca articol, este folosită metoda anterioară de extragere.</p>
       <p>În Cititor Orizont poți comuta între Text simplu și WebReader prin scurtătura implicită <kbd>Ctrl+Shift+F8</kbd>. Din meniul contextual sau meniul Cititor poți salva articolul afișat ca TXT ori RTF în folderul ales în Setări aplicație. Sursa și, pentru traduceri, furnizorul rămân în document.</p>
     </section>
     <section id="cautare">
@@ -98,7 +98,7 @@
       <h2>6. Citire vocală SAPI5, eSpeak NG și Gemini</h2>
       <p>Orizont RSS poate utiliza vocile SAPI5 înregistrate în Windows, motorul local eSpeak NG sau cele 30 de voci online Gemini TTS. SAPI5 și eSpeak funcționează local. La folosirea Gemini TTS, textul citit este trimis la Google și poate consuma cota sau creditele cheii API.</p>
       <h3>Configurarea vocii</h3>
-      <p>Deschide Setări aplicație, apoi secțiunea Citire vocală. Alege SAPI5, eSpeak NG sau Gemini TTS, apoi vocea, viteza și volumul. Pentru eSpeak poți regla și înălțimea vocii. Gemini TTS folosește cheia salvată în Setările Inteligență artificială. Folosește Testează vocea, apoi Salvează.</p>
+      <p>Deschide Setări aplicație, apoi secțiunea Citire vocală. Alege SAPI5, eSpeak NG sau Gemini TTS, apoi vocea, viteza și volumul. Pentru eSpeak poți regla și înălțimea vocii. Gemini TTS folosește cheia salvată în Setările Inteligență artificială. Folosește Testează vocea, apoi Salvează. Pentru eSpeak NG, volumul acoperă întreaga gamă a motorului; dacă vocea este prea puternică, redu volumul din aceeași setare.</p>
       <h3>Comenzile de lectură</h3>
       <ul>
         <li><kbd>F9</kbd> citește selecția din conținut; dacă nu există selecție, citește titlul, sursa, data și articolul complet afișat.</li>
@@ -116,16 +116,16 @@
       <p>Gemini, OpenAI, Mistral și DeepSeek sunt furnizori opționali. În Setări → Inteligență artificială poți introduce cheia API pentru fiecare și alege furnizorul implicit. Conversația despre articol poate continua și poate fi copiată, salvată sau distribuită. Comenzile Rezumat, Traducere, Explicație și Ideile principale solicită răspunsul în limba interfeței.</p>
       <p>Traducerea prin Google Translate este separată de conversația AI: folosește un serviciu online neoficial fără cheie API și cere confirmare înainte de trimiterea textului. DeepL necesită cheia API a utilizatorului. La copiere, salvare sau distribuire, textul tradus include mențiunea furnizorului și adresa sursei articolului.</p>
       <p>În fereastra conversației, <kbd>F9</kbd> citește selecția sau întreaga discuție cu vocea configurată. <kbd>F9</kbd> întrerupe sau continuă, iar <kbd>Escape</kbd> oprește citirea. Meniul contextual oferă și citirea de la cursor.</p>
-      <p>Orizont RSS afișează starea cererii și un mesaj clar dacă serviciul nu răspunde, cheia este respinsă sau conexiunea nu este disponibilă.</p>
+      <p>Orizont RSS afișează starea cererii și un mesaj clar dacă serviciul nu răspunde, cheia este respinsă sau conexiunea nu este disponibilă. În fereastra principală, <kbd>Escape</kbd> oprește o cerere AI aflată în curs. Dacă un răspuns Gemini atinge limita de lungime, textul primit este păstrat, împreună cu o notă care semnalează acest lucru.</p>
     </section>
     <section id="date">
       <h2>8. Import, backup și curățare</h2>
       <h3>OPML</h3>
-      <p>Din meniul Feeduri poți importa sau exporta un fișier OPML. Importul evită adresele deja existente.</p>
+      <p>Din meniul Feeduri poți importa sau exporta un fișier OPML. Importul evită adresele deja existente. La export, feedurile neorganizate sunt puse la rădăcina fișierului, ca în celelalte cititoare RSS.</p>
       <h3>Copie de siguranță</h3>
       <p>Copia de siguranță include feedurile, articolele, folderele, etichetele, stările, notițele AI și preferințele nesensibile. Cheile API și sesiunea NewsBlur nu sunt incluse.</p>
       <h3>Articole vechi</h3>
-      <p>Curățarea automată este configurabilă. Favoritele și articolele De citit mai târziu sunt protejate. Aplicația memorează articolele eliminate prin regula de vechime și nu le importă din nou la următoarea actualizare.</p>
+      <p>Curățarea automată este configurabilă. Favoritele și articolele De citit mai târziu sunt protejate. Aplicația memorează articolele eliminate prin regula de vechime și nu le importă din nou la următoarea actualizare. Articolele rămân în aplicație și după ce dispar din fluxul site-ului; numai curățarea automată sau ștergerea manuală le elimină.</p>
     </section>
     <section id="stare">
       <h2>9. Stare, erori și rezolvarea problemelor</h2>
@@ -133,7 +133,7 @@
       <h3>Dacă vocea nu apare</h3>
       <p>Pentru SAPI5, verifică dacă sintetizatorul este instalat pentru aceeași arhitectură Windows. Pentru eSpeak NG nu este necesară instalarea unei voci; dacă lista lipsește, descarcă din nou distribuția completă Orizont RSS.</p>
       <h3>Dacă actualizarea durează mult</h3>
-      <p>Bara de stare arată progresul. Escape poate opri procesul și întrerupe conexiunea curentă, păstrând datele deja primite. Din meniul Feeduri poți reîncerca numai sursele care au dat eroare.</p>
+      <p>Bara de stare arată progresul. Escape poate opri procesul și întrerupe conexiunea curentă, păstrând datele deja primite. Din meniul Feeduri poți reîncerca numai sursele care au dat eroare. Feedurile se descarcă în paralel, iar un site lent nu le mai întârzie pe celelalte. Feedurile care nu s-au schimbat de la ultima actualizare nu se mai descarcă.</p>
       <h3>Dacă ghidul nu se deschide</h3>
       <p>Verifică dacă fișierul Ghid-utilizator-Orizont-RSS.html și ghidurile traduse se află lângă Orizont.exe. Extrage întreaga arhivă ZIP, nu numai executabilul.</p>
       <h3>Dacă apare o eroare neașteptată</h3>

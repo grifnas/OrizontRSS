@@ -64,7 +64,7 @@
       <h3>Folder view</h3>
       <p>When you choose a folder, the Articles list combines articles from all its feeds and orders them from newest to oldest. The screen reader announces each article source, while the status bar reports the number of feeds and article totals.</p>
       <h3>Discovering new sources</h3>
-      <p>You can search for feeds by topic in the verified catalog or ask the app to find the feeds declared by a specific site.</p>
+      <p>From the Feeds menu you can find new sources in two ways. <strong>Find feeds on a website</strong> accepts the address of a site, an article, a YouTube channel, a subreddit, a GitHub project or a Mastodon profile. The app looks for the feeds, checks them automatically and lists only working feeds, with their number of articles and the date of the latest article; comments feeds are marked and appear at the end. <strong>Find feeds by topic</strong> offers the verified catalog, filtered by category, and the <strong>Search the web</strong> button, which uses the Feedly service: the search words are sent to Feedly only when you press the button, and the results are checked before they are shown. You can also type a domain, for example heise.de. In both windows the first result receives focus, and <strong>Add verified feed</strong> adds the chosen feed.</p>
       <h3>Feeds that need attention</h3>
       <p>The button in the Feeds panel shows feeds that have at least three consecutive errors or haven&#39;t received articles in more than 90 days. When the filter is active, the same button returns to all feeds.</p>
       <h3>Duplicates</h3>
@@ -84,7 +84,7 @@
       <h3>Labels</h3>
       <p>When labeling, you can choose the already created labels or you can insert a new one. The dialog also allows permanent deletion of tags from all articles.</p>
       <h3>Opening without ads in the browser</h3>
-      <p>From the article or content context menu, choose <strong>Open the article in Reading mode</strong>. Orizont sends the page to Microsoft Edge Reading mode, which removes ads, sidebars and unnecessary navigation on compatible pages. <strong>Open the original page in the browser</strong> remains available separately.</p>
+      <p>From the article or content context menu, choose <strong>Open the article in Reading mode</strong>. Orizont sends the page to Microsoft Edge Reading mode, which removes ads, sidebars and unnecessary navigation on compatible pages. <strong>Open the original page in the browser</strong> remains available separately. For the full text, the app keeps only the article: menus, side lists and comment sections are not included. If the page is not recognized as an article, the previous extraction method is used.</p>
       <p>In Orizont Reader, the default <kbd>Ctrl+Shift+F8</kbd> shortcut switches between plain text and WebReader. Use the reader's context menu or Reader menu to save the displayed article as TXT or RTF in the folder chosen in Application Settings. The document retains the source and, for translations, the provider.</p>
     </section>
     <section id="cautare">
@@ -97,7 +97,7 @@
       <h2>6. SAPI5, eSpeak NG and Gemini speech</h2>
       <p>Orizont RSS can use SAPI5 voices registered in Windows, the local eSpeak NG engine, or 30 online Gemini TTS voices. SAPI5 and eSpeak work locally. With Gemini TTS, the text being read is sent to Google and may consume API quota or credits.</p>
       <h3>Voice configuration</h3>
-      <p>Open Application Settings and the Speech section. Choose SAPI5, eSpeak NG or Gemini TTS, followed by the voice, rate and volume. eSpeak also provides a pitch control. Gemini TTS uses the key saved in AI Settings. Test the voice and then choose Save.</p>
+      <p>Open Application Settings and the Speech section. Choose SAPI5, eSpeak NG or Gemini TTS, followed by the voice, rate and volume. eSpeak also provides a pitch control. Gemini TTS uses the key saved in AI Settings. Test the voice and then choose Save. For eSpeak NG, the volume covers the engine's full range; if the voice is too loud, lower it with the same setting.</p>
       <h3>Reading commands</h3>
       <ul>
         <li><kbd>F9</kbd> read the selection from the content; if there is no selection, read the title, source, date and full article displayed.</li>
@@ -115,16 +115,16 @@
       <p>Gemini, OpenAI, Mistral and DeepSeek are optional providers. In Settings → Artificial Intelligence, you can enter an API key for each and choose the default provider. You can continue a conversation about an article, then copy, save or share it. Summary, Translation, Explanation and Main Ideas request a response in the interface language.</p>
       <p>Google Translate is separate from AI conversations: it uses an unofficial online service without an API key and asks for confirmation before sending text. DeepL requires your API key. When copied, saved or shared, translated content identifies the provider and includes the article source URL.</p>
       <p>In the conversation window, <kbd>F9</kbd> reads the selection or the entire conversation using the configured voice. <kbd>F9</kbd> pauses or resumes, and <kbd>Escape</kbd> stops reading. The context menu also provides reading from the cursor.</p>
-      <p>Orizont RSS displays the status of the request and a clear message if the service is not responding, the key is rejected or the connection is not available.</p>
+      <p>Orizont RSS displays the status of the request and a clear message if the service is not responding, the key is rejected or the connection is not available. In the main window, <kbd>Escape</kbd> stops an AI request in progress. If a Gemini answer reaches the length limit, the text received is kept, together with a note that says so.</p>
     </section>
     <section id="date">
       <h2>8. Import, Backup and Cleanup</h2>
       <h3>OPML</h3>
-      <p>From the Feeds menu you can import or export a OPML file. The import avoids already existing addresses.</p>
+      <p>From the Feeds menu you can import or export a OPML file. The import avoids already existing addresses. When exporting, unorganized feeds are placed at the root of the file, as in other RSS readers.</p>
       <h3>Backup</h3>
       <p>The backup includes feeds, articles, folders, tags, statuses, AI notes and non-sensitive preferences. API keys and the NewsBlur session are not included.</p>
       <h3>Old articles</h3>
-      <p>Automatic cleaning is configurable. Favorites and Read Later items are protected. The application remembers articles removed by the aging rule and does not import them again on the next update.</p>
+      <p>Automatic cleaning is configurable. Favorites and Read Later items are protected. The application remembers articles removed by the aging rule and does not import them again on the next update. Articles stay in the app even after they disappear from the site's feed; only automatic cleanup or manual deletion removes them.</p>
     </section>
     <section id="stare">
       <h2>9. Status, Errors and Troubleshooting</h2>
@@ -132,7 +132,7 @@
       <h3>If the voice does not appear</h3>
       <p>For SAPI5, check that the synthesizer is installed for the same Windows architecture. eSpeak NG needs no voice installation; if its list is missing, download the complete Orizont RSS distribution again.</p>
       <h3>If the update takes a long time</h3>
-      <p>The status bar shows the progress. Escape can stop the process and terminate the current connection, keeping the data already received. From the Feeds menu you can retry only the sources that gave an error.</p>
+      <p>The status bar shows the progress. Escape can stop the process and terminate the current connection, keeping the data already received. From the Feeds menu you can retry only the sources that gave an error. Feeds are downloaded in parallel, so a slow site no longer delays the others. Feeds that have not changed since the last update are not downloaded again.</p>
       <h3>If the guide does not open</h3>
       <p>Check that the Ghid-utilizator-Orizont-RSS.html file and translated guides are next to Orizont.exe. Extract the entire ZIP archive, not just the executable.</p>
       <h3>If an unexpected error occurs</h3>
