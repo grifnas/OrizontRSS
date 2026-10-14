@@ -28,12 +28,13 @@ public partial class DiscoverTopicWindow : Window
     private void PopulateCategories()
     {
         CategoryFilter.Items.Clear();
-        CategoryFilter.Items.Add(T("Toate categoriile"));
+        // Cheia categoriei rămâne numele din catalog; în listă apare numele tradus.
+        CategoryFilter.Items.Add(new CategoryChoice(null, T("Toate categoriile")));
 
         var catalog = TopicFeedSearchService.GetCatalog();
         foreach (var category in catalog.Categories)
         {
-            CategoryFilter.Items.Add(category.Name);
+            CategoryFilter.Items.Add(new CategoryChoice(category.Name, T(category.Name)));
         }
 
         CategoryFilter.SelectedIndex = 0;
@@ -41,7 +42,7 @@ public partial class DiscoverTopicWindow : Window
 
     private void PerformCatalogSearch()
     {
-        var selectedCategory = CategoryFilter.SelectedItem as string;
+        var selectedCategory = (CategoryFilter.SelectedItem as CategoryChoice)?.Key;
         var query = Keywords.Text.Trim();
 
         var catalogItems = TopicFeedSearchService.SearchCatalog(query, selectedCategory);
@@ -49,7 +50,7 @@ public partial class DiscoverTopicWindow : Window
         {
             Name = item.Name,
             Url = item.Url,
-            SourceSite = item.Category,
+            SourceSite = T(item.Category),
             RequiresVerification = true,
             IsVerified = false,
             ArticleCount = 0
@@ -167,4 +168,10 @@ public partial class DiscoverTopicWindow : Window
 
     private static string T(string source) => UiText.Translate(source);
     private static string F(string source, params object?[] arguments) => UiText.Format(source, arguments);
+
+    /// <summary>Key null înseamnă toate categoriile; Label este textul afișat și citit de JAWS.</summary>
+    private sealed record CategoryChoice(string? Key, string Label)
+    {
+        public override string ToString() => Label;
+    }
 }

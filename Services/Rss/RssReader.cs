@@ -68,11 +68,21 @@ public sealed class RssReader
             return new RssLoadResult(true, [], etag, lastModified);
         response.EnsureSuccessStatusCode();
         await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
-        var articles = await ParseFeedAsync(stream, cancellationToken).ConfigureAwait(false);
-        return new RssLoadResult(false, articles, response.Headers.ETag?.ToString(), response.Content.Headers.LastModified);
+        var feed = await ParseFeedAsync(stream, cancellationToken).ConfigureAwait(false);
+        return new RssLoadResult(false, feed.Articles, response.Headers.ETag?.ToString(), response.Content.Headers.LastModified);
     }
 
-    private static async Task<List<Article>> ParseFeedAsync(System.IO.Stream stream, CancellationToken cancellationToken)
+    /// <summary>Titlul și articolele unui flux, pentru verificarea feedurilor găsite.</summary>
+    public async Task<RssFeedPreview> LoadPreviewAsync(string url, CancellationToken cancellationToken = default)
+    {
+        using var response = await _client.GetAsync(url, cancellationToken).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        var feed = await ParseFeedAsync(stream, cancellationToken).ConfigureAwait(false);
+        return new RssFeedPreview(response.RequestMessage?.RequestUri?.ToString() ?? url, feed.Title, feed.Articles);
+    }
+
+    private static async Task<(string Title, List<Article> Articles)> ParseFeedAsync(System.IO.Stream stream, CancellationToken cancellationToken)
     {
         using var xmlReader = System.Xml.XmlReader.Create(stream, new System.Xml.XmlReaderSettings
         {
@@ -83,7 +93,9 @@ public sealed class RssReader
         var xml = await XDocument.LoadAsync(xmlReader, LoadOptions.None, cancellationToken).ConfigureAwait(false);
         var records = xml.Descendants().Where(element => element.Name.LocalName is "item" or "entry").ToList();
         if (records.Count == 0) throw new InvalidOperationException(UiText.Translate("Adresa nu conține un flux RSS sau Atom cu articole."));
-        return records.Select(record =>
+        var channel = xml.Root?.Elements().FirstOrDefault(element => element.Name.LocalName == "channel") ?? xml.Root;
+        var feedTitle = WebUtility.HtmlDecode(channel?.Elements().FirstOrDefault(element => element.Name.LocalName == "title")?.Value ?? string.Empty).Trim();
+        return (feedTitle, records.Select(record =>
         {
             string Field(string localName) => record.Elements().FirstOrDefault(element => element.Name.LocalName == localName)?.Value ?? string.Empty;
             var html = Field("encoded");
@@ -108,7 +120,7 @@ public sealed class RssReader
             if (string.IsNullOrWhiteSpace(id)) id = $"{title}\n{date}";
             var text = ArticleTextNormalizer.ToReadableText(html);
             return new Article { Id = id, Title = title, Content = text, Link = link, Published = ParseRssDate(date) };
-        }).OrderByDescending(item => item.Published).ToList();
+        }).OrderByDescending(item => item.Published).ToList());
     }
 
     public static DateTimeOffset ParseRssDate(string? dateString)
@@ -208,40 +220,6 @@ public sealed class RssReader
         return text.Trim();
     }
 
-    public async Task<List<DiscoveredFeed>> DiscoverAsync(string siteUrl)
-    {
-        siteUrl = siteUrl.Trim();
-        if (!siteUrl.StartsWith("http://", StringComparison.OrdinalIgnoreCase) && !siteUrl.StartsWith("https://", StringComparison.OrdinalIgnoreCase)) siteUrl = "https://" + siteUrl;
-        if (!Uri.TryCreate(siteUrl, UriKind.Absolute, out var site) || (site.Scheme != Uri.UriSchemeHttp && site.Scheme != Uri.UriSchemeHttps)) throw new InvalidOperationException(UiText.Translate("Introdu o adresă de site validă."));
-        var results = new Dictionary<string, DiscoveredFeed>(StringComparer.OrdinalIgnoreCase);
-        try
-        {
-            var html = await _client.GetStringAsync(site);
-            foreach (System.Text.RegularExpressions.Match match in System.Text.RegularExpressions.Regex.Matches(html, "<link\\b[^>]*>", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
-            {
-                var tag = match.Value;
-                var href = Attribute(tag, "href");
-                var type = Attribute(tag, "type");
-                if (string.IsNullOrWhiteSpace(href) || !Uri.TryCreate(site, href, out var feedAddress)) continue;
-                if (!type.Contains("rss", StringComparison.OrdinalIgnoreCase) && !type.Contains("atom", StringComparison.OrdinalIgnoreCase)) continue;
-                var label = Attribute(tag, "title");
-                results.TryAdd(feedAddress.ToString(), new DiscoveredFeed { Name = string.IsNullOrWhiteSpace(label) ? $"{site.Host} — feed declarat" : label, Url = feedAddress.ToString(), SourceSite = site.Host });
-            }
-        }
-        catch { }
-        foreach (var path in new[] { "/feed", "/feed/", "/rss", "/rss/", "/rss.xml", "/feed.xml", "/atom.xml", "/index.xml" })
-        {
-            var address = new Uri(site, path).ToString();
-            if (!results.ContainsKey(address)) results[address] = new DiscoveredFeed { Name = $"{site.Host} — posibil feed", Url = address, SourceSite = site.Host, RequiresVerification = true };
-        }
-        return results.Values.ToList();
-    }
-
-    private static string Attribute(string tag, string name)
-    {
-        var match = System.Text.RegularExpressions.Regex.Match(tag, $"{name}\\s*=\\s*[\\\"'](?<value>[^\\\"']+)[\\\"']", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-        return match.Groups["value"].Value;
-    }
     private static string ExtractHtmlElement(string html, string name) => System.Text.RegularExpressions.Regex.Match(html, $"<{name}\\b[^>]*>([\\s\\S]*?)</{name}>", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Groups[1].Value;
     private static string ExtractReadableText(string html)
     {
@@ -283,3 +261,6 @@ public sealed class RssReader
 
 /// <summary>Rezultatul unei descărcări condiționate: NotModified înseamnă că serverul a confirmat că fluxul nu s-a schimbat.</summary>
 public sealed record RssLoadResult(bool NotModified, List<Article> Articles, string? ETag, DateTimeOffset? LastModified);
+
+/// <summary>Un flux verificat: adresa finală, titlul declarat și articolele citite.</summary>
+public sealed record RssFeedPreview(string Url, string Title, List<Article> Articles);

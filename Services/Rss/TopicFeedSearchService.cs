@@ -37,6 +37,7 @@ public static class TopicFeedSearchService
         var catalog = GetCatalog();
         var allFeeds = catalog.Categories.SelectMany(c => c.Feeds).ToList();
 
+        // null sau gol înseamnă toate categoriile; fereastra trimite cheia categoriei, nu textul tradus.
         if (!string.IsNullOrWhiteSpace(selectedCategory) &&
             !string.Equals(selectedCategory, "Toate categoriile", StringComparison.OrdinalIgnoreCase))
         {

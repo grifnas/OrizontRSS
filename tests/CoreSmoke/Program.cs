@@ -339,6 +339,7 @@ RunReadableCleanupSmoke();
 RunNativePathSmoke();
 RunReadabilitySmoke();
 await RunParallelRefreshSmokeAsync();
+await RunFeedDiscoverySmokeAsync();
 await RunUpdaterSmokeAsync();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
@@ -447,6 +448,60 @@ void RunNewsBlurConvergenceSmoke()
     article.Tags = ["nou"];
     result = NewsBlurArticleStateReconciler.Reconcile(article, Story(read: false), Saved, ApplySaved);
     Check(result.SkippedTags && !result.SendStarForTags, "etichetele unui articol nesalvat rămân amânate");
+}
+
+// Găsirea feedurilor: numai feeduri verificate, reguli pentru platforme, pagini-listă, adrese uzuale ca rezervă.
+async Task RunFeedDiscoverySmokeAsync()
+{
+    static string Rss(string title, string firstId) =>
+        $"<rss><channel><title>{title}</title><item><guid>{firstId}</guid><title>Articol</title><link>https://x.test/{firstId}</link><pubDate>Mon, 13 Oct 2026 08:00:00 GMT</pubDate></item><item><guid>{firstId}-2</guid><title>Al doilea</title></item></channel></rss>";
+    static string Html(string head, string body = "") => $"<html><head>{head}</head><body>{body}</body></html>";
+    var pages = new Dictionary<string, (string Type, string Body)>(StringComparer.OrdinalIgnoreCase)
+    {
+        ["https://stiri.test/"] = ("text/html", Html("<link rel=\"alternate\" type=\"application/rss+xml\" href=\"/feed\"><link rel=\"alternate\" type=\"application/rss+xml\" href=\"/comments/feed\">", "<a href=\"/feed/\">RSS</a><a href=\"/rss-mort\">rss</a>")),
+        ["https://stiri.test/feed"] = ("application/rss+xml", Rss("Știri Test", "s1")),
+        ["https://stiri.test/feed/"] = ("application/rss+xml", Rss("Știri Test", "s1")),
+        ["https://stiri.test/comments/feed"] = ("application/rss+xml", Rss("Comentarii la Știri Test", "c1")),
+        ["https://stiri.test/2026/10/articol"] = ("text/html", Html("<title>Articol</title>")),
+        ["https://www.youtube.com/@canal"] = ("text/html", Html("", "<script>var d = {\"channelId\":\"UC1234567890123456789012\"};</script>")),
+        ["https://www.youtube.com/feeds/videos.xml?channel_id=UC1234567890123456789012"] = ("application/atom+xml", "<feed xmlns=\"http://www.w3.org/2005/Atom\"><title>Canal</title><entry><id>v1</id><title>Video</title></entry></feed>"),
+        ["https://www.reddit.com/r/Romania/"] = ("text/html", Html("<title>r/Romania</title>")),
+        ["https://www.reddit.com/r/Romania/.rss"] = ("application/atom+xml", "<feed xmlns=\"http://www.w3.org/2005/Atom\"><title>r/Romania</title><entry><id>t1</id><title>Post</title></entry></feed>"),
+        ["https://revista.test/"] = ("text/html", Html("", "<footer><a href=\"/despre-rss\">Fluxuri RSS</a></footer>")),
+        ["https://revista.test/despre-rss"] = ("text/html", Html("", "<a href=\"https://revista.test/export/rss-stiri.xml\">Știri</a>")),
+        ["https://revista.test/export/rss-stiri.xml"] = ("application/xml", Rss("Revista", "r1")),
+        ["https://simplu.test/"] = ("text/html", Html("<title>Simplu</title>")),
+        ["https://simplu.test/rss.xml"] = ("application/rss+xml", Rss("Simplu", "p1")),
+    };
+    var requested = new List<string>();
+    var handler = new UpdateSmokeHttpHandler(request =>
+    {
+        var url = request.RequestUri!.ToString();
+        lock (requested) requested.Add(url);
+        if (!pages.TryGetValue(url, out var page)) return new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request };
+        return new HttpResponseMessage(HttpStatusCode.OK) { RequestMessage = request, Content = new StringContent(page.Body, Encoding.UTF8, page.Type) };
+    });
+    var discovery = new FeedDiscoveryService(handler);
+
+    var site = await discovery.DiscoverAsync("stiri.test");
+    Check(site.Count == 2 && site[0].Url == "https://stiri.test/feed" && site[0].Name == "Știri Test" && site[0].ArticleCount == 2 && site[0].LatestArticle is not null, "feedul declarat apare primul, verificat, cu titlu, număr de articole și data ultimului articol");
+    Check(site.All(feed => feed.IsVerified) && !site.Any(feed => feed.Url.Contains("rss-mort", StringComparison.Ordinal)), "în rezultat apar numai feedurile care funcționează");
+    Check(site[1].IsComments && site[1].Url.EndsWith("/comments/feed", StringComparison.Ordinal), "feedul de comentarii este marcat și pus la final");
+    Check(!site.Any(feed => feed.Url == "https://stiri.test/feed/"), "aceeași adresă cu bară finală nu apare de două ori");
+    Check((await discovery.DiscoverAsync("https://stiri.test/feed")).Single().Url == "https://stiri.test/feed", "o adresă care este deja feed este recunoscută direct");
+    Check((await discovery.DiscoverAsync("https://stiri.test/2026/10/articol")).Any(feed => feed.Url == "https://stiri.test/feed"), "adresa unui articol duce la feedul declarat pe pagina principală");
+    Check((await discovery.DiscoverAsync("https://www.youtube.com/@canal")).Single().Url.EndsWith("channel_id=UC1234567890123456789012", StringComparison.Ordinal), "canalul YouTube produce feedul canalului");
+    Check((await discovery.DiscoverAsync("https://www.reddit.com/r/Romania/")).Single().Url == "https://www.reddit.com/r/Romania/.rss", "subredditul produce feedul lui");
+    Check((await discovery.DiscoverAsync("revista.test")).Single().Url == "https://revista.test/export/rss-stiri.xml", "pagina-listă de feeduri a site-ului este citită");
+    Check((await discovery.DiscoverAsync("simplu.test")).Single().Url == "https://simplu.test/rss.xml", "adresele uzuale sunt încercate ca rezervă; numai cea funcțională apare în rezultat");
+    Check(requested.Contains("https://simplu.test/feed"), "adresele uzuale nefuncționale au fost încercate, dar nu sunt afișate");
+    var invalid = false;
+    try { await discovery.DiscoverAsync("nu este adresa"); } catch (InvalidOperationException) { invalid = true; }
+    Check(invalid, "o adresă nevalidă este respinsă cu un mesaj clar");
+
+    var allCategories = CititorRSS.Jaws.Services.Rss.TopicFeedSearchService.SearchCatalog(null, null).Count;
+    var technology = CititorRSS.Jaws.Services.Rss.TopicFeedSearchService.SearchCatalog(null, "Tehnologie & IT");
+    Check(allCategories > 0 && technology.Count > 0 && technology.Count < allCategories && technology.All(feed => feed.Category == "Tehnologie & IT"), "filtrul de categorii folosește cheia categoriei, independent de limba interfeței");
 }
 
 // Actualizare rapidă: descărcări paralele limitate și răspunsul „nimic nou” (HTTP 304).
