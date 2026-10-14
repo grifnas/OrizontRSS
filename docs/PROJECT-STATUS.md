@@ -1,5 +1,9 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-10-14 — Pregătire v1.6.2: căutarea după subiect prin Feedly, etapa 2
+
+Utilizatorul a aprobat etapa 2 a studiului. `FeedDiscoveryService.SearchTopicAsync` folosește căutarea publică Feedly (`cloud.feedly.com/v3/search/feeds`, cu limba interfeței) și verifică fiecare rezultat; titlurile vin din Feedly, iar ordinea urmează relevanța. Pentru un domeniu combină descoperirea pe site cu Feedly, fără dubluri. Limitarea serviciului (429) și erorile sunt explicate. `DiscoverTopicWindow`: anunț în textul de prezentare, în ajutorul butonului și în mesajul de stare; rezultatele verificate, cu primul selectat și focalizat; căutare anulată la închidere. `TopicFeedSearchService.SearchLiveAsync` (feedsearch.dev) a fost eliminat. `THIRD-PARTY-NOTICES.md` menționează Feedly. Probă reală: „tehnologie” 6 feeduri verificate (din 20 propuse), „astronomie” 15, „jazz” 20, heise.de 15 (etapa 1: 0), bbc.co.uk 1 (feed secundar). CoreSmoke: 256. LocalizationSmoke: 1.505 resurse. Quick a trecut, iar executabilul autonom a fost refăcut. Rămâne proba practică cu JAWS 2026. Nu s-a creat distribuție.
+
 ## 2026-10-14 — Pregătire v1.6.2: găsirea feedurilor pe un site, etapa 1
 
 Un studiu (`Studiu cautare RSS 2026-10-14.md`, păstrat în `Documents\Claude`) a arătat următoarele. Căutarea după subiect pe internet nu funcționa: termenul era trimis ca adresă la feedsearch.dev, care răspundea 400, iar eroarea era ascunsă. Descoperirea pe site propunea 8–11 adrese pe site, majoritatea nefuncționale, de verificat manual. Filtrul „Toate categoriile” nu funcționa în interfețele străine.

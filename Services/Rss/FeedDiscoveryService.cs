@@ -85,6 +85,69 @@ public sealed class FeedDiscoveryService
         return Order(found);
     }
 
+    public const string TopicSearchEndpoint = "https://cloud.feedly.com/v3/search/feeds";
+
+    /// <summary>
+    /// Căutare după subiect prin serviciul Feedly: cuvintele căutate sunt trimise la Feedly, iar fiecare
+    /// rezultat este verificat înainte de afișare. Un domeniu (de exemplu „heise.de”) este căutat și direct pe site.
+    /// </summary>
+    public async Task<List<DiscoveredFeed>> SearchTopicAsync(string query, string language, CancellationToken cancellationToken = default)
+    {
+        query = (query ?? string.Empty).Trim();
+        if (query.Length == 0) throw new InvalidOperationException(UiText.Translate("Tastează un cuvânt-cheie pentru căutarea pe internet."));
+
+        var found = new List<(DiscoveredFeed Feed, int Rank, string FirstArticle)>();
+        var looksLikeAddress = !query.Contains(' ') && query.Contains('.');
+        if (looksLikeAddress)
+        {
+            try
+            {
+                foreach (var feed in await DiscoverAsync(query, cancellationToken)) found.Add((feed, -1, feed.Url));
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch
+            {
+                // Site-ul poate fi inaccesibil; căutarea prin Feedly continuă.
+            }
+        }
+
+        var url = $"{TopicSearchEndpoint}?query={Uri.EscapeDataString(query)}&count=20&locale={Uri.EscapeDataString(language)}";
+        using var response = await _client.GetAsync(url, cancellationToken).ConfigureAwait(false);
+        if ((int)response.StatusCode == 429)
+            throw new InvalidOperationException(UiText.Translate("Serviciul de căutare a limitat temporar cererile. Încearcă din nou mai târziu."));
+        if (!response.IsSuccessStatusCode)
+            throw new HttpRequestException(UiText.Format("Serverul a răspuns cu eroarea {0}.", (int)response.StatusCode));
+
+        var titles = new List<string>();
+        var candidates = new List<Candidate>();
+        using (var document = System.Text.Json.JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false)))
+        {
+            if (document.RootElement.TryGetProperty("results", out var results) && results.ValueKind == System.Text.Json.JsonValueKind.Array)
+            {
+                foreach (var result in results.EnumerateArray())
+                {
+                    var feedId = result.TryGetProperty("feedId", out var id) ? id.GetString() ?? string.Empty : string.Empty;
+                    if (!feedId.StartsWith("feed/", StringComparison.Ordinal)) continue;
+                    var feedUrl = feedId[5..];
+                    if (!Uri.TryCreate(feedUrl, UriKind.Absolute, out var feedUri) || (feedUri.Scheme != Uri.UriSchemeHttp && feedUri.Scheme != Uri.UriSchemeHttps)) continue;
+                    titles.Add(result.TryGetProperty("title", out var title) ? title.GetString() ?? string.Empty : string.Empty);
+                    candidates.Add(new Candidate(feedUrl, titles.Count - 1));
+                }
+            }
+        }
+
+        foreach (var (feed, rank, firstArticle) in (await VerifyAsync(candidates, cancellationToken)).Found)
+        {
+            // Titlul din Feedly descrie de obicei mai bine sursa decât titlul tehnic al fluxului.
+            if (rank >= 0 && rank < titles.Count && !string.IsNullOrWhiteSpace(titles[rank])) feed.Name = titles[rank].Trim();
+            found.Add((feed, rank, firstArticle));
+        }
+        return Order(found);
+    }
+
     /// <summary>Feedurile principale primele, cele de comentarii la final; dublurile (aceeași adresă sau același conținut) sunt eliminate.</summary>
     private static List<DiscoveredFeed> Order(List<(DiscoveredFeed Feed, int Rank, string FirstArticle)> found)
     {

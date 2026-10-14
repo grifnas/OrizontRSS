@@ -11,7 +11,7 @@
 
     <StackPanel Grid.Row="0">
       <TextBlock Text="Caută feeduri RSS după subiect" Style="{StaticResource SectionTitleTextStyle}" />
-      <TextBlock Text="Alege o categorie din catalogul verificat sau caută după cuvinte-cheie. Opțional, poți extinde căutarea pe internet." Style="{StaticResource DialogIntroTextStyle}" />
+      <TextBlock Text="Alege o categorie din catalogul verificat sau caută după cuvinte-cheie. Căutarea pe internet folosește serviciul Feedly: cuvintele căutate sunt trimise la Feedly, iar feedurile găsite sunt verificate automat." Style="{StaticResource DialogIntroTextStyle}" />
 
       <Grid Margin="0,4,0,0">
         <Grid.ColumnDefinitions>
@@ -32,7 +32,7 @@
 
         <StackPanel Grid.Column="2" VerticalAlignment="Bottom" Orientation="Horizontal">
           <Button Content="Caută în catalog" Click="SearchCatalog_Click" Margin="0,0,6,0" />
-          <Button x:Name="LiveSearchButton" Content="Caută pe internet" Click="LiveSearch_Click" />
+          <Button x:Name="LiveSearchButton" Content="Caută pe internet" Click="LiveSearch_Click" AutomationProperties.HelpText="Trimite cuvintele-cheie la serviciul Feedly și verifică automat feedurile găsite. Poți scrie și adresa unui site." />
         </StackPanel>
       </Grid>
 

@@ -53,6 +53,10 @@ AngleSharp este analizorul HTML folosit de SmartReader. Textul licenței este in
 
 Funcțiile AI sunt opționale și folosesc serviciul Google Gemini prin cheia furnizată de utilizator. Gemini este un serviciu online separat și nu este inclus în codul sau în licența Orizont RSS. Utilizarea sa este supusă condițiilor și limitelor stabilite de Google.
 
+## Căutarea Feedly
+
+Butonul „Caută pe internet” din căutarea după subiect folosește căutarea publică de feeduri a serviciului Feedly. Cuvintele căutate sunt trimise la Feedly numai când utilizatorul apasă butonul, iar feedurile găsite sunt verificate de Orizont RSS înainte de afișare. Feedly este un serviciu online separat, nu este inclus în codul sau în licența Orizont RSS, iar utilizarea sa este supusă condițiilor stabilite de Feedly.
+
 ## OpenAI Codex
 
 OpenAI Codex a fost utilizat ca instrument de asistență pentru proiectarea, dezvoltarea, verificarea și documentarea aplicației. Codex nu este inclus ca o componentă de execuție a Orizont RSS.

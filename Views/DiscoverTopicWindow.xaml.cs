@@ -10,12 +10,15 @@ namespace CititorRSS.Jaws;
 public partial class DiscoverTopicWindow : Window
 {
     private readonly RssReader _rss = new();
+    private readonly FeedDiscoveryService _discovery = new();
+    private CancellationTokenSource? _searchCancellation;
     public DiscoveredFeed? SelectedFeed { get; private set; }
 
     public DiscoverTopicWindow()
     {
         InitializeComponent();
         Loaded += OnLoaded;
+        Closed += (_, _) => _searchCancellation?.Cancel();
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
@@ -88,34 +91,38 @@ public partial class DiscoverTopicWindow : Window
             return;
         }
 
-        StatusText.Text = F("Se caută pe internet pentru '{0}'...", query);
+        if (_searchCancellation is not null) return;
+        var cancellation = new CancellationTokenSource();
+        _searchCancellation = cancellation;
+        StatusText.Text = T("Se caută pe internet prin Feedly și se verifică rezultatele. Cuvintele căutate sunt trimise la Feedly.");
         LiveSearchButton.IsEnabled = false;
+        AddButton.IsEnabled = false;
 
         try
         {
-            var liveItems = await TopicFeedSearchService.SearchLiveAsync(query);
-            var discoveredLive = liveItems.Select(item => new DiscoveredFeed
+            var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+            var found = await _discovery.SearchTopicAsync(query, language, cancellation.Token);
+            if (found.Count == 0)
             {
-                Name = item.Name,
-                Url = item.Url,
-                SourceSite = item.Category,
-                RequiresVerification = true,
-                IsVerified = false,
-                ArticleCount = 0
-            }).ToList();
-
-            if (discoveredLive.Count == 0)
-            {
-                StatusText.Text = F("Nu s-au găsit feeduri noi pe internet pentru '{0}'.", query);
+                StatusText.Text = F("Nu s-au găsit feeduri funcționale pe internet pentru „{0}”.", query);
+                return;
             }
-            else
-            {
-                Results.ItemsSource = discoveredLive;
-                StatusText.Text = F("{0} feeduri live găsite pe internet. Selectează unul și verifică-l.", discoveredLive.Count);
-            }
+            Results.ItemsSource = found;
+            StatusText.Text = F("{0} feeduri funcționale găsite pe internet și verificate. Alege unul și apasă Adaugă feed verificat.", found.Count);
+            // Rezultatele sunt deja verificate: primul este selectat, iar JAWS îl citește odată cu mutarea focalizării.
+            Results.SelectedIndex = 0;
+            Results.UpdateLayout();
+            (Results.ItemContainerGenerator.ContainerFromIndex(0) as UIElement)?.Focus();
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
+        catch (Exception exception)
+        {
+            StatusText.Text = F("Căutarea pe internet nu a reușit: {0}", exception.Message);
         }
         finally
         {
+            _searchCancellation = null;
+            cancellation.Dispose();
             LiveSearchButton.IsEnabled = true;
         }
     }

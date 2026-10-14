@@ -472,11 +472,19 @@ async Task RunFeedDiscoverySmokeAsync()
         ["https://revista.test/export/rss-stiri.xml"] = ("application/xml", Rss("Revista", "r1")),
         ["https://simplu.test/"] = ("text/html", Html("<title>Simplu</title>")),
         ["https://simplu.test/rss.xml"] = ("application/rss+xml", Rss("Simplu", "p1")),
+        [$"{FeedDiscoveryService.TopicSearchEndpoint}?query=jazz%20live&count=20&locale=ro"] = ("application/json",
+            "{\"results\":[{\"feedId\":\"feed/https://jazz.test/rss\",\"title\":\"Jazz Live\"},{\"feedId\":\"feed/https://mort.test/rss\",\"title\":\"Mort\"},{\"feedId\":\"feed/https://jazz2.test/feed\",\"title\":\"Jazz Doi\"},{\"feedId\":\"topic/jazz\"}]}"),
+        ["https://jazz.test/rss"] = ("application/rss+xml", Rss("Titlu tehnic", "j1")),
+        ["https://jazz2.test/feed"] = ("application/rss+xml", Rss("Jazz 2", "j2")),
+        [$"{FeedDiscoveryService.TopicSearchEndpoint}?query=stiri.test&count=20&locale=ro"] = ("application/json",
+            "{\"results\":[{\"feedId\":\"feed/https://stiri.test/feed\",\"title\":\"Știri Test din Feedly\"},{\"feedId\":\"feed/https://alt.test/rss\",\"title\":\"Alt site\"}]}"),
+        ["https://alt.test/rss"] = ("application/rss+xml", Rss("Alt", "a1")),
     };
     var requested = new List<string>();
     var handler = new UpdateSmokeHttpHandler(request =>
     {
-        var url = request.RequestUri!.ToString();
+        var url = request.RequestUri!.AbsoluteUri;
+        if (url.Contains("query=limitat", StringComparison.Ordinal)) return new HttpResponseMessage((HttpStatusCode)429) { RequestMessage = request };
         lock (requested) requested.Add(url);
         if (!pages.TryGetValue(url, out var page)) return new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request };
         return new HttpResponseMessage(HttpStatusCode.OK) { RequestMessage = request, Content = new StringContent(page.Body, Encoding.UTF8, page.Type) };
@@ -498,6 +506,18 @@ async Task RunFeedDiscoverySmokeAsync()
     var invalid = false;
     try { await discovery.DiscoverAsync("nu este adresa"); } catch (InvalidOperationException) { invalid = true; }
     Check(invalid, "o adresă nevalidă este respinsă cu un mesaj clar");
+
+    var topic = await discovery.SearchTopicAsync("jazz live", "ro");
+    Check(topic.Select(feed => feed.Name).SequenceEqual(["Jazz Live", "Jazz Doi"]), "căutarea după subiect întoarce feedurile verificate, în ordinea relevanței, cu titlurile din Feedly");
+    Check(topic.All(feed => feed.IsVerified && feed.ArticleCount > 0) && !topic.Any(feed => feed.Url.Contains("mort.test", StringComparison.Ordinal)), "rezultatele nefuncționale ale căutării nu sunt afișate");
+    var domain = await discovery.SearchTopicAsync("stiri.test", "ro");
+    Check(domain.Count(feed => feed.Url == "https://stiri.test/feed") == 1 && domain.Any(feed => feed.Url == "https://alt.test/rss") && domain[0].Url == "https://stiri.test/feed", "un domeniu este căutat pe site și în Feedly, fără dubluri, cu feedul site-ului primul");
+    var limited = string.Empty;
+    try { await discovery.SearchTopicAsync("limitat", "ro"); } catch (InvalidOperationException exception) { limited = exception.Message; }
+    Check(limited == UiText.Translate("Serviciul de căutare a limitat temporar cererile. Încearcă din nou mai târziu."), "limitarea cererilor de către serviciu este explicată");
+    var empty = false;
+    try { await discovery.SearchTopicAsync("  ", "ro"); } catch (InvalidOperationException) { empty = true; }
+    Check(empty, "căutarea fără cuvinte-cheie cere un cuvânt");
 
     var allCategories = CititorRSS.Jaws.Services.Rss.TopicFeedSearchService.SearchCatalog(null, null).Count;
     var technology = CititorRSS.Jaws.Services.Rss.TopicFeedSearchService.SearchCatalog(null, "Tehnologie & IT");

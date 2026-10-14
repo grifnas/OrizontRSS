@@ -8,7 +8,6 @@ namespace CititorRSS.Jaws.Services.Rss;
 
 public static class TopicFeedSearchService
 {
-    private static readonly HttpClient HttpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(6) };
     private static CatalogRoot? _cachedCatalog;
 
     public static CatalogRoot GetCatalog()
@@ -57,49 +56,5 @@ public static class TopicFeedSearchService
         ).ToList();
     }
 
-    public static async Task<List<CatalogFeedItem>> SearchLiveAsync(string query)
-    {
-        var results = new List<CatalogFeedItem>();
-        if (string.IsNullOrWhiteSpace(query)) return results;
-
-        try
-        {
-            // Query open Feedsearch API for live feeds matching the topic query
-            var searchUrl = $"https://feedsearch.dev/api/v1/search?url={Uri.EscapeDataString(query.Trim())}";
-            var response = await HttpClient.GetAsync(searchUrl);
-            if (response.IsSuccessStatusCode)
-            {
-                var json = await response.Content.ReadAsStringAsync();
-                using var doc = JsonDocument.Parse(json);
-                if (doc.RootElement.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (var element in doc.RootElement.EnumerateArray())
-                    {
-                        var url = element.TryGetProperty("url", out var u) ? u.GetString() : null;
-                        var title = element.TryGetProperty("title", out var t) ? t.GetString() : null;
-                        var description = element.TryGetProperty("description", out var d) ? d.GetString() : null;
-
-                        if (!string.IsNullOrWhiteSpace(url) && !string.IsNullOrWhiteSpace(title))
-                        {
-                            results.Add(new CatalogFeedItem
-                            {
-                                Name = title.Trim(),
-                                Url = url.Trim(),
-                                Category = "Căutare live web",
-                                Description = string.IsNullOrWhiteSpace(description) ? "Sursă găsită pe internet" : description.Trim(),
-                                Language = "ro/en",
-                                IsLiveSource = true
-                            });
-                        }
-                    }
-                }
-            }
-        }
-        catch
-        {
-            // Network errors are swallowed gracefully without breaking UI
-        }
-
-        return results;
-    }
+    // Căutarea pe internet este în FeedDiscoveryService.SearchTopicAsync (Feedly, cu verificarea rezultatelor).
 }
