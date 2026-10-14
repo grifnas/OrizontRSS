@@ -34,3 +34,4 @@ După crearea tagului și a pachetelor release-ului, ramura `main` primește act
 - În căutarea după subiect, filtrul „Toate categoriile” funcționează și în celelalte limbi ale interfeței, iar numele categoriilor sunt traduse.
 - Ghidurile utilizatorului în cele opt limbi descriu noile funcții: găsirea feedurilor pe un site și căutarea după subiect prin Feedly, textul integral fără meniuri și liste laterale, volumul eSpeak NG, oprirea cererilor AI cu Escape, exportul OPML, păstrarea articolelor ieșite din flux și actualizarea paralelă.
 - Exportul OPML pune feedurile neorganizate la rădăcina fișierului, ca în celelalte cititoare RSS, în loc de un folder „Neorganizate”.
+- Biblioteca AngleSharp, folosită la extragerea textului integral și la găsirea feedurilor, a fost actualizată de la 1.1.2 la 1.7.1, pentru avertismentul de securitate GHSA-pgww-w46g-26qg (severitate moderată). Orizont doar citea pagini cu ea, deci riscul practic era mic.

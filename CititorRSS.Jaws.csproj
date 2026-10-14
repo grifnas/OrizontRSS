@@ -51,5 +51,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
     <PackageReference Include="SmartReader" Version="0.9.6" />
+    <!-- SmartReader 0.9.6 aduce AngleSharp 1.1.2, afectat de GHSA-pgww-w46g-26qg (corectat în 1.5.0). -->
+    <PackageReference Include="AngleSharp" Version="1.7.1" />
   </ItemGroup>
 </Project>

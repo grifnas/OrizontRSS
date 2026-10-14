@@ -40,14 +40,14 @@ Pentru textul integral al articolelor, Orizont RSS folosește biblioteca SmartRe
 - Licență: Apache-2.0
 - Copyright: Strumenta
 
-## AngleSharp 1.1.2
+## AngleSharp 1.7.1
 
-AngleSharp este analizorul HTML folosit de SmartReader. Textul licenței este inclus în `Licenses/AngleSharp`.
+AngleSharp este analizorul HTML folosit de SmartReader și de găsirea feedurilor pe un site. Textul licenței este inclus în `Licenses/AngleSharp`.
 
 - Proiect: https://github.com/AngleSharp/AngleSharp
-- Versiune inclusă: 1.1.2
+- Versiune inclusă: 1.7.1 (în locul versiunii 1.1.2 aduse de SmartReader, afectată de avertismentul de securitate GHSA-pgww-w46g-26qg)
 - Licență: MIT
-- Copyright (c) 2013 - 2024 AngleSharp
+- Copyright (c) 2013 - 2026 AngleSharp
 
 ## Google Gemini API
 
