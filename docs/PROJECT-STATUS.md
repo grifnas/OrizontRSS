@@ -1,5 +1,11 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-10-15 — Autentificarea în doi pași pe GitHub activată
+
+Utilizatorul a activat 2FA pentru contul `grifnas`, înaintea termenului de 21 octombrie 2026. Punctul din ROADMAP este închis. Nicio modificare de cod sau distribuție.
+
+Starea sursei: toate modificările pregătirii v1.6.2 sunt în cele șapte commituri de pe `pregatire-1.6.2`, din care ultimul este `caf6c05` (AngleSharp 1.7.1). Arborele de lucru este curat. Ramura nu este împinsă pe GitHub și `main` rămâne la 1.6.1.
+
 ## 2026-10-14 — Decizie: semnarea digitală, aprobată și amânată
 
 Utilizatorul a analizat alternativele de semnare digitală a instalatorului (punctul 8 din auditul din 13 octombrie) și agreează propunerea: SignPath Foundation (gratuit, open source), cu Certum Open Source in the Cloud ca rezervă și Microsoft Store ca opțiune separată. Lucrarea este amânată pentru o dată ulterioară și nu se începe fără o nouă cerere expresă. Detaliile, condițiile și pașii de reluare sunt în [ROADMAP.md](ROADMAP.md), secțiunea „Lucrare aprobată și amânată — semnarea digitală a instalatorului”. Nicio modificare de cod.

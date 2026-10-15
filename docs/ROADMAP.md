@@ -329,13 +329,10 @@ Nu se publică un singur pachet izolat. O nouă distribuție se creează numai l
    - Crearea de scurte materiale demonstrative audio/text axate pe rapiditatea navigării cu tastatura, modul WebReader și traducere.
 7. Menținerea proiectului Windows fără schimbarea funcțiilor stabile; orice modificare nouă rămâne supusă regulilor din `AGENTS.md`.
 
-## Cerință de securitate GitHub — acțiune necesară
+## Cerință de securitate GitHub — îndeplinită
 
-- Contul GitHub `grifnas` trebuie să activeze autentificarea în doi pași (2FA) până la **21 octombrie 2026, ora 00:00 UTC**.
-- Configurarea se face din pagina oficială: <https://github.com/settings/two_factor_authentication/setup/intro>.
-- Se recomandă o aplicație de autentificare sau un passkey; codurile de recuperare trebuie salvate într-un loc sigur.
-- Cerința protejează accesul la GitHub și nu necesită nicio modificare în aplicația Orizont RSS, în release-uri sau în GitHub Pages.
-- Până la confirmarea activării, starea contului va fi verificată periodic și utilizatorului i se va reaminti această acțiune.
+- Autentificarea în doi pași (2FA) pentru contul GitHub `grifnas` a fost activată de utilizator, consemnată la 2026-10-15. Termenul de 21 octombrie 2026 nu mai este deschis.
+- Cerința nu a cerut modificări în aplicația Orizont RSS, în release-uri sau în GitHub Pages.
 
 ## Idei pentru etape ulterioare
 

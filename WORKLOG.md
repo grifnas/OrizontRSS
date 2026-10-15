@@ -2593,3 +2593,11 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Teste: după restaurarea proiectelor de test (aveau încă 1.1.2 în `project.assets.json`), `verify-source.ps1 -Mode Quick -NoRestore` a trecut (CoreSmoke 256, WorkflowSmoke 157/157, AiProviderSmoke 76, LocalizationSmoke 1.505 resurse, eSpeak NG 132/104, validatorii), 0 avertismente. `dotnet list package --vulnerable` nu mai raportează nimic. `git diff --check` fără erori.
 - Executabil de test refăcut autonom: `C:\Users\grigo\Documents\ChatGPT\New project\Orizont RSS\bin\Release\net8.0-windows10.0.17763.0\Orizont.exe`; conține `AngleSharp.dll` 1.7.1.0. `Orizont.dll` SHA-256 `B17CA173C4359D77781458E006AD12658D70EEF07EA3B196C95027182631429C`. Aplicația nu a fost pornită pe profilul utilizatorului.
 - Rămâne verificarea practică: textul integral al unui articol în Cititor Orizont și găsirea feedurilor pe un site. Fără distribuție, tag, release, commit sau push.
+
+## 2026-10-15 — Autentificarea în doi pași pe GitHub: consemnată ca îndeplinită
+
+- Cerere: utilizatorul a confirmat că 2FA pentru contul `grifnas` este activat și a cerut consemnarea.
+- Modificări: `docs/ROADMAP.md`, secțiunea „Cerință de securitate GitHub” devine „îndeplinită”; `docs/PROJECT-STATUS.md`, intrare nouă; această intrare.
+- Cod: neschimbat. Nu s-a verificat contul GitHub din aplicație; confirmarea vine de la utilizator.
+- Commituri rămase: la verificare, arborele de lucru era curat și toate cele șapte commituri ale pregătirii v1.6.2 existau deja. Nu a fost nevoie de commituri noi de cod.
+- Fără distribuție, tag, release, commit de cod sau push.
