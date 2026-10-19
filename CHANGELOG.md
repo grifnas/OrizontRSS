@@ -2,9 +2,19 @@
 
 Acest fișier descrie numai ultima versiune publicată și lucrările ulterioare încă nepublicate. Istoricul mai vechi poate fi recuperat din istoricul Git și din release-urile publice anterioare; nu este copiat în această pagină activă.
 
-## Versiunea publicată v1.6.2 — 19 octombrie 2026
+## Versiunea publicată v1.6.3 — 19 octombrie 2026
 
-Release-ul public v1.6.2 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.2). Notele complete, inclusiv limitele verificărilor, sunt în [RELEASE-NOTES-1.6.2.md](RELEASE-NOTES-1.6.2.md).
+Release-ul public v1.6.3 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.3). Notele complete, inclusiv limitele verificărilor, sunt în [RELEASE-NOTES-1.6.3.md](RELEASE-NOTES-1.6.3.md).
+
+- Corectat: SmartReader 0.9.6 nu mai funcționa după actualizarea AngleSharp la 1.7.1 (avertismentul de securitate din 15 octombrie 2026). Textul integral era extras doar cu extractorul vechi, inclusiv în v1.6.2. SmartReader a fost actualizat la 0.11.1, compatibil cu AngleSharp 1.7.1.
+- WebReader afișează articolul structurat de SmartReader: subtitluri, liste, citate, tabele și linkuri, navigabile cu tastele JAWS (H, L, Tab). Scripturile, imaginile, formularele și atributele sunt eliminate. Textul tradus și paginile nerecunoscute rămân în paragrafe.
+- Cititorul Orizont: tastele Application și Shift+F10 deschid meniul contextual în modul text fără să se închidă imediat; citirea vocală în curs se oprește înainte de înlocuirea textului cu traducerea DeepL.
+
+Probele practice A02, A09, A07 și A11 rămân deschise, conform registrului de acceptare.
+
+## Versiunea anterioară v1.6.2 — 19 octombrie 2026
+
+Release-ul public v1.6.2 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.2). Notele complete sunt pe pagina release-ului.
 
 Noutăți față de 1.6.1:
 
@@ -39,10 +49,6 @@ Probele practice A02, A09, A07 și A11 rămân deschise, conform registrului de 
 - Exportul OPML pune feedurile neorganizate la rădăcina fișierului, ca în celelalte cititoare RSS, în loc de un folder „Neorganizate”.
 - Biblioteca AngleSharp, folosită la extragerea textului integral și la găsirea feedurilor, a fost actualizată de la 1.1.2 la 1.7.1, pentru avertismentul de securitate GHSA-pgww-w46g-26qg (severitate moderată). Orizont doar citea pagini cu ea, deci riscul practic era mic.
 
-## Modificări nepublicate după tagul v1.6.2
+## Modificări nepublicate după tagul v1.6.3
 
 După crearea tagului și a pachetelor release-ului, ramura `main` primește actualizări de documentație și de publicare, inclusiv pagina GitHub Pages și urmărirea manifestelor WinGet. Aceste schimbări de întreținere nu modifică pachetele atașate release-ului și nu constituie o nouă versiune a aplicației.
-
-- Corectat: SmartReader 0.9.6 nu mai funcționa după actualizarea AngleSharp la 1.7.1 (avertismentul de securitate din 15 octombrie 2026). Textul integral era extras doar cu extractorul vechi, inclusiv în v1.6.2. SmartReader a fost actualizat la 0.11.1, compatibil cu AngleSharp 1.7.1.
-- WebReader afișează articolul structurat de SmartReader: subtitluri, liste, citate, tabele și linkuri, navigabile cu tastele JAWS (H, L, Tab). Scripturile, imaginile, formularele și atributele sunt eliminate. Textul tradus și paginile nerecunoscute rămân în paragrafe.
-- Cititorul Orizont: tastele Application și Shift+F10 deschid meniul contextual în modul text fără să se închidă imediat; citirea vocală în curs se oprește înainte de înlocuirea textului cu traducerea DeepL.

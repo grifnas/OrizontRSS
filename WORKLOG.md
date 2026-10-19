@@ -2753,3 +2753,15 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Rămâne de verificat cu JAWS 2026.
 - Commit local, neîmpins.
 - Confirmare de la utilizator (JAWS 2026): în WebReader, Application și Shift+F10 deschid meniul nativ; săgețile, submeniurile și comenzile funcționează. Verificarea nu a fost făcută de agent.
+
+## 2026-10-19 — Publicarea v1.6.3
+
+- Cerere: publicarea completă a versiunii 1.6.3, cu pagina de prezentare și WinGet, cu autorizarea utilizatorului de a face toate operațiile fără aprobări repetate.
+- Conținut: SmartReader 0.11.1 (reparat față de 1.6.2), WebReader structurat, meniul contextual al Cititorului în modul text și în WebReader (meniu nativ WebView2), citirea vocală după traducerea DeepL. Ghidurile în opt limbi au un paragraf nou despre WebReader și meniu.
+- Tag `v1.6.3` pe `154b446093b2e3c2102ce07b714d2b39f2686828`; release GitHub cu trei pachete și fișierele `.sha256`; digesturile GitHub corespund hash-urilor locale:
+  - `OrizontSetup-1.6.3.exe`, 251.714.584 bytes, SHA-256 `1ca3e20805a6bd934ac0909ac3b30dc6db1e00d7a58de14c29f54b40eb9d0d7b`.
+  - `Orizont-RSS-1.6.3-win-x64.zip`, 89.920.276 bytes, SHA-256 `ab8c1c79311a0938826e483135456413971e8062b38018262b7e2a60ac74ffa6`.
+  - `Orizont-RSS-1.6.3-source.zip`, 13.754.762 bytes, SHA-256 `e30bf12fb70ccbaf8afa76fc6ce49bb96d1dc02b6421b84fa956da2776559c81`.
+- Verificări: `verify-all.ps1` complet în worktree izolat (Full + distribuție, versiune 1.6.3.0; folderul distribuției publicat curat, cu System.Text.Json 10 și SmartReader 0.11.1); auditul NuGet fără pachete vulnerabile. După publicare: consistența release-ului, paginile publice, ghidurile și codarea au trecut.
+- Documente după tag: `docs/RELEASE-STATUS.json`, `README.md`, `PUBLICATION.md`, `CHANGELOG.md` (1.6.3 publicat, 1.6.2 anterior), paginile `docs/index*.html` la 1.6.3; eliminate `RELEASE-NOTES-1.6.2.md` și manifestele WinGet 1.6.2 din arbore (rămân în istoricul Git și pe GitHub).
+- Probele A02, A09, A07, A11 rămân deschise. Instalatorul nu este semnat digital.
