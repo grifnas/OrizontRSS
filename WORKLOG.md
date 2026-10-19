@@ -1,5 +1,21 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-19 — Candidatul 1.6.2: pachete locale, nepublicat
+
+- Cerere: pregătirea completă a versiunii 1.6.2. Publicarea (tag, release, push pe `main`, WinGet, pagini) nu a fost făcută; cere confirmare separată.
+- Versiune: `CititorRSS.Jaws.csproj`, `packaging/installer/OrizontSetup.csproj` și testul de titlu la 1.6.2 (FileVersion 1.6.2.0). Ghidurile (cele opt) afișează 1.6.2. Paginile publice rămân la 1.6.1 până la publicare, pentru că `verify-public-pages` le verifică față de ultima versiune publicată.
+- Documente: `RELEASE-NOTES-1.6.2.md`, `CHANGELOG.md` (secțiunea candidatului), `docs/RELEASE-STATUS.json` (candidat `distribution-prepared`, nepublicat), `packaging/winget/Grifnas.OrizontRSS/1.6.2/`.
+- Commituri locale (neîmpinse): `5082df2`, `5971092`, `3d47cc8`, `88bc430` (aici este commitul de tag propus), `3a65b3a`, `e71e905`.
+- Pachete în `bin\Release`:
+  - `Orizont-RSS-1.6.2-win-x64.zip`, SHA-256 `717e139ecbb7014d94d51efe106a6e335e1fbc8decd642e2f1ce5babf5148708`.
+  - `OrizontSetup-1.6.2.exe` (instalator offline, cu arhiva portabilă încorporată, verificată la instalare), SHA-256 `b489755451536b60946461369e78dc10ee8fae83ea5ef81267a99311aaedf815`.
+  - `Orizont-RSS-1.6.2-source.zip` (`git archive` din `88bc430`), SHA-256 `b9bf295912ed380005a6387897600df642908d6c70fbea7a7e4e37a304c8121d`.
+  - Fiecare are fișierul `.sha256` alături. Folderul distribuției: `bin\Release\final-1.6.2-win-x64`.
+- Verificări: `verify-all.ps1 -DistributionPath` a trecut complet, în worktree izolat, pe commitul final: Full (build aplicație și instalator, CoreSmoke 268, WorkflowSmoke 157/157, RulesSmoke, ShortcutsSmoke, AiProviderSmoke, LocalizationSmoke 1523, EspeakSmoke, ScaleSmoke), verify-localization, guides, codare, pagini publice, consistența release-ului și `verify-distribution` (versiune fișier 1.6.2.0, produs 1.6.2). `dotnet list package --vulnerable`: niciun pachet vulnerabil, fără NU1900.
+- Rămâne pentru publicare: probele A02, A09, A07, A11 (deschise în registru) și verificările manuale cu JAWS 2026 pentru funcțiile noi (modul Citire al browserului, soldul DeepSeek/DeepL, limba țintă DeepL, fereastra Despre). Semnarea digitală rămâne amânată.
+- Executabil de test (locația standard, autonom): `bin\Release\Orizont.exe`, DLL SHA-256 `E86889351E3B56073A0017366DBECFAB90528B0461A3DB7F71CFC7B815776751`.
+- Fără push, tag, release sau distribuție publică.
+
 ## 2026-10-19 — Creditul pentru Claude în Despre și pe pagina de prezentare
 
 - Cerere: în Despre Orizont RSS și pe pagina de prezentare, numele Claude (Anthropic) apare alături de Grigore Frișan și OpenAI Codex.
