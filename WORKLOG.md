@@ -1,5 +1,46 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-19 — Creditul pentru Claude în Despre și pe pagina de prezentare
+
+- Cerere: în Despre Orizont RSS și pe pagina de prezentare, numele Claude (Anthropic) apare alături de Grigore Frișan și OpenAI Codex.
+- Modificări: `MainWindow.xaml.cs` (textul Despre și copyright-ul); `Resources/UiStrings*.resx` (cheile și valorile în cele opt limbi, pentru sincronizare cu textul din cod); `docs/index*.html` (cele opt pagini de prezentare, cu verbul la plural în limbile care îl cer).
+- Extindere la cererea utilizatorului („să se știe peste tot”): `README.md`, `ACKNOWLEDGEMENTS.md`, `CONTRIBUTORS.md`, `THIRD-PARTY-NOTICES.md` (secțiune nouă pentru Claude, la fel ca pentru Codex) și cele opt ghiduri `docs/user-guides` (paragraful de la început și subsolul) au acum și Claude (Anthropic). `tools/translate-user-guide.ps1` nu a fost modificat.
+- Comportamente protejate: versiunea, linkurile de descărcare și restul paginilor nu se schimbă. Jurnalele interne (`WORKLOG.md`, `docs/PROJECT-STATUS.md`) și `AGENTS.md` nu sunt modificate.
+- Validare suplimentară: `verify-user-guides.ps1` a trecut.
+- Teste: `verify-source.ps1 -Mode Quick` a trecut; `verify-public-pages.ps1` a trecut pentru cele opt pagini. Executabil: `bin\Release\Orizont.exe`, DLL SHA-256 `0242A6470ABC9B74DF7E2F25C3DE7E0AF454A1208101BE50E029ED950DCD7B3C`.
+- Rămâne de verificat manual cu JAWS 2026: fereastra Despre.
+- Fără commit, push, distribuție, tag sau release.
+
+## 2026-10-19 — Articolul deschis în modul Citire al browserului nu se marca citit
+
+- Cauză: `OpenArticleInBrowserReadingMode` (noua opțiune din feed și Setări, precum și meniul „Deschide articolul în modul Citire al browserului”) nu marca articolul ca citit. Modul standard și cititorul Orizont o fac deja.
+- Modificare: `MainWindow.xaml.cs`: metoda devine asincronă, marchează articolul și copiile lui ca citite, reîmprospătează lista și salvează. Click-ul din meniu și Enter / „Deschide și citește” folosesc aceeași metodă.
+- Comportamente protejate: modurile standard și Cititor Orizont nu se schimbă; în caz de eroare la deschidere, articolul nu se marchează.
+- Teste: `verify-source.ps1 -Mode Quick` a trecut (CoreSmoke 268, WorkflowSmoke 157/157). Executabil: `bin\Release\Orizont.exe`, DLL SHA-256 `1B36F07651F7D159E4C1D4907E5E9F21F32C37FAFD1AAFFCE4A62BD26A97037C`.
+- Rămâne de verificat manual cu JAWS 2026: deschidere cu Enter și din meniu, apoi starea articolului în listă.
+- Fără commit, push, distribuție, tag sau release.
+
+## 2026-10-19 — Limba țintă pentru DeepL
+
+- Cerere: în Setări, la DeepL, alegerea limbii țintă, ca la Google Translate. Implicit: limba interfeței.
+- Modificări: `Services/Ai/DeepLConnection.cs` (lista `SupportedTargetLanguages`, `NormalizeTargetPreference`, `ResolveTargetLanguage`; limbile maghiară și italiană ale interfeței se mapează acum la HU și IT, în loc de EN-US); `Models/AppSettings.cs` (`DeepLTargetLanguage`, implicit „ui”); `Storage/BackupPolicy.cs` (valoarea trece în backup, fără cheie); `MainWindow.xaml.cs` și `Views/ArticleReaderWindow.xaml.cs` (traducerea DeepL folosește alegerea); `Views/SettingsWindow.xaml` și `.xaml.cs` (lista și salvarea); cheia „Limba țintă pentru DeepL” în cele opt resurse; `tests/CoreSmoke/Program.cs` (interfața hu și it, alegere explicită, valoare necunoscută).
+- Comportamente protejate: traducerea, testul conexiunii și cheia rămân neschimbate; setarea existentă a utilizatorului nu se schimbă la pornire.
+- Teste: `verify-source.ps1 -Mode Quick` a trecut: CoreSmoke 268, WorkflowSmoke 157/157, LocalizationSmoke 1523 resurse. Executabil: `bin\Release\Orizont.exe`, DLL SHA-256 `7DF61B52023CD1AD67C06E33644860372DFD796FAB067E53E6D2D88062C518DA`.
+- Rămâne de verificat cu o cheie DeepL reală și manual cu JAWS 2026: lista din Setări și o traducere în altă limbă.
+- Fără commit, push, distribuție, tag sau release.
+
+## 2026-10-19 — Verificarea soldului la DeepSeek și DeepL
+
+- Cerere: butoane de verificare a soldului la furnizorii de AI care o suportă, inclusiv DeepL.
+- Furnizori: DeepSeek are `GET /user/balance` (sold per monedă, cu `is_available`); DeepL are `GET /v2/usage` (caractere folosite și limită), deja folosit de testul conexiunii. OpenAI, Mistral și Gemini nu au un endpoint public de sold pentru cheia API, deci nu au primit buton.
+- Comportamente protejate: testul conexiunii DeepSeek și DeepL, traducerea, activarea furnizorilor și salvarea cheilor rămân neschimbate; verificarea soldului nu modifică setările și nu trimite articole.
+- Modificări: `Services/Ai/DeepSeekConnection.cs` (`GetBalanceAsync`, tipurile `DeepSeekBalance` și `DeepSeekBalanceInfo`); `Views/SettingsWindow.xaml` și `.xaml.cs` (butoanele „Verifică soldul DeepSeek” și „Verifică soldul DeepL”, cu stare vizibilă și dialog); cheile noi în cele opt `Resources/UiStrings*.resx`; `tests/CoreSmoke/Program.cs` (cerere GET la `/user/balance` cu cheia în antet, sumele păstrate exact, eroarea fără cheie).
+- Teste: `verify-source.ps1 -Mode Quick` a trecut: CoreSmoke 260, WorkflowSmoke 157/157, RulesSmoke, ShortcutsSmoke, AiProviderSmoke, LocalizationSmoke 1521 resurse, validatorii.
+- Rămâne de verificat cu o cheie reală DeepSeek și DeepL, apoi manual cu JAWS 2026: anunțul din dialog, starea și butoanele din secțiunea furnizorului. Endpointul DeepSeek este din documentația terților, nu din documentația oficială verificată.
+- Fără commit, push, distribuție, tag sau release.
+- Completare: instrucțiunea implicită pentru AI („Răspunde în limba interfeței…”) avea doar varianta română. Am adăugat traducerea în cele opt `Resources/UiStrings*.resx`, pentru afișare în Setări. Textul salvat și trimis modelului rămâne cel românesc, neschimbat. Validare: `verify-source.ps1 -Mode Quick` a trecut, LocalizationSmoke 1522 resurse. Executabil: `bin\Release\Orizont.exe`, DLL SHA-256 `F945A7FC99E13ABC1536572F0F6236F44E367D19946005FCB6DCF837CD699D66`.
+- Verificare suplimentară: în CoreSmoke, cu interfața în en-US, instrucțiunea implicită se afișează în engleză și se salvează înapoi ca textul românesc implicit; o instrucțiune personalizată nu este înlocuită. CoreSmoke 263 verificări, trecut. Comportamentul există deja la deschiderea Setărilor după repornire (limba se aplică după repornire, conform mesajului din Setări).
+
 ## 2026-10-19 — Modul Citire al browserului în setările feedului
 
 - Cerere: în fereastra de adăugare și editare a feedului, opțiunea „La deschiderea articolului” să includă și modul Citire al browserului (fereastră externă), la fel ca în meniul contextual al articolului.

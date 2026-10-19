@@ -1420,12 +1420,12 @@
   <data name=" Vor fi eliminate și {0} copii identice din alte feeduri." xml:space="preserve">
     <value>{0} identische Kopien aus anderen Feeds werden ebenfalls entfernt.</value>
   </data>
-  <data name="{0}&#10;&#10;Citește, organizează și înțelege informațiile din sursele tale preferate.&#10;&#10;Orizont RSS a fost creat de Grigore Frișan în colaborare cu OpenAI Codex.&#10;&#10;F1 deschide ajutorul. Ctrl+Shift+H deschide istoricul stării și al erorilor. Licența completă poate fi deschisă din meniul Ajutor." xml:space="preserve">
+  <data name="{0}&#10;&#10;Citește, organizează și înțelege informațiile din sursele tale preferate.&#10;&#10;Orizont RSS a fost creat de Grigore Frișan în colaborare cu OpenAI Codex și Claude (Anthropic).&#10;&#10;F1 deschide ajutorul. Ctrl+Shift+H deschide istoricul stării și al erorilor. Licența completă poate fi deschisă din meniul Ajutor." xml:space="preserve">
     <value>{0}
 
 Lesen, organisieren und verstehen Sie Informationen aus Ihren bevorzugten Quellen.
 
-Orizont RSS wurde von Grigore Frișan in Zusammenarbeit mit OpenAI Codex erstellt.
+Orizont RSS wurde von Grigore Frișan in Zusammenarbeit mit OpenAI Codex und Claude (Anthropic) erstellt.
 
 F1 öffnet die Hilfe. Ctrl+Shift+H öffnet den Status- und Fehlerverlauf. Die Volllizenz kann über das Hilfemenü geöffnet werden.</value>
   </data>
@@ -1623,12 +1623,12 @@ Artikelmarkierungen und Notizen sind erhalten geblieben.</value>
   <data name="Oprește actualizarea" xml:space="preserve">
     <value>Stoppen Sie das Update</value>
   </data>
-  <data name="Orizont RSS {0}&#10;Ediție compilată la {1}&#10;Windows pe 64 de biți&#10;Copyright © 2026 Grigore Frișan&#10;Creat în colaborare cu OpenAI Codex&#10;Licență: GNU GPL versiunea 3 sau ulterioară" xml:space="preserve">
+  <data name="Orizont RSS {0}&#10;Ediție compilată la {1}&#10;Windows pe 64 de biți&#10;Copyright © 2026 Grigore Frișan&#10;Creat în colaborare cu OpenAI Codex și Claude (Anthropic)&#10;Licență: GNU GPL versiunea 3 sau ulterioară" xml:space="preserve">
     <value>Orizont RSS {0}
 Ausgabe zusammengestellt unter {1}
 64-Bit-Windows
 Copyright © 2026 Grigore Frișan
-Erstellt in Zusammenarbeit mit dem OpenAI Codex
+Erstellt in Zusammenarbeit mit dem OpenAI Codex und Claude (Anthropic)
 Lizenz: GNU GPL Version 3 oder höher</value>
   </data>
   <data name="Orizont RSS nu a putut încărca în siguranță datele locale și se va închide fără să le suprascrie.&#10;&#10;Detalii: {0}" xml:space="preserve">
@@ -2623,6 +2623,23 @@ Details: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Standardmäßiges Öffnen von Artikeln</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Allgemeine Einstellung verwenden</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Standardmodus im Hauptfenster</value></data>
+  <data name="Limba țintă pentru DeepL" xml:space="preserve"><value>Zielsprache für DeepL</value></data>
+  <data name="Răspunde în limba interfeței. Fii clar, concis și semnalează incertitudinile." xml:space="preserve"><value>Antworte in der Sprache der Oberfläche. Sei klar, knapp und weise auf Unsicherheiten hin.</value></data>
+  <data name="DeepSeek nu a returnat soldul într-un format valid." xml:space="preserve"><value>DeepSeek hat das Guthaben nicht in einem gültigen Format zurückgegeben.</value></data>
+  <data name="DeepL nu a returnat o limită de caractere. Verifică contul în DeepL." xml:space="preserve"><value>DeepL hat kein Zeichenlimit zurückgegeben. Prüfen Sie das Konto bei DeepL.</value></data>
+  <data name="Utilizare DeepL: {0} din {1} caractere, {2} rămase." xml:space="preserve"><value>DeepL-Nutzung: {0} von {1} Zeichen, {2} verbleibend.</value></data>
+  <data name="Verificarea soldului DeepL a eșuat: {0}" xml:space="preserve"><value>Die Guthabenprüfung für DeepL ist fehlgeschlagen: {0}</value></data>
+  <data name="Verificarea soldului DeepSeek a eșuat: {0}" xml:space="preserve"><value>Die Guthabenprüfung für DeepSeek ist fehlgeschlagen: {0}</value></data>
+  <data name="Soldul nu este suficient pentru solicitările API. Adaugă fonduri în contul DeepSeek." xml:space="preserve"><value>Das Guthaben reicht für API-Anfragen nicht aus. Laden Sie das DeepSeek-Konto auf.</value></data>
+  <data name="Soldul este suficient pentru solicitările API." xml:space="preserve"><value>Das Guthaben reicht für API-Anfragen aus.</value></data>
+  <data name="Soldul DeepSeek: {0}. {1}" xml:space="preserve"><value>DeepSeek-Guthaben: {0}. {1}</value></data>
+  <data name="Introdu mai întâi cheia API DeepSeek." xml:space="preserve"><value>Geben Sie zuerst den DeepSeek-API-Schlüssel ein.</value></data>
+  <data name="Se verifică soldul DeepL. Nu este trimis niciun articol." xml:space="preserve"><value>Das Guthaben von DeepL wird geprüft. Es wird kein Artikel gesendet.</value></data>
+  <data name="Se verifică soldul DeepSeek. Nu este trimis niciun articol." xml:space="preserve"><value>Das Guthaben von DeepSeek wird geprüft. Es wird kein Artikel gesendet.</value></data>
+  <data name="Sold DeepL" xml:space="preserve"><value>DeepL-Guthaben</value></data>
+  <data name="Sold DeepSeek" xml:space="preserve"><value>DeepSeek-Guthaben</value></data>
+  <data name="Verifică soldul DeepL" xml:space="preserve"><value>Guthaben von DeepL prüfen</value></data>
+  <data name="Verifică soldul DeepSeek" xml:space="preserve"><value>Guthaben von DeepSeek prüfen</value></data>
   <data name="Mod Citire al browserului, în fereastră externă" xml:space="preserve"><value>Lesemodus des Browsers, in einem externen Fenster</value></data>
   <data name="Alege unde se deschid articolele acestui feed când apeși Enter sau alegi Deschide și citește." xml:space="preserve"><value>Wählen Sie, wo Artikel dieses Feeds bei Eingabe oder Öffnen und Lesen geöffnet werden.</value></data>
   <data name=" {0} abonamente asociate NewsBlur vor fi dezabonate la următoarea sincronizare a feedurilor." xml:space="preserve"><value> {0} zugeordnete NewsBlur-Abonnements werden bei der nächsten Feed-Synchronisierung entfernt.</value></data>

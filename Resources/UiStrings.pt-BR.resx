@@ -1649,12 +1649,12 @@
   <data name=" Vor fi eliminate și {0} copii identice din alte feeduri." xml:space="preserve">
     <value>{0} cópias idênticas de outros feeds também serão removidas.</value>
   </data>
-  <data name="{0}&#10;&#10;Citește, organizează și înțelege informațiile din sursele tale preferate.&#10;&#10;Orizont RSS a fost creat de Grigore Frișan în colaborare cu OpenAI Codex.&#10;&#10;F1 deschide ajutorul. Ctrl+Shift+H deschide istoricul stării și al erorilor. Licența completă poate fi deschisă din meniul Ajutor." xml:space="preserve">
+  <data name="{0}&#10;&#10;Citește, organizează și înțelege informațiile din sursele tale preferate.&#10;&#10;Orizont RSS a fost creat de Grigore Frișan în colaborare cu OpenAI Codex și Claude (Anthropic).&#10;&#10;F1 deschide ajutorul. Ctrl+Shift+H deschide istoricul stării și al erorilor. Licența completă poate fi deschisă din meniul Ajutor." xml:space="preserve">
     <value>{0}
 
 Leia, organize e entenda informações de suas fontes favoritas.
 
-Orizont RSS foi criado por Grigore Frişan em colaboração com o OpenAI Codex.
+Orizont RSS foi criado por Grigore Frişan em colaboração com o OpenAI Codex e Claude (Anthropic).
 
 F1 abre a ajuda. Ctrl+Shift+H abre o estado e o histórico de erros. A licença completa pode ser aberta no menu Ajuda.</value>
   </data>
@@ -1852,12 +1852,12 @@ Artigos semelhantes publicados por diferentes fontes não são considerados dupl
   <data name="Oprește actualizarea" xml:space="preserve">
     <value>Parar a atualização</value>
   </data>
-  <data name="Orizont RSS {0}&#10;Ediție compilată la {1}&#10;Windows pe 64 de biți&#10;Copyright © 2026 Grigore Frișan&#10;Creat în colaborare cu OpenAI Codex&#10;Licență: GNU GPL versiunea 3 sau ulterioară" xml:space="preserve">
+  <data name="Orizont RSS {0}&#10;Ediție compilată la {1}&#10;Windows pe 64 de biți&#10;Copyright © 2026 Grigore Frișan&#10;Creat în colaborare cu OpenAI Codex și Claude (Anthropic)&#10;Licență: GNU GPL versiunea 3 sau ulterioară" xml:space="preserve">
     <value>Orizont RSS {0}
 Edição compilada em {1}
 Windows de 64 bits
 Copyright © 2026 Grigore Frişan
-Criado em colaboração com o OpenAI Codex
+Criado em colaboração com o OpenAI Codex e Claude (Anthropic)
 Licença: GNU GPL versão 3 ou posterior</value>
   </data>
   <data name="Orizont RSS nu a putut încărca în siguranță datele locale și se va închide fără să le suprascrie.&#10;&#10;Detalii: {0}" xml:space="preserve">
@@ -2852,6 +2852,23 @@ Detalhes: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Abertura padrão dos artigos</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Usar a configuração geral</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Modo padrão na janela principal</value></data>
+  <data name="Limba țintă pentru DeepL" xml:space="preserve"><value>Idioma de destino do DeepL</value></data>
+  <data name="Răspunde în limba interfeței. Fii clar, concis și semnalează incertitudinile." xml:space="preserve"><value>Responda no idioma da interface. Seja claro, conciso e sinalize as incertezas.</value></data>
+  <data name="DeepSeek nu a returnat soldul într-un format valid." xml:space="preserve"><value>O DeepSeek não retornou o saldo em um formato válido.</value></data>
+  <data name="DeepL nu a returnat o limită de caractere. Verifică contul în DeepL." xml:space="preserve"><value>O DeepL não retornou um limite de caracteres. Verifique a conta no DeepL.</value></data>
+  <data name="Utilizare DeepL: {0} din {1} caractere, {2} rămase." xml:space="preserve"><value>Uso do DeepL: {0} de {1} caracteres, {2} restantes.</value></data>
+  <data name="Verificarea soldului DeepL a eșuat: {0}" xml:space="preserve"><value>A verificação do saldo do DeepL falhou: {0}</value></data>
+  <data name="Verificarea soldului DeepSeek a eșuat: {0}" xml:space="preserve"><value>A verificação do saldo do DeepSeek falhou: {0}</value></data>
+  <data name="Soldul nu este suficient pentru solicitările API. Adaugă fonduri în contul DeepSeek." xml:space="preserve"><value>O saldo não é suficiente para as solicitações de API. Adicione fundos à conta do DeepSeek.</value></data>
+  <data name="Soldul este suficient pentru solicitările API." xml:space="preserve"><value>O saldo é suficiente para as solicitações de API.</value></data>
+  <data name="Soldul DeepSeek: {0}. {1}" xml:space="preserve"><value>Saldo do DeepSeek: {0}. {1}</value></data>
+  <data name="Introdu mai întâi cheia API DeepSeek." xml:space="preserve"><value>Digite primeiro a chave de API do DeepSeek.</value></data>
+  <data name="Se verifică soldul DeepL. Nu este trimis niciun articol." xml:space="preserve"><value>Verificando o saldo do DeepL. Nenhum artigo é enviado.</value></data>
+  <data name="Se verifică soldul DeepSeek. Nu este trimis niciun articol." xml:space="preserve"><value>Verificando o saldo do DeepSeek. Nenhum artigo é enviado.</value></data>
+  <data name="Sold DeepL" xml:space="preserve"><value>Saldo do DeepL</value></data>
+  <data name="Sold DeepSeek" xml:space="preserve"><value>Saldo do DeepSeek</value></data>
+  <data name="Verifică soldul DeepL" xml:space="preserve"><value>Verificar saldo do DeepL</value></data>
+  <data name="Verifică soldul DeepSeek" xml:space="preserve"><value>Verificar saldo do DeepSeek</value></data>
   <data name="Mod Citire al browserului, în fereastră externă" xml:space="preserve"><value>Modo de leitura do navegador, em uma janela externa</value></data>
   <data name="Alege unde se deschid articolele acestui feed când apeși Enter sau alegi Deschide și citește." xml:space="preserve"><value>Escolha onde os artigos deste feed serão abertos ao pressionar Enter ou Abrir e ler.</value></data>
   <data name=" {0} abonamente asociate NewsBlur vor fi dezabonate la următoarea sincronizare a feedurilor." xml:space="preserve"><value> {0} assinaturas vinculadas ao NewsBlur serão removidas na próxima sincronização dos feeds.</value></data>

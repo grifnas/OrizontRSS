@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Buffers.Binary;
 using System.IO;
 using System.Net;
@@ -342,6 +343,9 @@ RunReadabilitySmoke();
 await RunParallelRefreshSmokeAsync();
 await RunFeedDiscoverySmokeAsync();
 await RunUpdaterSmokeAsync();
+await RunDeepSeekBalanceSmokeAsync();
+CheckAiInstructionsFollowInterfaceLanguage();
+CheckDeepLTargetLanguages();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
 
@@ -847,6 +851,61 @@ static HttpContent CreateIncompleteContent(byte[] bytes)
     var content = new ByteArrayContent(bytes);
     content.Headers.ContentLength = bytes.Length + 7;
     return content;
+}
+
+void CheckAiInstructionsFollowInterfaceLanguage()
+{
+    var romanian = CultureInfo.CurrentUICulture;
+    try
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+        var shown = AiInstructionsLocalization.ForDisplay(AppSettings.DefaultAiInstructions);
+        Check(shown == "Answer in the interface language. Be clear, concise, and flag uncertainties.", "instrucțiunea implicită apare în limba interfeței când interfața este în engleză");
+        Check(AiInstructionsLocalization.ForStorage(shown) == AppSettings.DefaultAiInstructions, "instrucțiunea afișată în engleză se salvează ca instrucțiunea implicită");
+        Check(AiInstructionsLocalization.ForDisplay(AppSettings.DefaultAiInstructions.Replace("Fii", "Fii  ", StringComparison.Ordinal)) == AppSettings.DefaultAiInstructions.Replace("Fii", "Fii  ", StringComparison.Ordinal), "o instrucțiune personalizată nu este înlocuită");
+    }
+    finally { CultureInfo.CurrentUICulture = romanian; }
+}
+
+void CheckDeepLTargetLanguages()
+{
+    var romanian = CultureInfo.CurrentUICulture;
+    try
+    {
+        CultureInfo.CurrentUICulture = new CultureInfo("hu-HU");
+        Check(DeepLConnection.ResolveTargetLanguage("ui") == "HU", "DeepL folosește limba interfeței maghiare când alegerea este „ui”");
+        Check(DeepLConnection.ResolveTargetLanguage(null) == "HU", "lipsa unei alegeri pentru DeepL folosește limba interfeței");
+        CultureInfo.CurrentUICulture = new CultureInfo("it-IT");
+        Check(DeepLConnection.ResolveTargetLanguage("ui") == "IT", "DeepL folosește limba interfeței italiene când alegerea este „ui”");
+        Check(DeepLConnection.ResolveTargetLanguage("de") == "DE" && DeepLConnection.ResolveTargetLanguage("pt-br") == "PT-BR", "o limbă aleasă explicit pentru DeepL are prioritate față de interfață");
+        Check(DeepLConnection.NormalizeTargetPreference("fr") == "FR" && DeepLConnection.NormalizeTargetPreference("xx-invalid") == "ui", "o valoare necunoscută pentru DeepL revine la limba interfeței");
+    }
+    finally { CultureInfo.CurrentUICulture = romanian; }
+}
+
+async Task RunDeepSeekBalanceSmokeAsync()
+{
+    HttpRequestMessage? seen = null;
+    var client = new HttpClient(new UpdateSmokeHttpHandler(request =>
+    {
+        seen = request;
+        return new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("{\"is_available\":true,\"balance_infos\":[{\"currency\":\"USD\",\"total_balance\":\"12.50\",\"granted_balance\":\"0.00\",\"topped_up_balance\":\"12.50\"}]}", Encoding.UTF8, "application/json")
+        };
+    }));
+    var balance = await new DeepSeekConnection(client).GetBalanceAsync("synthetic-key");
+    Check(balance.IsAvailable && balance.Balances.Count == 1 && balance.Balances[0].Currency == "USD" && balance.Balances[0].TotalBalance == "12.50",
+        "soldul DeepSeek păstrează moneda și suma exact cum le returnează API-ul");
+    Check(seen?.RequestUri?.AbsoluteUri == "https://api.deepseek.com/user/balance" && seen.Method == HttpMethod.Get && seen.Headers.Authorization?.Parameter == "synthetic-key",
+        "soldul DeepSeek folosește GET /user/balance cu cheia în antet");
+
+    var failing = new DeepSeekConnection(new HttpClient(new UpdateSmokeHttpHandler(_ =>
+        new HttpResponseMessage(HttpStatusCode.Unauthorized) { Content = new StringContent("refused synthetic-key") })));
+    var message = "";
+    try { await failing.GetBalanceAsync("synthetic-key"); }
+    catch (InvalidOperationException exception) { message = exception.Message; }
+    Check(message.Length > 0 && !message.Contains("synthetic-key", StringComparison.Ordinal), "eroarea soldului DeepSeek nu afișează cheia API");
 }
 
 static async Task<bool> ThrowsUpdateAsync<TException>(Func<Task> action) where TException : Exception

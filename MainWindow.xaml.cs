@@ -671,7 +671,7 @@ public partial class MainWindow : Window
             var source = await ArticleTranslationSource.ResolveAsync(article.FullContent, originalText, loadReadable, article.Title);
             if (!CanPresentArticleResult(article, request)) return;
             if (string.IsNullOrWhiteSpace(source)) { Say(T("Articolul nu conține text pentru traducere.")); return; }
-            var targetLanguage = DeepLConnection.TargetLanguageForUi();
+            var targetLanguage = DeepLConnection.ResolveTargetLanguage(_settings.DeepLTargetLanguage);
             var translated = await ArticleCommands.TranslateDeepLAsync(key, source, targetLanguage);
             if (!CanPresentArticleResult(article, request)) return;
             Reader.Text = translated;
@@ -794,7 +794,7 @@ public partial class MainWindow : Window
         if (mode == ArticleOpenModeIds.Orizont && !string.IsNullOrWhiteSpace(_article.Link))
             await OpenArticleInOrizontAsync();
         else if (mode == ArticleOpenModeIds.BrowserReader && !string.IsNullOrWhiteSpace(_article.Link))
-            OpenArticleInBrowserReadingMode();
+            await OpenArticleInBrowserReadingModeAsync();
         else
             FocusReader();
     }
@@ -862,13 +862,17 @@ public partial class MainWindow : Window
             MessageBox.Show(this, F("Pagina originală nu a putut fi deschisă în browser.\n\n{0}", Describe(exception)), T("Deschidere nereușită"), MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
-    private void OpenBrowserReadingMode_Click(object sender, RoutedEventArgs e) => OpenArticleInBrowserReadingMode();
-    private void OpenArticleInBrowserReadingMode()
+    private async void OpenBrowserReadingMode_Click(object sender, RoutedEventArgs e) => await OpenArticleInBrowserReadingModeAsync();
+    private async Task OpenArticleInBrowserReadingModeAsync()
     {
         if (_article is null || string.IsNullOrWhiteSpace(_article.Link)) { Say("Articolul nu are o adresă care poate fi deschisă."); return; }
         try
         {
             var mode = BrowserReaderService.OpenReadingMode(_article.Link);
+            // Articolul a fost deschis, deci este citit, la fel ca în cititorul Orizont și în modul standard.
+            foreach (var copy in RelatedArticleCopies([_article])) copy.IsRead = true;
+            Articles.Items.Refresh();
+            await ArticleCommands.SaveAsync();
             Say(mode == BrowserOpenMode.ReadingMode
                 ? T("Articolul a fost trimis în modul Citire Microsoft Edge. Dacă pagina este compatibilă, reclamele și elementele inutile sunt eliminate.")
                 : T("Microsoft Edge nu a fost găsit. Articolul a fost deschis normal în browserul implicit."));
@@ -2739,7 +2743,7 @@ public partial class MainWindow : Window
     private void About_Click(object sender, RoutedEventArgs e)
     {
         MessageBox.Show(this,
-            F("{0}\n\nCitește, organizează și înțelege informațiile din sursele tale preferate.\n\nOrizont RSS a fost creat de Grigore Frișan în colaborare cu OpenAI Codex.\n\nF1 deschide ajutorul. Ctrl+Shift+H deschide istoricul stării și al erorilor. Licența completă poate fi deschisă din meniul Ajutor.", VersionInformation()),
+            F("{0}\n\nCitește, organizează și înțelege informațiile din sursele tale preferate.\n\nOrizont RSS a fost creat de Grigore Frișan în colaborare cu OpenAI Codex și Claude (Anthropic).\n\nF1 deschide ajutorul. Ctrl+Shift+H deschide istoricul stării și al erorilor. Licența completă poate fi deschisă din meniul Ajutor.", VersionInformation()),
             T("Despre Orizont RSS"),
             MessageBoxButton.OK,
             MessageBoxImage.Information);
@@ -2842,7 +2846,7 @@ public partial class MainWindow : Window
     {
         var executable = Environment.ProcessPath;
         var built = !string.IsNullOrWhiteSpace(executable) && File.Exists(executable) ? File.GetLastWriteTime(executable) : DateTime.Now;
-        return F("Orizont RSS {0}\nEdiție compilată la {1}\nWindows pe 64 de biți\nCopyright © 2026 Grigore Frișan\nCreat în colaborare cu OpenAI Codex\nLicență: GNU GPL versiunea 3 sau ulterioară", ProductVersion, built.ToString("g", CultureInfo.CurrentCulture));
+        return F("Orizont RSS {0}\nEdiție compilată la {1}\nWindows pe 64 de biți\nCopyright © 2026 Grigore Frișan\nCreat în colaborare cu OpenAI Codex și Claude (Anthropic)\nLicență: GNU GPL versiunea 3 sau ulterioară", ProductVersion, built.ToString("g", CultureInfo.CurrentCulture));
     }
 
     private void SpeakContent_Click(object sender, RoutedEventArgs e)

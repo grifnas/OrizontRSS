@@ -291,6 +291,7 @@
                   <ComboBox x:Name="DeepSeekModel" IsEditable="True" IsTextSearchEnabled="True" AutomationProperties.Name="Model Mistral" />
                   <WrapPanel Margin="0,6,0,0">
                     <Button x:Name="TestDeepSeekButton" Content="Testează conexiunea Mistral" Click="TestDeepSeek_Click" />
+                    <Button x:Name="CheckDeepSeekBalanceButton" Content="Verifică soldul DeepSeek" Click="CheckDeepSeekBalance_Click" />
                     <Button x:Name="GetDeepSeekKeyButton" Content="Obține cheia API Mistral" Click="DeepSeekKey_Click" />
                   </WrapPanel>
                   <TextBlock x:Name="DeepSeekStatus" Style="{StaticResource DialogStatusTextStyle}" AutomationProperties.LiveSetting="Polite" />
@@ -301,8 +302,11 @@
                 <CheckBox x:Name="DeepLEnabled" Content="Activează traducerea cu DeepL" AutomationProperties.Name="Activează traducerea cu DeepL" />
                 <Label x:Name="DeepLKeyLabel" Content="Cheie API DeepL" Target="{Binding ElementName=DeepLKey}" />
                 <PasswordBox x:Name="DeepLKey" AutomationProperties.Name="Cheie API DeepL" />
+                <Label x:Name="DeepLTargetLabel" Content="Limba țintă pentru DeepL" Target="{Binding ElementName=DeepLTargetLanguage}" />
+                <ComboBox x:Name="DeepLTargetLanguage" AutomationProperties.Name="Limba țintă pentru DeepL" />
                 <WrapPanel Margin="0,6,0,0">
                   <Button x:Name="TestDeepLButton" Content="Testează conexiunea DeepL" Click="TestDeepL_Click" />
+                  <Button x:Name="CheckDeepLBalanceButton" Content="Verifică soldul DeepL" Click="CheckDeepLBalance_Click" />
                   <Button x:Name="GetDeepLKeyButton" Content="Obține cheie API DeepL" Click="DeepLKey_Click" />
                 </WrapPanel>
                 <TextBlock x:Name="DeepLStatus" Style="{StaticResource DialogStatusTextStyle}" AutomationProperties.LiveSetting="Polite" />

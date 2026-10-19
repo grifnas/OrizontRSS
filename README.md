@@ -2,7 +2,7 @@
 
 Orizont RSS este un cititor RSS accesibil pentru Windows, proiectat pentru utilizare completă din tastatură și compatibil cu cititoarele de ecran uzuale.
 
-Aplicația a fost inițiată și este coordonată de **Grigore Frișan**. Dezvoltarea a fost realizată în colaborare cu **OpenAI Codex**, care a oferit asistență pentru proiectarea aplicației, programare, depanare, testare, documentare și pregătirea versiunilor de distribuție.
+Aplicația a fost inițiată și este coordonată de **Grigore Frișan**. Dezvoltarea a fost realizată în colaborare cu **OpenAI Codex** și **Claude (Anthropic)**, care au oferit asistență pentru proiectarea aplicației, programare, depanare, testare, documentare și pregătirea versiunilor de distribuție.
 
 ## Versiunea publicată
 

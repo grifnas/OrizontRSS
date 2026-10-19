@@ -34,6 +34,7 @@ public static class BackupPolicy
         DeepSeekModel = settings.DeepSeekModel,
         DeepLEnabled = false,
         EncryptedDeepLKey = null,
+        DeepLTargetLanguage = DeepLConnection.NormalizeTargetPreference(settings.DeepLTargetLanguage),
         GoogleTranslateSourceLanguage = settings.GoogleTranslateSourceLanguage,
         GoogleTranslateTargetLanguage = settings.GoogleTranslateTargetLanguage,
         NewsBlurConnected = false,

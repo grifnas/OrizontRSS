@@ -519,7 +519,7 @@ public partial class ArticleReaderWindow : Window
             var source = await ArticleTranslationSource.ResolveAsync(_article.FullContent, _originalReadableText, _refresh, _article.Title);
             if (string.IsNullOrWhiteSpace(source)) { ShowAiProblem(T("Articolul nu conține text pentru traducere.")); return; }
             SetStatus(T("Se traduce articolul cu DeepL în limba interfeței. Așteaptă."));
-            var targetLanguage = DeepLConnection.TargetLanguageForUi();
+            var targetLanguage = DeepLConnection.ResolveTargetLanguage(_settings.DeepLTargetLanguage);
             var translated = await new DeepLConnection().TranslateAsync(key, source, targetLanguage);
             ArticleText.Text = translated;
             _translationProvider = "DeepL";

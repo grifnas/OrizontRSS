@@ -14,7 +14,17 @@ Probele practice A02, A09, A07 și A11 rămân deschise și transferate ciclului
 
 După crearea tagului și a pachetelor release-ului, ramura `main` primește actualizări de documentație și de publicare, inclusiv pagina GitHub Pages și urmărirea manifestelor WinGet. Aceste schimbări de întreținere nu modifică pachetele atașate release-ului și nu constituie o nouă versiune a aplicației.
 
-### Pregătire pentru v1.6.2 (nepublicat)
+### Versiunea 1.6.2 (candidat, nepublicat încă)
+
+- Mod Citire al browserului, în fereastră externă: opțiune nouă la feed și în Setări („La deschiderea articolului” și „Deschiderea implicită a articolelor”). Articolul se marchează citit.
+- Verificarea soldului DeepSeek și a cotei de caractere DeepL, în Setări.
+- Limba țintă pentru DeepL, în Setări; implicit, limba interfeței. Corectat: interfața în maghiară sau italiană traducea în engleză.
+- Instrucțiunea implicită pentru AI se afișează în limba interfeței.
+- Creditul pentru Claude (Anthropic), alături de Grigore Frișan și OpenAI Codex, în aplicație, pe pagina de prezentare, în ghiduri și în documentele de mulțumiri.
+
+Detalii și limitele verificărilor: [RELEASE-NOTES-1.6.2.md](RELEASE-NOTES-1.6.2.md).
+
+### Modificări pregătite pentru 1.6.2 (incluse în candidat)
 
 - Actualizarea prin RSS nu mai șterge articolele care au ieșit din fluxul site-ului. Favoritele, articolele „Mai târziu”, etichetele și notițele AI rămân; ștergerea după vechime se face numai prin regula de păstrare, care protejează în continuare favoritele și „Mai târziu”.
 - Sincronizarea NewsBlur nu mai raportează conflict când aceeași schimbare (citit/necitit, favorit sau etichete) a fost făcută pe ambele părți. Bazele de comparație se actualizează, așa că o schimbare ulterioară de pe alt dispozitiv, de exemplu marcarea ca necitit pe telefon, este preluată, nu anulată.

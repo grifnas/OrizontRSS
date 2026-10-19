@@ -207,6 +207,7 @@ public partial class SettingsWindow : Window
         DeepSeekModelLabel.Content = T("Model Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal);
         AutomationProperties.SetName(DeepSeekModel, T("Model Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal));
         TestDeepSeekButton.Content = T("Testează conexiunea Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal);
+        CheckDeepSeekBalanceButton.Content = T("Verifică soldul DeepSeek");
         GetDeepSeekKeyButton.Content = T("Obține cheia API Mistral").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal);
         DeepSeekNotice.Text = T("Mistral este un serviciu online. Testul enumeră modelele de conversație fără să trimită articolul. Când întrebi Mistral despre un articol, textul articolului este trimis furnizorului și poate consuma cota sau genera costuri în cont.").Replace("Mistral", AiProviderIds.DeepSeek, StringComparison.Ordinal);
         DeepLTitle.Text = "DeepL";
@@ -214,7 +215,10 @@ public partial class SettingsWindow : Window
         AutomationProperties.SetName(DeepLEnabled, T("Activează traducerea cu DeepL"));
         DeepLKeyLabel.Content = T("Cheie API DeepL");
         AutomationProperties.SetName(DeepLKey, T("Cheie API DeepL"));
+        DeepLTargetLabel.Content = T("Limba țintă pentru DeepL");
+        AutomationProperties.SetName(DeepLTargetLanguage, T("Limba țintă pentru DeepL"));
         TestDeepLButton.Content = T("Testează conexiunea DeepL");
+        CheckDeepLBalanceButton.Content = T("Verifică soldul DeepL");
         GetDeepLKeyButton.Content = T("Obține cheie API DeepL");
         DeepLNotice.Text = T("DeepL este un serviciu online. Articolul este trimis la DeepL și consumă limita contului API.");
         DeepLInstructions.Text = T("Configurare DeepL: apasă Obține cheie API DeepL, creează contul API Free, deschide API Keys & Limits, creează și copiază cheia aici, apoi testează și salvează.");
@@ -295,6 +299,7 @@ public partial class SettingsWindow : Window
         DeepSeekEnabled.IsChecked = settings.DeepSeekEnabled;
         DeepSeekModel.Text = string.IsNullOrWhiteSpace(settings.DeepSeekModel) ? "deepseek-flash" : settings.DeepSeekModel.Trim();
         DeepLEnabled.IsChecked = settings.DeepLEnabled;
+        PopulateDeepLTargetLanguage(settings);
         PopulateGoogleTranslateLanguages(settings);
         try { DeepLKey.Password = SecretProtector.Unprotect(settings.EncryptedDeepLKey); }
         catch { DeepLStatus.Text = T("Cheia DeepL salvată nu poate fi citită pentru acest cont Windows."); }
@@ -622,6 +627,7 @@ public partial class SettingsWindow : Window
     {
         Settings.DeepLEnabled = DeepLEnabled.IsChecked == true;
         Settings.EncryptedDeepLKey = string.IsNullOrWhiteSpace(DeepLKey.Password) ? null : SecretProtector.Protect(DeepLKey.Password);
+        Settings.DeepLTargetLanguage = DeepLConnection.NormalizeTargetPreference((DeepLTargetLanguage.SelectedItem as ComboBoxItem)?.Tag?.ToString());
     }
     private void PopulateGoogleTranslateLanguages(AppSettings settings)
     {
@@ -643,6 +649,18 @@ public partial class SettingsWindow : Window
         GoogleTranslateTargetLanguage.SelectedItem = GoogleTranslateTargetLanguage.Items.Cast<ComboBoxItem>()
             .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), targetCode, StringComparison.OrdinalIgnoreCase))
             ?? GoogleTranslateTargetLanguage.Items[0];
+    }
+    private void PopulateDeepLTargetLanguage(AppSettings settings)
+    {
+        DeepLTargetLanguage.Items.Clear();
+        DeepLTargetLanguage.Items.Add(new ComboBoxItem { Content = T("Limba interfeței aplicației"), Tag = "ui" });
+        foreach (var language in DeepLConnection.SupportedTargetLanguages)
+            DeepLTargetLanguage.Items.Add(new ComboBoxItem { Content = language.NativeName, Tag = language.Code });
+
+        var targetCode = DeepLConnection.NormalizeTargetPreference(settings.DeepLTargetLanguage);
+        DeepLTargetLanguage.SelectedItem = DeepLTargetLanguage.Items.Cast<ComboBoxItem>()
+            .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), targetCode, StringComparison.OrdinalIgnoreCase))
+            ?? DeepLTargetLanguage.Items[0];
     }
     private void SaveGoogleTranslateSettings()
     {
@@ -678,6 +696,33 @@ public partial class SettingsWindow : Window
             MessageBox.Show(this, DeepLStatus.Text, T("Test DeepL"), MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         finally { TestDeepLButton.IsEnabled = true; }
+    }
+    private async void CheckDeepLBalance_Click(object sender, RoutedEventArgs e)
+    {
+        var key = DeepLKey.Password;
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            DeepLStatus.Text = T("Introdu mai întâi cheia API DeepL.");
+            MessageBox.Show(this, DeepLStatus.Text, T("Sold DeepL"), MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        DeepLStatus.Text = T("Se verifică soldul DeepL. Nu este trimis niciun articol.");
+        CheckDeepLBalanceButton.IsEnabled = false;
+        try
+        {
+            // Contul DeepL are cote de caractere, nu sold în bani; afișăm cât a fost folosit și cât a rămas.
+            var usage = await new DeepLConnection().TestAsync(key);
+            DeepLStatus.Text = usage.CharacterLimit > 0
+                ? F("Utilizare DeepL: {0} din {1} caractere, {2} rămase.", usage.CharacterCount, usage.CharacterLimit, Math.Max(0, usage.CharacterLimit - usage.CharacterCount))
+                : T("DeepL nu a returnat o limită de caractere. Verifică contul în DeepL.");
+            MessageBox.Show(this, DeepLStatus.Text, T("Sold DeepL"), MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception exception)
+        {
+            DeepLStatus.Text = F("Verificarea soldului DeepL a eșuat: {0}", exception.Message);
+            MessageBox.Show(this, DeepLStatus.Text, T("Sold DeepL"), MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        finally { CheckDeepLBalanceButton.IsEnabled = true; }
     }
     private void StopSpeechTest_Click(object sender, RoutedEventArgs e)
     {
@@ -803,6 +848,35 @@ public partial class SettingsWindow : Window
 
         DeepSeekStatus.Text = result;
         MessageBox.Show(this, result, T("Test OpenAI").Replace("OpenAI", AiProviderIds.DeepSeek, StringComparison.Ordinal), MessageBoxButton.OK, icon);
+    }
+    private async void CheckDeepSeekBalance_Click(object sender, RoutedEventArgs e)
+    {
+        var key = DeepSeekKey.Password;
+        var title = T("Sold DeepSeek");
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            DeepSeekStatus.Text = T("Introdu mai întâi cheia API DeepSeek.");
+            MessageBox.Show(this, DeepSeekStatus.Text, title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+        DeepSeekStatus.Text = T("Se verifică soldul DeepSeek. Nu este trimis niciun articol.");
+        CheckDeepSeekBalanceButton.IsEnabled = false;
+        try
+        {
+            var balance = await new DeepSeekConnection().GetBalanceAsync(key);
+            var amounts = string.Join("; ", balance.Balances.Select(item => $"{item.TotalBalance} {item.Currency}"));
+            var availability = balance.IsAvailable
+                ? T("Soldul este suficient pentru solicitările API.")
+                : T("Soldul nu este suficient pentru solicitările API. Adaugă fonduri în contul DeepSeek.");
+            DeepSeekStatus.Text = F("Soldul DeepSeek: {0}. {1}", amounts, availability);
+            MessageBox.Show(this, DeepSeekStatus.Text, title, MessageBoxButton.OK, balance.IsAvailable ? MessageBoxImage.Information : MessageBoxImage.Warning);
+        }
+        catch (Exception exception)
+        {
+            DeepSeekStatus.Text = F("Verificarea soldului DeepSeek a eșuat: {0}", exception.Message);
+            MessageBox.Show(this, DeepSeekStatus.Text, title, MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+        finally { CheckDeepSeekBalanceButton.IsEnabled = true; }
     }
     private async void TestOpenAi_Click(object sender, RoutedEventArgs e)
     {

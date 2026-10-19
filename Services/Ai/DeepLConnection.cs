@@ -60,11 +60,36 @@ public sealed class DeepLConnection
             "en" => "EN-US",
             "es" => "ES",
             "fr" => "FR",
+            "hu" => "HU",
+            "it" => "IT",
             "pt" => "PT-BR",
             "ro" => "RO",
             _ => "EN-US"
         };
     }
+
+    /// <summary>Limbile țintă oferite pentru DeepL; numele sunt scrise în limba lor, ca în lista Google Translate.</summary>
+    public static IReadOnlyList<DeepLTargetLanguage> SupportedTargetLanguages { get; } =
+    [
+        new("BG", "Български"), new("CS", "Čeština"), new("DA", "Dansk"), new("DE", "Deutsch"), new("EL", "Ελληνικά"),
+        new("EN-US", "English (US)"), new("ES", "Español"), new("ET", "Eesti"), new("FI", "Suomi"), new("FR", "Français"),
+        new("HU", "Magyar"), new("ID", "Bahasa Indonesia"), new("IT", "Italiano"), new("JA", "日本語"), new("KO", "한국어"),
+        new("LT", "Lietuvių"), new("LV", "Latviešu"), new("NB", "Norsk bokmål"), new("NL", "Nederlands"), new("PL", "Polski"),
+        new("PT-BR", "Português (Brasil)"), new("RO", "Română"), new("RU", "Русский"), new("SK", "Slovenčina"), new("SV", "Svenska"),
+        new("TR", "Türkçe"), new("UK", "Українська"), new("ZH", "中文")
+    ];
+
+    /// <summary>Păstrează „ui” sau un cod DeepL valid; orice altă valoare revine la limba interfeței.</summary>
+    public static string NormalizeTargetPreference(string? selection)
+    {
+        if (string.IsNullOrWhiteSpace(selection) || string.Equals(selection.Trim(), "ui", StringComparison.OrdinalIgnoreCase)) return "ui";
+        var code = selection.Trim();
+        return SupportedTargetLanguages.Any(item => string.Equals(item.Code, code, StringComparison.OrdinalIgnoreCase)) ? code.ToUpperInvariant() : "ui";
+    }
+
+    /// <summary>Alege limba țintă a traducerii DeepL: limba interfeței sau limba aleasă în Setări.</summary>
+    public static string ResolveTargetLanguage(string? selection) =>
+        NormalizeTargetPreference(selection) == "ui" ? TargetLanguageForUi() : NormalizeTargetPreference(selection);
 
     private static HttpClient CreateClient(string key)
     {
@@ -115,3 +140,5 @@ public sealed class DeepLConnection
 }
 
 public readonly record struct DeepLUsage(long CharacterCount, long CharacterLimit);
+
+public sealed record DeepLTargetLanguage(string Code, string NativeName);

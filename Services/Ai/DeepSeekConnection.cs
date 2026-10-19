@@ -41,6 +41,32 @@ public sealed class DeepSeekConnection
         return models;
     }
 
+    /// <summary>Reads the account balance without sending article text.</summary>
+    public async Task<DeepSeekBalance> GetBalanceAsync(string key, CancellationToken cancellationToken = default)
+    {
+        using var request = CreateRequest(HttpMethod.Get, $"{ApiRoot}/user/balance", key);
+        using var response = await _client.SendAsync(request, cancellationToken);
+        var body = await response.Content.ReadAsStringAsync(cancellationToken);
+        if (!response.IsSuccessStatusCode) throw new InvalidOperationException(DescribeError(response.StatusCode, body, key));
+
+        using var document = JsonDocument.Parse(body);
+        var root = document.RootElement;
+        if (!root.TryGetProperty("balance_infos", out var infos) || infos.ValueKind != JsonValueKind.Array)
+            throw new InvalidOperationException(UiText.Translate("DeepSeek nu a returnat soldul într-un format valid."));
+
+        var balances = infos.EnumerateArray()
+            .Where(item => item.ValueKind == JsonValueKind.Object &&
+                item.TryGetProperty("currency", out var currency) && currency.ValueKind == JsonValueKind.String &&
+                item.TryGetProperty("total_balance", out var total) && total.ValueKind == JsonValueKind.String)
+            .Select(item => new DeepSeekBalanceInfo(item.GetProperty("currency").GetString()!, item.GetProperty("total_balance").GetString()!))
+            .ToArray();
+        if (balances.Length == 0)
+            throw new InvalidOperationException(UiText.Translate("DeepSeek nu a returnat soldul într-un format valid."));
+
+        var available = root.TryGetProperty("is_available", out var flag) && flag.ValueKind == JsonValueKind.True;
+        return new DeepSeekBalance(available, balances);
+    }
+
     public async Task<string> GenerateAsync(string key, string model, string instructions, string prompt, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(key)) throw new InvalidOperationException(ProviderText("Introdu cheia API OpenAI în Setări Inteligență artificială."));
@@ -105,3 +131,8 @@ public sealed class DeepSeekConnection
     private static string ProviderFormat(string source, params object?[] arguments) => F(source, arguments).Replace("OpenAI", AiProviderIds.DeepSeek, StringComparison.Ordinal);
     private static string F(string source, params object?[] arguments) => UiText.Format(source, arguments);
 }
+
+/// <summary>Soldul contului DeepSeek; sumele rămân textul exact returnat de API.</summary>
+public sealed record DeepSeekBalance(bool IsAvailable, IReadOnlyList<DeepSeekBalanceInfo> Balances);
+
+public sealed record DeepSeekBalanceInfo(string Currency, string TotalBalance);

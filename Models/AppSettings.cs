@@ -34,6 +34,7 @@ public sealed class AppSettings
     public string DeepSeekModel { get; set; } = "deepseek-flash";
     public bool DeepLEnabled { get; set; }
     public string? EncryptedDeepLKey { get; set; }
+    public string DeepLTargetLanguage { get; set; } = "ui";
     public string GoogleTranslateSourceLanguage { get; set; } = "auto";
     public string GoogleTranslateTargetLanguage { get; set; } = "ui";
     public bool NewsBlurConnected { get; set; }

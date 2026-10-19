@@ -61,6 +61,10 @@ Butonul „Caută pe internet” din căutarea după subiect folosește căutare
 
 OpenAI Codex a fost utilizat ca instrument de asistență pentru proiectarea, dezvoltarea, verificarea și documentarea aplicației. Codex nu este inclus ca o componentă de execuție a Orizont RSS.
 
+## Claude (Anthropic)
+
+Claude (Anthropic) a fost utilizat ca instrument de asistență pentru proiectarea, dezvoltarea, verificarea și documentarea aplicației. Claude nu este inclus ca o componentă de execuție a Orizont RSS.
+
 ## Pictograma Orizont RSS
 
 Pictograma Orizont RSS din directorul `Assets` este un element original creat pentru proiect și este distribuită ca parte a Orizont RSS în condițiile licenței proiectului.
