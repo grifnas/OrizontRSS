@@ -371,10 +371,22 @@ public partial class ArticleReaderWindow : Window
     {
         if (Resources["ReaderContextMenu"] is ContextMenu menu)
         {
-            menu.PlacementTarget = _isWebViewActive ? (UIElement)ArticleWebView : ArticleText;
+            // În WebReader, focusul tastaturii este în fereastra WebView2; ca țintă se folosește fereastra WPF,
+            // iar primul element primește focusul, ca săgețile să parcurgă meniul.
+            menu.PlacementTarget = _isWebViewActive ? this : ArticleText;
             menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
             menu.IsOpen = true;
+            if (_isWebViewActive) Dispatcher.BeginInvoke(new Action(() => FocusFirstMenuItem(menu)), System.Windows.Threading.DispatcherPriority.Input);
         }
+    }
+
+    private static void FocusFirstMenuItem(ContextMenu menu)
+    {
+        if (!menu.IsOpen) return;
+        var first = menu.Items.OfType<MenuItem>().FirstOrDefault(item => item.IsEnabled && item.Visibility == Visibility.Visible);
+        if (first is null) return;
+        first.Focus();
+        Keyboard.Focus(first);
     }
 
     // Meniul din caseta de text se deschide explicit, nu prin ContextMenu-ul nativ: acesta pornea

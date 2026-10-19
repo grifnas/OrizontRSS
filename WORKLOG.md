@@ -2717,3 +2717,12 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare: publicarea într-un folder curat conține versiunile corecte. După copierea celor trei biblioteci și a `CHANGELOG.md`, folderul standard este identic, fișier cu fișier, cu publicarea curată. Codul nu s-a schimbat.
 - Pentru distribuții: folderele `final-*` se publică întotdeauna curate, deci nu sunt afectate; la 1.6.3 trebuie verificat la fel.
 - Aplicația nu a fost pornită de agent pe profilul utilizatorului; pornirea rămâne de confirmat de utilizator.
+
+## 2026-10-19 — Meniul contextual în WebReader: săgețile nu parcurgeau elementele
+
+- Raport: în WebReader, Application și Shift+F10 anunță „Comenzi cititor”, dar săgețile rămân pe meniu, fără să treacă la elemente. În modul text ambele merg.
+- Cauză probabilă (confirmată parțial de jurnalul de diagnostic anterior: în WebReader, focusul era pe `ContextMenu`, iar săgețile nu erau tratate): meniul era deschis cu ținta în controlul WebView2, care are propria fereastră Win32, și niciun element nu primea focusul.
+- Modificare: `Views/ArticleReaderWindow.xaml.cs`: în WebReader, ținta meniului este fereastra WPF, iar după deschidere primul element activ primește focusul. Modul text nu se schimbă.
+- Verificare: `verify-source.ps1 -Mode Quick` a trecut. Executabilul de test a fost publicat curat și sincronizat cu folderul standard (0 diferențe). DLL SHA-256 `500F567D60CA029B89D9ACE38D99DBEF9CD7F6213901C04620C4E4CA8432A050`.
+- Rămâne de verificat cu JAWS 2026: Application și Shift+F10 în WebReader, apoi săgețile și Enter pe o comandă.
+- Commit local, neîmpins.
