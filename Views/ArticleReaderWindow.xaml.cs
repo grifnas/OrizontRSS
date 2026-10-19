@@ -324,8 +324,6 @@ public partial class ArticleReaderWindow : Window
     private void ArticleText_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         var key = ContextMenuKeyboard.Normalize(e.Key, e.SystemKey);
-        // In text mode, let WPF's ContextMenuService handle the Application key natively.
-        if (key == Key.Apps) return;
         if (!ContextMenuKeyboard.IsMenuShortcut(key, e.KeyboardDevice.Modifiers)) return;
         if (Resources["ReaderContextMenu"] is not ContextMenu menu || !menu.IsOpen) OpenContextMenu();
         e.Handled = true;

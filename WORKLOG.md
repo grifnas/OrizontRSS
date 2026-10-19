@@ -2673,3 +2673,12 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Cod: neschimbat. Nu s-a verificat contul GitHub din aplicație; confirmarea vine de la utilizator.
 - Commituri rămase: la verificare, arborele de lucru era curat și toate cele șapte commituri ale pregătirii v1.6.2 existau deja. Nu a fost nevoie de commituri noi de cod.
 - Fără distribuție, tag, release, commit de cod sau push.
+
+## 2026-10-19 — Tasta Application în Cititor Orizont (după publicarea 1.6.2)
+
+- Problemă raportată: în modul text al Cititorului Orizont, tasta Application nu mai deschide meniul contextual.
+- Cauză probabilă (din codul, neconfirmată în aplicație): din 3a176e9, `ArticleText_PreviewKeyDown` lăsa tasta Application pe seama ContextMenuService din WPF; Shift+F10 folosea handler-ul explicit.
+- Modificare: `Views/ArticleReaderWindow.xaml.cs`: tasta Application trece prin același handler ca Shift+F10 și deschide `ReaderContextMenu`.
+- Verificare: `verify-source.ps1 -Mode Quick` a trecut. Executabil de test: `bin\Release\Orizont.exe`, DLL SHA-256 `534C904567F1272B7E369CBB066688B22B97625DF74AB89B21167819CFDE5F51`.
+- Rămâne de verificat cu JAWS 2026: tasta Application și Shift+F10 în modul text și în WebReader.
+- Commit local, neîmpins; nu este inclus în v1.6.2.
