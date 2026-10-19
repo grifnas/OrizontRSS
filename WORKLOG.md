@@ -2691,3 +2691,12 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare: `verify-source.ps1 -Mode Quick` a trecut. Executabil de test: `bin\Release\Orizont.exe`, DLL SHA-256 `1B2262E7FFBAAD1A0E025A1E7CD5D69AC20EE5B3B47547E87F8E45A01B984D4E`.
 - Rămâne de verificat cu JAWS 2026: F9 după traducere, cu și fără o citire în curs.
 - Commit local, neîmpins.
+
+## 2026-10-19 — Meniul contextual din Cititorul Orizont (modul text)
+
+- Diagnostic: jurnal temporar (neinclus în commit). În modul text, tasta Application ajungea la aplicație și deschidea meniul, dar meniul se închidea imediat, pentru că meniul nativ al casetei de text îl pornește în paralel. În WebReader, tastele ajung la WebView2, care are propriul meniu.
+- Modificare: caseta de text nu mai are `ContextMenu` nativ; meniul se deschide explicit la clic dreapta (`PreviewMouseRightButtonDown`) și la tastele Application și Shift+F10 (`ArticleText_PreviewKeyDown`).
+- Test: `WorkflowSmoke` verifică acum deschiderea explicită în locul atașării native; cerința veche a fost înlocuită în mod conștient, cu acordul utilizatorului.
+- Verificare: `verify-source.ps1 -Mode Quick` a trecut. Executabil: `bin\Release\Orizont.exe`, DLL SHA-256 `9D8BB7EB679E4024F924F5EA2BF50D2771503436C6CAE8169001631FBCBE99E4`.
+- Rămâne de verificat cu JAWS 2026: Application și Shift+F10 în modul text, clic dreapta, și în WebReader.
+- Commit local, neîmpins.

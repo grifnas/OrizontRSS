@@ -321,6 +321,16 @@ public partial class ArticleReaderWindow : Window
         }
     }
 
+    // Meniul din caseta de text se deschide explicit, nu prin ContextMenu-ul nativ: acesta pornea
+    // același meniu în paralel cu tasta Application și îl închidea imediat (jurnal: menuOpen=False după deschidere).
+    private void ArticleText_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (ArticleText.Text.Length == 0) { e.Handled = true; return; }
+        ArticleText.Focus();
+        OpenContextMenu();
+        e.Handled = true;
+    }
+
     private void ArticleText_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         var key = ContextMenuKeyboard.Normalize(e.Key, e.SystemKey);

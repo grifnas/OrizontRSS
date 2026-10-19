@@ -80,7 +80,7 @@
                AutomationProperties.Name="Articol în modul cititor"
                AutomationProperties.HelpText="Folosește săgețile pentru citire. Shift+F10 deschide comenzile articolului. Ctrl+Shift+F8 comută modul WebReader. Bara de stare anunță încărcarea și acțiunile în curs."
                ContextMenuOpening="Content_ContextMenuOpening"
-               ContextMenu="{StaticResource ReaderContextMenu}" />
+               PreviewMouseRightButtonDown="ArticleText_PreviewMouseRightButtonDown" />
       <wv2:WebView2 x:Name="ArticleWebView" Visibility="Collapsed"
                     AutomationProperties.Name="Articol în modul WebReader"
                     AutomationProperties.HelpText="Folosește tastele de navigare web (H pentru titluri, P pentru paragrafe, Tab pentru linkuri). Shift+F10 deschide comenzile articolului. Ctrl+Shift+F8 comută modul text." />

@@ -331,8 +331,8 @@ internal static class Program
 
             var readerContextMenu = (ContextMenu)articleReader.Resources["ReaderContextMenu"];
             var readerText = (TextBox)articleReader.FindName("ArticleText");
-            Check(readerText.ContextMenu == readerContextMenu,
-                "DeepL text reader keeps the existing article context menu directly attached to its read-only text control");
+            Check(readerText.ContextMenu is null && readerContextMenu is not null,
+                "DeepL text reader opens the article context menu explicitly, without a competing native attachment to its read-only text control");
             var contextMenuKeyboard = typeof(ArticleReaderWindow).Assembly.GetType("CititorRSS.Jaws.ContextMenuKeyboard")!;
             var isMenuShortcut = contextMenuKeyboard.GetMethod("IsMenuShortcut", BindingFlags.NonPublic | BindingFlags.Static)!;
             var shouldHandleReaderShortcut = contextMenuKeyboard.GetMethod("ShouldHandleReaderWindowShortcut", BindingFlags.NonPublic | BindingFlags.Static)!;
