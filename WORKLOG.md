@@ -2752,3 +2752,4 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare: `verify-source.ps1 -Mode Quick` a trecut; executabil publicat curat și sincronizat. DLL SHA-256 `DF0A71E8CA1EF2DAE4891E504AAA0E7AE5866CE551F400CF83DC41E0BD81F909`.
 - Rămâne de verificat cu JAWS 2026.
 - Commit local, neîmpins.
+- Confirmare de la utilizator (JAWS 2026): în WebReader, Application și Shift+F10 deschid meniul nativ; săgețile, submeniurile și comenzile funcționează. Verificarea nu a fost făcută de agent.
