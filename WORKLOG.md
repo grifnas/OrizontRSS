@@ -2743,3 +2743,12 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare: `verify-source.ps1 -Mode Quick` a trecut; executabil publicat curat și sincronizat (0 diferențe). DLL SHA-256 `CACABFA19292A9A304A8AD9F8B9CD491FBC3F2F6E71438F0A090149751A14FBF`.
 - Rămâne de verificat cu JAWS 2026: Application și Shift+F10 în WebReader, săgețile, submeniurile, Enter pe o comandă și Escape.
 - Commit local, neîmpins.
+
+## 2026-10-19 — WebReader: Shift+F10 deschidea tot meniul WPF
+
+- Raport: JAWS anunță „Comenzi cititor” (numele meniului WPF), iar săgețile și Enter nu fac nimic; merg Escape, Tab și tastele F.
+- Cauză: WebView2 trimite tastele-accelerator (Shift+F10, F-uri, Escape) și către fereastra WPF; handler-ul ferestrei deschidea meniul WPF și marca tasta ca tratată, deci meniul nativ WebView2 nu mai apărea.
+- Modificare: `Views/ArticleReaderWindow.xaml.cs`: în WebReader, cu focusul în articol, Application și Shift+F10 sunt lăsate motorului web, care deschide meniul nativ cu comenzile Cititorului.
+- Verificare: `verify-source.ps1 -Mode Quick` a trecut; executabil publicat curat și sincronizat. DLL SHA-256 `DF0A71E8CA1EF2DAE4891E504AAA0E7AE5866CE551F400CF83DC41E0BD81F909`.
+- Rămâne de verificat cu JAWS 2026.
+- Commit local, neîmpins.
