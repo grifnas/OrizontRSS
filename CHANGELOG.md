@@ -2,19 +2,12 @@
 
 Acest fișier descrie numai ultima versiune publicată și lucrările ulterioare încă nepublicate. Istoricul mai vechi poate fi recuperat din istoricul Git și din release-urile publice anterioare; nu este copiat în această pagină activă.
 
-## Versiunea publicată v1.6.1 — 8 octombrie 2026
+## Versiunea publicată v1.6.2 — 19 octombrie 2026
 
-Release-ul public v1.6.1 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.1). Notele complete, inclusiv limitele verificărilor, sunt în [RELEASE-NOTES-1.6.1.md](RELEASE-NOTES-1.6.1.md).
+Release-ul public v1.6.2 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.2). Notele complete, inclusiv limitele verificărilor, sunt în [RELEASE-NOTES-1.6.2.md](RELEASE-NOTES-1.6.2.md).
 
-Versiunea aduce furnizori AI configurabili (Gemini, OpenAI, Mistral și DeepSeek), scurtături configurabile, îmbunătățiri ale Cititorului Orizont și meniurilor contextuale, traducere și partajare cu proveniență, export TXT/RTF, autoetichetare și îmbunătățiri NewsBlur. Alertele după cuvinte-cheie nu sunt incluse în 1.6.1.
+Noutăți față de 1.6.1:
 
-Probele practice A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; auditul online NuGet (`NU1900`) nu a putut fi efectuat. Aceste limite sunt prezentate în notele release-ului și nu sunt declarate trecute.
-
-## Modificări nepublicate după tagul v1.6.1
-
-După crearea tagului și a pachetelor release-ului, ramura `main` primește actualizări de documentație și de publicare, inclusiv pagina GitHub Pages și urmărirea manifestelor WinGet. Aceste schimbări de întreținere nu modifică pachetele atașate release-ului și nu constituie o nouă versiune a aplicației.
-
-### Versiunea 1.6.2 (candidat, nepublicat încă)
 
 - Mod Citire al browserului, în fereastră externă: opțiune nouă la feed și în Setări („La deschiderea articolului” și „Deschiderea implicită a articolelor”). Articolul se marchează citit.
 - Verificarea soldului DeepSeek și a cotei de caractere DeepL, în Setări.
@@ -22,9 +15,9 @@ După crearea tagului și a pachetelor release-ului, ramura `main` primește act
 - Instrucțiunea implicită pentru AI se afișează în limba interfeței.
 - Creditul pentru Claude (Anthropic), alături de Grigore Frișan și OpenAI Codex, în aplicație, pe pagina de prezentare, în ghiduri și în documentele de mulțumiri.
 
-Detalii și limitele verificărilor: [RELEASE-NOTES-1.6.2.md](RELEASE-NOTES-1.6.2.md).
+Probele practice A02, A09, A07 și A11 rămân deschise, conform registrului de acceptare; auditul NuGet nu a raportat pachete vulnerabile.
 
-### Modificări pregătite pentru 1.6.2 (incluse în candidat)
+### Alte modificări incluse în v1.6.2
 
 - Actualizarea prin RSS nu mai șterge articolele care au ieșit din fluxul site-ului. Favoritele, articolele „Mai târziu”, etichetele și notițele AI rămân; ștergerea după vechime se face numai prin regula de păstrare, care protejează în continuare favoritele și „Mai târziu”.
 - Sincronizarea NewsBlur nu mai raportează conflict când aceeași schimbare (citit/necitit, favorit sau etichete) a fost făcută pe ambele părți. Bazele de comparație se actualizează, așa că o schimbare ulterioară de pe alt dispozitiv, de exemplu marcarea ca necitit pe telefon, este preluată, nu anulată.
@@ -45,3 +38,7 @@ Detalii și limitele verificărilor: [RELEASE-NOTES-1.6.2.md](RELEASE-NOTES-1.6.
 - Ghidurile utilizatorului în cele opt limbi descriu noile funcții: găsirea feedurilor pe un site și căutarea după subiect prin Feedly, textul integral fără meniuri și liste laterale, volumul eSpeak NG, oprirea cererilor AI cu Escape, exportul OPML, păstrarea articolelor ieșite din flux și actualizarea paralelă.
 - Exportul OPML pune feedurile neorganizate la rădăcina fișierului, ca în celelalte cititoare RSS, în loc de un folder „Neorganizate”.
 - Biblioteca AngleSharp, folosită la extragerea textului integral și la găsirea feedurilor, a fost actualizată de la 1.1.2 la 1.7.1, pentru avertismentul de securitate GHSA-pgww-w46g-26qg (severitate moderată). Orizont doar citea pagini cu ea, deci riscul practic era mic.
+
+## Modificări nepublicate după tagul v1.6.2
+
+După crearea tagului și a pachetelor release-ului, ramura `main` primește actualizări de documentație și de publicare, inclusiv pagina GitHub Pages și urmărirea manifestelor WinGet. Aceste schimbări de întreținere nu modifică pachetele atașate release-ului și nu constituie o nouă versiune a aplicației.
