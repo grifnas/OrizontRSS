@@ -1,6 +1,6 @@
 # Jurnalul intervențiilor Orizont RSS
 
-## 2026-10-19 — Candidatul 1.6.2: pachete locale, nepublicat
+## 2026-10-19 — Publicarea v1.6.2 (tag 88bc430) — parțial
 
 - Cerere: pregătirea completă a versiunii 1.6.2. Publicarea (tag, release, push pe `main`, WinGet, pagini) nu a fost făcută; cere confirmare separată.
 - Versiune: `CititorRSS.Jaws.csproj`, `packaging/installer/OrizontSetup.csproj` și testul de titlu la 1.6.2 (FileVersion 1.6.2.0). Ghidurile (cele opt) afișează 1.6.2. Paginile publice rămân la 1.6.1 până la publicare, pentru că `verify-public-pages` le verifică față de ultima versiune publicată.
@@ -15,6 +15,10 @@
 - Rămâne pentru publicare: probele A02, A09, A07, A11 (deschise în registru) și verificările manuale cu JAWS 2026 pentru funcțiile noi (modul Citire al browserului, soldul DeepSeek/DeepL, limba țintă DeepL, fereastra Despre). Semnarea digitală rămâne amânată.
 - Executabil de test (locația standard, autonom): `bin\Release\Orizont.exe`, DLL SHA-256 `E86889351E3B56073A0017366DBECFAB90528B0461A3DB7F71CFC7B815776751`.
 - Fără push, tag, release sau distribuție publică.
+
+- Publicare, la cererea expresă a utilizatorului, după verificarea butoanelor de sold: `main` a primit commitul `4a61f39` cu documentația și registrul publicate; tagul `v1.6.2` pe `88bc430`; release-ul GitHub `v1.6.2` cu cele trei pachete și fișierele `.sha256`. Digesturile GitHub corespund hash-urilor locale. Paginile publice (versiunea 1.6.2) au fost împinse pe `main`; propagarea GitHub Pages nu a fost verificată.
+- Rămas nefăcut: PR-ul WinGet microsoft/winget-pkgs#431971 (acum „Update to 1.6.1”, din `grifnas:submission/orizont-rss-1.5.3`) trebuie mutat la manifestele din `packaging/winget/Grifnas.OrizontRSS/1.6.2/`. Scrierea în acel PR a fost refuzată de sistemul de permisiuni; trebuie făcută manual sau autorizată explicit.
+- Probele A02, A09, A07, A11 rămân deschise; verificările JAWS pentru funcțiile noi sunt de făcut de utilizator.
 
 ## 2026-10-19 — Creditul pentru Claude în Despre și pe pagina de prezentare
 
