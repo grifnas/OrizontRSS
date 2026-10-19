@@ -519,6 +519,8 @@ public partial class ArticleReaderWindow : Window
             SetStatus(T("Se traduce articolul cu DeepL în limba interfeței. Așteaptă."));
             var targetLanguage = DeepLConnection.ResolveTargetLanguage(_settings.DeepLTargetLanguage);
             var translated = await new DeepLConnection().TranslateAsync(key, source, targetLanguage);
+            // Citirea în curs aparține textului vechi; oprită aici, F9 pornește citirea textului tradus.
+            if (_speech.IsSpeaking || _speech.IsPaused) _speech.Stop(reportState: false);
             ArticleText.Text = translated;
             _translationProvider = "DeepL";
             _translationLanguage = ArticleDistributionContext.LanguageNameForCode(targetLanguage);

@@ -2682,3 +2682,12 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare: `verify-source.ps1 -Mode Quick` a trecut. Executabil de test: `bin\Release\Orizont.exe`, DLL SHA-256 `534C904567F1272B7E369CBB066688B22B97625DF74AB89B21167819CFDE5F51`.
 - Rămâne de verificat cu JAWS 2026: tasta Application și Shift+F10 în modul text și în WebReader.
 - Commit local, neîmpins; nu este inclus în v1.6.2.
+
+## 2026-10-19 — F9 după traducerea DeepL în Cititor Orizont
+
+- Problemă raportată: după traducere, F9 nu mai pornește citirea vocală.
+- Cauză probabilă (din cod, neconfirmată în aplicație): dacă o citire rula deja pe textul original, F9 o întrerupe sau o continuă, în loc să citească textul tradus. Traducerea înlocuia textul fără să oprească citirea.
+- Modificare: `Views/ArticleReaderWindow.xaml.cs`: la traducerea DeepL, citirea în curs se oprește înainte de înlocuirea textului.
+- Verificare: `verify-source.ps1 -Mode Quick` a trecut. Executabil de test: `bin\Release\Orizont.exe`, DLL SHA-256 `1B2262E7FFBAAD1A0E025A1E7CD5D69AC20EE5B3B47547E87F8E45A01B984D4E`.
+- Rămâne de verificat cu JAWS 2026: F9 după traducere, cu și fără o citire în curs.
+- Commit local, neîmpins.
