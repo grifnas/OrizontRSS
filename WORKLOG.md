@@ -8,7 +8,8 @@
 - Teste: `verify-source.ps1 -Mode Quick` a trecut: aplicația compilată, CoreSmoke, WorkflowSmoke 157/157, RulesSmoke, ShortcutsSmoke, AiProviderSmoke, LocalizationSmoke, verify-localization cu `-RequireComplete`, verify-user-guides, verify-text-encoding, validatorii. `dotnet publish` autonom în `bin\Release` a reușit, cu `includedFrameworks` în runtimeconfig.
 - Executabil de test: `C:\Users\grigo\Documents\ChatGPT\New project\Orizont RSS\bin\Release\Orizont.exe`. `Orizont.dll` SHA-256 `42A34B3823F3ABE29AB700FAF1B9E6E0B4D9454F2C55A71ECDEB20905012C508`.
 - Rămâne de verificat manual cu JAWS 2026: selecția noii opțiunii în combobox, citirea etichetei, deschiderea articolului cu Enter și în meniu. Aplicația nu a fost pornită pe profilul utilizatorului.
-- Fără distribuție, tag, release, commit sau push.
+- Confirmare de la utilizator: funcționalitatea a fost verificată și merge atât în fereastra feedului, cât și în fereastra Setări. Verificarea nu a fost făcută de Codex.
+- Commit `b4c0e81` pe `pregatire-1.6.2`, împins pe GitHub la cererea utilizatorului. Fără distribuție, tag sau release.
 
 ## 2026-10-08 — Publicare și atașarea pachetelor v1.6.1
 
