@@ -2765,3 +2765,7 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificări: `verify-all.ps1` complet în worktree izolat (Full + distribuție, versiune 1.6.3.0; folderul distribuției publicat curat, cu System.Text.Json 10 și SmartReader 0.11.1); auditul NuGet fără pachete vulnerabile. După publicare: consistența release-ului, paginile publice, ghidurile și codarea au trecut.
 - Documente după tag: `docs/RELEASE-STATUS.json`, `README.md`, `PUBLICATION.md`, `CHANGELOG.md` (1.6.3 publicat, 1.6.2 anterior), paginile `docs/index*.html` la 1.6.3; eliminate `RELEASE-NOTES-1.6.2.md` și manifestele WinGet 1.6.2 din arbore (rămân în istoricul Git și pe GitHub).
 - Probele A02, A09, A07, A11 rămân deschise. Instalatorul nu este semnat digital.
+- WinGet: PR microsoft/winget-pkgs#431971 mutat la 1.6.3 (manifestele 1.6.3 adăugate, cele 1.6.2 șterse pe `grifnas:submission/orizont-rss-1.5.3`; titlul „Update: Grifnas.OrizontRSS to 1.6.3”). Validarea și fuziunea depind de echipa WinGet.
+- Verificare live: pagina de prezentare afișează „Versiunea 1.6.3”; linkul `releases/latest/download/OrizontSetup-1.6.3.exe` răspunde cu 200.
+- Executabilul de test standard (`bin\Release\Orizont.exe`) este sincronizat cu distribuția 1.6.3 (0 diferențe), versiunea 1.6.3.
+- Incident: în timpul publicării, ramura de la distanță `pregatire-1.6.2` a fost ștearsă din greșeală (comandă necerută); a fost refăcută imediat, la același commit `db2c539`. Nimic nu s-a pierdut.
