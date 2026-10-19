@@ -47,6 +47,7 @@ public partial class ArticleReaderWindow : Window
         _speech.StateChanged += SpeechStateChanged;
         LocalizeSaveMenuHeaders(ReaderMenu);
         if (Resources["ReaderContextMenu"] is ItemsControl contextMenu) LocalizeSaveMenuHeaders(contextMenu);
+        if (Resources["ReaderContextMenu"] is ContextMenu readerContextMenu) readerContextMenu.Closed += ReaderContextMenu_Closed;
         Width = Math.Max(600, settings.ReaderWindowWidth);
         Height = Math.Max(400, settings.ReaderWindowHeight);
         ArticleText.FontSize = Math.Clamp(settings.ReaderFontSize, 12, 36);
@@ -371,13 +372,28 @@ public partial class ArticleReaderWindow : Window
     {
         if (Resources["ReaderContextMenu"] is ContextMenu menu)
         {
-            // În WebReader, focusul tastaturii este în fereastra WebView2; ca țintă se folosește fereastra WPF,
-            // iar primul element primește focusul, ca săgețile să parcurgă meniul.
+            // În WebReader, focusul Win32 este în fereastra WebView2, care trimite către WPF doar tastele-accelerator
+            // (de aceea mergea numai Escape). Focusul trece întâi la fereastra Cititorului, ca săgețile și Enter
+            // să ajungă la meniu; primul element primește apoi focusul.
+            if (_isWebViewActive) SetFocus(new System.Windows.Interop.WindowInteropHelper(this).Handle);
             menu.PlacementTarget = _isWebViewActive ? this : ArticleText;
             menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
             menu.IsOpen = true;
             if (_isWebViewActive) Dispatcher.BeginInvoke(new Action(() => FocusFirstMenuItem(menu)), System.Windows.Threading.DispatcherPriority.Input);
         }
+    }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    private static extern IntPtr SetFocus(IntPtr hWnd);
+
+    // După închiderea meniului, focusul revine în articolul din WebReader, dacă fereastra este încă activă.
+    private void ReaderContextMenu_Closed(object sender, RoutedEventArgs e)
+    {
+        if (!_isWebViewActive) return;
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            if (IsActive && _isWebViewActive) ArticleWebView.Focus();
+        }), System.Windows.Threading.DispatcherPriority.Input);
     }
 
     private static void FocusFirstMenuItem(ContextMenu menu)

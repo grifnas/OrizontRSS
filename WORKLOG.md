@@ -2726,3 +2726,12 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare: `verify-source.ps1 -Mode Quick` a trecut. Executabilul de test a fost publicat curat și sincronizat cu folderul standard (0 diferențe). DLL SHA-256 `500F567D60CA029B89D9ACE38D99DBEF9CD7F6213901C04620C4E4CA8432A050`.
 - Rămâne de verificat cu JAWS 2026: Application și Shift+F10 în WebReader, apoi săgețile și Enter pe o comandă.
 - Commit local, neîmpins.
+
+## 2026-10-19 — Meniul din WebReader: săgețile și Enter
+
+- Raport: după focusarea primului element, meniul din WebReader anunță elementul, dar numai Escape funcționează.
+- Cauză probabilă: focusul Win32 rămâne în fereastra WebView2, care trimite către WPF doar tastele-accelerator (Escape, F-uri, combinații cu Ctrl). Săgețile și Enter rămân în WebView2 și nu ajung la meniu.
+- Modificare: `Views/ArticleReaderWindow.xaml.cs`: în WebReader, înainte de deschiderea meniului, focusul Win32 trece la fereastra Cititorului (`SetFocus`); după închiderea meniului revine în WebView2, dacă fereastra este activă.
+- Verificare: `verify-source.ps1 -Mode Quick` a trecut; executabilul publicat curat și sincronizat (0 diferențe). DLL SHA-256 `EF8D8C109D2805EC57F0AF128476AF45D11E2DA9FBB4CAC5EE7A7336651F98E8`.
+- Rămâne de verificat cu JAWS 2026: săgețile, Enter, Escape și revenirea în articol după închiderea meniului.
+- Commit local, neîmpins.
