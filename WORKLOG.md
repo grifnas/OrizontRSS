@@ -2735,3 +2735,11 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare: `verify-source.ps1 -Mode Quick` a trecut; executabilul publicat curat și sincronizat (0 diferențe). DLL SHA-256 `EF8D8C109D2805EC57F0AF128476AF45D11E2DA9FBB4CAC5EE7A7336651F98E8`.
 - Rămâne de verificat cu JAWS 2026: săgețile, Enter, Escape și revenirea în articol după închiderea meniului.
 - Commit local, neîmpins.
+
+## 2026-10-19 — Meniul din WebReader: meniu nativ WebView2
+
+- Constatare: cele două încercări anterioare (focus pe primul element, apoi `SetFocus` pe fereastră) nu au schimbat comportamentul; Alt în WebReader deschide meniul de sistem al ferestrei, deci tastele nu ajung deloc la WPF când focusul este în WebView2.
+- Modificare: `Views/ArticleReaderWindow.xaml.cs`: încercările neconfirmate au fost eliminate; meniul WPF din WebReader rămâne doar pentru cazul în care focusul este în fereastra WPF. Când WebView2 cere meniul contextual (Application, Shift+F10, clic dreapta), afișează propriul meniu nativ, construit din aceleași comenzi, cu aceleași submeniuri și separatoare; alegerea unei comenzi declanșează comanda WPF corespunzătoare. Meniul implicit WebView2 este activ, dar elementele lui sunt înlocuite.
+- Verificare: `verify-source.ps1 -Mode Quick` a trecut; executabil publicat curat și sincronizat (0 diferențe). DLL SHA-256 `CACABFA19292A9A304A8AD9F8B9CD491FBC3F2F6E71438F0A090149751A14FBF`.
+- Rămâne de verificat cu JAWS 2026: Application și Shift+F10 în WebReader, săgețile, submeniurile, Enter pe o comandă și Escape.
+- Commit local, neîmpins.

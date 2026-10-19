@@ -28,6 +28,7 @@ public partial class ArticleReaderWindow : Window
     private string _originalReadableText = string.Empty;
     private bool _isWebViewActive;
     private bool _webViewInitialized;
+    private CoreWebView2Environment? _webViewEnvironment;
     private readonly Func<Task<string?>>? _loadStructuredHtml;
     private string? _structuredHtml;
     private bool _structuredHtmlLoaded;
@@ -46,9 +47,7 @@ public partial class ArticleReaderWindow : Window
         _saveArticle = saveArticle ?? (() => Task.CompletedTask);
         _speech.StateChanged += SpeechStateChanged;
         LocalizeSaveMenuHeaders(ReaderMenu);
-        if (Resources["ReaderContextMenu"] is ItemsControl contextMenu) LocalizeSaveMenuHeaders(contextMenu);
-        if (Resources["ReaderContextMenu"] is ContextMenu readerContextMenu) readerContextMenu.Closed += ReaderContextMenu_Closed;
-        Width = Math.Max(600, settings.ReaderWindowWidth);
+        if (Resources["ReaderContextMenu"] is ItemsControl contextMenu) LocalizeSaveMenuHeaders(contextMenu);        Width = Math.Max(600, settings.ReaderWindowWidth);
         Height = Math.Max(400, settings.ReaderWindowHeight);
         ArticleText.FontSize = Math.Clamp(settings.ReaderFontSize, 12, 36);
         ApplySpacing(settings.ReaderWideSpacing);
@@ -95,8 +94,10 @@ public partial class ArticleReaderWindow : Window
 
         var environment = await CoreWebView2Environment.CreateAsync(null, userDataFolder);
         await ArticleWebView.EnsureCoreWebView2Async(environment);
+        _webViewEnvironment = environment;
 
-        ArticleWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+        // Meniul contextual implicit rămâne activ, dar elementele lui sunt înlocuite cu comenzile Cititorului.
+        ArticleWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
         ArticleWebView.CoreWebView2.Settings.AreDevToolsEnabled = false;
         ArticleWebView.CoreWebView2.Settings.IsStatusBarEnabled = false;
 
@@ -105,10 +106,52 @@ public partial class ArticleReaderWindow : Window
         _webViewInitialized = true;
     }
 
+    // În WebReader, tastele ajung la WebView2, nu la WPF: un meniu WPF primea doar Escape. De aceea
+    // WebView2 afișează propriul meniu nativ, construit din aceleași comenzi ca meniul Cititorului.
     private void ArticleWebView_ContextMenuRequested(object? sender, CoreWebView2ContextMenuRequestedEventArgs e)
     {
-        e.Handled = true;
-        Dispatcher.InvokeAsync(OpenContextMenu);
+        if (_webViewEnvironment is null || Resources["ReaderContextMenu"] is not ContextMenu menu)
+        {
+            e.Handled = true;
+            Dispatcher.InvokeAsync(OpenContextMenu);
+            return;
+        }
+        e.MenuItems.Clear();
+        AddNativeMenuItems(menu.Items, e.MenuItems);
+    }
+
+    private void AddNativeMenuItems(ItemCollection source, IList<CoreWebView2ContextMenuItem> target)
+    {
+        foreach (var entry in source)
+        {
+            if (entry is Separator)
+            {
+                if (target.Count > 0) target.Add(_webViewEnvironment!.CreateContextMenuItem(string.Empty, null, CoreWebView2ContextMenuItemKind.Separator));
+                continue;
+            }
+            if (entry is not MenuItem item || item.Visibility != Visibility.Visible) continue;
+            var label = NativeMenuLabel(item.Header);
+            if (item.HasItems)
+            {
+                var submenu = _webViewEnvironment!.CreateContextMenuItem(label, null, CoreWebView2ContextMenuItemKind.Submenu);
+                AddNativeMenuItems(item.Items, submenu.Children);
+                if (submenu.Children.Count > 0) target.Add(submenu);
+                continue;
+            }
+            var command = _webViewEnvironment!.CreateContextMenuItem(label, null, CoreWebView2ContextMenuItemKind.Command);
+            command.IsEnabled = item.IsEnabled;
+            var wpfItem = item;
+            command.CustomItemSelected += (_, _) =>
+                Dispatcher.InvokeAsync(() => wpfItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent, wpfItem)));
+            target.Add(command);
+        }
+    }
+
+    // WPF marchează tasta de acces cu „_”, WebView2 cu „&”.
+    internal static string NativeMenuLabel(object? header)
+    {
+        var text = header?.ToString() ?? string.Empty;
+        return text.Replace("&", "&&").Replace("__", "\u0001").Replace("_", "&").Replace("\u0001", "_");
     }
 
     private void ArticleWebView_NavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
@@ -372,37 +415,10 @@ public partial class ArticleReaderWindow : Window
     {
         if (Resources["ReaderContextMenu"] is ContextMenu menu)
         {
-            // În WebReader, focusul Win32 este în fereastra WebView2, care trimite către WPF doar tastele-accelerator
-            // (de aceea mergea numai Escape). Focusul trece întâi la fereastra Cititorului, ca săgețile și Enter
-            // să ajungă la meniu; primul element primește apoi focusul.
-            if (_isWebViewActive) SetFocus(new System.Windows.Interop.WindowInteropHelper(this).Handle);
-            menu.PlacementTarget = _isWebViewActive ? this : ArticleText;
+            menu.PlacementTarget = _isWebViewActive ? (UIElement)ArticleWebView : ArticleText;
             menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
             menu.IsOpen = true;
-            if (_isWebViewActive) Dispatcher.BeginInvoke(new Action(() => FocusFirstMenuItem(menu)), System.Windows.Threading.DispatcherPriority.Input);
         }
-    }
-
-    [System.Runtime.InteropServices.DllImport("user32.dll")]
-    private static extern IntPtr SetFocus(IntPtr hWnd);
-
-    // După închiderea meniului, focusul revine în articolul din WebReader, dacă fereastra este încă activă.
-    private void ReaderContextMenu_Closed(object sender, RoutedEventArgs e)
-    {
-        if (!_isWebViewActive) return;
-        Dispatcher.BeginInvoke(new Action(() =>
-        {
-            if (IsActive && _isWebViewActive) ArticleWebView.Focus();
-        }), System.Windows.Threading.DispatcherPriority.Input);
-    }
-
-    private static void FocusFirstMenuItem(ContextMenu menu)
-    {
-        if (!menu.IsOpen) return;
-        var first = menu.Items.OfType<MenuItem>().FirstOrDefault(item => item.IsEnabled && item.Visibility == Visibility.Visible);
-        if (first is null) return;
-        first.Focus();
-        Keyboard.Focus(first);
     }
 
     // Meniul din caseta de text se deschide explicit, nu prin ContextMenu-ul nativ: acesta pornea
