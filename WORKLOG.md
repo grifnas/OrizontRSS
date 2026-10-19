@@ -2709,3 +2709,11 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Teste: `verify-source.ps1 -Mode Quick` a trecut (CoreSmoke 275, WorkflowSmoke 157/157, LocalizationSmoke 1523). `dotnet list package --vulnerable`: niciun pachet vulnerabil. Executabil: `bin\Release\Orizont.exe`, `SmartReader.dll` 0.11.1.0, `AngleSharp.dll` 1.7.1.0, DLL SHA-256 `FAD215098315DB8C76448E72554B337A17A64315B4EC56C7CD197AB59FE04865`.
 - Rămâne de verificat cu JAWS 2026: WebReader pe câteva articole reale (H pentru subtitluri, L pentru liste, Tab pentru linkuri) și textul integral în modul text.
 - Commit local, neîmpins. Corecția SmartReader merită un release 1.6.3, pentru că v1.6.2 publicată are aceeași problemă.
+
+## 2026-10-19 — Eroare la pornire după actualizarea SmartReader
+
+- Raport: „unexpected error” la pornire. Jurnalul aplicației (`%LOCALAPPDATA%\CititorRSS-JAWS\diagnostic\eroare-2026-10-19-194918.txt`): `FileNotFoundException` pentru `System.Text.Json, Version=10.0.0.0`, în `FeedStore.LoadUiLanguageForStartup`.
+- Cauză: SmartReader 0.11.1 aduce System.Text.Json 10.0.10 (și System.Text.Encodings.Web, System.Text.Encoding.CodePages 10). Publicarea în folderul standard `bin\Release` copiază fișierele numai dacă sursa este mai nouă, așa că au rămas versiunile 8.0 din buildurile anterioare, deși `Orizont.deps.json` cerea 10.0.
+- Verificare: publicarea într-un folder curat conține versiunile corecte. După copierea celor trei biblioteci și a `CHANGELOG.md`, folderul standard este identic, fișier cu fișier, cu publicarea curată. Codul nu s-a schimbat.
+- Pentru distribuții: folderele `final-*` se publică întotdeauna curate, deci nu sunt afectate; la 1.6.3 trebuie verificat la fel.
+- Aplicația nu a fost pornită de agent pe profilul utilizatorului; pornirea rămâne de confirmat de utilizator.
