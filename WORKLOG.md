@@ -17,7 +17,7 @@
 - Fără push, tag, release sau distribuție publică.
 
 - Publicare, la cererea expresă a utilizatorului, după verificarea butoanelor de sold: `main` a primit commitul `4a61f39` cu documentația și registrul publicate; tagul `v1.6.2` pe `88bc430`; release-ul GitHub `v1.6.2` cu cele trei pachete și fișierele `.sha256`. Digesturile GitHub corespund hash-urilor locale. Paginile publice (versiunea 1.6.2) au fost împinse pe `main`; propagarea GitHub Pages nu a fost verificată.
-- Rămas nefăcut: PR-ul WinGet microsoft/winget-pkgs#431971 (acum „Update to 1.6.1”, din `grifnas:submission/orizont-rss-1.5.3`) trebuie mutat la manifestele din `packaging/winget/Grifnas.OrizontRSS/1.6.2/`. Scrierea în acel PR a fost refuzată de sistemul de permisiuni; trebuie făcută manual sau autorizată explicit.
+- WinGet: PR microsoft/winget-pkgs#431971 a fost mutat la 1.6.2 pe ramura `grifnas:submission/orizont-rss-1.5.3`: manifestele 1.6.2 sunt adăugate, cele 1.6.1 șterse, titlul este „Update: Grifnas.OrizontRSS to 1.6.2”. Autorizarea a fost dată explicit de utilizator în chat, după ce scrierea fusese refuzată automat.
 - Probele A02, A09, A07, A11 rămân deschise; verificările JAWS pentru funcțiile noi sunt de făcut de utilizator.
 
 ## 2026-10-19 — Creditul pentru Claude în Despre și pe pagina de prezentare
