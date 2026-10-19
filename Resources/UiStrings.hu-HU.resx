@@ -2942,6 +2942,7 @@ Részletek: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Cikkek alapértelmezett megnyitása</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Általános beállítás használata</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Normál mód a főablakban</value></data>
+  <data name="Mod Citire al browserului, în fereastră externă" xml:space="preserve"><value>A böngésző olvasónézete, külső ablakban</value></data>
   <data name="Alege unde se deschid articolele acestui feed când apeși Enter sau alegi Deschide și citește." xml:space="preserve"><value>Válaszd ki, hol nyíljanak meg a feed cikkei az Enter vagy a Megnyitás és olvasás parancsra.</value></data>
   <data name=" {0} abonamente asociate NewsBlur vor fi dezabonate la următoarea sincronizare a feedurilor." xml:space="preserve"><value> {0} kapcsolódó NewsBlur-feliratkozás törlődik a következő hírforrás-szinkronizáláskor.</value></data>
   <data name=" {0} articole expirate au fost ignorate local; nu au fost șterse din NewsBlur." xml:space="preserve"><value> {0} lejárt cikk helyben kimaradt; a NewsBlurból nem törlődtek.</value></data>

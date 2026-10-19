@@ -112,6 +112,7 @@
                 <ComboBox x:Name="ArticleOpenMode" AutomationProperties.Name="Deschiderea implicită a articolelor">
                   <ComboBoxItem Content="Mod standard în fereastra principală" Tag="Standard" />
                   <ComboBoxItem Content="Cititor Orizont" Tag="Orizont" />
+                  <ComboBoxItem Content="Mod Citire al browserului, în fereastră externă" Tag="BrowserReader" />
                 </ComboBox>
                 <TextBlock x:Name="ArticleOpenModeNotice" Text="Se aplică feedurilor care folosesc opțiunea Folosește setarea generală." Style="{StaticResource SecondaryTextStyle}" Margin="4,8,4,0" TextWrapping="Wrap" />
               </StackPanel>

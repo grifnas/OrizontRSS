@@ -85,6 +85,7 @@ DuplicateCleaner.Clean(mergeList);
 Check(mergeList.Count == 1 && mergeList[0].AutomationSeen.SetEquals(new[] { "A", "B" }), "comasarea păstrează istoricul regulilor");
 Check(ShortcutSearch.Matches("Cititor Orizont. Ctrl+Shift+F8. Schimbă modul", "ctrl + shift + f8"), "căutare scurtături cu spații în combinație");
 Check(ShortcutSearch.Matches("Citire vocală. F9. Citește articolul", "articolul vocala"), "căutare scurtături cu termeni multipli și fără diacritice");
+Check(ArticleOpenModeIds.Normalize("BrowserReader") == ArticleOpenModeIds.BrowserReader && ArticleOpenModeIds.Normalize("orizont") == ArticleOpenModeIds.Orizont && ArticleOpenModeIds.Normalize("necunoscut") == ArticleOpenModeIds.Default, "modul Citire al browserului se păstrează la feed, fără a afecta modurile existente");
 Check(ShortcutSearch.Matches("Citire vocală. F9", "  "), "căutarea goală păstrează scurtăturile");
 Check(!ShortcutSearch.Matches("Citire vocală. F9", "vocală export"), "toți termenii căutării trebuie să corespundă");
 var feeds = Enumerable.Range(1, 5).Select(feedNumber => new Feed

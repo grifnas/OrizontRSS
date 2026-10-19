@@ -95,11 +95,13 @@ public static class ArticleOpenModeIds
     public const string Default = "Default";
     public const string Standard = "Standard";
     public const string Orizont = "Orizont";
+    public const string BrowserReader = "BrowserReader";
 
     public static string Normalize(string? mode)
     {
         if (string.Equals(mode, Orizont, StringComparison.OrdinalIgnoreCase)) return Orizont;
         if (string.Equals(mode, Standard, StringComparison.OrdinalIgnoreCase)) return Standard;
+        if (string.Equals(mode, BrowserReader, StringComparison.OrdinalIgnoreCase)) return BrowserReader;
         return Default;
     }
 }

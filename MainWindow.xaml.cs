@@ -793,6 +793,8 @@ public partial class MainWindow : Window
             mode = ArticleOpenModeIds.Normalize(_settings.ArticleOpenMode);
         if (mode == ArticleOpenModeIds.Orizont && !string.IsNullOrWhiteSpace(_article.Link))
             await OpenArticleInOrizontAsync();
+        else if (mode == ArticleOpenModeIds.BrowserReader && !string.IsNullOrWhiteSpace(_article.Link))
+            OpenArticleInBrowserReadingMode();
         else
             FocusReader();
     }
@@ -860,7 +862,8 @@ public partial class MainWindow : Window
             MessageBox.Show(this, F("Pagina originală nu a putut fi deschisă în browser.\n\n{0}", Describe(exception)), T("Deschidere nereușită"), MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
-    private void OpenBrowserReadingMode_Click(object sender, RoutedEventArgs e)
+    private void OpenBrowserReadingMode_Click(object sender, RoutedEventArgs e) => OpenArticleInBrowserReadingMode();
+    private void OpenArticleInBrowserReadingMode()
     {
         if (_article is null || string.IsNullOrWhiteSpace(_article.Link)) { Say("Articolul nu are o adresă care poate fi deschisă."); return; }
         try

@@ -110,6 +110,7 @@ public partial class SettingsWindow : Window
         AutomationProperties.SetName(ArticleOpenMode, T("Deschiderea implicită a articolelor"));
         ArticleOpenMode.Items[0] = new ComboBoxItem { Content = T("Mod standard în fereastra principală"), Tag = ArticleOpenModeIds.Standard };
         ArticleOpenMode.Items[1] = new ComboBoxItem { Content = T("Cititor Orizont"), Tag = ArticleOpenModeIds.Orizont };
+        ArticleOpenMode.Items[2] = new ComboBoxItem { Content = T("Mod Citire al browserului, în fereastră externă"), Tag = ArticleOpenModeIds.BrowserReader };
         ArticleOpenModeNotice.Text = T("Se aplică feedurilor care folosesc opțiunea Folosește setarea generală.");
         ReaderPreferencesGroup.Header = T("Preferințe articole");
         ReadNowFavoriteDaysLabel.Content = T("Afișează articolele noi în Citește acum pentru");

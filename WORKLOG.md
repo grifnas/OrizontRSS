@@ -1,5 +1,15 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-19 — Modul Citire al browserului în setările feedului
+
+- Cerere: în fereastra de adăugare și editare a feedului, opțiunea „La deschiderea articolului” să includă și modul Citire al browserului (fereastră externă), la fel ca în meniul contextual al articolului.
+- Comportamente protejate: modurile „Folosește setarea generală”, „Mod standard în fereastra principală” și „Cititor Orizont” rămân neschimbate; meniul contextual și tastele articolului păstrează comportamentul existent (`OpenArticleInBrowserReadingMode` are aceeași logică, mutată din `OpenBrowserReadingMode_Click`).
+- Modificări: `Models/AppSettings.cs` (identificatorul `BrowserReader` în `ArticleOpenModeIds`); `Views/FeedDialog.xaml` și `.xaml.cs` (a patra opțiune); `Views/SettingsWindow.xaml` și `.xaml.cs` (aceeași opțiune la Deschiderea implicită a articolelor); `MainWindow.xaml.cs` (`OpenSelectedArticleAsync` tratează noul mod, Enter și „Deschide și citește”); cheia „Mod Citire al browserului, în fereastră externă” în cele opt fișiere `Resources/UiStrings*.resx`; `tests/CoreSmoke/Program.cs` (verificare de normalizare); cele opt ghiduri `docs/user-guides/Ghid-utilizator-Orizont-RSS*.html` (două paragrafe noi în fiecare limbă: la feed și la deschiderea în modul Citire; structura, ancorele, linkurile și tastele nu s-au schimbat).
+- Teste: `verify-source.ps1 -Mode Quick` a trecut: aplicația compilată, CoreSmoke, WorkflowSmoke 157/157, RulesSmoke, ShortcutsSmoke, AiProviderSmoke, LocalizationSmoke, verify-localization cu `-RequireComplete`, verify-user-guides, verify-text-encoding, validatorii. `dotnet publish` autonom în `bin\Release` a reușit, cu `includedFrameworks` în runtimeconfig.
+- Executabil de test: `C:\Users\grigo\Documents\ChatGPT\New project\Orizont RSS\bin\Release\Orizont.exe`. `Orizont.dll` SHA-256 `42A34B3823F3ABE29AB700FAF1B9E6E0B4D9454F2C55A71ECDEB20905012C508`.
+- Rămâne de verificat manual cu JAWS 2026: selecția noii opțiunii în combobox, citirea etichetei, deschiderea articolului cu Enter și în meniu. Aplicația nu a fost pornită pe profilul utilizatorului.
+- Fără distribuție, tag, release, commit sau push.
+
 ## 2026-10-08 — Publicare și atașarea pachetelor v1.6.1
 
 - Utilizatorul a împins ramura `main` și tagul `v1.6.1` din PowerShell. Verificarea remote a confirmat că ramura și tagul peeled indică același commit `161eeff6db6d931130bf79ae6ca3f5e09ea7636b`; working tree-ul local era curat la acel punct.

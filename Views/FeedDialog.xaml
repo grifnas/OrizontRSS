@@ -13,6 +13,7 @@
       <ComboBoxItem Content="Folosește setarea generală" Tag="Default" />
       <ComboBoxItem Content="Mod standard în fereastra principală" Tag="Standard" />
       <ComboBoxItem Content="Cititor Orizont" Tag="Orizont" />
+      <ComboBoxItem Content="Mod Citire al browserului, în fereastră externă" Tag="BrowserReader" />
     </ComboBox>
     <TextBlock x:Name="ArticleOpenModeNotice" Text="Alege unde se deschid articolele acestui feed când apeși Enter sau alegi Deschide și citește." Style="{StaticResource SecondaryTextStyle}" Margin="4,4,4,0" TextWrapping="Wrap" />
     <TextBlock Text="La sfârșitul listei de foldere poți alege Creează folder nou. Adresa trebuie să înceapă cu https:// sau http://." Style="{StaticResource SecondaryTextStyle}" Margin="4,8,4,4" />

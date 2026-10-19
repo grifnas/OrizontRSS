@@ -2942,6 +2942,7 @@ Dettagli: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Apertura predefinita degli articoli</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Usa l’impostazione generale</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Modalità standard nella finestra principale</value></data>
+  <data name="Mod Citire al browserului, în fereastră externă" xml:space="preserve"><value>Modalità lettura del browser, in una finestra esterna</value></data>
   <data name="Alege unde se deschid articolele acestui feed când apeși Enter sau alegi Deschide și citește." xml:space="preserve"><value>Scegli dove aprire gli articoli di questo feed premendo Invio o scegliendo Apri e leggi.</value></data>
   <data name=" {0} abonamente asociate NewsBlur vor fi dezabonate la următoarea sincronizare a feedurilor." xml:space="preserve"><value> {0} abbonamenti NewsBlur associati verranno rimossi alla prossima sincronizzazione dei feed.</value></data>
   <data name=" {0} articole expirate au fost ignorate local; nu au fost șterse din NewsBlur." xml:space="preserve"><value> {0} articoli scaduti ignorati localmente; non sono stati eliminati da NewsBlur.</value></data>

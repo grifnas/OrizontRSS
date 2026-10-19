@@ -88,6 +88,7 @@ public partial class FeedDialog : Window
         ArticleOpenMode.Items[0] = new ComboBoxItem { Content = T("Folosește setarea generală"), Tag = ArticleOpenModeIds.Default };
         ArticleOpenMode.Items[1] = new ComboBoxItem { Content = T("Mod standard în fereastra principală"), Tag = ArticleOpenModeIds.Standard };
         ArticleOpenMode.Items[2] = new ComboBoxItem { Content = T("Cititor Orizont"), Tag = ArticleOpenModeIds.Orizont };
+        ArticleOpenMode.Items[3] = new ComboBoxItem { Content = T("Mod Citire al browserului, în fereastră externă"), Tag = ArticleOpenModeIds.BrowserReader };
         ArticleOpenModeNotice.Text = T("Alege unde se deschid articolele acestui feed când apeși Enter sau alegi Deschide și citește.");
     }
     private static string T(string source) => UiText.Translate(source);
