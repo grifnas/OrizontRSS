@@ -42,3 +42,7 @@ Probele practice A02, A09, A07 și A11 rămân deschise, conform registrului de 
 ## Modificări nepublicate după tagul v1.6.2
 
 După crearea tagului și a pachetelor release-ului, ramura `main` primește actualizări de documentație și de publicare, inclusiv pagina GitHub Pages și urmărirea manifestelor WinGet. Aceste schimbări de întreținere nu modifică pachetele atașate release-ului și nu constituie o nouă versiune a aplicației.
+
+- Corectat: SmartReader 0.9.6 nu mai funcționa după actualizarea AngleSharp la 1.7.1 (avertismentul de securitate din 15 octombrie 2026). Textul integral era extras doar cu extractorul vechi, inclusiv în v1.6.2. SmartReader a fost actualizat la 0.11.1, compatibil cu AngleSharp 1.7.1.
+- WebReader afișează articolul structurat de SmartReader: subtitluri, liste, citate, tabele și linkuri, navigabile cu tastele JAWS (H, L, Tab). Scripturile, imaginile, formularele și atributele sunt eliminate. Textul tradus și paginile nerecunoscute rămân în paragrafe.
+- Cititorul Orizont: tastele Application și Shift+F10 deschid meniul contextual în modul text fără să se închidă imediat; citirea vocală în curs se oprește înainte de înlocuirea textului cu traducerea DeepL.

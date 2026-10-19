@@ -31,12 +31,12 @@ Modul de citire WebReader folosește controlul Microsoft Edge WebView2. Orizont 
 - Licență: licența Microsoft pentru WebView2 SDK (tip BSD), din `Licenses/WebView2/LICENSE.txt`
 - Copyright (C) Microsoft Corporation
 
-## SmartReader 0.9.6
+## SmartReader 0.11.1
 
 Pentru textul integral al articolelor, Orizont RSS folosește biblioteca SmartReader, o adaptare .NET a algoritmului Readability de la Mozilla. Biblioteca alege conținutul articolului dintr-o pagină web, fără meniuri și liste laterale. Textul licenței este inclus în `Licenses/SmartReader`.
 
 - Proiect: https://github.com/strumenta/SmartReader
-- Versiune inclusă: 0.9.6
+- Versiune inclusă: 0.11.1
 - Licență: Apache-2.0
 - Copyright: Strumenta
 
@@ -45,7 +45,7 @@ Pentru textul integral al articolelor, Orizont RSS folosește biblioteca SmartRe
 AngleSharp este analizorul HTML folosit de SmartReader și de găsirea feedurilor pe un site. Textul licenței este inclus în `Licenses/AngleSharp`.
 
 - Proiect: https://github.com/AngleSharp/AngleSharp
-- Versiune inclusă: 1.7.1 (în locul versiunii 1.1.2 aduse de SmartReader, afectată de avertismentul de securitate GHSA-pgww-w46g-26qg)
+- Versiune inclusă: 1.7.1 (SmartReader 0.11.1 cere cel puțin 1.5.2; versiunile anterioare lui 1.5.0 erau afectate de avertismentul de securitate GHSA-pgww-w46g-26qg)
 - Licență: MIT
 - Copyright (c) 2013 - 2026 AngleSharp
 

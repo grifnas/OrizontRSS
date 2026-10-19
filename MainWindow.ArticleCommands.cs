@@ -24,7 +24,8 @@ public partial class MainWindow
         ShowReader = (article, text, refresh) => new ArticleReaderWindow(
             article, text, _settings, refresh,
             () => _store.SaveSettingsAsync(_settings), _speech!,
-            () => _store.SaveAsync(_feeds)) { Owner = this }.Show(),
+            () => _store.SaveAsync(_feeds),
+            string.IsNullOrWhiteSpace(article.Link) ? null : () => _rss.LoadReadableHtmlAsync(article.Link)) { Owner = this }.Show(),
         ShowTranslation = result =>
             new ArticleTranslationWindow(result.TranslatedText, result.Title, result.Link, result.Provider, result.OriginalText, result.Language) { Owner = this }.ShowDialog(),
         ConfirmGoogle = () => MessageBox.Show(this,

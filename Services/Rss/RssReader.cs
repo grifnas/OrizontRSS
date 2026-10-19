@@ -162,6 +162,33 @@ public sealed class RssReader
         return await Task.Run(() => ExtractReadableArticle(pageUrl, html));
     }
 
+    /// <summary>Articolul ales de SmartReader, cu structura păstrată, pentru WebReader; null dacă pagina nu este recunoscută.</summary>
+    public async Task<string?> LoadReadableHtmlAsync(string articleUrl)
+    {
+        using var response = await _client.GetAsync(articleUrl);
+        response.EnsureSuccessStatusCode();
+        var html = await response.Content.ReadAsStringAsync();
+        var pageUrl = response.RequestMessage?.RequestUri?.ToString() ?? articleUrl;
+        return await Task.Run(() => ExtractReadableHtml(pageUrl, html));
+    }
+
+    public static string? ExtractReadableHtml(string pageUrl, string html)
+    {
+        if (string.IsNullOrWhiteSpace(html)) return null;
+        try
+        {
+            var article = new SmartReader.Reader(pageUrl, html).GetArticle();
+            if (!article.IsReadable || string.IsNullOrWhiteSpace(article.Content)) return null;
+            if ((article.TextContent?.Trim().Length ?? 0) < MinimumReadableArticleCharacters) return null;
+            var structured = ReaderHtmlSanitizer.Sanitize(article.Content, pageUrl);
+            return string.IsNullOrWhiteSpace(structured) ? null : structured;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     /// <summary>Minimum length for a SmartReader result; shorter results fall back to the existing extractor.</summary>
     public const int MinimumReadableArticleCharacters = 300;
 

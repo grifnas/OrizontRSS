@@ -28,9 +28,13 @@ public partial class ArticleReaderWindow : Window
     private string _originalReadableText = string.Empty;
     private bool _isWebViewActive;
     private bool _webViewInitialized;
+    private readonly Func<Task<string?>>? _loadStructuredHtml;
+    private string? _structuredHtml;
+    private bool _structuredHtmlLoaded;
 
-    public ArticleReaderWindow(Article article, string readableText, AppSettings settings, Func<Task<string>> refresh, Func<Task> saveSettings, SpeechService speech, Func<Task>? saveArticle = null)
+    public ArticleReaderWindow(Article article, string readableText, AppSettings settings, Func<Task<string>> refresh, Func<Task> saveSettings, SpeechService speech, Func<Task>? saveArticle = null, Func<Task<string?>>? loadStructuredHtml = null)
     {
+        _loadStructuredHtml = loadStructuredHtml;
         InitializeComponent();
         ArticleText.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler(ArticleText_PreviewKeyDown), true);
         _article = article;
@@ -195,9 +199,27 @@ public partial class ArticleReaderWindow : Window
     private async Task LoadWebViewContentAsync()
     {
         if (!_webViewInitialized || ArticleWebView.CoreWebView2 == null) return;
+        await EnsureStructuredHtmlAsync();
         var html = GenerateReaderHtml();
         ArticleWebView.NavigateToString(html);
-        await Task.CompletedTask;
+    }
+
+    // WebReader afișează articolul structurat de SmartReader (subtitluri, liste, linkuri), încărcat o singură dată.
+    // Dacă pagina nu poate fi citită sau textul afișat este o traducere, rămâne varianta din paragrafe.
+    private async Task EnsureStructuredHtmlAsync()
+    {
+        if (_structuredHtmlLoaded || _loadStructuredHtml is null || _translationProvider is not null) return;
+        _structuredHtmlLoaded = true;
+        try
+        {
+            var structured = await _loadStructuredHtml();
+            // NavigateToString acceptă cel mult 2 MB; un articol mai mare rămâne în varianta din paragrafe.
+            _structuredHtml = structured is { Length: < 1_000_000 } ? structured : null;
+        }
+        catch
+        {
+            _structuredHtml = null;
+        }
     }
 
     private string GenerateReaderHtml()
@@ -226,12 +248,19 @@ public partial class ArticleReaderWindow : Window
 
         var content = ArticleText.Text;
         var sb = new System.Text.StringBuilder();
-        var paragraphs = content.Split(["\r\n\r\n", "\n\n"], StringSplitOptions.RemoveEmptyEntries);
-        foreach (var p in paragraphs)
+        if (_translationProvider is null && !string.IsNullOrWhiteSpace(_structuredHtml))
         {
-            var trimmed = p.Trim();
-            if (string.IsNullOrWhiteSpace(trimmed)) continue;
-            sb.Append("<p>").Append(System.Net.WebUtility.HtmlEncode(trimmed)).Append("</p>\n");
+            sb.Append(_structuredHtml);
+        }
+        else
+        {
+            var paragraphs = content.Split(["\r\n\r\n", "\n\n"], StringSplitOptions.RemoveEmptyEntries);
+            foreach (var p in paragraphs)
+            {
+                var trimmed = p.Trim();
+                if (string.IsNullOrWhiteSpace(trimmed)) continue;
+                sb.Append("<p>").Append(System.Net.WebUtility.HtmlEncode(trimmed)).Append("</p>\n");
+            }
         }
 
         return $@"<!DOCTYPE html>
@@ -267,6 +296,33 @@ public partial class ArticleReaderWindow : Window
   }}
   p {{
     margin: 0 0 {paragraphSpacing} 0;
+  }}
+  h2, h3, h4, h5, h6 {{
+    font-size: 1.15em;
+    line-height: 1.3;
+    margin: 1.2em 0 0.4em 0;
+    color: {fg};
+  }}
+  ul, ol {{
+    margin: 0 0 {paragraphSpacing} 1.5em;
+    padding: 0;
+  }}
+  li {{
+    margin: 0 0 0.4em 0;
+  }}
+  blockquote {{
+    margin: 0 0 {paragraphSpacing} 1em;
+    padding-left: 0.8em;
+    border-left: 3px solid {secondary};
+  }}
+  table {{
+    border-collapse: collapse;
+    margin: 0 0 {paragraphSpacing} 0;
+  }}
+  th, td {{
+    border: 1px solid {secondary};
+    padding: 0.3em 0.5em;
+    text-align: left;
   }}
   a {{
     color: {link};
@@ -348,6 +404,8 @@ public partial class ArticleReaderWindow : Window
             _originalReadableText = ArticleText.Text;
             _translationProvider = null;
             _translationLanguage = null;
+            _structuredHtml = null;
+            _structuredHtmlLoaded = false;
             if (_isWebViewActive)
             {
                 await LoadWebViewContentAsync();

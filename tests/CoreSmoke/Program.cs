@@ -620,6 +620,29 @@ void RunReadabilitySmoke()
     var linkList = "<html><body><ul>" + string.Concat(Enumerable.Range(1, 8).Select(i => $"<li><a href=\"/s{i}\">Știre {i}</a></li>")) + "</ul></body></html>";
     Check(RssReader.ExtractReadableArticle("https://stiri.example.test/", linkList) == RssReader.CleanReadableContent(linkList), "o pagină care nu este articol folosește extractorul existent");
     Check(RssReader.ExtractReadableArticle("https://stiri.example.test/", string.Empty) == string.Empty, "pagina goală produce text gol");
+
+    // WebReader: articolul structurat de SmartReader, filtrat pentru afișare sigură.
+    var structured = RssReader.ExtractReadableHtml("https://stiri.example.test/pod", page);
+    Check(structured is not null && paragraphs.All(p => structured.Contains(System.Net.WebUtility.HtmlEncode(p), StringComparison.Ordinal)) && structured.Contains("<p>", StringComparison.Ordinal),
+        "WebReader primește articolul structurat, cu toate paragrafele codificate corect");
+    Check(structured is not null && !structured.Contains("Meteo", StringComparison.Ordinal) && !structured.Contains("Cele mai citite", StringComparison.Ordinal) && !structured.Contains("drepturile rezervate", StringComparison.Ordinal),
+        "articolul structurat nu conține meniul, lista laterală sau subsolul paginii");
+    Check(RssReader.ExtractReadableHtml("https://stiri.example.test/", linkList) is null && RssReader.ExtractReadableHtml("https://stiri.example.test/", string.Empty) is null,
+        "o pagină care nu este articol nu produce variantă structurată, deci WebReader rămâne la paragrafe");
+
+    var unsafeHtml = "<div><h1>Titlu</h1><h3>Subtitlu</h3><p onclick=\"x()\">Text <a href=\"/detalii\">detalii</a> și <a href=\"javascript:alert(1)\">rău</a></p>" +
+        "<script>alert(1)</script><style>p{}</style><img src=\"x\" onerror=\"alert(1)\"><iframe src=\"https://ads.test\"></iframe>" +
+        "<ul><li>Unu</li><li>Doi</li></ul><blockquote>Citat</blockquote></div>";
+    var safe = ReaderHtmlSanitizer.Sanitize(unsafeHtml, "https://stiri.example.test/pod");
+    Check(safe.Contains("<h2>Titlu</h2>", StringComparison.Ordinal) && safe.Contains("<h3>Subtitlu</h3>", StringComparison.Ordinal),
+        "subtitlurile articolului rămân titluri, sub titlul paginii");
+    Check(safe.Contains("<a href=\"https://stiri.example.test/detalii\">detalii</a>", StringComparison.Ordinal) && safe.Contains("rău", StringComparison.Ordinal) && !safe.Contains("javascript", StringComparison.OrdinalIgnoreCase),
+        "linkurile relative devin adrese web complete, iar linkurile javascript rămân doar text");
+    Check(!safe.Contains("script", StringComparison.OrdinalIgnoreCase) && !safe.Contains("onclick", StringComparison.OrdinalIgnoreCase) && !safe.Contains("onerror", StringComparison.OrdinalIgnoreCase)
+        && !safe.Contains("<img", StringComparison.OrdinalIgnoreCase) && !safe.Contains("iframe", StringComparison.OrdinalIgnoreCase) && !safe.Contains("<style", StringComparison.OrdinalIgnoreCase),
+        "filtrul elimină scripturile, stilurile, imaginile, cadrele și atributele de evenimente");
+    Check(safe.Contains("<ul>", StringComparison.Ordinal) && safe.Contains("<li>Unu</li>", StringComparison.Ordinal) && safe.Contains("<blockquote>Citat</blockquote>", StringComparison.Ordinal),
+        "listele și citatele rămân structurate pentru navigarea JAWS");
 }
 
 // eSpeak NG primește calea ca șir de 8 biți: rezolvarea nu întoarce niciodată o cale cu diacritice.

@@ -2700,3 +2700,12 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare: `verify-source.ps1 -Mode Quick` a trecut. Executabil: `bin\Release\Orizont.exe`, DLL SHA-256 `9D8BB7EB679E4024F924F5EA2BF50D2771503436C6CAE8169001631FBCBE99E4`.
 - Rămâne de verificat cu JAWS 2026: Application și Shift+F10 în modul text, clic dreapta, și în WebReader.
 - Commit local, neîmpins.
+
+## 2026-10-19 — SmartReader reparat și WebReader structurat
+
+- Cerere: WebReader să afișeze articolul structurat de SmartReader (varianta 2, aleasă de utilizator), nu doar paragrafe din text simplu.
+- Constatare: SmartReader 0.9.6 arunca intern `MissingMethodException` (`IHtmlCollection.get_Item`) cu AngleSharp 1.7.1, adăugat pe 15 octombrie pentru GHSA-pgww-w46g-26qg. Eroarea era prinsă, deci aplicația folosea în tăcere extractorul vechi, inclusiv în release-ul v1.6.2. Testul existent nu detecta asta, pentru că trecea și prin extractorul vechi.
+- Modificări: `CititorRSS.Jaws.csproj` (SmartReader 0.11.1, compilat pentru AngleSharp 1.5.2; AngleSharp rămâne 1.7.1); `Services/Content/ReaderHtmlSanitizer.cs` (nou: păstrează titluri, paragrafe, liste, citate, tabele, linkuri http/https; elimină scripturi, stiluri, imagini, cadre, formulare, atribute); `Services/Rss/RssReader.cs` (`LoadReadableHtmlAsync`, `ExtractReadableHtml`); `Views/ArticleReaderWindow.xaml.cs` (WebReader încarcă o dată articolul structurat; traducerea și paginile nerecunoscute rămân în paragrafe; reîncărcarea golește memoria; stiluri pentru titluri, liste, citate, tabele); `MainWindow.ArticleCommands.cs` (legătura); `THIRD-PARTY-NOTICES.md`; `CHANGELOG.md`; `tests/CoreSmoke/Program.cs` (articol structurat real prin SmartReader, filtrul de siguranță, linkuri relative și javascript).
+- Teste: `verify-source.ps1 -Mode Quick` a trecut (CoreSmoke 275, WorkflowSmoke 157/157, LocalizationSmoke 1523). `dotnet list package --vulnerable`: niciun pachet vulnerabil. Executabil: `bin\Release\Orizont.exe`, `SmartReader.dll` 0.11.1.0, `AngleSharp.dll` 1.7.1.0, DLL SHA-256 `FAD215098315DB8C76448E72554B337A17A64315B4EC56C7CD197AB59FE04865`.
+- Rămâne de verificat cu JAWS 2026: WebReader pe câteva articole reale (H pentru subtitluri, L pentru liste, Tab pentru linkuri) și textul integral în modul text.
+- Commit local, neîmpins. Corecția SmartReader merită un release 1.6.3, pentru că v1.6.2 publicată are aceeași problemă.
