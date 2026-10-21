@@ -2790,3 +2790,9 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare: build fără erori; `verify-source.ps1 -Mode Quick` a trecut (CoreSmoke 280, WorkflowSmoke 157/157, LocalizationSmoke 1529); `verify-localization -RequireComplete` a trecut. Executabil de test sincronizat (0 diferențe).
 - Rămâne de verificat cu JAWS 2026: Insert+Page Down în fereastra de traducere și într-o fereastră nouă din cele 17.
 - Commit local, neîmpins.
+
+## 2026-10-21 — Precizare în ghiduri: bara de stare și WebReader
+
+- Concluzie: în WebReader focusul rămâne în motorul web, iar bara de stare WPF nu este accesibilă cititorului. Zona de sub titlu, încercată ca alternativă, nu a fost anunțată și a fost anulată (`e7e1ff3`, revert de `3fe85b1`).
+- Modificare: în ghidurile celor opt limbi, paragraful despre WebReader spune că mesajele de stare se citesc în modul text.
+- Verificare: `verify-user-guides.ps1` a trecut. Commit local, neîmpins.
