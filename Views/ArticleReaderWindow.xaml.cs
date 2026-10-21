@@ -26,7 +26,6 @@ public partial class ArticleReaderWindow : Window
     private readonly CancellationTokenSource _readerLifetime = new();
     private string? _translationProvider;
     private string? _translationLanguage;
-    private string _lastStatus = string.Empty;
     private string _originalReadableText = string.Empty;
     private bool _isWebViewActive;
     private bool _webViewInitialized;
@@ -105,7 +104,6 @@ public partial class ArticleReaderWindow : Window
 
         ArticleWebView.CoreWebView2.ContextMenuRequested += ArticleWebView_ContextMenuRequested;
         ArticleWebView.CoreWebView2.NavigationStarting += ArticleWebView_NavigationStarting;
-        ArticleWebView.CoreWebView2.NavigationCompleted += (_, _) => _ = ApplyWebStatusAsync();
         _webViewInitialized = true;
     }
 
@@ -383,7 +381,6 @@ public partial class ArticleReaderWindow : Window
 <body>
   <h1>{title}</h1>
   <div class=""meta"">{details}</div>
-  <div id=""readerStatus"" role=""status"" aria-live=""polite"" style=""font-size:0.9em;color:{secondary};margin-bottom:1rem"">{System.Net.WebUtility.HtmlEncode(_lastStatus)}</div>
   <article>
     {sb}
   </article>
@@ -512,21 +509,6 @@ public partial class ArticleReaderWindow : Window
     {
         AutomationProperties.SetName(ReaderStatusBar, message);
         StatusAnnouncer.Set(Status, message, ReaderStatusBar);
-        _lastStatus = message;
-        _ = ApplyWebStatusAsync();
-    }
-
-    // WebView2 are focusul separat de WPF, deci JAWS nu ajunge la bara de stare când citește pagina.
-    // Mesajul se scrie și în pagină, într-o regiune role="status" aria-live, pe care cititorul o anunță în WebReader.
-    private async Task ApplyWebStatusAsync()
-    {
-        if (!_isWebViewActive || !_webViewInitialized || ArticleWebView.CoreWebView2 is null) return;
-        try
-        {
-            var script = $"var s = document.getElementById('readerStatus'); if (s) {{ s.textContent = {JsonSerializer.Serialize(_lastStatus)}; }}";
-            await ArticleWebView.ExecuteScriptAsync(script);
-        }
-        catch { }
     }
 
     private void Content_ContextMenuOpening(object sender, ContextMenuEventArgs e)
