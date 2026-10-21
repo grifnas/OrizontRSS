@@ -346,6 +346,7 @@ await RunUpdaterSmokeAsync();
 await RunDeepSeekBalanceSmokeAsync();
 CheckAiInstructionsFollowInterfaceLanguage();
 CheckDeepLTargetLanguages();
+CheckSoundThemes();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
 
@@ -888,6 +889,32 @@ void CheckAiInstructionsFollowInterfaceLanguage()
         Check(AiInstructionsLocalization.ForDisplay(AppSettings.DefaultAiInstructions.Replace("Fii", "Fii  ", StringComparison.Ordinal)) == AppSettings.DefaultAiInstructions.Replace("Fii", "Fii  ", StringComparison.Ordinal), "o instrucțiune personalizată nu este înlocuită");
     }
     finally { CultureInfo.CurrentUICulture = romanian; }
+}
+
+void CheckSoundThemes()
+{
+    Check(new AppSettings().SoundTheme == SoundThemeIds.Windows, "tema sonoră implicită rămâne Windows, deci utilizatorii existenți aud aceleași sunete");
+    Check(SoundThemeIds.Normalize("bells") == SoundThemeIds.Bells && SoundThemeIds.Normalize("necunoscută") == SoundThemeIds.Windows && SoundThemeIds.Normalize(null) == SoundThemeIds.Windows,
+        "o temă sonoră necunoscută revine la sunetele Windows");
+    Check(SoundAlertService.SoundPath(SoundThemeIds.Windows, SoundEvent.NewArticles) is null, "tema Windows folosește sunetele sistemului, fără fișiere");
+
+    var root = new DirectoryInfo(AppContext.BaseDirectory);
+    while (root is not null && !File.Exists(Path.Combine(root.FullName, "CititorRSS.Jaws.csproj"))) root = root.Parent;
+    Check(root is not null, "testul găsește folderul sursă al aplicației");
+    var problems = new List<string>();
+    foreach (var theme in SoundThemeIds.All.Where(theme => theme != SoundThemeIds.Windows))
+        foreach (var soundEvent in Enum.GetValues<SoundEvent>())
+        {
+            var file = Path.Combine(root!.FullName, "Assets", "Sounds", "themes", theme.ToLowerInvariant(), SoundAlertService.FileName(soundEvent) + ".wav");
+            if (!File.Exists(file)) { problems.Add($"{theme}/{soundEvent}: lipsește"); continue; }
+            var bytes = File.ReadAllBytes(file);
+            var valid = bytes.Length > 44 && Encoding.ASCII.GetString(bytes, 0, 4) == "RIFF" && Encoding.ASCII.GetString(bytes, 8, 4) == "WAVE"
+                && BitConverter.ToInt16(bytes, 20) == 1 && BitConverter.ToInt16(bytes, 34) == 16;
+            var seconds = (bytes.Length - 44) / 2.0 / BitConverter.ToInt32(bytes, 24) / BitConverter.ToInt16(bytes, 22);
+            if (!valid) problems.Add($"{theme}/{soundEvent}: nu este WAV PCM 16 biți");
+            else if (seconds < 0.01 || seconds > 1.5) problems.Add($"{theme}/{soundEvent}: durată {seconds:F2} s");
+        }
+    Check(problems.Count == 0, "fiecare temă sonoră are toate cele zece sunete, WAV PCM 16 biți, de cel mult 1,5 secunde" + (problems.Count > 0 ? ": " + string.Join("; ", problems) : string.Empty));
 }
 
 void CheckDeepLTargetLanguages()

@@ -125,6 +125,7 @@ public partial class MainWindow : Window
             ShortcutBindings.Current = _settings.Shortcuts;
             ShortcutBindings.RefreshMenuHints(this);
             NormalizeSettings(_settings);
+            SoundAlertService.Configure(_settings.SoundAlertsEnabled, _settings.SoundTheme);
             NormalizeFeedOpenModes(_feeds);
             _speech = new SpeechService();
             _speech.Configure(SpeechConfigurationFromSettings(_settings));
@@ -553,6 +554,7 @@ public partial class MainWindow : Window
         {
             var addFavorite = selected.Any(article => !article.IsFavorite);
             await ChangeSelectedArticlesAsync(article => article.IsFavorite = addFavorite, addFavorite ? T("Articole adăugate la favorite") : T("Articole eliminate din favorite"));
+            SoundAlertService.Play(addFavorite ? SoundEvent.FavoriteAdded : SoundEvent.FavoriteRemoved);
         }
         else if (ShortcutBindings.Matches("Later", e.Key, Keyboard.Modifiers))
         {
@@ -679,6 +681,7 @@ public partial class MainWindow : Window
             _translationLanguage = ArticleDistributionContext.LanguageNameForCode(targetLanguage);
             Reader.Focus(); Reader.CaretIndex = 0; Reader.Select(0, 0);
             Say(T("Articolul a fost tradus cu DeepL."));
+            SoundAlertService.Play(SoundEvent.AiReady);
         }
         catch (Exception exception)
         {
@@ -743,6 +746,7 @@ public partial class MainWindow : Window
             cancellationToken.ThrowIfCancellationRequested();
             if (!CanPresentArticleResult(article, request)) return;
             requestLease.Dispose();
+            SoundAlertService.Play(SoundEvent.AiReady);
             ArticleCommands.ShowTranslation(new ArticleTranslationResult(
                 source,
                 translated,
@@ -1455,6 +1459,7 @@ public partial class MainWindow : Window
         RefreshTagFilter();
         RefreshArticleList(_article, selectFirstWhenNoMatch: false);
         Say(F("Sincronizare NewsBlur încheiată. Au fost adăugate {0} feeduri și actualizate {1}; feedurile locale au fost păstrate.", additions.Count, updates.Count));
+        SoundAlertService.Play(SoundEvent.SyncDone);
     }
 
     private async void NewsBlurFeedSync_Click(object sender, RoutedEventArgs e)
@@ -2366,6 +2371,7 @@ public partial class MainWindow : Window
         if (skippedExpiredByRetention > 0)
             syncSummary += F(" {0} articole expirate au fost ignorate local; nu au fost șterse din NewsBlur.", skippedExpiredByRetention);
         if (!allowDuringRefresh) Say(syncSummary);
+        if (!allowDuringRefresh && !cancelled) SoundAlertService.Play(SoundEvent.SyncDone);
         return new NewsBlurSyncOutcome(true, false, cancelled, cancelled ? [] : fallback, imported, syncSummary);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
@@ -2613,6 +2619,7 @@ public partial class MainWindow : Window
         await _store.SaveSettingsAsync(_settings);
         ConfigureNewsBlurAutoSync();
         _speech?.Configure(SpeechConfigurationFromSettings(_settings));
+        SoundAlertService.Configure(_settings.SoundAlertsEnabled, _settings.SoundTheme);
         RefreshArticleList(selectFirstWhenNoMatch: false);
         if (dialog.LanguageChanged)
         {
@@ -3005,6 +3012,7 @@ public partial class MainWindow : Window
                 _aiCancellation = null;
                 cancellation.Dispose();
             }
+            SoundAlertService.Play(SoundEvent.AiReady);
             var initialPrompt = prompt;
             new AiResponseWindow(
                 title,
@@ -3226,6 +3234,7 @@ public partial class MainWindow : Window
         ShortcutBindings.RefreshMenuHints(this);
         ColorThemeManager.Apply(_settings.ColorScheme);
         _speech?.Configure(SpeechConfigurationFromSettings(_settings));
+        SoundAlertService.Configure(_settings.SoundAlertsEnabled, _settings.SoundTheme);
         ConfigureNewsBlurAutoSync();
     }
     private static void NormalizeSettings(AppSettings settings)
@@ -3246,6 +3255,7 @@ public partial class MainWindow : Window
         settings.NewsBlurAutoSyncMinutes = settings.NewsBlurAutoSyncMinutes is 15 or 30 or 60 or 180 ? settings.NewsBlurAutoSyncMinutes : 30;
         settings.NewsBlurPendingFeedDeletions ??= [];
         settings.NewsBlurPendingFeedDeletions.RemoveAll(item => !NewsBlurFeedSnapshotPolicy.IsValidPendingDeletion(item));
+        settings.SoundTheme = SoundThemeIds.Normalize(settings.SoundTheme);
         settings.AiInstructions = string.IsNullOrWhiteSpace(settings.AiInstructions) ? "Răspunde în limba interfeței. Fii clar, concis și semnalează incertitudinile." : settings.AiInstructions;
         settings.AiDefaultProvider = AiProviderIds.Normalize(settings.AiDefaultProvider);
         settings.OpenAiModel = string.IsNullOrWhiteSpace(settings.OpenAiModel) ? "gpt-6-luna" : settings.OpenAiModel.Trim();
@@ -3592,6 +3602,7 @@ public partial class MainWindow : Window
         Say(targets.Count == selected.Count
             ? F("Articole șterse: {0}.", selected.Count)
             : F("Articole selectate șterse: {0}. Au fost eliminate și {1} copii identice din alte feeduri.", selected.Count, targets.Count - selected.Count));
+        SoundAlertService.Play(SoundEvent.ArticleDeleted);
     }
     private async void DeleteFolder_Click(object sender, RoutedEventArgs e)
     {

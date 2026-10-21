@@ -19,6 +19,7 @@ public sealed class AppSettings
     public bool SoundAlertOnSuccess { get; set; } = true;
     public bool SoundAlertOnNewArticles { get; set; } = true;
     public bool SoundAlertOnErrors { get; set; } = true;
+    public string SoundTheme { get; set; } = SoundThemeIds.Windows;
     public string AiInstructions { get; set; } = DefaultAiInstructions;
     public string AiDefaultProvider { get; set; } = AiProviderIds.Gemini;
     public bool GeminiEnabled { get; set; }
@@ -89,6 +90,29 @@ public static class ReaderModeIds
 
     public static string Normalize(string? mode) =>
         string.Equals(mode, WebView, StringComparison.OrdinalIgnoreCase) ? WebView : Text;
+}
+
+/// <summary>Temele sonore. „Windows” păstrează sunetele de sistem folosite până acum.</summary>
+public static class SoundThemeIds
+{
+    public const string Windows = "Windows";
+    public const string Interface = "Interface";
+    public const string Bells = "Bells";
+    public const string Orizont = "Orizont";
+
+    public static IReadOnlyList<string> All { get; } = [Windows, Interface, Bells, Orizont];
+
+    public static string Normalize(string? theme) =>
+        All.FirstOrDefault(id => string.Equals(id, theme?.Trim(), StringComparison.OrdinalIgnoreCase)) ?? Windows;
+
+    /// <summary>Numele românesc este cheia de traducere a temei.</summary>
+    public static string DisplayKey(string theme) => Normalize(theme) switch
+    {
+        Interface => "Interfață (sunete Kenney)",
+        Bells => "Clopoței (sunete Robin Lamb)",
+        Orizont => "Orizont (sunete proprii)",
+        _ => "Sunetele Windows"
+    };
 }
 
 public static class ArticleOpenModeIds

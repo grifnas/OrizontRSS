@@ -2942,6 +2942,11 @@ Részletek: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Cikkek alapértelmezett megnyitása</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Általános beállítás használata</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Normál mód a főablakban</value></data>
+  <data name="Orizont (sunete proprii)" xml:space="preserve"><value>Orizont (saját hangok)</value></data>
+  <data name="Clopoței (sunete Robin Lamb)" xml:space="preserve"><value>Csengők (Robin Lamb-hangok)</value></data>
+  <data name="Interfață (sunete Kenney)" xml:space="preserve"><value>Felület (Kenney-hangok)</value></data>
+  <data name="Sunetele Windows" xml:space="preserve"><value>Windows-hangok</value></data>
+  <data name="Temă sonoră" xml:space="preserve"><value>Hangtéma</value></data>
   <data name="Limba țintă pentru DeepL" xml:space="preserve"><value>DeepL célnyelve</value></data>
   <data name="Răspunde în limba interfeței. Fii clar, concis și semnalează incertitudinile." xml:space="preserve"><value>A felület nyelvén válaszolj. Légy világos, tömör, és jelezd a bizonytalanságokat.</value></data>
   <data name="DeepSeek nu a returnat soldul într-un format valid." xml:space="preserve"><value>A DeepSeek nem érvényes formátumban adta vissza az egyenleget.</value></data>

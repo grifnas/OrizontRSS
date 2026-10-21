@@ -31,6 +31,7 @@
     <Content Include="docs\user-guides\Ghid-utilizator-Orizont-RSS.html" CopyToOutputDirectory="PreserveNewest" Link="docs\user-guides\Ghid-utilizator-Orizont-RSS.html" />
     <Content Include="docs\user-guides\Ghid-utilizator-Orizont-RSS.*.html" CopyToOutputDirectory="PreserveNewest" Link="docs\user-guides\%(FileName)%(Extension)" />
     <Content Include="Resources\FeedCatalog.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\Sounds\themes\**\*.wav" CopyToOutputDirectory="PreserveNewest" Link="Sounds\%(RecursiveDir)%(Filename)%(Extension)" />
     <Content Include="LICENSE" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="README.md" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="ACKNOWLEDGEMENTS.md" CopyToOutputDirectory="PreserveNewest" />

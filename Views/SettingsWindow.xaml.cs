@@ -93,6 +93,10 @@ public partial class SettingsWindow : Window
         AutomationProperties.SetName(SoundAlertOnNewArticles, T("Alertă când există articole noi"));
         SoundAlertOnErrors.Content = T("Alertă la erori de feed");
         AutomationProperties.SetName(SoundAlertOnErrors, T("Alertă la erori de feed"));
+        SoundThemeLabel.Content = T("Temă sonoră");
+        AutomationProperties.SetName(SoundTheme, T("Temă sonoră"));
+        SoundTheme.Items.Clear();
+        foreach (var theme in SoundThemeIds.All) SoundTheme.Items.Add(new ComboBoxItem { Content = T(SoundThemeIds.DisplayKey(theme)), Tag = theme });
         TestSoundButton.Content = T("Testează sunetul");
         AutomationProperties.SetName(TestSoundButton, T("Testează sunetul"));
         HideRepeatedArticles.Content = T("Ascunde articolele repetate în vederile globale");
@@ -259,6 +263,7 @@ public partial class SettingsWindow : Window
         SoundAlertOnSuccess.IsChecked = settings.SoundAlertOnSuccess;
         SoundAlertOnNewArticles.IsChecked = settings.SoundAlertOnNewArticles;
         SoundAlertOnErrors.IsChecked = settings.SoundAlertOnErrors;
+        SoundTheme.SelectedItem = SoundTheme.Items.Cast<ComboBoxItem>().FirstOrDefault(item => Equals(item.Tag, SoundThemeIds.Normalize(settings.SoundTheme))) ?? SoundTheme.Items[0];
         HideRepeatedArticles.IsChecked = settings.HideRepeatedArticlesInGlobalViews;
         NewsBlurSavedStoryMode.SelectedItem = NewsBlurSavedStoryMode.Items.Cast<ComboBoxItem>()
             .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), NormalizeNewsBlurSavedStoryMode(settings.NewsBlurSavedStoryMode), StringComparison.OrdinalIgnoreCase))
@@ -406,6 +411,7 @@ public partial class SettingsWindow : Window
         Settings.SoundAlertOnSuccess = SoundAlertOnSuccess.IsChecked == true;
         Settings.SoundAlertOnNewArticles = SoundAlertOnNewArticles.IsChecked == true;
         Settings.SoundAlertOnErrors = SoundAlertOnErrors.IsChecked == true;
+        Settings.SoundTheme = SoundThemeIds.Normalize((SoundTheme.SelectedItem as ComboBoxItem)?.Tag?.ToString());
         Settings.HideRepeatedArticlesInGlobalViews = HideRepeatedArticles.IsChecked == true;
         Settings.NewsBlurSavedStoryMode = NormalizeNewsBlurSavedStoryMode((NewsBlurSavedStoryMode.SelectedItem as ComboBoxItem)?.Tag?.ToString());
         Settings.NewsBlurSyncFeedsAndFoldersAtStartup = NewsBlurSyncFeedsAndFoldersAtStartup.IsChecked == true;
@@ -731,7 +737,7 @@ public partial class SettingsWindow : Window
     }
     private void TestSound_Click(object sender, RoutedEventArgs e)
     {
-        SoundAlertService.Test();
+        SoundAlertService.Preview((SoundTheme.SelectedItem as ComboBoxItem)?.Tag?.ToString());
         SoundAlertStatus.Text = T("Sunetul de test a fost redat.");
     }
     private void GeminiKey_Click(object sender, RoutedEventArgs e)

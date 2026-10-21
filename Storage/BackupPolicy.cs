@@ -19,6 +19,7 @@ public static class BackupPolicy
         SoundAlertOnSuccess = settings.SoundAlertOnSuccess,
         SoundAlertOnNewArticles = settings.SoundAlertOnNewArticles,
         SoundAlertOnErrors = settings.SoundAlertOnErrors,
+        SoundTheme = SoundThemeIds.Normalize(settings.SoundTheme),
         AiInstructions = settings.AiInstructions,
         AiDefaultProvider = AiProviderIds.Normalize(settings.AiDefaultProvider),
         GeminiEnabled = false,

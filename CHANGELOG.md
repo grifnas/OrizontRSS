@@ -52,3 +52,5 @@ Probele practice A02, A09, A07 și A11 rămân deschise, conform registrului de 
 ## Modificări nepublicate după tagul v1.6.3
 
 După crearea tagului și a pachetelor release-ului, ramura `main` primește actualizări de documentație și de publicare, inclusiv pagina GitHub Pages și urmărirea manifestelor WinGet. Aceste schimbări de întreținere nu modifică pachetele atașate release-ului și nu constituie o nouă versiune a aplicației.
+
+- Teme sonore: în Setări, la „Temă sonoră”, se poate alege între Sunetele Windows (implicit, ca până acum), Interfață (sunete Kenney), Clopoței (sunete Robin Lamb) și Orizont (sunete proprii). Temele au sunete pentru articole noi, actualizare încheiată, erori, schimbarea folderului, capătul listei, favorite adăugate sau eliminate, ștergerea articolelor, răspunsuri AI și traduceri și sincronizarea NewsBlur. „Activează alertele sonore” oprește acum toate sunetele aplicației, inclusiv sunetul de la capătul listei. Sunetele Kenney, Robin Lamb și HaelDB au licența CC0.

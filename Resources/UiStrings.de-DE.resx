@@ -2623,6 +2623,11 @@ Details: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Standardmäßiges Öffnen von Artikeln</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Allgemeine Einstellung verwenden</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Standardmodus im Hauptfenster</value></data>
+  <data name="Orizont (sunete proprii)" xml:space="preserve"><value>Orizont (eigene Sounds)</value></data>
+  <data name="Clopoței (sunete Robin Lamb)" xml:space="preserve"><value>Glocken (Robin-Lamb-Sounds)</value></data>
+  <data name="Interfață (sunete Kenney)" xml:space="preserve"><value>Oberfläche (Kenney-Sounds)</value></data>
+  <data name="Sunetele Windows" xml:space="preserve"><value>Windows-Sounds</value></data>
+  <data name="Temă sonoră" xml:space="preserve"><value>Klangthema</value></data>
   <data name="Limba țintă pentru DeepL" xml:space="preserve"><value>Zielsprache für DeepL</value></data>
   <data name="Răspunde în limba interfeței. Fii clar, concis și semnalează incertitudinile." xml:space="preserve"><value>Antworte in der Sprache der Oberfläche. Sei klar, knapp und weise auf Unsicherheiten hin.</value></data>
   <data name="DeepSeek nu a returnat soldul într-un format valid." xml:space="preserve"><value>DeepSeek hat das Guthaben nicht in einem gültigen Format zurückgegeben.</value></data>

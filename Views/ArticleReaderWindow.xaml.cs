@@ -573,6 +573,7 @@ public partial class ArticleReaderWindow : Window
         {
             SetStatus(T("Se pregătește articolul în cititorul Orizont."));
             var response = await new AiProviderService().GenerateAsync(provider, key, model, _settings.AiInstructions, prompt);
+            SoundAlertService.Play(SoundEvent.AiReady);
             var responseWindow = CreateAiResponseWindow(
                 title,
                 response,
@@ -647,6 +648,7 @@ public partial class ArticleReaderWindow : Window
                 ArticleText.Select(0, 0);
             }
             SetStatus(T("Articolul a fost tradus cu DeepL."));
+            SoundAlertService.Play(SoundEvent.AiReady);
         }
         catch (Exception exception) { var message = F("DeepL nu a putut traduce articolul: {0}", exception.Message); SetStatus(message); ShowAiProblem(message); }
     }
@@ -706,6 +708,7 @@ public partial class ArticleReaderWindow : Window
             cancellationToken.ThrowIfCancellationRequested();
 
             requestLease.Dispose();
+            SoundAlertService.Play(SoundEvent.AiReady);
             var resultWindow = new ArticleTranslationWindow(translated, _article.Title, _link, "Google Translate", source,
                 ArticleDistributionContext.LanguageNameForCode(targetLanguage)) { Owner = this };
             resultWindow.ShowDialog();

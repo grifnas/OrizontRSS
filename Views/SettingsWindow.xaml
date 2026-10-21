@@ -85,6 +85,8 @@
               <StackPanel Margin="12">
                 <CheckBox x:Name="UpdateAtStartup" Content="Actualizează feedurile la pornire" AutomationProperties.Name="Actualizează feedurile la pornire" />
                 <CheckBox x:Name="SoundAlerts" Content="Activează alertele sonore" AutomationProperties.Name="Activează alertele sonore" AutomationProperties.HelpText="Controlează toate alertele sonore ale actualizării feedurilor." />
+                <Label x:Name="SoundThemeLabel" Content="Temă sonoră" Target="{Binding ElementName=SoundTheme}" Margin="0,6,0,0" />
+                <ComboBox x:Name="SoundTheme" AutomationProperties.Name="Temă sonoră" />
                 <CheckBox x:Name="SoundAlertOnSuccess" Content="Alertă la finalizarea reușită" AutomationProperties.Name="Alertă la finalizarea reușită" />
                 <CheckBox x:Name="SoundAlertOnNewArticles" Content="Alertă când există articole noi" AutomationProperties.Name="Alertă când există articole noi" />
                 <CheckBox x:Name="SoundAlertOnErrors" Content="Alertă la erori de feed" AutomationProperties.Name="Alertă la erori de feed" />

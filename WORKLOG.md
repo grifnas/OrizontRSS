@@ -2769,3 +2769,14 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare live: pagina de prezentare afișează „Versiunea 1.6.3”; linkul `releases/latest/download/OrizontSetup-1.6.3.exe` răspunde cu 200.
 - Executabilul de test standard (`bin\Release\Orizont.exe`) este sincronizat cu distribuția 1.6.3 (0 diferențe), versiunea 1.6.3.
 - Incident: în timpul publicării, ramura de la distanță `pregatire-1.6.2` a fost ștearsă din greșeală (comandă necerută); a fost refăcută imediat, la același commit `db2c539`. Nimic nu s-a pierdut.
+
+## 2026-10-21 — Teme sonore
+
+- Cerere: pachete de teme sonore în aplicație, din care utilizatorul alege, cu posibilitatea de a dezactiva sunetele.
+- Surse: trei pachete CC0 descărcate cu acordul utilizatorului de pe OpenGameArt (Kenney „Interface Sounds”, Robin Lamb „UI Sound Effects”, HaelDB „UI Sounds”) și sunete proprii sintetizate. Sunetele proprii generate pe 19 octombrie cu un script PowerShell aveau un defect (sunau doar parțial); au fost refăcute corect cu un generator C#.
+- Teme: Sunetele Windows (implicită, comportamentul de până acum), Interfață (Kenney), Clopoței (Robin Lamb; „sync-done” de la HaelDB), Orizont (proprii). Zece evenimente: articole noi, actualizare încheiată, eroare, folder schimbat, capăt de listă, favorit adăugat, favorit eliminat, articol șters, răspuns AI sau traducere, sincronizare NewsBlur. Tema Windows nu are sunete pentru evenimentele noi.
+- Modificări: `Models/AppSettings.cs` (`SoundTheme`, `SoundThemeIds`); `Services/Speech/SoundAlertService.cs` (teme, `Configure`, `Play`, `Preview`); `Assets/Sounds/themes/**` (30 de fișiere WAV, copiate în `Sounds\` la build); `Views/SettingsWindow.xaml(.cs)` (lista „Temă sonoră”; „Testează sunetul” redă tema aleasă); `MainWindow.xaml.cs` și `Views/ArticleReaderWindow.xaml.cs` (aplicarea temei și sunetele noi); `Storage/BackupPolicy.cs`; cele opt resurse; `Licenses/Sounds/README.md`; `THIRD-PARTY-NOTICES.md`; ghidurile în opt limbi (paragraf în secțiunea 2); `CHANGELOG.md`; `tools/verify-distribution.ps1` (cere sunetele temelor); `tests/CoreSmoke/Program.cs` (tema implicită, normalizare, toate cele 30 de fișiere valide și scurte).
+- Schimbare de comportament: „Activează alertele sonore” oprește acum și sunetul de la capătul listei, care înainte se auzea mereu.
+- Verificare: `verify-source.ps1 -Mode Quick` a trecut (CoreSmoke 280); publicare curată verificată cu `verify-distribution.ps1`; executabil de test sincronizat (0 diferențe), DLL SHA-256 `276F5BC2FFEA9166CF4632F923C95DE2A3F8240C92500331B5EA1F90A11BD5C9`.
+- Rămâne de verificat de utilizator: ascultarea temelor și alegerea sunetelor; JAWS 2026 pentru lista din Setări.
+- Folderul de ascultare `Assets/Sounds/propuneri-internet` nu este inclus în commit. Commit local, neîmpins.

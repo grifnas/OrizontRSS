@@ -65,6 +65,10 @@ OpenAI Codex a fost utilizat ca instrument de asistență pentru proiectarea, de
 
 Claude (Anthropic) a fost utilizat ca instrument de asistență pentru proiectarea, dezvoltarea, verificarea și documentarea aplicației. Claude nu este inclus ca o componentă de execuție a Orizont RSS.
 
+## Sunetele temelor sonore
+
+Temele sonore „Interfață” și „Clopoței” folosesc sunete cu licența CC0 1.0 (domeniu public): Kenney, „Interface Sounds”; Robin Lamb, „UI Sound Effects”; HaelDB, „UI Sounds”, toate de pe OpenGameArt. Tema „Orizont” conține sunete originale ale proiectului. Sursele exacte sunt în `Licenses/Sounds/README.md`.
+
 ## Pictograma Orizont RSS
 
 Pictograma Orizont RSS din directorul `Assets` este un element original creat pentru proiect și este distribuită ca parte a Orizont RSS în condițiile licenței proiectului.
