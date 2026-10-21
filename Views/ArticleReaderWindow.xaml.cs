@@ -1,3 +1,4 @@
+using System.Windows.Automation;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -503,7 +504,12 @@ public partial class ArticleReaderWindow : Window
         Dispatcher.Invoke(() => SetStatus(message));
     }
 
-    private void SetStatus(string message) => StatusAnnouncer.Set(Status, message, ReaderStatusBar);
+    // Numele barei este mesajul curent, ca JAWS să-l citească și la Insert+Page Down, nu doar ca text al casetei.
+    private void SetStatus(string message)
+    {
+        AutomationProperties.SetName(ReaderStatusBar, message);
+        StatusAnnouncer.Set(Status, message, ReaderStatusBar);
+    }
 
     private void Content_ContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
@@ -647,7 +653,10 @@ public partial class ArticleReaderWindow : Window
                 ArticleText.CaretIndex = 0;
                 ArticleText.Select(0, 0);
             }
-            SetStatus(T("Articolul a fost tradus cu DeepL."));
+            var translatedMessage = T("Articolul a fost tradus cu DeepL.");
+            SetStatus(translatedMessage);
+            // Mutarea focusului în text poate întrerupe anunțul; îl repetăm după ce focusul s-a stabilizat.
+            Dispatcher.BeginInvoke(new Action(() => SetStatus(translatedMessage)), System.Windows.Threading.DispatcherPriority.ContextIdle);
             SoundAlertService.Play(SoundEvent.AiReady);
         }
         catch (Exception exception) { var message = F("DeepL nu a putut traduce articolul: {0}", exception.Message); SetStatus(message); ShowAiProblem(message); }
