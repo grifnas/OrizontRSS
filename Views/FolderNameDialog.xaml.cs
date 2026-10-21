@@ -9,6 +9,7 @@ public partial class FolderNameDialog : Window
     public FolderNameDialog()
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Creează folder nou") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         Loaded += (_, _) => FolderNameBox.Focus();
     }
     private void Create_Click(object sender, RoutedEventArgs e)

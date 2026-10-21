@@ -2623,6 +2623,7 @@ Detalles: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Apertura predeterminada de artículos</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Usar la configuración general</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Modo estándar en la ventana principal</value></data>
+  <data name="Folosește Tab pentru a parcurge comenzile." xml:space="preserve"><value>Usa Tab para recorrer los controles.</value></data>
   <data name="Orizont (sunete proprii)" xml:space="preserve"><value>Orizont (sonidos propios)</value></data>
   <data name="Clopoței (sunete Robin Lamb)" xml:space="preserve"><value>Campanas (sonidos de Robin Lamb)</value></data>
   <data name="Interfață (sunete Kenney)" xml:space="preserve"><value>Interfaz (sonidos de Kenney)</value></data>

@@ -17,6 +17,7 @@ public partial class ArticleRulesPreviewWindow : Window
     public ArticleRulesPreviewWindow(List<ArticleRule> rules, List<Feed> feeds, bool allowApply)
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Previzualizare reguli") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         UiLocalizer.Apply(this);
         var rows = new List<PreviewRow>();
         foreach (var feed in feeds)

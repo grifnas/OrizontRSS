@@ -11,6 +11,7 @@ public partial class AiNoteLibraryWindow : Window
     public AiNoteLibraryWindow(IEnumerable<Feed> feeds)
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Bibliotecă de notițe AI") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         _notes = feeds.SelectMany(feed => feed.Articles.SelectMany(article => (article.AiNotes ?? []).Select(note => new LibraryNote(feed.Name, article, note))))
             .OrderByDescending(entry => entry.Note.CreatedAt).ToList();
         RefreshList();

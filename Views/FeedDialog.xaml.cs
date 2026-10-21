@@ -16,6 +16,7 @@ public partial class FeedDialog : Window
     public FeedDialog()
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Adaugă feed") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         ApplyText();
         ArticleOpenMode.SelectedIndex = 0;
         SetFolders([]);

@@ -9,6 +9,7 @@ public partial class ArticleRuleDialog : Window
     public ArticleRuleDialog(ArticleRule rule, List<Feed> feeds)
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Regulă automată") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         Rule = rule.Copy();
         RuleName.Text = Rule.Name;
         EnabledBox.IsChecked = Rule.Enabled;

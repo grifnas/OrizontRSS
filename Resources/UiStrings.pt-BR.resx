@@ -2852,6 +2852,7 @@ Detalhes: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Abertura padrão dos artigos</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Usar a configuração geral</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Modo padrão na janela principal</value></data>
+  <data name="Folosește Tab pentru a parcurge comenzile." xml:space="preserve"><value>Use Tab para percorrer os comandos.</value></data>
   <data name="Orizont (sunete proprii)" xml:space="preserve"><value>Orizont (sons próprios)</value></data>
   <data name="Clopoței (sunete Robin Lamb)" xml:space="preserve"><value>Sinos (sons Robin Lamb)</value></data>
   <data name="Interfață (sunete Kenney)" xml:space="preserve"><value>Interface (sons Kenney)</value></data>

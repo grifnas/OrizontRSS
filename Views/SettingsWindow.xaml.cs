@@ -35,6 +35,7 @@ public partial class SettingsWindow : Window
     public SettingsWindow(AppSettings settings, SettingsSection section = SettingsSection.Application)
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Setări Orizont RSS") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         Settings = settings;
         ShortcutSettingsButton.Visibility = section == SettingsSection.Application ? Visibility.Visible : Visibility.Collapsed;
         SettingsIntro.Text = T("Modificările sunt păstrate numai după alegerea butonului Salvează.");

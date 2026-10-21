@@ -19,6 +19,7 @@ public partial class UpdateAvailableWindow : Window
     public UpdateAvailableWindow(AppUpdateInfo updateInfo)
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Actualizare disponibilă — Orizont RSS") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         _updateInfo = updateInfo;
 
         UiLocalizer.Apply(this);

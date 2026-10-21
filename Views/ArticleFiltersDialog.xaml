@@ -3,6 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Filtre articole" Width="620" SizeToContent="Height" ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner">
+  <DockPanel>
+    <StatusBar x:Name="WindowStatusBar" DockPanel.Dock="Bottom" Margin="0,8,0,0" Focusable="False" IsTabStop="False" AutomationProperties.LiveSetting="Polite"><StatusBarItem Focusable="False" IsTabStop="False"><TextBlock x:Name="WindowStatus" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" /></StatusBarItem></StatusBar>
   <StackPanel Margin="24">
     <TextBlock Text="Filtre articole" Style="{StaticResource SectionTitleTextStyle}" />
     <TextBlock Text="Alege ce articole vrei să apară. Modificările sunt aplicate numai după confirmare." Style="{StaticResource DialogIntroTextStyle}" />
@@ -28,4 +30,5 @@
       <Button Content="Aplică" IsDefault="True" Click="Apply_Click" />
     </StackPanel>
   </StackPanel>
+  </DockPanel>
 </Window>

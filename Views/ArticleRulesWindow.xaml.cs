@@ -20,6 +20,7 @@ public partial class ArticleRulesWindow : Window
     public ArticleRulesWindow(IEnumerable<ArticleRule> rules, List<Feed> feeds, Func<List<ArticleRule>, Task>? saveRules = null)
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Reguli automate") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         Rules = rules.Select(r => r.Copy()).ToList();
         _feeds = feeds;
         _saveRules = saveRules;

@@ -15,6 +15,7 @@ public partial class HelpWindow : Window
     public HelpWindow()
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Ajutor Orizont RSS") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         // Translate before the window is shown so screen readers announce only
         // the title in the language selected by the user.
         UiLocalizer.Apply(this);

@@ -13,6 +13,7 @@ public partial class StatusHistoryWindow : Window
     public StatusHistoryWindow(IEnumerable<string> entries, Action clearHistory)
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Orizont RSS") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         Title = $"{T("Istoric stare și erori")} — {AppVersionInfo.ProductTitle}";
         UiLocalizer.Apply(this);
         _clearHistory = clearHistory;

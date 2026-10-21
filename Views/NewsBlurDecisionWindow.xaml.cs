@@ -25,6 +25,7 @@ public partial class NewsBlurDecisionWindow : Window
         IEnumerable<NewsBlurDecisionOption> options)
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Decizie NewsBlur") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         Title = UiText.Translate(title);
         DecisionText.Text = UiText.Translate(details);
         AutomationProperties.SetHelpText(DecisionText, UiText.Translate("Folosește săgețile pentru a citi textul. Apasă Tab pentru a ajunge la opțiuni. Escape alege opțiunea sigură și închide dialogul."));

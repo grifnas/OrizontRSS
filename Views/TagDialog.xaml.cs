@@ -10,6 +10,7 @@ public partial class TagDialog : Window
     public TagDialog(IEnumerable<string> selectedTags, IEnumerable<string> availableTags)
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Etichete articole") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         var selected = selectedTags.Distinct(StringComparer.CurrentCultureIgnoreCase).ToList();
         var available = availableTags.Concat(selected).Where(tag => !string.IsNullOrWhiteSpace(tag)).Distinct(StringComparer.CurrentCultureIgnoreCase).OrderBy(tag => tag).ToList();
         ExistingTags.ItemsSource = available;

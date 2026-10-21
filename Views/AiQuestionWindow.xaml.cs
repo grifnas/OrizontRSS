@@ -9,6 +9,7 @@ public partial class AiQuestionWindow : Window
     public AiQuestionWindow(string providerName = "Gemini")
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Întreabă furnizorul AI despre articol") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         Title = UiText.Format("Întreabă {0} despre articol", providerName);
         QuestionTitle.Text = UiText.Translate("Întrebarea ta despre articol");
         QuestionIntro.Text = UiText.Format("Furnizorul {0} primește conținutul complet disponibil în panoul de lectură și răspunde în contextul articolului.", providerName);

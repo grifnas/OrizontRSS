@@ -1,4 +1,6 @@
 <Window x:Class="CititorRSS.Jaws.SettingsWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Setări Orizont RSS" Icon="/Assets/OrizontRSS.ico" Width="780" Height="680" MinWidth="680" MinHeight="540" WindowStartupLocation="CenterOwner">
+  <DockPanel>
+    <StatusBar x:Name="WindowStatusBar" DockPanel.Dock="Bottom" Margin="0,8,0,0" Focusable="False" IsTabStop="False" AutomationProperties.LiveSetting="Polite"><StatusBarItem Focusable="False" IsTabStop="False"><TextBlock x:Name="WindowStatus" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" /></StatusBarItem></StatusBar>
   <Grid Margin="20">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -337,4 +339,5 @@
       <Button x:Name="SaveButton" Content="Salvează" IsDefault="True" Click="Save_Click" />
     </StackPanel>
   </Grid>
+  </DockPanel>
 </Window>

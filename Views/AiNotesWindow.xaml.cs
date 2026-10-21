@@ -9,6 +9,7 @@ public partial class AiNotesWindow : Window
     public AiNotesWindow(Article article)
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Notițe AI salvate") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         Title = UiText.Format("Notițe AI: {0}", article.Title);
         Notes.Text = string.Join(
             $"{Environment.NewLine}{Environment.NewLine}{new string('─', 48)}{Environment.NewLine}{Environment.NewLine}",

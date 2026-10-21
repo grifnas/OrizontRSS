@@ -2780,3 +2780,13 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Verificare: `verify-source.ps1 -Mode Quick` a trecut (CoreSmoke 280); publicare curată verificată cu `verify-distribution.ps1`; executabil de test sincronizat (0 diferențe), DLL SHA-256 `276F5BC2FFEA9166CF4632F923C95DE2A3F8240C92500331B5EA1F90A11BD5C9`.
 - Rămâne de verificat de utilizator: ascultarea temelor și alegerea sunetelor; JAWS 2026 pentru lista din Setări.
 - Folderul de ascultare `Assets/Sounds/propuneri-internet` nu este inclus în commit. Commit local, neîmpins.
+
+## 2026-10-21 — Bare de stare în toate ferestrele
+
+- Raport: fereastra de traducere nu are bară de stare, sau JAWS nu o citește. Verificare: toate ferestrele aplicației.
+- Constatare: fereastra de traducere avea o `StatusBar` cu `TranslationStatus`, dar nu are nume de accesibilitate; mesajul este setat la încărcare. Nu am putut reproduce citirea din JAWS; de confirmat de utilizator.
+- Modificare: 17 ferestre și dialoguri fără bară de stare au acum o `StatusBar` jos (`WindowStatusBar` cu `WindowStatus`), prin `DockPanel`, cu anunț la deschidere: titlul ferestrei și „Folosește Tab pentru a parcurge comenzile.”. Ferestrele cu bară existentă (principală, Cititor, răspuns AI, autentificare NewsBlur, traducere) nu s-au schimbat. Helper nou: `Common/WindowStatusAnnouncer.cs`.
+- Localizare: cheia nouă „Folosește Tab pentru a parcurge comenzile.” în cele opt resurse.
+- Verificare: build fără erori; `verify-source.ps1 -Mode Quick` a trecut (CoreSmoke 280, WorkflowSmoke 157/157, LocalizationSmoke 1529); `verify-localization -RequireComplete` a trecut. Executabil de test sincronizat (0 diferențe).
+- Rămâne de verificat cu JAWS 2026: Insert+Page Down în fereastra de traducere și într-o fereastră nouă din cele 17.
+- Commit local, neîmpins.

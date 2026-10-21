@@ -8,6 +8,8 @@
         ResizeMode="CanResizeWithGrip"
         Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
         Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}">
+  <DockPanel>
+    <StatusBar x:Name="WindowStatusBar" DockPanel.Dock="Bottom" Margin="0,8,0,0" Focusable="False" IsTabStop="False" AutomationProperties.LiveSetting="Polite"><StatusBarItem Focusable="False" IsTabStop="False"><TextBlock x:Name="WindowStatus" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" /></StatusBarItem></StatusBar>
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -100,4 +102,5 @@
                     AutomationProperties.Name="Ignoră actualizarea" />
         </StackPanel>
     </Grid>
+  </DockPanel>
 </Window>

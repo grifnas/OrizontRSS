@@ -15,6 +15,7 @@ public partial class ShortcutSettingsWindow : Window
     {
         _settings = settings;
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Configurare scurtături") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         UiLocalizer.Apply(this);
         Refresh();
         Loaded += (_, _) => Search.Focus();

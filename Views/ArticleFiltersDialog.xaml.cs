@@ -12,6 +12,7 @@ public partial class ArticleFiltersDialog : Window
     public ArticleFiltersDialog(string state, string period, string tag, IEnumerable<string> availableTags)
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Filtre articole") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         var states = new[]
         {
             new FilterChoice("All", UiText.Translate("Toate")),

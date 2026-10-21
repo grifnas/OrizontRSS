@@ -17,6 +17,7 @@ public partial class DiscoverTopicWindow : Window
     public DiscoverTopicWindow()
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Caută feeduri după subiect") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         Loaded += OnLoaded;
         Closed += (_, _) => _searchCancellation?.Cancel();
     }

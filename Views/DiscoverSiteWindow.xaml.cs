@@ -14,6 +14,7 @@ public partial class DiscoverSiteWindow : Window
     public DiscoverSiteWindow()
     {
         InitializeComponent();
+        WindowStatusAnnouncer.Attach(this, () => CititorRSS.Jaws.Localization.UiText.Translate("Găsește feeduri pe un site") + " " + CititorRSS.Jaws.Localization.UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         Loaded += (_, _) => SiteAddress.Focus();
         Closed += (_, _) => _discoveryCancellation?.Cancel();
     }
