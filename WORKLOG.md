@@ -2805,3 +2805,9 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - După tag: registru, README, PUBLICATION, CHANGELOG, pagini (1.6.4), ghiduri (1.6.4), eliminate notele și manifestele 1.6.3 din arbore. `main` împins (`52f5b99`).
 - WinGet: PR microsoft/winget-pkgs#431971 mutat la 1.6.4 pe `grifnas:submission/orizont-rss-1.5.3`; titlul „Update: Grifnas.OrizontRSS to 1.6.4”.
 - Probele A02, A09, A07, A11 rămân deschise. Instalatorul nu este semnat digital.
+
+## 2026-10-23 — Podcasturi în Cititorul Orizont (confirmat de utilizator)
+
+- Utilizatorul confirmă că toate funcțiile solicitate merg: redare în modul text, Z X C V B, S (viteză 0,5–2), P (ton 0,5–1,5), D (descărcare).
+- Ghidurile în opt limbi au un paragraf despre podcasturi, în secțiunea despre citire. Validare: `verify-user-guides.ps1` a trecut.
+- Commituri locale neîmpinse: `be1bacd`, `dc30ac0` și actualizarea ghidurilor. Nimic publicat.
