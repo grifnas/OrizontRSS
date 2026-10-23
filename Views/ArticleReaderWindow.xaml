@@ -6,6 +6,8 @@
         WindowStartupLocation="CenterOwner" PreviewKeyDown="Window_KeyDown" Closed="Window_Closed">
   <Window.Resources>
     <ContextMenu x:Key="ReaderContextMenu" AutomationProperties.Name="Comenzi cititor">
+      <MenuItem Header="Deschide pagina originală în browser" Click="OpenOriginalInBrowser_Click" />
+      <Separator />
       <MenuItem Header="AI și traducere">
         <MenuItem Header="Întreabă AI despre articol">
           <MenuItem Header="Rezuma articolul" Click="AiSummarize_Click" />
@@ -49,6 +51,7 @@
     <Menu x:Name="ReaderMenu" DockPanel.Dock="Top" Margin="0,0,0,8" AutomationProperties.Name="Meniu cititor">
       <MenuItem Header="Cititor">
         <MenuItem Header="Reîncarcă și curăță articolul" Click="Refresh_Click" />
+        <MenuItem Header="Deschide pagina originală în browser" Click="OpenOriginalInBrowser_Click" />
         <Separator />
         <MenuItem Header="Salvează articolul">
           <MenuItem Header="Salvează ca TXT" Click="SaveArticleAsTxt_Click" />

@@ -914,6 +914,20 @@ public partial class ArticleReaderWindow : Window
         SetStatus(T("Articolul complet a fost copiat în clipboard."));
     }
 
+    private void OpenOriginalInBrowser_Click(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(_link)) { SetStatus("Articolul nu are o adresă care poate fi deschisă."); return; }
+        try
+        {
+            BrowserReaderService.OpenOriginal(_link);
+            SetStatus("Pagina originală a articolului a fost deschisă în browserul implicit.");
+        }
+        catch (Exception exception)
+        {
+            SetStatus(F("Pagina originală nu a putut fi deschisă în browser: {0}", exception.Message));
+        }
+    }
+
     private void CopyLink_Click(object sender, RoutedEventArgs e)
     {
         if (!string.IsNullOrWhiteSpace(_link)) Clipboard.SetText(_link);
