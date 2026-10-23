@@ -20,7 +20,7 @@ public partial class ArticleReaderWindow
     /// <summary>Tratează tastele podcastului în modul text. Întoarce true dacă tasta a fost folosită.</summary>
     private bool HandlePodcastKey(KeyEventArgs e)
     {
-        if (_isWebViewActive || Keyboard.Modifiers != ModifierKeys.None) return false;
+        if (_isWebViewActive || Keyboard.Modifiers != ModifierKeys.None || !HasPodcast) return false;
         switch (e.Key)
         {
             case Key.Z: PodcastSeek(-BigJumpSeconds); return true;
