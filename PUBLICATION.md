@@ -2,14 +2,14 @@
 
 ## Ultimul release public
 
-- Versiune: **v1.6.3**, publicată la 19 octombrie 2026.
-- Release oficial: [github.com/grifnas/OrizontRSS/releases/tag/v1.6.3](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.3)
+- Versiune: **v1.6.4**, publicată la 23 octombrie 2026.
+- Release oficial: [github.com/grifnas/OrizontRSS/releases/tag/v1.6.4](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4)
 - Pagina de prezentare: [grifnas.github.io/OrizontRSS](https://grifnas.github.io/OrizontRSS/)
-- Codul exact al versiunii: [tagul v1.6.3](https://github.com/grifnas/OrizontRSS/tree/v1.6.3)
-- Commitul tagului v1.6.3: `154b446093b2e3c2102ce07b714d2b39f2686828`. Ramura `main` conține acest commit și actualizările de documentație ulterioare.
-- Installer autonom offline: `OrizontSetup-1.6.3.exe` — 251.714.584 bytes; SHA-256 `1ca3e20805a6bd934ac0909ac3b30dc6db1e00d7a58de14c29f54b40eb9d0d7b`.
-- Variantă portabilă: `Orizont-RSS-1.6.3-win-x64.zip` — 89.920.276 bytes; SHA-256 `ab8c1c79311a0938826e483135456413971e8062b38018262b7e2a60ac74ffa6`.
-- Arhivă sursă: `Orizont-RSS-1.6.3-source.zip` — 13.754.762 bytes; SHA-256 `e30bf12fb70ccbaf8afa76fc6ce49bb96d1dc02b6421b84fa956da2776559c81`.
+- Codul exact al versiunii: [tagul v1.6.4](https://github.com/grifnas/OrizontRSS/tree/v1.6.4)
+- Commitul tagului v1.6.4: `c1ca351` (hash complet în `git rev-parse v1.6.4`). Ramura `main` conține acest commit și actualizările de documentație ulterioare.
+- Installer autonom offline: `OrizontSetup-1.6.4.exe` — 252.541.976 bytes; SHA-256 `2a9efba4f865f7ff71b87445f9c827c0f7004d52c990ab0b67c56071556e2aac`.
+- Variantă portabilă: `Orizont-RSS-1.6.4-win-x64.zip` — 90.748.275 bytes; SHA-256 `626dbcc188e5bf1a92de55f0e6858e4b7d2fe9fe2df6c6186423fc7e900e8727`.
+- Arhivă sursă: `Orizont-RSS-1.6.4-source.zip` — 14.591.374 bytes; SHA-256 `0113317ea7a4eec8f66bf62f62f20204b58480f50a95d6d5e535b3ea7b7e45bb`.
 - Cele trei fișiere `.sha256` sunt atașate alături de pachete. Pagina publică a release-ului afișează cele șase fișiere încărcate și cele două arhive automate ale sursei GitHub.
 
 Pachetele includ .NET și Windows Desktop 8.0.31; nu cer instalarea separată a .NET Desktop Runtime. WebReader folosește Microsoft Edge WebView2 Runtime. Hash-urile locale au fost comparate cu digesturile afișate de GitHub.
