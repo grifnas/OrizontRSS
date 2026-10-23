@@ -2796,3 +2796,12 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Concluzie: în WebReader focusul rămâne în motorul web, iar bara de stare WPF nu este accesibilă cititorului. Zona de sub titlu, încercată ca alternativă, nu a fost anunțată și a fost anulată (`e7e1ff3`, revert de `3fe85b1`).
 - Modificare: în ghidurile celor opt limbi, paragraful despre WebReader spune că mesajele de stare se citesc în modul text.
 - Verificare: `verify-user-guides.ps1` a trecut. Commit local, neîmpins.
+
+## 2026-10-23 — Publicarea v1.6.4
+
+- Tag `v1.6.4` pe `c1ca351`; release GitHub cu trei pachete și `.sha256`; digesturile GitHub corespund cu cele locale.
+- Pachete: `OrizontSetup-1.6.4.exe` (252.541.976 bytes, SHA-256 `2a9efba4…aac`), `Orizont-RSS-1.6.4-win-x64.zip` (90.748.275 bytes, SHA-256 `626dbcc1…727`), `Orizont-RSS-1.6.4-source.zip` (14.591.374 bytes, SHA-256 `0113317e…45bb`).
+- Verificare completă înainte de publicare: `verify-all.ps1` cu distribuția, în worktree izolat.
+- După tag: registru, README, PUBLICATION, CHANGELOG, pagini (1.6.4), ghiduri (1.6.4), eliminate notele și manifestele 1.6.3 din arbore. `main` împins (`52f5b99`).
+- WinGet: PR microsoft/winget-pkgs#431971 mutat la 1.6.4 pe `grifnas:submission/orizont-rss-1.5.3`; titlul „Update: Grifnas.OrizontRSS to 1.6.4”.
+- Probele A02, A09, A07, A11 rămân deschise. Instalatorul nu este semnat digital.
