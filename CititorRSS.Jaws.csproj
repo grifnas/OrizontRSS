@@ -52,6 +52,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
     <PackageReference Include="SmartReader" Version="0.11.1" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="SoundTouch.Net" Version="2.3.2" />
     <!-- SmartReader 0.11.1 este compilat pentru AngleSharp 1.5.2; 0.9.6 (AngleSharp 1.1.2) nu mai pornea cu AngleSharp 1.7.1 (MissingMethodException). -->
     <PackageReference Include="AngleSharp" Version="1.7.1" />
   </ItemGroup>

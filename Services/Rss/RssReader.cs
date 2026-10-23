@@ -82,7 +82,7 @@ public sealed class RssReader
         return new RssFeedPreview(response.RequestMessage?.RequestUri?.ToString() ?? url, feed.Title, feed.Articles);
     }
 
-    private static async Task<(string Title, List<Article> Articles)> ParseFeedAsync(System.IO.Stream stream, CancellationToken cancellationToken)
+    internal static async Task<(string Title, List<Article> Articles)> ParseFeedAsync(System.IO.Stream stream, CancellationToken cancellationToken)
     {
         using var xmlReader = System.Xml.XmlReader.Create(stream, new System.Xml.XmlReaderSettings
         {
@@ -119,8 +119,24 @@ public sealed class RssReader
             if (string.IsNullOrWhiteSpace(id)) id = link;
             if (string.IsNullOrWhiteSpace(id)) id = $"{title}\n{date}";
             var text = ArticleTextNormalizer.ToReadableText(html);
-            return new Article { Id = id, Title = title, Content = text, Link = link, Published = ParseRssDate(date) };
+            return new Article { Id = id, Title = title, Content = text, Link = link, Published = ParseRssDate(date), AudioUrl = AudioEnclosure(record) };
         }).OrderByDescending(item => item.Published).ToList());
+    }
+
+    /// <summary>Primul fișier audio http(s) din elementele enclosure ale unui episod de podcast.</summary>
+    private static string? AudioEnclosure(XElement record)
+    {
+        foreach (var enclosure in record.Elements().Where(element => element.Name.LocalName == "enclosure"))
+        {
+            var url = enclosure.Attribute("url")?.Value?.Trim();
+            if (string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.Absolute, out var uri)) continue;
+            if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps) continue;
+            var type = enclosure.Attribute("type")?.Value ?? string.Empty;
+            if (type.StartsWith("audio/", StringComparison.OrdinalIgnoreCase)
+                || System.Text.RegularExpressions.Regex.IsMatch(uri.AbsolutePath, @"\.(mp3|m4a|aac|ogg|opus|wav)$", System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                return uri.AbsoluteUri;
+        }
+        return null;
     }
 
     public static DateTimeOffset ParseRssDate(string? dateString)

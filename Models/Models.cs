@@ -61,6 +61,8 @@ public sealed class Article
     public string Content { get; set; } = string.Empty;
     public string? FullContent { get; set; }
     public string Link { get; set; } = string.Empty;
+    /// <summary>Adresa fișierului audio al unui episod de podcast (enclosure), dacă feed-ul are una.</summary>
+    public string? AudioUrl { get; set; }
     public DateTimeOffset Published { get; set; } = DateTimeOffset.Now;
     public bool IsRead { get; set; }
     public bool IsFavorite { get; set; }

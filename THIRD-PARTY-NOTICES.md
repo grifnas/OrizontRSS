@@ -40,6 +40,23 @@ Pentru textul integral al articolelor, Orizont RSS folosește biblioteca SmartRe
 - Licență: Apache-2.0
 - Copyright: Strumenta
 
+## NAudio 2.2.1
+
+Biblioteca NAudio realizează redarea podcasturilor și citirea fișierelor audio.
+
+- Proiect: https://github.com/naudio/NAudio
+- Versiune inclusă: 2.2.1
+- Licență: MIT. Textul licenței este inclus în `Licenses/NAudio`.
+- Copyright: Mark Heath
+
+## SoundTouch.Net 2.3.2
+
+SoundTouch.Net schimbă viteza și tonul podcasturilor independent unul de celălalt (`Services/Audio/PodcastPlayer.cs`).
+
+- Proiect: https://github.com/owoudenberg/soundtouch.net (SoundTouch: https://www.surina.net/soundtouch)
+- Versiune inclusă: 2.3.2
+- Licență: LGPL-2.1-or-later. Textul licenței este inclus în `Licenses/SoundTouch`.
+
 ## AngleSharp 1.7.1
 
 AngleSharp este analizorul HTML folosit de SmartReader și de găsirea feedurilor pe un site. Textul licenței este inclus în `Licenses/AngleSharp`.

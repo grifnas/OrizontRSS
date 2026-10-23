@@ -2942,6 +2942,27 @@ Részletek: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Cikkek alapértelmezett megnyitása</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Általános beállítás használata</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Normál mód a főablakban</value></data>
+  <data name="Descarcă podcastul" xml:space="preserve"><value>Podcast letöltése</value></data>
+  <data name="Tonul redării" xml:space="preserve"><value>Lejátszási hangmagasság</value></data>
+  <data name="Viteza de redare" xml:space="preserve"><value>Lejátszási sebesség</value></data>
+  <data name="Redă podcastul" xml:space="preserve"><value>Podcast lejátszása</value></data>
+  <data name="Descărcarea podcastului nu a reușit: {0}" xml:space="preserve"><value>A podcast letöltése sikertelen: {0}</value></data>
+  <data name="Podcastul a fost salvat: {0}" xml:space="preserve"><value>A podcast elmentve: {0}</value></data>
+  <data name="Se descarcă podcastul." xml:space="preserve"><value>A podcast letöltése.</value></data>
+  <data name="Toate fișierele" xml:space="preserve"><value>Minden fájl</value></data>
+  <data name="Fișiere audio" xml:space="preserve"><value>Hangfájlok</value></data>
+  <data name="Salvează podcastul" xml:space="preserve"><value>Podcast mentése</value></data>
+  <data name="Tonul redării: {0}." xml:space="preserve"><value>Lejátszási hangmagasság: {0}.</value></data>
+  <data name="Viteza de redare: {0}." xml:space="preserve"><value>Lejátszási sebesség: {0}.</value></data>
+  <data name="Nu există un podcast pornit. Apasă C pentru redare." xml:space="preserve"><value>Nincs podcast elindítva. Nyomja meg a C gombot a lejátszáshoz.</value></data>
+  <data name="Salt la {0}." xml:space="preserve"><value>Ugrás ide: {0}.</value></data>
+  <data name="Podcastul nu a putut fi redat: {0}" xml:space="preserve"><value>A podcastot nem lehetett lejátszani: {0}</value></data>
+  <data name="Podcast pus pe pauză: {0}." xml:space="preserve"><value>Podcast szüneteltetve: {0}.</value></data>
+  <data name="Redare podcast: {0} din {1}." xml:space="preserve"><value>Podcast lejátszása: {0} / {1}.</value></data>
+  <data name="Se pornește podcastul." xml:space="preserve"><value>A podcast indul.</value></data>
+  <data name="Articolul nu are un podcast." xml:space="preserve"><value>A cikkhez nincs podcast.</value></data>
+  <data name="Alege valoarea din listă și apasă Aplică." xml:space="preserve"><value>Válasszon értéket a listából, majd nyomja meg az Alkalmazás gombot.</value></data>
+  <data name="Valoare" xml:space="preserve"><value>Érték</value></data>
   <data name="Folosește Tab pentru a parcurge comenzile." xml:space="preserve"><value>A Tab billentyűvel járhatók be a vezérlők.</value></data>
   <data name="Orizont (sunete proprii)" xml:space="preserve"><value>Orizont (saját hangok)</value></data>
   <data name="Clopoței (sunete Robin Lamb)" xml:space="preserve"><value>Csengők (Robin Lamb-hangok)</value></data>

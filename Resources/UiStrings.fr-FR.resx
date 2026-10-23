@@ -2623,6 +2623,27 @@ Détails : {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Ouverture par défaut des articles</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Utiliser le réglage général</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Mode standard dans la fenêtre principale</value></data>
+  <data name="Descarcă podcastul" xml:space="preserve"><value>Télécharger le podcast</value></data>
+  <data name="Tonul redării" xml:space="preserve"><value>Hauteur de lecture</value></data>
+  <data name="Viteza de redare" xml:space="preserve"><value>Vitesse de lecture</value></data>
+  <data name="Redă podcastul" xml:space="preserve"><value>Lire le podcast</value></data>
+  <data name="Descărcarea podcastului nu a reușit: {0}" xml:space="preserve"><value>Le téléchargement du podcast a échoué : {0}</value></data>
+  <data name="Podcastul a fost salvat: {0}" xml:space="preserve"><value>Le podcast a été enregistré : {0}</value></data>
+  <data name="Se descarcă podcastul." xml:space="preserve"><value>Téléchargement du podcast.</value></data>
+  <data name="Toate fișierele" xml:space="preserve"><value>Tous les fichiers</value></data>
+  <data name="Fișiere audio" xml:space="preserve"><value>Fichiers audio</value></data>
+  <data name="Salvează podcastul" xml:space="preserve"><value>Enregistrer le podcast</value></data>
+  <data name="Tonul redării: {0}." xml:space="preserve"><value>Hauteur de lecture : {0}.</value></data>
+  <data name="Viteza de redare: {0}." xml:space="preserve"><value>Vitesse de lecture : {0}.</value></data>
+  <data name="Nu există un podcast pornit. Apasă C pentru redare." xml:space="preserve"><value>Aucun podcast n’est en cours. Appuyez sur C pour lire.</value></data>
+  <data name="Salt la {0}." xml:space="preserve"><value>Saut à {0}.</value></data>
+  <data name="Podcastul nu a putut fi redat: {0}" xml:space="preserve"><value>Le podcast n’a pas pu être lu : {0}</value></data>
+  <data name="Podcast pus pe pauză: {0}." xml:space="preserve"><value>Podcast en pause : {0}.</value></data>
+  <data name="Redare podcast: {0} din {1}." xml:space="preserve"><value>Lecture du podcast : {0} sur {1}.</value></data>
+  <data name="Se pornește podcastul." xml:space="preserve"><value>Démarrage du podcast.</value></data>
+  <data name="Articolul nu are un podcast." xml:space="preserve"><value>L’article ne contient pas de podcast.</value></data>
+  <data name="Alege valoarea din listă și apasă Aplică." xml:space="preserve"><value>Choisissez une valeur dans la liste, puis appuyez sur Appliquer.</value></data>
+  <data name="Valoare" xml:space="preserve"><value>Valeur</value></data>
   <data name="Folosește Tab pentru a parcurge comenzile." xml:space="preserve"><value>Utilisez Tab pour parcourir les commandes.</value></data>
   <data name="Orizont (sunete proprii)" xml:space="preserve"><value>Orizont (sons originaux)</value></data>
   <data name="Clopoței (sunete Robin Lamb)" xml:space="preserve"><value>Clochettes (sons Robin Lamb)</value></data>

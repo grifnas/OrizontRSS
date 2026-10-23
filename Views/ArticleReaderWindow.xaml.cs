@@ -434,6 +434,7 @@ public partial class ArticleReaderWindow : Window
 
     private void ArticleText_PreviewKeyDown(object sender, KeyEventArgs e)
     {
+        if (HandlePodcastKey(e)) { e.Handled = true; return; }
         var key = ContextMenuKeyboard.Normalize(e.Key, e.SystemKey);
         if (!ContextMenuKeyboard.IsMenuShortcut(key, e.KeyboardDevice.Modifiers)) return;
         if (Resources["ReaderContextMenu"] is not ContextMenu menu || !menu.IsOpen) OpenContextMenu();
@@ -491,6 +492,7 @@ public partial class ArticleReaderWindow : Window
     private async void Window_Closed(object? sender, EventArgs e)
     {
         _readerLifetime.Cancel();
+        DisposePodcast();
         _speech.StateChanged -= SpeechStateChanged;
         _settings.ReaderWindowWidth = Width;
         _settings.ReaderWindowHeight = Height;

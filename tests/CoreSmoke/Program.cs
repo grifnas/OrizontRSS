@@ -347,6 +347,7 @@ await RunDeepSeekBalanceSmokeAsync();
 CheckAiInstructionsFollowInterfaceLanguage();
 CheckDeepLTargetLanguages();
 CheckSoundThemes();
+await RunPodcastEnclosureSmokeAsync();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
 
@@ -889,6 +890,20 @@ void CheckAiInstructionsFollowInterfaceLanguage()
         Check(AiInstructionsLocalization.ForDisplay(AppSettings.DefaultAiInstructions.Replace("Fii", "Fii  ", StringComparison.Ordinal)) == AppSettings.DefaultAiInstructions.Replace("Fii", "Fii  ", StringComparison.Ordinal), "o instrucțiune personalizată nu este înlocuită");
     }
     finally { CultureInfo.CurrentUICulture = romanian; }
+}
+
+async Task RunPodcastEnclosureSmokeAsync()
+{
+    var rss = "<rss><channel><title>Podcast test</title>" +
+        "<item><title>Episod</title><guid>g1</guid><link>https://pod.example.test/e1</link><enclosure url=\"https://pod.example.test/e1.mp3\" type=\"audio/mpeg\" length=\"1\" /></item>" +
+        "<item><title>Ftp</title><guid>g2</guid><enclosure url=\"ftp://pod.example.test/e2.mp3\" type=\"audio/mpeg\" /></item>" +
+        "<item><title>Fara audio</title><guid>g3</guid><description>Text</description></item>" +
+        "</channel></rss>";
+    var feed = await RssReader.ParseFeedAsync(new MemoryStream(Encoding.UTF8.GetBytes(rss)), CancellationToken.None);
+    var episode = feed.Articles.Single(article => article.Title == "Episod");
+    Check(episode.AudioUrl == "https://pod.example.test/e1.mp3", "un episod cu enclosure audio http(s) primește adresa fișierului");
+    Check(feed.Articles.Single(article => article.Title == "Ftp").AudioUrl is null, "un enclosure care nu este http(s) este ignorat");
+    Check(feed.Articles.Single(article => article.Title == "Fara audio").AudioUrl is null, "un articol fără enclosure nu are podcast");
 }
 
 void CheckSoundThemes()

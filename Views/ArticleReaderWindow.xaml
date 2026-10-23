@@ -24,6 +24,11 @@
         <MenuItem Header="Citește de la cursor" Click="SpeakFromCursor_Click" />
         <MenuItem Header="Pauză sau continuă" InputGestureText="F9" Click="PauseResumeSpeech_Click" />
         <MenuItem Header="Oprește citirea" InputGestureText="Escape" Click="StopSpeech_Click" />
+        <Separator />
+        <MenuItem Header="Redă podcastul" InputGestureText="C" Click="PodcastPlay_Click" />
+        <MenuItem Header="Viteza de redare" InputGestureText="S" Click="PodcastSpeed_Click" />
+        <MenuItem Header="Tonul redării" InputGestureText="P" Click="PodcastPitch_Click" />
+        <MenuItem Header="Descarcă podcastul" InputGestureText="D" Click="PodcastDownload_Click" />
       </MenuItem>
       <Separator />
       <MenuItem Header="Salvează articolul">
@@ -62,6 +67,11 @@
         <MenuItem Header="Citește de la cursor" Click="SpeakFromCursor_Click" />
         <MenuItem Header="Pauză sau continuă" InputGestureText="F9" Click="PauseResumeSpeech_Click" />
         <MenuItem Header="Oprește citirea" InputGestureText="Escape" Click="StopSpeech_Click" />
+        <Separator />
+        <MenuItem Header="Redă podcastul" InputGestureText="C" Click="PodcastPlay_Click" />
+        <MenuItem Header="Viteza de redare" InputGestureText="S" Click="PodcastSpeed_Click" />
+        <MenuItem Header="Tonul redării" InputGestureText="P" Click="PodcastPitch_Click" />
+        <MenuItem Header="Descarcă podcastul" InputGestureText="D" Click="PodcastDownload_Click" />
       </MenuItem>
     </Menu>
     <StackPanel DockPanel.Dock="Top" Margin="0,0,0,10">
