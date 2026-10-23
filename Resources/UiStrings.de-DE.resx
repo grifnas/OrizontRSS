@@ -2623,6 +2623,7 @@ Details: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Standardmäßiges Öffnen von Artikeln</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Allgemeine Einstellung verwenden</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Standardmodus im Hauptfenster</value></data>
+  <data name="Acesta este un videoclip. Afișăm descrierea din feed. Ca să-l urmărești, folosește „Deschide pagina originală în browser”." xml:space="preserve"><value>Dies ist ein Video. Angezeigt wird die Beschreibung aus dem Feed. Zum Ansehen verwenden Sie „Öffnen Sie die Originalseite im Browser“.</value></data>
   <data name="Trimite cuvintele-cheie la catalogul Apple Podcasts și arată feedurile RSS ale podcasturilor găsite. Verifică-le înainte de adăugare." xml:space="preserve"><value>Sendet die Stichwörter an den Apple-Podcasts-Katalog und zeigt die RSS-Feeds der gefundenen Podcasts. Vor dem Hinzufügen prüfen.</value></data>
   <data name="Căutarea de podcasturi nu a reușit: {0}" xml:space="preserve"><value>Die Podcast-Suche ist fehlgeschlagen: {0}</value></data>
   <data name="{0} podcasturi găsite. Alege unul, verifică feedul și apoi adaugă-l." xml:space="preserve"><value>{0} Podcasts gefunden. Wählen Sie einen aus, prüfen Sie den Feed und fügen Sie ihn dann hinzu.</value></data>

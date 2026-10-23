@@ -169,8 +169,17 @@ public sealed class RssReader
         return DateTimeOffset.Now;
     }
 
+    /// <summary>Paginile de videoclipuri (YouTube) nu se descarcă pentru citire: pagina de vizionare cere consimțământ.</summary>
+    public static bool IsVideoPlatformUrl(string? url)
+    {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return false;
+        var host = uri.Host.ToLowerInvariant();
+        return host is "youtube.com" or "youtu.be" || host.EndsWith(".youtube.com", StringComparison.Ordinal);
+    }
+
     public async Task<string> LoadReadableContentAsync(string articleUrl)
     {
+        if (IsVideoPlatformUrl(articleUrl)) throw new InvalidOperationException("Pagina video nu se descarcă pentru citire.");
         using var response = await _client.GetAsync(articleUrl);
         response.EnsureSuccessStatusCode();
         var html = await response.Content.ReadAsStringAsync();

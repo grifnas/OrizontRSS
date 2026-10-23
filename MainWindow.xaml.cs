@@ -633,8 +633,8 @@ public partial class MainWindow : Window
                 }
                 catch { text = null; }
             }
-            text ??= await ArticleCommands.LoadReadableAsync(link);
-            if (text.Length < 150) throw new InvalidOperationException(T("Pagina nu a oferit suficient text pentru modul de citire."));
+            text ??= await LoadReadableForArticleAsync(article, link);
+            if (text.Length < 150 && !RssReader.IsVideoPlatformUrl(link)) throw new InvalidOperationException(T("Pagina nu a oferit suficient text pentru modul de citire."));
             if (!CanPresentArticleResult(article, request)) return;
             article.FullContent = text;
             await ArticleCommands.SaveAsync();
@@ -669,7 +669,7 @@ public partial class MainWindow : Window
         Say(F("Se traduce articolul cu DeepL în limba interfeței. Așteaptă."));
         try
         {
-            Func<Task<string>>? loadReadable = string.IsNullOrWhiteSpace(article.Link) ? null : () => ArticleCommands.LoadReadableAsync(article.Link);
+            Func<Task<string>>? loadReadable = string.IsNullOrWhiteSpace(article.Link) ? null : () => LoadReadableForArticleAsync(article, article.Link);
             var source = await ArticleTranslationSource.ResolveAsync(article.FullContent, originalText, loadReadable, article.Title);
             if (!CanPresentArticleResult(article, request)) return;
             if (string.IsNullOrWhiteSpace(source)) { Say(T("Articolul nu conține text pentru traducere.")); return; }
@@ -731,7 +731,7 @@ public partial class MainWindow : Window
 
             cancellationToken.ThrowIfCancellationRequested();
             Say(T("Se traduce articolul cu Google Translate. Așteaptă."));
-            var source = await ArticleTranslationSource.ResolveAsync(article.FullContent, sourceText, () => ArticleCommands.LoadReadableAsync(link), title);
+            var source = await ArticleTranslationSource.ResolveAsync(article.FullContent, sourceText, () => LoadReadableForArticleAsync(article, link), title);
             cancellationToken.ThrowIfCancellationRequested();
             if (!CanPresentArticleResult(article, request)) return;
             if (string.IsNullOrWhiteSpace(source))
@@ -820,7 +820,7 @@ public partial class MainWindow : Window
             {
                 // Reextragem pagina pentru a nu reutiliza un FullContent vechi, care poate
                 // conține reclame sau cod JavaScript înaintea curățării extractorului.
-                text = await ArticleCommands.LoadReadableAsync(link);
+                text = await LoadReadableForArticleAsync(article, link);
             }
             catch when (!string.IsNullOrWhiteSpace(article.FullContent))
             {
@@ -838,7 +838,7 @@ public partial class MainWindow : Window
             ArticleCommands.ShowReader(article, text,
                 async () =>
                 {
-                    var refreshed = await ArticleCommands.LoadReadableAsync(link);
+                    var refreshed = await LoadReadableForArticleAsync(article, link);
                     article.FullContent = refreshed;
                     await ArticleCommands.SaveAsync();
                     return refreshed;

@@ -1378,6 +1378,7 @@ Detalii: {1}</value></data><data name="Gemini nu a răspuns în 45 de secunde. �
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Deschiderea implicită a articolelor</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Folosește setarea generală</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Mod standard în fereastra principală</value></data>
+  <data name="Acesta este un videoclip. Afișăm descrierea din feed. Ca să-l urmărești, folosește „Deschide pagina originală în browser”." xml:space="preserve"><value>Acesta este un videoclip. Afișăm descrierea din feed. Ca să-l urmărești, folosește „Deschide pagina originală în browser”.</value></data>
   <data name="Trimite cuvintele-cheie la catalogul Apple Podcasts și arată feedurile RSS ale podcasturilor găsite. Verifică-le înainte de adăugare." xml:space="preserve"><value>Trimite cuvintele-cheie la catalogul Apple Podcasts și arată feedurile RSS ale podcasturilor găsite. Verifică-le înainte de adăugare.</value></data>
   <data name="Căutarea de podcasturi nu a reușit: {0}" xml:space="preserve"><value>Căutarea de podcasturi nu a reușit: {0}</value></data>
   <data name="{0} podcasturi găsite. Alege unul, verifică feedul și apoi adaugă-l." xml:space="preserve"><value>{0} podcasturi găsite. Alege unul, verifică feedul și apoi adaugă-l.</value></data>

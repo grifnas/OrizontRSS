@@ -2942,6 +2942,7 @@ Részletek: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Cikkek alapértelmezett megnyitása</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Általános beállítás használata</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Normál mód a főablakban</value></data>
+  <data name="Acesta este un videoclip. Afișăm descrierea din feed. Ca să-l urmărești, folosește „Deschide pagina originală în browser”." xml:space="preserve"><value>Ez egy videó. A hírcsatorna leírása látható. A megtekintéshez használja ezt: „Nyissa meg az eredeti oldalt a böngészőben”.</value></data>
   <data name="Trimite cuvintele-cheie la catalogul Apple Podcasts și arată feedurile RSS ale podcasturilor găsite. Verifică-le înainte de adăugare." xml:space="preserve"><value>A kulcsszavakat elküldi az Apple Podcasts katalógusának, és megjeleníti a talált podcastok RSS-hírcsatornáit. Hozzáadás előtt ellenőrizze őket.</value></data>
   <data name="Căutarea de podcasturi nu a reușit: {0}" xml:space="preserve"><value>A podcastkeresés sikertelen: {0}</value></data>
   <data name="{0} podcasturi găsite. Alege unul, verifică feedul și apoi adaugă-l." xml:space="preserve"><value>{0} podcast található. Válasszon egyet, ellenőrizze a hírcsatornát, majd adja hozzá.</value></data>

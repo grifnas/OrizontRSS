@@ -8,6 +8,15 @@ public partial class MainWindow
     private long _contentRequestRevision;
     internal ArticleCommandPorts ArticleCommands { get; set; } = null!;
 
+    /// <summary>Pentru videoclipuri YouTube afișează descrierea din feed, fără să descarce pagina de vizionare.</summary>
+    private Task<string> LoadReadableForArticleAsync(Article article, string link)
+    {
+        if (!RssReader.IsVideoPlatformUrl(link)) return ArticleCommands.LoadReadableAsync(link);
+        var note = T("Acesta este un videoclip. Afișăm descrierea din feed. Ca să-l urmărești, folosește „Deschide pagina originală în browser”.");
+        var description = RssReader.CleanReadableContent(article.Content, article.Title);
+        return Task.FromResult(string.IsNullOrWhiteSpace(description) ? note : note + "\n\n" + description);
+    }
+
     private bool CanPresentArticleResult(Article article, long request) =>
         ReferenceEquals(_article, article) && request == _contentRequestRevision &&
         !_closeInProgress && !_isClosingAfterSave;

@@ -348,6 +348,8 @@ CheckAiInstructionsFollowInterfaceLanguage();
 CheckDeepLTargetLanguages();
 CheckSoundThemes();
 CheckPodcastSearchParsing();
+Check(RssReader.IsVideoPlatformUrl("https://www.youtube.com/watch?v=abc") && RssReader.IsVideoPlatformUrl("https://youtu.be/abc") && !RssReader.IsVideoPlatformUrl("https://pod.example.test/youtube.com/a"),
+    "paginile YouTube nu se descarcă pentru citire, iar alte pagini se descarcă normal");
 await RunPodcastEnclosureSmokeAsync();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
