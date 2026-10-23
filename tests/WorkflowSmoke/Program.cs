@@ -342,10 +342,10 @@ internal static class Program
                   !(bool)isMenuShortcut.Invoke(null, [System.Windows.Input.Key.F10, System.Windows.Input.ModifierKeys.None])! &&
                   (System.Windows.Input.Key)normalizeMenuKey.Invoke(null, [System.Windows.Input.Key.System, System.Windows.Input.Key.Apps])! == System.Windows.Input.Key.Apps,
                 "Application and Shift+F10 use one normalized context-menu keyboard policy");
-            Check(!(bool)shouldHandleReaderShortcut.Invoke(null, [System.Windows.Input.Key.Apps, System.Windows.Input.ModifierKeys.None, false])! &&
-                  (bool)shouldHandleReaderShortcut.Invoke(null, [System.Windows.Input.Key.Apps, System.Windows.Input.ModifierKeys.None, true])! &&
-                  (bool)shouldHandleReaderShortcut.Invoke(null, [System.Windows.Input.Key.F10, System.Windows.Input.ModifierKeys.Shift, false])!,
-                "Text mode leaves Application to WPF while Shift+F10 and WebReader shortcuts remain handled");
+            Check((bool)shouldHandleReaderShortcut.Invoke(null, [System.Windows.Input.Key.Apps, System.Windows.Input.ModifierKeys.None])! &&
+                  (bool)shouldHandleReaderShortcut.Invoke(null, [System.Windows.Input.Key.F10, System.Windows.Input.ModifierKeys.Shift])! &&
+                  !(bool)shouldHandleReaderShortcut.Invoke(null, [System.Windows.Input.Key.F10, System.Windows.Input.ModifierKeys.None])!,
+                "The reader window handles Application and Shift+F10 before the text box, as in text mode Shift+F10 already works");
             var contextSaveMenu = readerContextMenu.Items.OfType<MenuItem>()
                 .FirstOrDefault(item => string.Equals(item.Header?.ToString(), "Salvează articolul", StringComparison.Ordinal));
             var readerMenu = (Menu)articleReader.FindName("ReaderMenu");

@@ -9,6 +9,8 @@ internal static class ContextMenuKeyboard
     internal static bool IsMenuShortcut(Key key, ModifierKeys modifiers) =>
         key == Key.Apps || key == Key.F10 && modifiers == ModifierKeys.Shift;
 
-    internal static bool ShouldHandleReaderWindowShortcut(Key key, ModifierKeys modifiers, bool webViewActive) =>
-        IsMenuShortcut(key, modifiers) && (key != Key.Apps || webViewActive);
+    // Fereastra cititorului tratează tastele de meniu înainte de caseta de text: tasta Aplicație nu mai este
+    // lăsată casetei, care o trata separat și închidea meniul imediat după deschidere. WebView-ul este tratat de apelant.
+    internal static bool ShouldHandleReaderWindowShortcut(Key key, ModifierKeys modifiers) =>
+        IsMenuShortcut(key, modifiers);
 }

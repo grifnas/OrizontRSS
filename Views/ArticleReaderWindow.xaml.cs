@@ -821,7 +821,7 @@ public partial class ArticleReaderWindow : Window
             e.Handled = true;
             return;
         }
-        if (ContextMenuKeyboard.ShouldHandleReaderWindowShortcut(key, Keyboard.Modifiers, _isWebViewActive))
+        if (ContextMenuKeyboard.ShouldHandleReaderWindowShortcut(key, Keyboard.Modifiers))
         {
             // Cu focusul în articolul WebReader, WebView2 trimite aici Shift+F10 ca tastă-accelerator. Tasta este
             // lăsată motorului web, care deschide meniul nativ (ContextMenuRequested); meniul WPF nu ar primi săgețile.
