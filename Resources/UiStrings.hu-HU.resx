@@ -2942,6 +2942,13 @@ Részletek: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Cikkek alapértelmezett megnyitása</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Általános beállítás használata</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Normál mód a főablakban</value></data>
+  <data name="Trimite cuvintele-cheie la catalogul Apple Podcasts și arată feedurile RSS ale podcasturilor găsite. Verifică-le înainte de adăugare." xml:space="preserve"><value>A kulcsszavakat elküldi az Apple Podcasts katalógusának, és megjeleníti a talált podcastok RSS-hírcsatornáit. Hozzáadás előtt ellenőrizze őket.</value></data>
+  <data name="Căutarea de podcasturi nu a reușit: {0}" xml:space="preserve"><value>A podcastkeresés sikertelen: {0}</value></data>
+  <data name="{0} podcasturi găsite. Alege unul, verifică feedul și apoi adaugă-l." xml:space="preserve"><value>{0} podcast található. Válasszon egyet, ellenőrizze a hírcsatornát, majd adja hozzá.</value></data>
+  <data name="Nu s-au găsit podcasturi pentru „{0}”." xml:space="preserve"><value>Nem található podcast ehhez: „{0}”.</value></data>
+  <data name="Se caută podcasturi în catalogul Apple Podcasts. Cuvintele căutate sunt trimise la Apple." xml:space="preserve"><value>Podcastok keresése az Apple Podcasts katalógusban. A keresőszavak az Apple-nek lesznek elküldve.</value></data>
+  <data name="Tastează un cuvânt-cheie pentru căutarea de podcasturi." xml:space="preserve"><value>Adjon meg kulcsszót a podcastok kereséséhez.</value></data>
+  <data name="Caută podcasturi" xml:space="preserve"><value>Podcastok keresése</value></data>
   <data name="Descarcă podcastul" xml:space="preserve"><value>Podcast letöltése</value></data>
   <data name="Tonul redării" xml:space="preserve"><value>Lejátszási hangmagasság</value></data>
   <data name="Viteza de redare" xml:space="preserve"><value>Lejátszási sebesség</value></data>

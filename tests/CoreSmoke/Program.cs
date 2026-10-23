@@ -347,6 +347,7 @@ await RunDeepSeekBalanceSmokeAsync();
 CheckAiInstructionsFollowInterfaceLanguage();
 CheckDeepLTargetLanguages();
 CheckSoundThemes();
+CheckPodcastSearchParsing();
 await RunPodcastEnclosureSmokeAsync();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
@@ -904,6 +905,18 @@ async Task RunPodcastEnclosureSmokeAsync()
     Check(episode.AudioUrl == "https://pod.example.test/e1.mp3", "un episod cu enclosure audio http(s) primește adresa fișierului");
     Check(feed.Articles.Single(article => article.Title == "Ftp").AudioUrl is null, "un enclosure care nu este http(s) este ignorat");
     Check(feed.Articles.Single(article => article.Title == "Fara audio").AudioUrl is null, "un articol fără enclosure nu are podcast");
+}
+
+void CheckPodcastSearchParsing()
+{
+    var json = "{\"resultCount\":3,\"results\":[" +
+        "{\"collectionName\":\"Podcast A\",\"feedUrl\":\"https://pod.example.test/a.xml\"}," +
+        "{\"collectionName\":\"Fără feed\"}," +
+        "{\"collectionName\":\"Podcast A bis\",\"feedUrl\":\"https://pod.example.test/a.xml\"}," +
+        "{\"collectionName\":\"Ftp\",\"feedUrl\":\"ftp://pod.example.test/b.xml\"}]}";
+    var found = CititorRSS.Jaws.Services.Rss.PodcastSearchService.Parse(json);
+    Check(found.Count == 1 && found[0].Name == "Podcast A" && found[0].Url == "https://pod.example.test/a.xml" && found[0].RequiresVerification,
+        "căutarea de podcasturi păstrează doar feedurile http(s), fără dubluri, și cere verificare");
 }
 
 void CheckSoundThemes()

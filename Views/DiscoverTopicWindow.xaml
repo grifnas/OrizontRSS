@@ -35,6 +35,7 @@
         <StackPanel Grid.Column="2" VerticalAlignment="Bottom" Orientation="Horizontal">
           <Button Content="Caută în catalog" Click="SearchCatalog_Click" Margin="0,0,6,0" />
           <Button x:Name="LiveSearchButton" Content="Caută pe internet" Click="LiveSearch_Click" AutomationProperties.HelpText="Trimite cuvintele-cheie la serviciul Feedly și verifică automat feedurile găsite. Poți scrie și adresa unui site." />
+          <Button x:Name="PodcastSearchButton" Content="Caută podcasturi" Click="PodcastSearch_Click" AutomationProperties.HelpText="Trimite cuvintele-cheie la catalogul Apple Podcasts și arată feedurile RSS ale podcasturilor găsite. Verifică-le înainte de adăugare." Margin="6,0,0,0" />
         </StackPanel>
       </Grid>
 

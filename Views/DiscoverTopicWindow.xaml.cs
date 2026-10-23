@@ -83,6 +83,51 @@ public partial class DiscoverTopicWindow : Window
         PerformCatalogSearch();
     }
 
+    private async void PodcastSearch_Click(object sender, RoutedEventArgs e)
+    {
+        var query = Keywords.Text.Trim();
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            StatusText.Text = T("Tastează un cuvânt-cheie pentru căutarea de podcasturi.");
+            return;
+        }
+
+        if (_searchCancellation is not null) return;
+        var cancellation = new CancellationTokenSource();
+        _searchCancellation = cancellation;
+        StatusText.Text = T("Se caută podcasturi în catalogul Apple Podcasts. Cuvintele căutate sunt trimise la Apple.");
+        PodcastSearchButton.IsEnabled = false;
+        LiveSearchButton.IsEnabled = false;
+        AddButton.IsEnabled = false;
+
+        try
+        {
+            var found = await CititorRSS.Jaws.Services.Rss.PodcastSearchService.SearchAsync(query, cancellation.Token);
+            if (found.Count == 0)
+            {
+                StatusText.Text = F("Nu s-au găsit podcasturi pentru „{0}”.", query);
+                return;
+            }
+            Results.ItemsSource = found;
+            StatusText.Text = F("{0} podcasturi găsite. Alege unul, verifică feedul și apoi adaugă-l.", found.Count);
+            Results.SelectedIndex = 0;
+            Results.UpdateLayout();
+            (Results.ItemContainerGenerator.ContainerFromIndex(0) as UIElement)?.Focus();
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
+        catch (Exception exception)
+        {
+            StatusText.Text = F("Căutarea de podcasturi nu a reușit: {0}", exception.Message);
+        }
+        finally
+        {
+            _searchCancellation = null;
+            cancellation.Dispose();
+            PodcastSearchButton.IsEnabled = true;
+            LiveSearchButton.IsEnabled = true;
+        }
+    }
+
     private async void LiveSearch_Click(object sender, RoutedEventArgs e)
     {
         var query = Keywords.Text.Trim();

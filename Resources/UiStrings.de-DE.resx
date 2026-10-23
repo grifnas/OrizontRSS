@@ -2623,6 +2623,13 @@ Details: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Standardmäßiges Öffnen von Artikeln</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Allgemeine Einstellung verwenden</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Standardmodus im Hauptfenster</value></data>
+  <data name="Trimite cuvintele-cheie la catalogul Apple Podcasts și arată feedurile RSS ale podcasturilor găsite. Verifică-le înainte de adăugare." xml:space="preserve"><value>Sendet die Stichwörter an den Apple-Podcasts-Katalog und zeigt die RSS-Feeds der gefundenen Podcasts. Vor dem Hinzufügen prüfen.</value></data>
+  <data name="Căutarea de podcasturi nu a reușit: {0}" xml:space="preserve"><value>Die Podcast-Suche ist fehlgeschlagen: {0}</value></data>
+  <data name="{0} podcasturi găsite. Alege unul, verifică feedul și apoi adaugă-l." xml:space="preserve"><value>{0} Podcasts gefunden. Wählen Sie einen aus, prüfen Sie den Feed und fügen Sie ihn dann hinzu.</value></data>
+  <data name="Nu s-au găsit podcasturi pentru „{0}”." xml:space="preserve"><value>Keine Podcasts für „{0}“ gefunden.</value></data>
+  <data name="Se caută podcasturi în catalogul Apple Podcasts. Cuvintele căutate sunt trimise la Apple." xml:space="preserve"><value>Podcasts werden im Apple-Podcasts-Katalog gesucht. Die Suchbegriffe werden an Apple gesendet.</value></data>
+  <data name="Tastează un cuvânt-cheie pentru căutarea de podcasturi." xml:space="preserve"><value>Geben Sie ein Stichwort für die Podcast-Suche ein.</value></data>
+  <data name="Caută podcasturi" xml:space="preserve"><value>Podcasts suchen</value></data>
   <data name="Descarcă podcastul" xml:space="preserve"><value>Podcast herunterladen</value></data>
   <data name="Tonul redării" xml:space="preserve"><value>Abspieltonhöhe</value></data>
   <data name="Viteza de redare" xml:space="preserve"><value>Abspielgeschwindigkeit</value></data>
