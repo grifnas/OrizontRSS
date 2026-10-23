@@ -49,6 +49,17 @@ Probele practice A02, A09, A07 și A11 rămân deschise, conform registrului de 
 - Exportul OPML pune feedurile neorganizate la rădăcina fișierului, ca în celelalte cititoare RSS, în loc de un folder „Neorganizate”.
 - Biblioteca AngleSharp, folosită la extragerea textului integral și la găsirea feedurilor, a fost actualizată de la 1.1.2 la 1.7.1, pentru avertismentul de securitate GHSA-pgww-w46g-26qg (severitate moderată). Orizont doar citea pagini cu ea, deci riscul practic era mic.
 
+## Versiunea 1.6.4 (candidat, nepublicat încă)
+
+Detalii și limitele verificărilor: [RELEASE-NOTES-1.6.4.md](RELEASE-NOTES-1.6.4.md).
+
+- Teme sonore în Setări (Sunetele Windows, Interfață, Clopoței, Orizont), cu sunete pentru zece evenimente. „Activează alertele sonore” oprește toate sunetele aplicației.
+- Bare de stare în 17 ferestre și dialoguri care nu aveau; anunț la deschidere.
+- Cititorul Orizont, modul text: Application și Shift+F10 deschid meniul de fiecare dată.
+- Cititorul Orizont, WebReader: Application și Shift+F10 deschid meniul nativ, cu comenzile Cititorului.
+- Traducerea DeepL în Cititor: citirea vocală în curs se oprește la înlocuirea textului; bara de stare repetă rezultatul.
+- Ghidurile precizează că în WebReader mesajele de stare nu sunt anunțate.
+
 ## Modificări nepublicate după tagul v1.6.3
 
 După crearea tagului și a pachetelor release-ului, ramura `main` primește actualizări de documentație și de publicare, inclusiv pagina GitHub Pages și urmărirea manifestelor WinGet. Aceste schimbări de întreținere nu modifică pachetele atașate release-ului și nu constituie o nouă versiune a aplicației.
