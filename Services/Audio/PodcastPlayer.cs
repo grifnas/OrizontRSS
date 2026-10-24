@@ -1,4 +1,5 @@
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using SoundTouch;
 
 namespace CititorRSS.Jaws;
@@ -16,11 +17,14 @@ internal sealed class PodcastPlayer : IDisposable
     private MediaFoundationReader? _reader;
     private ISampleProvider? _source;
     private StretchingSampleProvider? _stretch;
+    private VolumeSampleProvider? _volume;
     private WaveOutEvent? _output;
     private string? _url;
 
     public double Speed { get; private set; } = 1.0;
     public double Pitch { get; private set; } = 1.0;
+    /// <summary>Volumul podcastului, independent de volumul sistemului; 0–100.</summary>
+    public int VolumePercent { get; private set; } = 100;
     public bool IsOpen => _reader is not null;
     public bool IsPlaying => _output?.PlaybackState == PlaybackState.Playing;
     public TimeSpan Position => _reader?.CurrentTime ?? TimeSpan.Zero;
@@ -80,6 +84,13 @@ internal sealed class PodcastPlayer : IDisposable
         lock (_gate) { if (_stretch is not null) _stretch.PitchRatio = Pitch; }
     }
 
+    /// <summary>Volumul se aplică în aplicație, după SoundTouch; volumul Windows rămâne neschimbat.</summary>
+    public void SetVolumePercent(int percent)
+    {
+        VolumePercent = Math.Clamp(percent, 0, 100);
+        lock (_gate) { if (_volume is not null) _volume.Volume = VolumePercent / 100f; }
+    }
+
     private void Open(string url)
     {
         CloseCurrent();
@@ -90,8 +101,9 @@ internal sealed class PodcastPlayer : IDisposable
             Tempo = Speed,
             PitchRatio = Pitch
         };
+        _volume = new VolumeSampleProvider(_stretch) { Volume = VolumePercent / 100f };
         _output = new WaveOutEvent();
-        _output.Init(_stretch.ToWaveProvider());
+        _output.Init(_volume.ToWaveProvider());
         _url = url;
     }
 
@@ -104,6 +116,7 @@ internal sealed class PodcastPlayer : IDisposable
         _reader = null;
         _source = null;
         _stretch = null;
+        _volume = null;
         _url = null;
     }
 

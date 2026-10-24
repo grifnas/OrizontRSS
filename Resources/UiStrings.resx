@@ -1378,6 +1378,7 @@ Detalii: {1}</value></data><data name="Gemini nu a răspuns în 45 de secunde. �
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Deschiderea implicită a articolelor</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Folosește setarea generală</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Mod standard în fereastra principală</value></data>
+  <data name="Volumul podcastului: {0}%." xml:space="preserve"><value>Volumul podcastului: {0}%.</value></data>
   <data name="D" xml:space="preserve"><value>D</value></data>
   <data name="P" xml:space="preserve"><value>P</value></data>
   <data name="S" xml:space="preserve"><value>S</value></data>

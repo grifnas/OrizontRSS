@@ -2623,6 +2623,7 @@ Details: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Default article opening</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Use the general setting</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Standard mode in the main window</value></data>
+  <data name="Volumul podcastului: {0}%." xml:space="preserve"><value>Podcast volume: {0}%.</value></data>
   <data name="D" xml:space="preserve"><value>D</value></data>
   <data name="P" xml:space="preserve"><value>P</value></data>
   <data name="S" xml:space="preserve"><value>S</value></data>

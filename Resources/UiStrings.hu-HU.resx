@@ -2942,6 +2942,7 @@ Részletek: {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Cikkek alapértelmezett megnyitása</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Általános beállítás használata</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Normál mód a főablakban</value></data>
+  <data name="Volumul podcastului: {0}%." xml:space="preserve"><value>A podcast hangereje: {0}%.</value></data>
   <data name="D" xml:space="preserve"><value>D</value></data>
   <data name="P" xml:space="preserve"><value>P</value></data>
   <data name="S" xml:space="preserve"><value>S</value></data>

@@ -11,6 +11,7 @@ namespace CititorRSS.Jaws;
 public partial class ArticleReaderWindow
 {
     private const double BigJumpSeconds = 30, SmallJumpSeconds = 5;
+    private const int PodcastVolumeStep = 5;
     private static readonly HttpClient PodcastDownloadClient = new() { Timeout = TimeSpan.FromMinutes(30) };
     private PodcastPlayer? _podcast;
     private bool _podcastBusy;
@@ -20,8 +21,15 @@ public partial class ArticleReaderWindow
     /// <summary>Tratează tastele podcastului în modul text. Întoarce true dacă tasta a fost folosită.</summary>
     private bool HandlePodcastKey(KeyEventArgs e)
     {
-        if (_isWebViewActive || Keyboard.Modifiers != ModifierKeys.None || !HasPodcast) return false;
-        switch (e.Key)
+        if (_isWebViewActive || !HasPodcast) return false;
+        var key = ContextMenuKeyboard.Normalize(e.Key, e.SystemKey);
+        if (Keyboard.Modifiers == ModifierKeys.Alt && (key == Key.Up || key == Key.Down))
+        {
+            PodcastChangeVolume(key == Key.Up ? PodcastVolumeStep : -PodcastVolumeStep);
+            return true;
+        }
+        if (Keyboard.Modifiers != ModifierKeys.None) return false;
+        switch (key)
         {
             case Key.Z: PodcastSeek(-BigJumpSeconds); return true;
             case Key.X: PodcastSeek(-SmallJumpSeconds); return true;
@@ -81,6 +89,14 @@ public partial class ArticleReaderWindow
         if (player is null || !player.IsOpen) { SetStatus(T("Nu există un podcast pornit. Apasă C pentru redare.")); return; }
         player.Seek(seconds);
         SetStatus(F("Salt la {0}.", PodcastClock(player.Position)));
+    }
+
+    /// <summary>Alt+săgeată sus/jos schimbă volumul podcastului cu 5%, independent de volumul Windows.</summary>
+    private void PodcastChangeVolume(int change)
+    {
+        var player = EnsurePodcastPlayer();
+        player.SetVolumePercent(player.VolumePercent + change);
+        SetStatus(F("Volumul podcastului: {0}%.", player.VolumePercent));
     }
 
     private void PodcastChooseSpeed()
