@@ -99,6 +99,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        Closed += (_, _) => DisposeMainPodcast();
         ArticleCommands = CreateArticleCommands();
         Title = AppVersionInfo.ProductTitle;
         var browserReaderLabel = T("Deschide articolul în modul Citire");

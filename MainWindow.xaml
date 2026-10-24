@@ -106,6 +106,7 @@
                 <MenuItem Header="Articol">
                   <MenuItem Header="Deschide și citește" Click="ReadArticleMenu_Click" />
                   <MenuItem Header="Adu textul complet de pe site" Click="LoadFullArticle_Click" />
+                  <MenuItem Header="Redă sau pune pe pauză podcastul" Click="PodcastPlayFromList_Click" />
                   <MenuItem x:Name="ArticleReaderModeMenuItem" Header="Deschide articolul în cititorul Orizont" Click="OpenArticleInBrowser_Click" AutomationProperties.HelpText="Deschide articolul curățat de reclame și elemente inutile în cititorul integrat Orizont." />
                   <MenuItem x:Name="ArticleBrowserReaderModeMenuItem" Header="Deschide articolul în modul Citire al browserului" Click="OpenBrowserReadingMode_Click" AutomationProperties.HelpText="Deschide articolul în modul Citire Microsoft Edge, dacă pagina este compatibilă." />
                   <MenuItem x:Name="ArticleOriginalBrowserMenuItem" Header="Deschide pagina originală în browser" Click="OpenOriginalArticleInBrowser_Click" />
@@ -153,6 +154,7 @@
           <TextBox.ContextMenu><ContextMenu AutomationProperties.Name="Comenzi conținut articol">
   <MenuItem Header="Articol">
     <MenuItem Header="Adu textul complet de pe site" Click="LoadFullArticle_Click" />
+    <MenuItem Header="Redă sau pune pe pauză podcastul" Click="PodcastPlayFromList_Click" />
     <MenuItem x:Name="ContentReaderModeMenuItem" Header="Deschide articolul în cititorul Orizont" Click="OpenArticleInBrowser_Click" AutomationProperties.HelpText="Deschide articolul curățat de reclame și elemente inutile în cititorul integrat Orizont." />
     <MenuItem x:Name="ContentBrowserReaderModeMenuItem" Header="Deschide articolul în modul Citire al browserului" Click="OpenBrowserReadingMode_Click" AutomationProperties.HelpText="Deschide articolul în modul Citire Microsoft Edge, dacă pagina este compatibilă." />
     <MenuItem x:Name="ContentOriginalBrowserMenuItem" Header="Deschide pagina originală în browser" Click="OpenOriginalArticleInBrowser_Click" />
