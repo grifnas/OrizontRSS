@@ -13,7 +13,6 @@ public partial class ArticleReaderWindow
     private const double BigJumpSeconds = 30, SmallJumpSeconds = 5;
     private const int PodcastVolumeStep = 5;
     private static readonly HttpClient PodcastDownloadClient = new() { Timeout = TimeSpan.FromMinutes(30) };
-    private PodcastPlayer? _podcast;
     private bool _podcastBusy;
 
     private bool HasPodcast => !string.IsNullOrWhiteSpace(_article.AudioUrl);
@@ -85,7 +84,7 @@ public partial class ArticleReaderWindow
     private void PodcastSeek(double seconds)
     {
         if (!HasPodcast) { SetStatus(T("Articolul nu are un podcast.")); return; }
-        var player = _podcast;
+        var player = SharedPodcastPlayer.Player;
         if (player is null || !player.IsOpen) { SetStatus(T("Nu există un podcast pornit. Apasă C pentru redare.")); return; }
         player.Seek(seconds);
         SetStatus(F("Salt la {0}.", PodcastClock(player.Position)));
@@ -146,17 +145,14 @@ public partial class ArticleReaderWindow
         }
     }
 
-    private PodcastPlayer EnsurePodcastPlayer()
-    {
-        if (_podcast is not null) return _podcast;
-        _podcast = new PodcastPlayer();
-        return _podcast;
-    }
+    private static PodcastPlayer EnsurePodcastPlayer() => SharedPodcastPlayer.Player;
 
+    /// <summary>Închiderea cititorului oprește redarea doar dacă aceasta este a articolului închis; lista principală rămâne în redare.</summary>
     private void DisposePodcast()
     {
-        _podcast?.Dispose();
-        _podcast = null;
+        if (!HasPodcast) return;
+        var player = SharedPodcastPlayer.Player;
+        if (string.Equals(player.Url, _article.AudioUrl, StringComparison.Ordinal)) player.Stop();
     }
 
     private static string PodcastClock(TimeSpan time) =>

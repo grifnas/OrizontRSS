@@ -7,7 +7,6 @@ namespace CititorRSS.Jaws;
 // Viteza și tonul se schimbă din cititor, unde există comenzile complete.
 public partial class MainWindow
 {
-    private PodcastPlayer? _podcastPlayer;
     private bool _podcastPlayerBusy;
 
     private void PodcastPlayFromList_Click(object sender, RoutedEventArgs e) => _ = TogglePodcastFromListAsync();
@@ -17,8 +16,7 @@ public partial class MainWindow
         var article = _article;
         if (article is null || string.IsNullOrWhiteSpace(article.AudioUrl)) { Say(T("Articolul nu are un podcast.")); return; }
         if (_podcastPlayerBusy) return;
-        _podcastPlayer ??= new PodcastPlayer();
-        var player = _podcastPlayer;
+        var player = SharedPodcastPlayer.Player;
         try
         {
             if (!player.IsOpen || !string.Equals(player.Url, article.AudioUrl, StringComparison.Ordinal))
@@ -42,11 +40,7 @@ public partial class MainWindow
         finally { _podcastPlayerBusy = false; }
     }
 
-    private void DisposeMainPodcast()
-    {
-        _podcastPlayer?.Dispose();
-        _podcastPlayer = null;
-    }
+    private void DisposeMainPodcast() => SharedPodcastPlayer.Dispose();
 
     private static string PodcastClock(TimeSpan time) =>
         time.TotalHours >= 1 ? time.ToString(@"h\:mm\:ss") : time.ToString(@"mm\:ss");
