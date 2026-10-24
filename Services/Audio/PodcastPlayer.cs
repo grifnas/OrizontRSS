@@ -25,6 +25,8 @@ internal sealed class PodcastPlayer : IDisposable
     public double Pitch { get; private set; } = 1.0;
     /// <summary>Volumul podcastului, independent de volumul sistemului; 0–100.</summary>
     public int VolumePercent { get; private set; } = 100;
+    /// <summary>Peste 100% volumul amplifică podcasturile înregistrate încet; poate produce distorsiuni la valori mari.</summary>
+    public const int MaximumVolumePercent = 300;
     public bool IsOpen => _reader is not null;
     public bool IsPlaying => _output?.PlaybackState == PlaybackState.Playing;
     public TimeSpan Position => _reader?.CurrentTime ?? TimeSpan.Zero;
@@ -84,10 +86,10 @@ internal sealed class PodcastPlayer : IDisposable
         lock (_gate) { if (_stretch is not null) _stretch.PitchRatio = Pitch; }
     }
 
-    /// <summary>Volumul se aplică în aplicație, după SoundTouch; volumul Windows rămâne neschimbat.</summary>
+    /// <summary>Volumul se aplică în aplicație, după SoundTouch; volumul Windows rămâne neschimbat. Interval 0–300%.</summary>
     public void SetVolumePercent(int percent)
     {
-        VolumePercent = Math.Clamp(percent, 0, 100);
+        VolumePercent = Math.Clamp(percent, 0, MaximumVolumePercent);
         lock (_gate) { if (_volume is not null) _volume.Volume = VolumePercent / 100f; }
     }
 
