@@ -435,7 +435,7 @@ public partial class ArticleReaderWindow : Window
 
     private void ArticleText_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-        if (HandlePodcastKey(e)) { e.Handled = true; return; }
+        // Tastele podcastului sunt tratate în Window_KeyDown; aici ar fi rulat a doua oară, cu efect dublu.
         var key = ContextMenuKeyboard.Normalize(e.Key, e.SystemKey);
         if (!ContextMenuKeyboard.IsMenuShortcut(key, e.KeyboardDevice.Modifiers)) return;
         if (Resources["ReaderContextMenu"] is not ContextMenu menu || !menu.IsOpen) OpenContextMenu();
