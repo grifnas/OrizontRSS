@@ -2623,6 +2623,19 @@ Détails : {1}</value>
   <data name="Deschiderea implicită a articolelor" xml:space="preserve"><value>Ouverture par défaut des articles</value></data>
   <data name="Folosește setarea generală" xml:space="preserve"><value>Utiliser le réglage général</value></data>
   <data name="Mod standard în fereastra principală" xml:space="preserve"><value>Mode standard dans la fenêtre principale</value></data>
+  <data name="D" xml:space="preserve"><value>D</value></data>
+  <data name="P" xml:space="preserve"><value>P</value></data>
+  <data name="S" xml:space="preserve"><value>S</value></data>
+  <data name="B" xml:space="preserve"><value>B</value></data>
+  <data name="+30 s" xml:space="preserve"><value>+30 s</value></data>
+  <data name="V" xml:space="preserve"><value>V</value></data>
+  <data name="+5 s" xml:space="preserve"><value>+5 s</value></data>
+  <data name="C" xml:space="preserve"><value>C</value></data>
+  <data name="X" xml:space="preserve"><value>X</value></data>
+  <data name="-5 s" xml:space="preserve"><value>-5 s</value></data>
+  <data name="Z" xml:space="preserve"><value>Z</value></data>
+  <data name="-30 s" xml:space="preserve"><value>-30 s</value></data>
+  <data name="Comenzi podcast" xml:space="preserve"><value>Commandes du podcast</value></data>
   <data name="Redă sau pune pe pauză podcastul" xml:space="preserve"><value>Lire ou mettre en pause le podcast</value></data>
   <data name="Acesta este un videoclip. Afișăm descrierea din feed. Ca să-l urmărești, folosește „Deschide pagina originală în browser”." xml:space="preserve"><value>Ceci est une vidéo. La description du flux est affichée. Pour la regarder, utilisez « Ouvrez la page d'origine dans le navigateur ».</value></data>
   <data name="Trimite cuvintele-cheie la catalogul Apple Podcasts și arată feedurile RSS ale podcasturilor găsite. Verifică-le înainte de adăugare." xml:space="preserve"><value>Envoie les mots-clés au catalogue Apple Podcasts et affiche les flux RSS des podcasts trouvés. Vérifiez-les avant de les ajouter.</value></data>

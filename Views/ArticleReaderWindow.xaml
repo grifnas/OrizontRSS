@@ -77,6 +77,16 @@
         <MenuItem Header="Descarcă podcastul" InputGestureText="D" Click="PodcastDownload_Click" />
       </MenuItem>
     </Menu>
+    <StackPanel x:Name="PodcastBar" Orientation="Horizontal" DockPanel.Dock="Top" Margin="0,0,0,8" Visibility="Collapsed" AutomationProperties.Name="Comenzi podcast">
+      <Button Content="-30 s" ToolTip="Z" Margin="0,0,6,0" Click="PodcastBack30_Click" />
+      <Button Content="-5 s" ToolTip="X" Margin="0,0,6,0" Click="PodcastBack5_Click" />
+      <Button Content="Redă podcastul" ToolTip="C" Margin="0,0,6,0" Click="PodcastPlay_Click" />
+      <Button Content="+5 s" ToolTip="V" Margin="0,0,6,0" Click="PodcastForward5_Click" />
+      <Button Content="+30 s" ToolTip="B" Margin="0,0,12,0" Click="PodcastForward30_Click" />
+      <Button Content="Viteza de redare" ToolTip="S" Margin="0,0,6,0" Click="PodcastSpeed_Click" />
+      <Button Content="Tonul redării" ToolTip="P" Margin="0,0,6,0" Click="PodcastPitch_Click" />
+      <Button Content="Descarcă podcastul" ToolTip="D" Click="PodcastDownload_Click" />
+    </StackPanel>
     <StackPanel DockPanel.Dock="Top" Margin="0,0,0,10">
       <TextBlock x:Name="ArticleTitle" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap" AutomationProperties.Name="Titlul articolului" />
       <TextBlock x:Name="ArticleDetails" Margin="0,6,0,0" Foreground="{DynamicResource ThemeSecondaryTextBrush}" AutomationProperties.Name="Sursa și data articolului" />

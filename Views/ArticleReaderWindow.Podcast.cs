@@ -38,6 +38,10 @@ public partial class ArticleReaderWindow
     public void PodcastPlayFromMenu() => _ = PodcastTogglePlaybackAsync();
 
     private void PodcastPlay_Click(object sender, RoutedEventArgs e) => PodcastPlayFromMenu();
+    private void PodcastBack30_Click(object sender, RoutedEventArgs e) => PodcastSeek(-BigJumpSeconds);
+    private void PodcastBack5_Click(object sender, RoutedEventArgs e) => PodcastSeek(-SmallJumpSeconds);
+    private void PodcastForward5_Click(object sender, RoutedEventArgs e) => PodcastSeek(SmallJumpSeconds);
+    private void PodcastForward30_Click(object sender, RoutedEventArgs e) => PodcastSeek(BigJumpSeconds);
     private void PodcastSpeed_Click(object sender, RoutedEventArgs e) => PodcastChooseSpeed();
     private void PodcastPitch_Click(object sender, RoutedEventArgs e) => PodcastChoosePitch();
     private void PodcastDownload_Click(object sender, RoutedEventArgs e) => _ = PodcastDownloadAsync();

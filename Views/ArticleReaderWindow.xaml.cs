@@ -41,6 +41,7 @@ public partial class ArticleReaderWindow : Window
         ArticleText.AddHandler(Keyboard.PreviewKeyDownEvent, new KeyEventHandler(ArticleText_PreviewKeyDown), true);
         _article = article;
         _link = article.Link;
+        PodcastBar.Visibility = HasPodcast ? Visibility.Visible : Visibility.Collapsed;
         _settings = settings;
         _refresh = refresh;
         _saveSettings = saveSettings;
@@ -814,6 +815,8 @@ public partial class ArticleReaderWindow : Window
 
     private async void Window_KeyDown(object sender, KeyEventArgs e)
     {
+        // Tastele podcastului funcționează și cu focusul pe butoanele de sus, nu doar în text.
+        if (HandlePodcastKey(e)) { e.Handled = true; return; }
         var key = e.Key == Key.System ? e.SystemKey : e.Key;
         if (ShortcutBindings.Matches("ReaderMode", key, Keyboard.Modifiers))
         {
