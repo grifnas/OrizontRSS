@@ -19,7 +19,7 @@ public sealed class AppSettings
     public bool SoundAlertOnSuccess { get; set; } = true;
     public bool SoundAlertOnNewArticles { get; set; } = true;
     public bool SoundAlertOnErrors { get; set; } = true;
-    public string SoundTheme { get; set; } = SoundThemeIds.Windows;
+    public string SoundTheme { get; set; } = SoundThemeIds.Orizont;
     public string AiInstructions { get; set; } = DefaultAiInstructions;
     public string AiDefaultProvider { get; set; } = AiProviderIds.Gemini;
     public bool GeminiEnabled { get; set; }

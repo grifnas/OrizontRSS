@@ -923,7 +923,7 @@ void CheckPodcastSearchParsing()
 
 void CheckSoundThemes()
 {
-    Check(new AppSettings().SoundTheme == SoundThemeIds.Windows, "tema sonoră implicită rămâne Windows, deci utilizatorii existenți aud aceleași sunete");
+    Check(new AppSettings().SoundTheme == SoundThemeIds.Orizont, "tema sonoră implicită este Orizont; temele existente salvate de utilizator rămân neschimbate");
     Check(SoundThemeIds.Normalize("bells") == SoundThemeIds.Bells && SoundThemeIds.Normalize("necunoscută") == SoundThemeIds.Windows && SoundThemeIds.Normalize(null) == SoundThemeIds.Windows,
         "o temă sonoră necunoscută revine la sunetele Windows");
     Check(SoundAlertService.SoundPath(SoundThemeIds.Windows, SoundEvent.NewArticles) is null, "tema Windows folosește sunetele sistemului, fără fișiere");
