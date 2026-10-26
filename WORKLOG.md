@@ -1,5 +1,14 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-26 — Publicarea v1.6.5: stadiul pașilor
+
+- Pasul 1: `main` împins la `06f8eba`; pagina `https://grifnas.github.io/OrizontRSS/confidentialitate.html` răspunde cu 200.
+- Pasul 2: PR-ul `microsoft/winget-pkgs#431971` a primit patru commit-uri pe ramura `submission/orizont-rss-1.5.3`, cu manifestele 1.6.4 la schema 1.28.0 și `PrivacyUrl`.
+- Tag `v1.6.5` creat și împins pe commitul `8b6c1de` (notele pentru publicare).
+- Artefacte în `bin\Release`, reconstruite după notele finale: `Orizont-RSS-1.6.5-win-x64.zip` SHA-256 `B4499F34A61E98E877BDED6E1F57E20A2172AAB5F413237FA42C4084284DD81E`; `OrizontSetup-1.6.5.exe` SHA-256 `7BF7E0672EB16A1C2FE573BFD34D984F9674A15F442632A42AAB59F338C7EB6B`; `Orizont-RSS-1.6.5-source.zip` SHA-256 `07B9EF0CAD18465897DCE5C38F34A9A93427F6E4060F6DF471D9C1191BCA0146`.
+- Oprit: crearea release-ului `v1.6.5` pe GitHub a fost refuzată de clasificatorul de acțiuni publice. Release-ul nu există încă. Cele șase fișiere (installer, portabil, sursă și sumele lor) sunt pregătite pentru atașare.
+- Rămâne: release-ul, registrul și paginile publice la 1.6.5 (commit după tag), PR-ul WinGet 1.6.5.
+
 ## 2026-10-26 — v1.6.5: confirmare practică cu JAWS 2026
 
 - Utilizatorul a confirmat că funcționează testul practic cu JAWS 2026: bara de comenzi a podcastului, volumul (Alt+săgeată sus/jos), pauza și reluarea, tasta Application în modul text. Confirmarea se consemnează în `docs/ACCEPTANCE-STATUS.md` și în `docs/RELEASE-STATUS.json`. A02, A09, A07 și A11 rămân deschise.
