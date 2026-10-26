@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Politica de confidențialitate — Orizont RSS</title>
+  <meta name="description" content="Ce date prelucrează Orizont RSS, unde sunt stocate și ce servicii externe sunt folosite, la cererea utilizatorului.">
+  <link rel="canonical" href="https://grifnas.github.io/OrizontRSS/confidentialitate.html">
+  <style>
+    :root { --text: #1d1d1f; --muted: #555; --bg: #ffffff; --link: #0b57d0; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --text: #f2f2f2; --muted: #b8b8b8; --bg: #161616; --link: #8ab4ff; } }
+    :root[data-theme="dark"] { --text: #f2f2f2; --muted: #b8b8b8; --bg: #161616; --link: #8ab4ff; }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; line-height: 1.55; max-width: 760px; margin: 0 auto; padding: 16px; }
+    a { color: var(--link); }
+    h1 { font-size: 1.7rem; }
+    h2 { font-size: 1.2rem; margin-top: 1.8em; }
+    .lang-en { border-top: 2px solid var(--muted); margin-top: 3em; padding-top: 1em; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Politica de confidențialitate — Orizont RSS</h1>
+    <p>Versiune: 1.6.5 (în pregătire). Această politică descrie aplicația Orizont RSS pentru Windows. Pagina este publicată de autorul aplicației, Grifnas, și este adresa oficială folosită în manifestul WinGet (PrivacyUrl).</p>
+
+    <h2>1. Ce înseamnă pe scurt</h2>
+    <p>Orizont RSS nu are cont la autor și nu trimite autorului datele tale. Nu are reclame, nu are analize de utilizare și nu are telemetrie. Feedurile, articolele, setările și notițele tale rămân pe calculatorul tău, în folderul de date al aplicației. Datele pleacă de pe calculator numai pentru funcțiile pe care le folosești, descrise mai jos.</p>
+
+    <h2>2. Ce se stochează local</h2>
+    <p>Aplicația salvează în folderul <code>%LOCALAPPDATA%\CititorRSS-JAWS</code> lista de feeduri, articolele, favoritele, articolele pentru citire ulterioară, etichetele, setările și notițele generate de AI.</p>
+    <ul>
+      <li><strong>Păstrare:</strong> dacă curățarea automată este activată în Setări, articolele obișnuite mai vechi de 90 de zile sunt eliminate. Favoritele și articolele pentru mai târziu nu sunt afectate. Durata se poate schimba. Poți șterge oricând articole, feeduri sau notițe din aplicație.</li>
+      <li><strong>Chei API și sesiuni:</strong> cheile pentru Gemini, OpenAI, Mistral, DeepSeek și DeepL, precum și sesiunea NewsBlur, sunt criptate cu Windows Data Protection API (DPAPI), legată de contul tău Windows. Alt utilizator al calculatorului sau alt calculator nu le poate citi.</li>
+      <li><strong>Dezinstalare:</strong> dezinstalarea aplicației nu șterge automat folderul de date. Îl poți șterge manual.</li>
+    </ul>
+
+    <h2>3. Servicii externe, numai la cererea ta</h2>
+    <ul>
+      <li><strong>Feeduri RSS, Atom și site-uri:</strong> aplicația descarcă feedurile și paginile articolelor pe care le adaugi sau le deschizi. Serverele site-urilor pot vedea adresa IP a calculatorului tău și identificatorul aplicației.</li>
+      <li><strong>Verificarea actualizărilor:</strong> la pornire (poți dezactiva opțiunea în Setări) și la cererea ta, aplicația interoghează API-ul GitHub pentru ultima versiune publicată (api.github.com). Nu trimite date despre tine în afara adresei IP și a identificatorului aplicației, obișnuite pentru orice cerere web.</li>
+      <li><strong>NewsBlur:</strong> dacă conectezi un cont NewsBlur, aplicația sincronizează cu www.newsblur.com starea articolelor (citit, favorit) și, la cerere, textul complet. Datele sunt cele ale contului tău NewsBlur.</li>
+      <li><strong>Inteligență artificială:</strong> textul articolului sau al întrebării tale este trimis furnizorului ales de tine (Google Gemini, OpenAI, Mistral sau DeepSeek), folosind cheia ta API. Trimiterea are loc numai când apeși o funcție AI. Fiecare furnizor are propria politică de confidențialitate și propriile reguli de păstrare.</li>
+      <li><strong>Traducere:</strong> textul de tradus este trimis la DeepL (api-free.deepl.com, cu cheia ta) sau la Google Translate (translate.googleapis.com), când alegi traducerea.</li>
+      <li><strong>Voce:</strong> vocile Gemini trimit textul selectat către Google, când alegi acest motor. Vocile SAPI și eSpeak NG funcționează local.</li>
+      <li><strong>Căutarea subiectelor și a podcasturilor:</strong> cuvintele căutate sunt trimise la Feedly (cloud.feedly.com) pentru căutarea de feeduri și la catalogul Apple Podcasts (itunes.apple.com) pentru căutarea de podcasturi.</li>
+      <li><strong>Podcasturi:</strong> redarea sau descărcarea unui episod deschide adresa fișierului audio de pe serverul podcastului.</li>
+      <li><strong>Partajare:</strong> e-mailul și WhatsApp se deschid în programul tău, cu textul pregătit. Aplicația nu trimite nimic direct.</li>
+    </ul>
+
+    <h2>4. Ce nu face aplicația</h2>
+    <ul>
+      <li>Nu vinde datele și nu le transmite autorului.</li>
+      <li>Nu urmărește utilizarea și nu trimite statistici despre tine.</li>
+      <li>Nu accesează agenda, fișierele personale sau istoricul browserului.</li>
+    </ul>
+
+    <h2>5. Drepturile tale</h2>
+    <p>Datele stocate local le controlezi tu: le poți exporta din aplicație, le poți șterge sau dezinstala aplicația și folderul de date. Pentru datele păstrate de NewsBlur, Google, OpenAI, Mistral, DeepSeek, DeepL, Feedly sau Apple, cererile de acces sau ștergere se adresează furnizorului respectiv.</p>
+
+    <h2>6. Modificări</h2>
+    <p>Dacă funcțiile care prelucrează date se schimbă, această pagină se actualizează înainte de publicarea versiunii respective. Data ultimei modificări apare în notele versiunii.</p>
+
+    <h2>7. Contact</h2>
+    <p>Întrebările despre această politică se trimit prin paginile proiectului: <a href="https://github.com/grifnas/OrizontRSS">github.com/grifnas/OrizontRSS</a>.</p>
+
+    <section class="lang-en" lang="en">
+      <h1>Privacy policy — Orizont RSS</h1>
+      <p>Version: 1.6.5 (in preparation). This policy describes the Orizont RSS application for Windows. The page is published by its author, Grifnas, and is the official address used as PrivacyUrl in the WinGet manifest.</p>
+
+      <h2>1. In short</h2>
+      <p>Orizont RSS has no account with the author and does not send the author your data. It has no ads, no usage analytics and no telemetry. Your feeds, articles, settings and AI notes stay on your computer, in the application data folder. Data leaves your computer only for the features you use, described below.</p>
+
+      <h2>2. What is stored locally</h2>
+      <p>The application stores in <code>%LOCALAPPDATA%\CititorRSS-JAWS</code> the feed list, articles, favourites, read-later items, tags, settings and AI notes.</p>
+      <ul>
+        <li><strong>Retention:</strong> if automatic cleanup is enabled in Settings, ordinary articles older than 90 days are removed. Favourites and read-later items are not affected. You can change the period. You can delete articles, feeds or notes at any time.</li>
+        <li><strong>API keys and sessions:</strong> keys for Gemini, OpenAI, Mistral, DeepSeek and DeepL, and the NewsBlur session, are encrypted with the Windows Data Protection API (DPAPI), bound to your Windows account. Another user of the computer, or another computer, cannot read them.</li>
+        <li><strong>Uninstalling:</strong> uninstalling does not delete the data folder automatically. You can delete it manually.</li>
+      </ul>
+
+      <h2>3. External services, only when you use them</h2>
+      <ul>
+        <li><strong>RSS, Atom feeds and websites:</strong> the application downloads the feeds and article pages you add or open. The websites' servers can see your computer's IP address and the application's identifier.</li>
+        <li><strong>Update check:</strong> at startup (you can turn this off in Settings) and when you ask, the application queries the GitHub API for the latest published version (api.github.com). It sends no information about you beyond the IP address and the application identifier, as with any web request.</li>
+        <li><strong>NewsBlur:</strong> if you connect a NewsBlur account, the application synchronises the read and favourite state with www.newsblur.com and, on request, the full text. The data is that of your NewsBlur account.</li>
+        <li><strong>Artificial intelligence:</strong> the text of the article or of your question is sent to the provider you choose (Google Gemini, OpenAI, Mistral or DeepSeek), using your own API key. This happens only when you use an AI function. Each provider has its own privacy policy and retention rules.</li>
+        <li><strong>Translation:</strong> the text to translate is sent to DeepL (api-free.deepl.com, with your key) or to Google Translate (translate.googleapis.com), when you choose translation.</li>
+        <li><strong>Voice:</strong> the Gemini voices send the selected text to Google when you choose that engine. SAPI and eSpeak NG voices work locally.</li>
+        <li><strong>Topic and podcast search:</strong> the words you search are sent to Feedly (cloud.feedly.com) for feed search, and to the Apple Podcasts catalogue (itunes.apple.com) for podcast search.</li>
+        <li><strong>Podcasts:</strong> playing or downloading an episode opens the audio file address on the podcast's server.</li>
+        <li><strong>Sharing:</strong> e-mail and WhatsApp open in your own program with the text prepared. The application does not send anything directly.</li>
+      </ul>
+
+      <h2>4. What the application does not do</h2>
+      <ul>
+        <li>It does not sell data and does not pass it to the author.</li>
+        <li>It does not track usage and does not send statistics about you.</li>
+        <li>It does not access your contacts, personal files or browser history.</li>
+      </ul>
+
+      <h2>5. Your rights</h2>
+      <p>You control the data stored locally: you can export it from the application, delete it, or uninstall the application and delete the data folder. For data held by NewsBlur, Google, OpenAI, Mistral, DeepSeek, DeepL, Feedly or Apple, access or deletion requests go to that provider.</p>
+
+      <h2>6. Changes</h2>
+      <p>If the functions that process data change, this page is updated before that version is published.</p>
+
+      <h2>7. Contact</h2>
+      <p>Questions about this policy can be sent through the project page: <a href="https://github.com/grifnas/OrizontRSS">github.com/grifnas/OrizontRSS</a>.</p>
+    </section>
+  </main>
+</body>
+</html>
