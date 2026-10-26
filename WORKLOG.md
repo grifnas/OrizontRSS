@@ -1,5 +1,11 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-26 — WinGet 1.6.5
+
+- PR nou: [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294), din ramura `grifnas:submission/orizont-rss-1.6.5`, cu manifestele 1.6.5 (schema 1.28.0, `PrivacyUrl`, SHA-256 al arhivei portabile).
+- PR-ul 1.6.4 [#431971](https://github.com/microsoft/winget-pkgs/pull/431971) rămâne deschis, cu manifestele 1.6.4 actualizate. De închis după validarea PR-ului 1.6.5.
+
+
 ## 2026-10-26 — Publicarea v1.6.5 — finalizată
 
 - Release public `v1.6.5` creat pe tagul `8b6c1de` cu cele șase fișiere (installer, portabil, sursă și sumele SHA-256). Digesturile GitHub coincid cu sumele locale.
