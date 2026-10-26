@@ -24,6 +24,8 @@ Notele release-ului precizează deschis că probele practice A02 (NewsBlur pe do
 
 Tagul `v1.6.4` și pachetele release-ului sunt reperul exact al versiunii publice. Ramura `main` poate primi actualizări de documentație, pagini publice și manifeste WinGet după tag; acestea **nu fac parte din pachetele publice v1.6.4**. Un executabil recompilat local nu este binarul public v1.6.4. Pentru versiunea publică descarcă fișierele atașate release-ului.
 
+Versiunea **1.6.5** este în pregătire local și nu este publicată. Pachetele, tagul și release-ul 1.6.5 nu există încă. Executabilul de test 1.6.5 nu face parte din pachetele publice și nu este binarul public. Lista modificărilor este în [RELEASE-NOTES-1.6.5.md](RELEASE-NOTES-1.6.5.md).
+
 Modul WebReader folosește Microsoft Edge WebView2 Runtime, disponibil în Windows/Edge. Alertele după cuvinte-cheie nu fac parte din versiunea 1.6.4.
 
 ## Funcții incluse în versiunea publică v1.6.4

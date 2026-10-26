@@ -1,5 +1,17 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-26 — Pregătirea v1.6.5 (candidat local, nepublicat)
+
+- Cerere: verificările necesare pentru pregătirea 1.6.5, alinierea documentației și pregătirea pentru publicare. Nu s-au creat distribuții, arhive, tag sau release (regula 1 din `AGENTS.md`).
+- Conținut față de v1.6.4 (commituri `477529d`…`765bc1b`, `20991f9`): bara de comenzi și volumul podcastului în Cititor (Alt+săgeată sus/jos, 5%, 0–300%), „Redă sau pune pe pauză podcastul” în meniul Articol din afișarea standard, un singur player pentru fereastra principală și Cititor, tastele podcastului tratate o singură dată, meniul Cititorului cu „Deschide pagina originală în browser”, YouTube cu descrierea din feed, tasta Application în modul text, tema sonoră implicită Orizont.
+- Versiune: `CititorRSS.Jaws.csproj` și `packaging/installer/OrizontSetup.csproj` la 1.6.5 (FileVersion 1.6.5.0), `RELEASE-NOTES-1.6.5.md` inclus ca Content, testul de titlu din `LocalizationSmoke` la 1.6.5.
+- Documente: `RELEASE-NOTES-1.6.5.md`, `CHANGELOG.md` (secțiunea candidatului), `README.md` (paragraf despre candidat), `docs/RELEASE-STATUS.json` (`nextCandidateVersion` 1.6.5, `candidateStatus` `preparation-in-progress`, `candidateDistributionCreated` false). Ghidurile (cele opt) descriu bara podcastului, volumul și paragraful YouTube.
+- Nu s-au modificat paginile publice `docs/index*.html`, ghidurile publicate ca versiune, manifestele WinGet și `PUBLICATION.md` pentru versiunea publicată. Acestea se sincronizează la publicare, conform `AGENTS.md`.
+- Teste: `verify-source.ps1 -Mode Quick` a trecut (build, CoreSmoke, WorkflowSmoke, RulesSmoke, ShortcutsSmoke, OpenAiSmoke, LocalizationSmoke, EspeakSmoke, verify-localization `-RequireComplete`, verify-user-guides, verify-text-encoding, verify-public-pages, verify-release-consistency, test-validation-runner). `verify-public-pages` a trecut separat. `git diff --check` fără erori.
+- Nu s-a rulat `Full`: validarea completă include instalatorul și `verify-distribution`, care cer o distribuție nouă, deci o cerere separată.
+- Acceptare practică: A02, A09, A07 și A11 rămân deschise. Pentru bara podcastului, volum, pauză și meniul Application trebuie făcută verificarea manuală cu JAWS 2026 și sunet real; nu a fost făcută în această lucrare.
+- Executabil de test: `bin\Release\net8.0-windows10.0.17763.0\Orizont.exe` (aceeași locație standard).
+
 ## 2026-10-19 — Publicarea v1.6.2 (tag 88bc430) — parțial
 
 - Cerere: pregătirea completă a versiunii 1.6.2. Publicarea (tag, release, push pe `main`, WinGet, pagini) nu a fost făcută; cere confirmare separată.

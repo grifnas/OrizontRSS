@@ -2,6 +2,18 @@
 
 Acest fișier descrie numai ultima versiune publicată și lucrările ulterioare încă nepublicate. Istoricul mai vechi poate fi recuperat din istoricul Git și din release-urile publice anterioare; nu este copiat în această pagină activă.
 
+## Lucrări nepublicate pentru v1.6.5 — pregătire din 26 octombrie 2026
+
+Modificările de mai jos sunt nepublicate. Nu există încă pachete, tag sau release pentru 1.6.5. Detalii: [RELEASE-NOTES-1.6.5.md](RELEASE-NOTES-1.6.5.md).
+
+- Podcasturi în Cititor: bara de comenzi (-30 s, -5 s, redare, +5 s, +30 s, viteză, ton, descărcare) și volumul podcastului cu Alt+săgeată sus/jos, în pași de 5%, între 0% și 300%.
+- Podcasturi din afișarea standard: „Redă sau pune pe pauză podcastul” în meniul Articol.
+- Un singur player pentru fereastra principală și Cititor; tastele podcastului se tratează o singură dată.
+- Căutarea podcasturilor prin Apple Podcasts din descoperirea subiectelor.
+- YouTube: descrierea din feed și notă, fără pagina de consimțământ; „Deschide pagina originală în browser” în meniul Cititorului.
+- Tasta Application în modul text deschide meniul Cititorului.
+- Tema sonoră implicită este Orizont.
+
 ## Versiunea publicată v1.6.4 — 23 octombrie 2026
 
 Release-ul public v1.6.4 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4). Notele complete sunt în [RELEASE-NOTES-1.6.4.md](RELEASE-NOTES-1.6.4.md).

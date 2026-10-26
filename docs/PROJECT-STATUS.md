@@ -1,5 +1,16 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-10-26 — Pregătire v1.6.5: candidat local, nepublicat
+
+Stare: versiunea 1.6.5 este pregătită local (`candidateStatus` `preparation-in-progress`). Nu există distribuție, tag sau release. Ultima versiune publică rămâne v1.6.4.
+
+Ce rămâne înainte de publicare, în ordinea propusă:
+1. Verificarea practică cu JAWS 2026 și sunet real pentru bara podcastului, volum (Alt+săgeți), pauză între fereastra principală și Cititor, și tasta Application în modul text.
+2. Cerere expresă pentru distribuție: `verify-source.ps1 -Mode Full` cu instalator, `verify-distribution`, arhive și hash-uri.
+3. Cerere expresă pentru publicare: tag, release, push pe `main`, paginile publice (cele opt `docs/index*.html`), manifestele WinGet 1.6.5 și PR-ul WinGet.
+
+Detalii: [WORKLOG.md](../WORKLOG.md) (intrarea din 26 octombrie 2026) și [RELEASE-NOTES-1.6.5.md](../RELEASE-NOTES-1.6.5.md).
+
 ## 2026-10-15 — Autentificarea în doi pași pe GitHub activată
 
 Utilizatorul a activat 2FA pentru contul `grifnas`, înaintea termenului de 21 octombrie 2026. Punctul din ROADMAP este închis. Nicio modificare de cod sau distribuție.
