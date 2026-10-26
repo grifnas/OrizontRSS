@@ -1,5 +1,11 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-26 — WinGet: închidere 1.6.4, stadiul 1.6.5
+
+- PR-ul 1.6.4 [#431971](https://github.com/microsoft/winget-pkgs/pull/431971) a fost închis, cu comentariu că este înlocuit de #462294.
+- PR-ul 1.6.5 [#462294](https://github.com/microsoft/winget-pkgs/pull/462294): verificările automate trec, cu excepția scanării installerului și a validării instalării, încă în curs. Botul cere semnarea Contributor License Agreement de către autorul contului, care nu poate fi făcută din sesiune. Nu există încă comentarii de la reviewer.
+
+
 ## 2026-10-26 — WinGet 1.6.5
 
 - PR nou: [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294), din ramura `grifnas:submission/orizont-rss-1.6.5`, cu manifestele 1.6.5 (schema 1.28.0, `PrivacyUrl`, SHA-256 al arhivei portabile).
