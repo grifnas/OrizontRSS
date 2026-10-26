@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.28.0.schema.json
 PackageIdentifier: Grifnas.OrizontRSS
-PackageVersion: 1.6.4
+PackageVersion: 1.6.5
 PackageLocale: ro-RO
 Publisher: Grifnas
 PublisherUrl: https://github.com/grifnas
@@ -23,6 +23,6 @@ Tags:
 - windows
 - wpf
 - romanian
-ReleaseNotesUrl: https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4
+ReleaseNotesUrl: https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.5
 ManifestType: defaultLocale
 ManifestVersion: 1.28.0

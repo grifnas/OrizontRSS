@@ -2,15 +2,15 @@
 
 ## Ultimul release public
 
-- Versiune: **v1.6.4**, publicată la 23 octombrie 2026.
-- Release oficial: [github.com/grifnas/OrizontRSS/releases/tag/v1.6.4](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4)
+- Versiune: **v1.6.5**, publicată la 26 octombrie 2026.
+- Release oficial: [github.com/grifnas/OrizontRSS/releases/tag/v1.6.5](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.5)
 - Pagina de prezentare: [grifnas.github.io/OrizontRSS](https://grifnas.github.io/OrizontRSS/)
-- Codul exact al versiunii: [tagul v1.6.4](https://github.com/grifnas/OrizontRSS/tree/v1.6.4)
-- Commitul tagului v1.6.4: `c1ca351` (hash complet în `git rev-parse v1.6.4`). Ramura `main` conține acest commit și actualizările de documentație ulterioare.
-- Installer autonom offline: `OrizontSetup-1.6.4.exe` — 252.541.976 bytes; SHA-256 `2a9efba4f865f7ff71b87445f9c827c0f7004d52c990ab0b67c56071556e2aac`.
-- Variantă portabilă: `Orizont-RSS-1.6.4-win-x64.zip` — 90.748.275 bytes; SHA-256 `626dbcc188e5bf1a92de55f0e6858e4b7d2fe9fe2df6c6186423fc7e900e8727`.
-- Arhivă sursă: `Orizont-RSS-1.6.4-source.zip` — 14.591.374 bytes; SHA-256 `0113317ea7a4eec8f66bf62f62f20204b58480f50a95d6d5e535b3ea7b7e45bb`.
-- Cele trei fișiere `.sha256` sunt atașate alături de pachete. Pagina publică a release-ului afișează cele șase fișiere încărcate și cele două arhive automate ale sursei GitHub.
+- Codul exact al versiunii: [tagul v1.6.5](https://github.com/grifnas/OrizontRSS/tree/v1.6.5)
+- Commitul tagului v1.6.5: `8b6c1de`. Ramura `main` conține acest commit și actualizările de documentație ulterioare.
+- Installer autonom offline: `OrizontSetup-1.6.5.exe` — 252.832.792 bytes; SHA-256 `7BF7E0672EB16A1C2FE573BFD34D984F9674A15F442632A42AAB59F338C7EB6B`.
+- Variantă portabilă: `Orizont-RSS-1.6.5-win-x64.zip` — 91.042.064 bytes; SHA-256 `B4499F34A61E98E877BDED6E1F57E20A2172AAB5F413237FA42C4084284DD81E`.
+- Arhivă sursă: `Orizont-RSS-1.6.5-source.zip` — 14.644.997 bytes; SHA-256 `07B9EF0CAD18465897DCE5C38F34A9A93427F6E4060F6DF471D9C1191BCA0146`.
+- Cele trei fișiere `.sha256` sunt atașate alături de pachete.
 
 Pachetele includ .NET și Windows Desktop 8.0.31; nu cer instalarea separată a .NET Desktop Runtime. WebReader folosește Microsoft Edge WebView2 Runtime. Hash-urile locale au fost comparate cu digesturile afișate de GitHub.
 

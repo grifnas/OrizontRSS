@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.locale.1.28.0.schema.json
 PackageIdentifier: Grifnas.OrizontRSS
-PackageVersion: 1.6.4
+PackageVersion: 1.6.5
 PackageLocale: en-US
 Publisher: Grifnas
 PublisherUrl: https://github.com/grifnas
@@ -20,6 +20,6 @@ Tags:
 - nvda
 - windows
 - wpf
-ReleaseNotesUrl: https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4
+ReleaseNotesUrl: https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.5
 ManifestType: locale
 ManifestVersion: 1.28.0

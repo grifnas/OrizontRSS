@@ -1,5 +1,13 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-26 — Publicarea v1.6.5 — finalizată
+
+- Release public `v1.6.5` creat pe tagul `8b6c1de` cu cele șase fișiere (installer, portabil, sursă și sumele SHA-256). Digesturile GitHub coincid cu sumele locale.
+- Registrul `docs/RELEASE-STATUS.json` indică 1.6.5 ca ultima versiune publicată. Opt pagini `docs/index*.html` și ghidurile la 1.6.5. Verificate cu `verify-public-pages`, `verify-user-guides` și `verify-release-consistency`.
+- `README.md`, `CHANGELOG.md`, `PUBLICATION.md` la 1.6.5. Notele 1.6.4 au fost scoase din arbore; linkurile trimit la release-ul v1.6.4 de pe GitHub.
+- Manifeste WinGet 1.6.5 în `packaging/winget/Grifnas.OrizontRSS/1.6.5/`, cu SHA-256 al arhivei portabile. Snapshotul 1.6.4 a fost scos din arbore, conform regulii pentru versiunile vechi.
+- Verificare: `verify-source.ps1 -Mode Quick` a trecut după actualizare.
+
 ## 2026-10-26 — Publicarea v1.6.5: stadiul pașilor
 
 - Pasul 1: `main` împins la `06f8eba`; pagina `https://grifnas.github.io/OrizontRSS/confidentialitate.html` răspunde cu 200.

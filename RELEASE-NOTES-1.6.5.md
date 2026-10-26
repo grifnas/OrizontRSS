@@ -1,6 +1,6 @@
 # Orizont RSS 1.6.5 — Note de versiune
 
-Versiunea 1.6.5 aduce podcasturile în Cititorul Orizont cu comenzi vizibile și volum propriu, plus corecturi pentru meniul și pentru citirea linkurilor YouTube. Notele versiunii anterioare sunt în [RELEASE-NOTES-1.6.4.md](RELEASE-NOTES-1.6.4.md).
+Versiunea 1.6.5 aduce podcasturile în Cititorul Orizont cu comenzi vizibile și volum propriu, plus corecturi pentru meniul și pentru citirea linkurilor YouTube. Notele versiunii anterioare sunt în [notele versiunii 1.6.4](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4).
 
 ## Noutăți
 

@@ -2,9 +2,9 @@
 
 Acest fișier descrie numai ultima versiune publicată și lucrările ulterioare încă nepublicate. Istoricul mai vechi poate fi recuperat din istoricul Git și din release-urile publice anterioare; nu este copiat în această pagină activă.
 
-## Lucrări nepublicate pentru v1.6.5 — pregătire din 26 octombrie 2026
+## Versiunea publicată v1.6.5 — 26 octombrie 2026
 
-Modificările de mai jos sunt nepublicate. Nu există încă pachete, tag sau release pentru 1.6.5. Detalii: [RELEASE-NOTES-1.6.5.md](RELEASE-NOTES-1.6.5.md).
+Release-ul public v1.6.5 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.5). Notele complete sunt în [RELEASE-NOTES-1.6.5.md](RELEASE-NOTES-1.6.5.md).
 
 - Podcasturi în Cititor: bara de comenzi (-30 s, -5 s, redare, +5 s, +30 s, viteză, ton, descărcare) și volumul podcastului cu Alt+săgeată sus/jos, în pași de 5%, între 0% și 300%.
 - Podcasturi din afișarea standard: „Redă sau pune pe pauză podcastul” în meniul Articol.
@@ -14,12 +14,16 @@ Modificările de mai jos sunt nepublicate. Nu există încă pachete, tag sau re
 - Tasta Application în modul text deschide meniul Cititorului.
 - Tema sonoră implicită este Orizont.
 
+## Lucrări nepublicate după v1.6.5
+
+Nu există lucrări nepublicate după v1.6.5.
+
 ## Versiunea publicată v1.6.4 — 23 octombrie 2026
 
-Release-ul public v1.6.4 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4). Notele complete sunt în [RELEASE-NOTES-1.6.4.md](RELEASE-NOTES-1.6.4.md).
+Release-ul public v1.6.4 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4). Notele complete sunt în [notele versiunii 1.6.4](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4).
 
 
-Detalii și limitele verificărilor: [RELEASE-NOTES-1.6.4.md](RELEASE-NOTES-1.6.4.md).
+Detalii și limitele verificărilor: [notele versiunii 1.6.4](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4).
 
 - Teme sonore în Setări (Sunetele Windows, Interfață, Clopoței, Orizont), cu sunete pentru zece evenimente. „Activează alertele sonore” oprește toate sunetele aplicației.
 - Bare de stare în 17 ferestre și dialoguri care nu aveau; anunț la deschidere.
