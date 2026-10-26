@@ -1,6 +1,6 @@
-# Orizont RSS 1.6.5 — Note de versiune (candidat local, nepublicat)
+# Orizont RSS 1.6.5 — Note de versiune
 
-Acest document descrie versiunea 1.6.5 aflată în pregătire. Nu există încă pachete, tag sau release public pentru 1.6.5. Ultima versiune publicată rămâne **v1.6.4**, cu notele din [RELEASE-NOTES-1.6.4.md](RELEASE-NOTES-1.6.4.md).
+Versiunea 1.6.5 aduce podcasturile în Cititorul Orizont cu comenzi vizibile și volum propriu, plus corecturi pentru meniul și pentru citirea linkurilor YouTube. Notele versiunii anterioare sunt în [RELEASE-NOTES-1.6.4.md](RELEASE-NOTES-1.6.4.md).
 
 ## Noutăți
 
@@ -20,7 +20,7 @@ Acest document descrie versiunea 1.6.5 aflată în pregătire. Nu există încă
 
 ## Limite cunoscute
 
-- Redarea podcasturilor, volumul și pauza nu au fost verificate pe ecran cu JAWS 2026 și nici cu sunet real. Verificarea practică este încă necesară înainte de publicare.
+- Verificarea practică a barei podcastului, a volumului, a pauzei și a tastei Application a fost făcută de autor cu JAWS 2026.
 - Volumul peste 100% poate distorsiona sunetul.
 - Podcasturile de pe YouTube nu se redau în aplicație. Videoclipul se deschide în browser.
 - În WebReader, mesajele de stare nu sunt accesibile cititorului de ecran, cum era și în versiunea 1.6.4.
