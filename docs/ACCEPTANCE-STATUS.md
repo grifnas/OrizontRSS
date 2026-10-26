@@ -2,6 +2,13 @@
 
 Actualizat la 9 octombrie 2026, după publicarea 1.6.1 și confirmarea practică a upgrade-ului de la 1.6.0. Acesta este registrul scurt al stării **locale**, nu o certificare completă a distribuției publice sau a WinGet. Criteriile complete și ordinea lucrărilor sunt în [ROADMAP.md](ROADMAP.md); probele practice sunt în [MANUAL-REGRESSION-CHECKLIST.md](MANUAL-REGRESSION-CHECKLIST.md), iar intervențiile datate sunt în [WORKLOG.md](../WORKLOG.md). Raportul [AUDIT-2026-09-27.md](AUDIT-2026-09-27.md) consemnează constatările inițiale, nu starea reparată.
 
+## Confirmare practică pentru candidatul 1.6.5 — 26 octombrie 2026
+
+Utilizatorul a verificat practic, cu JAWS 2026 și sunet real, funcțiile noi: bara de comenzi a podcastului în Cititor, volumul cu Alt+săgeată sus/jos, pauza și reluarea din Cititor după pornire din lista principală, și tasta Application în modul text. Confirmarea a fost dată la întrebarea despre testul practic, după lista de verificare din `WORKLOG.md`, intrarea din 26 octombrie 2026.
+
+Probele A02, A09, A07 și A11 rămân deschise și neschimbate; această confirmare nu le declară acceptate.
+
+
 ## Decizie pentru candidatul 1.6.1 — 8 octombrie 2026
 
 La decizia utilizatorului, probele practice A02, A09, A07 și A11 sunt transferate în ciclul versiunii următoare. Ele rămân deschise și neverificate; nu sunt declarate acceptate și rezultatele lor nu se deduc din testele automate. Această amânare nu blochează pregătirea 1.6.1, dar orice problemă descoperită la acele probe va fi triată pentru o versiune ulterioară. Numărul punctelor închise rămâne 8/12. Verificarea automată Full a trecut la 8 octombrie, fără a schimba aceste stări: A11 a fost acoperit doar sintetic, fără fereastră afișată sau JAWS.

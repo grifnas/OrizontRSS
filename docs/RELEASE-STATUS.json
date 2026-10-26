@@ -11,7 +11,7 @@
     "candidateReleasePublished":  false,
     "candidatePreparationDate":  "2026-10-26",
     "candidateNuGetAuditStatus":  "no-vulnerable-packages-2026-10-26",
-    "candidateManualAcceptanceStatus":  "A02,A09,A07,A11-open; JAWS check of podcast bar, volume, pause and Application key pending",
+    "candidateManualAcceptanceStatus":  "JAWS 2026 practical check confirmed by user on 2026-10-26 (podcast bar, volume, pause, Application key); A02,A09,A07,A11 open",
     "candidatePortableArchive":  "Orizont-RSS-1.6.5-win-x64.zip",
     "candidateSourceArchive":  "Orizont-RSS-1.6.5-source.zip",
     "candidateInstaller":  "OrizontSetup-1.6.5.exe",

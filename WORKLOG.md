@@ -1,5 +1,10 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-26 — v1.6.5: confirmare practică cu JAWS 2026
+
+- Utilizatorul a confirmat că funcționează testul practic cu JAWS 2026: bara de comenzi a podcastului, volumul (Alt+săgeată sus/jos), pauza și reluarea, tasta Application în modul text. Confirmarea se consemnează în `docs/ACCEPTANCE-STATUS.md` și în `docs/RELEASE-STATUS.json`. A02, A09, A07 și A11 rămân deschise.
+- Urmează publicarea, în ordinea din `docs/PROJECT-STATUS.md`: push pe `main`, PR-ul WinGet 1.6.4, tag și release 1.6.5, WinGet 1.6.5.
+
 ## 2026-10-26 — v1.6.5: distribuție candidată locală (nepublicată)
 
 - Cerere: utilizatorul a acordat acordul pentru toți pașii de publicare, în ordinea propusă: politica de confidențialitate, manifestele WinGet, validarea completă, distribuția, verificarea practică și publicarea.
