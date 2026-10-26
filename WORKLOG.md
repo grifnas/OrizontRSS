@@ -1,5 +1,19 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-26 — v1.6.5: distribuție candidată locală (nepublicată)
+
+- Cerere: utilizatorul a acordat acordul pentru toți pașii de publicare, în ordinea propusă: politica de confidențialitate, manifestele WinGet, validarea completă, distribuția, verificarea practică și publicarea.
+- Politica de confidențialitate: `docs/confidentialitate.html` (română și engleză), cu faptele verificate în cod: stocare în `%LOCALAPPDATA%\CititorRSS-JAWS`, DPAPI pentru chei și sesiunea NewsBlur, servicii externe la cerere, verificarea actualizărilor la pornire (dezactivabilă), curățarea automată opțională cu 90 de zile.
+- Manifeste WinGet 1.6.4: schema 1.10.0 → 1.28.0 în toate cele patru fișiere și `PrivacyUrl: https://grifnas.github.io/OrizontRSS/confidentialitate.html` în `ro-RO`. Commit `bb4afeb`. PR-ul `microsoft/winget-pkgs#431971` nu a fost modificat încă.
+- Validare: `verify-all.ps1 -DistributionPath bin\Release\final-1.6.5-win-x64 -ExpectedProductVersion 1.6.5` a trecut complet (build, suite, validatori, `verify-distribution`). `dotnet list package --vulnerable`: niciun pachet vulnerabil.
+- Pachete în `bin\Release`:
+  - `Orizont-RSS-1.6.5-win-x64.zip` (91.042.104 bytes, 998 intrări), SHA-256 `AB10366587B0323B69BEA66505DD9A841D0BA1D2B283793F05AA559868DF3525`.
+  - `OrizontSetup-1.6.5.exe` (252.832.792 bytes, instalator offline cu arhiva încorporată), SHA-256 `90AB499DE86D88E8F1B3BA68E15C8E37239C3554101ED48B1EA835D98A5ED2D4`.
+  - `Orizont-RSS-1.6.5-source.zip` (`git archive` din `bb4afeb`, 14.643.854 bytes), SHA-256 `D3741CF877039793312C362CA9302DB58968D85CE45DC9C9A502A26D1EB1EE98`. Tagul final poate fi un commit ulterior care actualizează doar registrul; arhiva oficială se refac din tag la publicare.
+- Registru: `docs/RELEASE-STATUS.json` la `distribution-prepared`, cu numele fișierelor `.sha256` în câmpurile de hash. `verify-release-consistency` a trecut.
+- Executabil de test: `bin\Release\net8.0-windows10.0.17763.0\Orizont.exe`, republicat self-contained după validare.
+- Neîncheiat: verificarea practică cu JAWS 2026 (bară podcast, volum, pauză, Application), A02, A09, A07, A11. Publicarea (tag, release, push, pagini, PR WinGet) nu a fost făcută.
+
 ## 2026-10-26 — Pregătirea v1.6.5 (candidat local, nepublicat)
 
 - Cerere: verificările necesare pentru pregătirea 1.6.5, alinierea documentației și pregătirea pentru publicare. Nu s-au creat distribuții, arhive, tag sau release (regula 1 din `AGENTS.md`).
