@@ -1,5 +1,13 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-10-28 — WinGet 1.6.5: stare de fapt
+
+- PR [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294) este deschis. Verificările automate de validare au trecut, cu excepția scanării installerului și a validării instalării, care erau în curs la 26 octombrie.
+- Botul a cerut semnarea Contributor License Agreement (CLA) de către contul `grifnas`. Verificarea `license/cla` apărea ca reușită în GitHub la 26 octombrie, dar eticheta `Needs-CLA` și comentariul de cerere au rămas pe PR. Semnarea CLA nu a fost făcută din sesiune; rămâne de confirmat pe pagina Microsoft CLA sau prin PR.
+- Ultimul mesaj automat (26 octombrie, 17:33) cere aprobarea unui moderator voluntar. Nu există încă comentarii de la reviewer.
+- Mesajele sunt în căsuța Gmail a autorului, cu subiectul „New version: Grifnas.OrizontRSS version 1.6.5 (PR #462294)”.
+- De verificat mâine: eticheta `Needs-CLA`, starea `license/cla` și existența unui comentariu de la moderator.
+
 ## 2026-10-26 — WinGet: închidere 1.6.4, stadiul 1.6.5
 
 - PR-ul 1.6.4 [#431971](https://github.com/microsoft/winget-pkgs/pull/431971) a fost închis, cu comentariu că este înlocuit de #462294.

@@ -1,5 +1,10 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-10-28 — Stare: 1.6.5 publicat, WinGet în așteptare
+
+- Release public v1.6.5 este publicat și verificat. Pagina de confidențialitate este live.
+- Manifestul WinGet 1.6.5 (PR #462294) așteaptă aprobarea unui moderator. Botul cere CLA pe contul `grifnas`, cu eticheta `Needs-CLA` încă pe PR, deși verificarea `license/cla` a apărut ca reușită. Detalii în `WORKLOG.md`, intrarea din 28 octombrie.
+
 ## 2026-10-26 — Pregătire v1.6.5: candidat local, nepublicat
 
 Stare: versiunea 1.6.5 este pregătită local (`candidateStatus` `preparation-in-progress`). Nu există distribuție, tag sau release. Ultima versiune publică rămâne v1.6.4.
