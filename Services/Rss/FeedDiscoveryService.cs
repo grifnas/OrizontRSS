@@ -245,6 +245,12 @@ public sealed class FeedDiscoveryService
         var host = page.Host.ToLowerInvariant();
         if (host.EndsWith("youtube.com", StringComparison.Ordinal))
         {
+            // Adresa unui playlist (youtube.com/playlist?list=...) are feedul oficial al playlistului.
+            if (page.AbsolutePath.Equals("/playlist", StringComparison.OrdinalIgnoreCase))
+            {
+                var playlistId = Regex.Match(page.Query, @"[?&]list=([\w-]+)").Groups[1].Value;
+                if (playlistId.Length > 0) candidates.Add(new Candidate($"https://www.youtube.com/feeds/videos.xml?playlist_id={playlistId}", 0));
+            }
             var channelId = Regex.Match(html, @"""(?:channelId|externalId)""\s*:\s*""(UC[\w-]{22})""").Groups[1].Value;
             if (channelId.Length == 0) channelId = Regex.Match(page.AbsolutePath, @"^/channel/(UC[\w-]{22})").Groups[1].Value;
             if (channelId.Length > 0) candidates.Add(new Candidate($"https://www.youtube.com/feeds/videos.xml?channel_id={channelId}", 0));

@@ -349,6 +349,7 @@ CheckDeepLTargetLanguages();
 CheckSoundThemes();
 CheckPodcastSearchParsing();
 await CheckYouTubeChannelSearchAsync();
+CheckYouTubePlaylistCandidate();
 Check(RssReader.IsVideoPlatformUrl("https://www.youtube.com/watch?v=abc") && RssReader.IsVideoPlatformUrl("https://youtu.be/abc") && !RssReader.IsVideoPlatformUrl("https://pod.example.test/youtube.com/a"),
     "paginile YouTube nu se descarcă pentru citire, iar alte pagini se descarcă normal");
 await CheckYouTubeMediaDescription();
@@ -954,6 +955,18 @@ async Task CheckYouTubeChannelSearchAsync()
     Check(found.Count == 1 && found[0].Name == "Canal NASA" && found[0].IsVerified && found[0].ArticleCount == 1
         && found[0].Url == "https://www.youtube.com/feeds/videos.xml?channel_id=UC1234567890123456789012",
         "căutarea afișează doar canale cu flux RSS verificat și păstrează numele canalului");
+}
+
+void CheckYouTubePlaylistCandidate()
+{
+    var discovery = typeof(RssReader).Assembly.GetType("CititorRSS.Jaws.FeedDiscoveryService", true)!;
+    var method = discovery.GetMethod("AddPlatformCandidates", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
+    var candidateList = Activator.CreateInstance(method.GetParameters()[3].ParameterType)!;
+    method.Invoke(null, [new Uri("https://www.youtube.com/playlist?list=PLOU2XLYxmsIJGErt5rrCqaSGTMyyqNt2H"), "", "", candidateList]);
+    var list = (System.Collections.IList)candidateList;
+    var url = list.Count == 1 ? (string)list[0]!.GetType().GetProperty("Url")!.GetValue(list[0])! : "";
+    Check(url == "https://www.youtube.com/feeds/videos.xml?playlist_id=PLOU2XLYxmsIJGErt5rrCqaSGTMyyqNt2H",
+        "adresa unui playlist YouTube se transformă în feedul oficial al playlistului");
 }
 
 async Task CheckYouTubeMediaDescription()
