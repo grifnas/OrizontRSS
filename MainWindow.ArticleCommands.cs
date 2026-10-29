@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Controls;
 using CititorRSS.Jaws.Services.Content;
 
 namespace CititorRSS.Jaws;
@@ -17,6 +18,17 @@ public partial class MainWindow
         return Task.FromResult(string.IsNullOrWhiteSpace(description) ? note : note + "\n\n" + description);
     }
 
+    /// <summary>La închiderea Cititorului, focusul revine pe articolul deschis, nu la începutul listei.</summary>
+    private void FocusArticleAfterReader(Article article)
+    {
+        if (!Articles.Items.Contains(article)) { FocusArticles(); return; }
+        Articles.SelectedItem = article;
+        Articles.ScrollIntoView(article);
+        Articles.UpdateLayout();
+        if (Articles.ItemContainerGenerator.ContainerFromItem(article) is ListBoxItem row) row.Focus();
+        else Articles.Focus();
+    }
+
     private bool CanPresentArticleResult(Article article, long request) =>
         ReferenceEquals(_article, article) && request == _contentRequestRevision &&
         !_closeInProgress && !_isClosingAfterSave;
@@ -30,11 +42,16 @@ public partial class MainWindow
         TranslateGoogleAsync = (text, target, source, cancellationToken) =>
             new GoogleTranslateConnection().TranslateAsync(text, target, source, cancellationToken),
         SaveAsync = () => _store.SaveAsync(_feeds),
-        ShowReader = (article, text, refresh) => new ArticleReaderWindow(
-            article, text, _settings, refresh,
-            () => _store.SaveSettingsAsync(_settings), _speech!,
-            () => _store.SaveAsync(_feeds),
-            string.IsNullOrWhiteSpace(article.Link) ? null : () => _rss.LoadReadableHtmlAsync(article.Link)) { Owner = this }.Show(),
+        ShowReader = (article, text, refresh) =>
+        {
+            var reader = new ArticleReaderWindow(
+                article, text, _settings, refresh,
+                () => _store.SaveSettingsAsync(_settings), _speech!,
+                () => _store.SaveAsync(_feeds),
+                string.IsNullOrWhiteSpace(article.Link) ? null : () => _rss.LoadReadableHtmlAsync(article.Link)) { Owner = this };
+            reader.Closed += (_, _) => FocusArticleAfterReader(article);
+            reader.Show();
+        },
         ShowTranslation = result =>
             new ArticleTranslationWindow(result.TranslatedText, result.Title, result.Link, result.Provider, result.OriginalText, result.Language) { Owner = this }.ShowDialog(),
         ConfirmGoogle = () => MessageBox.Show(this,
