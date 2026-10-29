@@ -1127,14 +1127,16 @@ public partial class MainWindow : Window
         var dialog = new FeedDialog { Owner = this };
         dialog.SetFolders(AvailableFolders());
         if (dialog.ShowDialog() != true) return;
-        var duplicate = FindFeedByAddress(dialog.FeedUrl);
+        // Adresa paginii de playlist YouTube se salvează ca feedul oficial al playlistului.
+        var feedUrl = FeedDiscoveryService.NormalizeYouTubePlaylistAddress(dialog.FeedUrl);
+        var duplicate = FindFeedByAddress(feedUrl);
         if (duplicate is not null)
         {
             Say(F("Feedul nu a fost adăugat deoarece adresa este deja abonată: {0}.", duplicate.Name));
             MessageBox.Show(this, F("Această adresă este deja folosită de feedul „{0}”, în folderul „{1}”.\n\nOrizont RSS nu permite adăugarea aceluiași feed de două ori.", duplicate.Name, NewsBlurFolderMapping.DisplayName(duplicate.Folder)), T("Feed deja existent"), MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
-        var feed = new Feed { Name = dialog.FeedName, Url = dialog.FeedUrl, Folder = dialog.FolderName, ArticleOpenMode = dialog.SelectedArticleOpenMode };
+        var feed = new Feed { Name = dialog.FeedName, Url = feedUrl, Folder = dialog.FolderName, ArticleOpenMode = dialog.SelectedArticleOpenMode };
         _feeds.Add(feed);
         try
         {

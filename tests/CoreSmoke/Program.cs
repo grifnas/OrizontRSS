@@ -350,6 +350,9 @@ CheckSoundThemes();
 CheckPodcastSearchParsing();
 await CheckYouTubeChannelSearchAsync();
 CheckYouTubePlaylistCandidate();
+Check(FeedDiscoveryService.NormalizeYouTubePlaylistAddress("https://www.youtube.com/playlist?list=PLabc123&si=x") == "https://www.youtube.com/feeds/videos.xml?playlist_id=PLabc123"
+    && FeedDiscoveryService.NormalizeYouTubePlaylistAddress("https://example.test/feed.xml") == "https://example.test/feed.xml",
+    "adresa paginii de playlist devine feedul oficial, iar celelalte adrese rămân neschimbate");
 Check(RssReader.IsVideoPlatformUrl("https://www.youtube.com/watch?v=abc") && RssReader.IsVideoPlatformUrl("https://youtu.be/abc") && !RssReader.IsVideoPlatformUrl("https://pod.example.test/youtube.com/a"),
     "paginile YouTube nu se descarcă pentru citire, iar alte pagini se descarcă normal");
 await CheckYouTubeMediaDescription();

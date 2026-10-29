@@ -240,6 +240,16 @@ public sealed class FeedDiscoveryService
         }
     }
 
+    /// <summary>Adresa youtube.com/playlist?list=... devine feedul oficial al playlistului; celelalte adrese rămân neschimbate.</summary>
+    public static string NormalizeYouTubePlaylistAddress(string address)
+    {
+        if (!Uri.TryCreate(address?.Trim(), UriKind.Absolute, out var uri)) return address ?? string.Empty;
+        if (!uri.Host.EndsWith("youtube.com", StringComparison.OrdinalIgnoreCase)) return address!.Trim();
+        if (!uri.AbsolutePath.Equals("/playlist", StringComparison.OrdinalIgnoreCase)) return address!.Trim();
+        var playlistId = Regex.Match(uri.Query, @"[?&]list=([\w-]+)").Groups[1].Value;
+        return playlistId.Length == 0 ? address!.Trim() : $"https://www.youtube.com/feeds/videos.xml?playlist_id={playlistId}";
+    }
+
     private static void AddPlatformCandidates(Uri page, string html, string generator, List<Candidate> candidates)
     {
         var host = page.Host.ToLowerInvariant();
