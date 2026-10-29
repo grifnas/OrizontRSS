@@ -102,6 +102,14 @@ public sealed class RssReader
             if (string.IsNullOrWhiteSpace(html)) html = Field("content");
             if (string.IsNullOrWhiteSpace(html)) html = Field("description");
             if (string.IsNullOrWhiteSpace(html)) html = Field("summary");
+            // Feedurile YouTube pun descrierea în media:group/media:description, text simplu cu rânduri noi.
+            if (string.IsNullOrWhiteSpace(html))
+            {
+                var mediaDescription = record.Elements().FirstOrDefault(element => element.Name.LocalName == "group")?
+                    .Elements().FirstOrDefault(element => element.Name.LocalName == "description")?.Value;
+                if (!string.IsNullOrWhiteSpace(mediaDescription))
+                    html = WebUtility.HtmlEncode(mediaDescription.Trim()).Replace("\n", "<br>");
+            }
 
             var altLink = record.Elements()
                 .FirstOrDefault(element => element.Name.LocalName == "link" && (element.Attribute("rel") == null || element.Attribute("rel")?.Value == "alternate"))

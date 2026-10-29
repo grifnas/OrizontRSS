@@ -348,8 +348,10 @@ CheckAiInstructionsFollowInterfaceLanguage();
 CheckDeepLTargetLanguages();
 CheckSoundThemes();
 CheckPodcastSearchParsing();
+await CheckYouTubeChannelSearchAsync();
 Check(RssReader.IsVideoPlatformUrl("https://www.youtube.com/watch?v=abc") && RssReader.IsVideoPlatformUrl("https://youtu.be/abc") && !RssReader.IsVideoPlatformUrl("https://pod.example.test/youtube.com/a"),
     "paginile YouTube nu se descarcă pentru citire, iar alte pagini se descarcă normal");
+await CheckYouTubeMediaDescription();
 await RunPodcastEnclosureSmokeAsync();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
@@ -919,6 +921,52 @@ void CheckPodcastSearchParsing()
     var found = CititorRSS.Jaws.Services.Rss.PodcastSearchService.Parse(json);
     Check(found.Count == 1 && found[0].Name == "Podcast A" && found[0].Url == "https://pod.example.test/a.xml" && found[0].RequiresVerification,
         "căutarea de podcasturi păstrează doar feedurile http(s), fără dubluri, și cere verificare");
+}
+
+async Task CheckYouTubeChannelSearchAsync()
+{
+    const string html = "<script>var ytInitialData = {\"contents\":{\"twoColumnSearchResultsRenderer\":{\"primaryContents\":{\"sectionListRenderer\":{\"contents\":[{\"itemSectionRenderer\":{\"contents\":["
+        + "{\"channelRenderer\":{\"channelId\":\"UC1234567890123456789012\",\"title\":{\"simpleText\":\"Canal NASA\"}}},"
+        + "{\"channelRenderer\":{\"channelId\":\"UC1234567890123456789012\",\"title\":{\"simpleText\":\"Canal duplicat\"}}},"
+        + "{\"channelRenderer\":{\"channelId\":\"invalid\",\"title\":{\"simpleText\":\"Canal invalid\"}}},"
+        + "{\"videoRenderer\":{\"title\":{\"simpleText\":\"Nu este un canal\"}}}]}}]}}}}};</script>";
+    var parsed = CititorRSS.Jaws.Services.Rss.YouTubeChannelSearchService.ParseChannels(html);
+    Check(parsed.Count == 1 && parsed[0].Name == "Canal NASA" && parsed[0].ChannelId == "UC1234567890123456789012",
+        "căutarea YouTube citește doar canale, validează ID-urile și elimină duplicatele");
+    Check(CititorRSS.Jaws.Services.Rss.YouTubeChannelSearchService.BuildFeedUrl(parsed[0].ChannelId)
+        == "https://www.youtube.com/feeds/videos.xml?channel_id=UC1234567890123456789012",
+        "ID-ul canalului produce adresa RSS standard YouTube");
+
+    var searchHandler = new UpdateSmokeHttpHandler(request =>
+    {
+        Check(request.RequestUri!.AbsoluteUri.Contains("search_query=NASA", StringComparison.Ordinal)
+            && request.RequestUri.AbsoluteUri.Contains("sp=EgIQAg%3D%3D", StringComparison.Ordinal)
+            && request.RequestUri.AbsoluteUri.Contains("hl=en", StringComparison.Ordinal),
+            "căutarea publică YouTube folosește termenul, filtrul de canale și limba interfeței");
+        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(html, Encoding.UTF8, "text/html") };
+    });
+    var feedHandler = new UpdateSmokeHttpHandler(request => request.RequestUri!.AbsoluteUri.Contains("channel_id=UC1234567890123456789012", StringComparison.Ordinal)
+        ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("<feed xmlns=\"http://www.w3.org/2005/Atom\"><title>Feed tehnic</title><entry><id>video-1</id><title>Video nou</title><published>2026-10-28T12:00:00Z</published></entry></feed>", Encoding.UTF8, "application/atom+xml") }
+        : new HttpResponseMessage(HttpStatusCode.NotFound));
+    using var searchClient = new HttpClient(searchHandler);
+    var reader = new RssReader(feedHandler);
+    var found = await CititorRSS.Jaws.Services.Rss.YouTubeChannelSearchService.SearchAsync("NASA", "en", searchClient, reader);
+    Check(found.Count == 1 && found[0].Name == "Canal NASA" && found[0].IsVerified && found[0].ArticleCount == 1
+        && found[0].Url == "https://www.youtube.com/feeds/videos.xml?channel_id=UC1234567890123456789012",
+        "căutarea afișează doar canale cu flux RSS verificat și păstrează numele canalului");
+}
+
+async Task CheckYouTubeMediaDescription()
+{
+    var atom = "<feed xmlns=\"http://www.w3.org/2005/Atom\" xmlns:media=\"http://search.yahoo.com/mrss/\">" +
+        "<title>Canal test</title><entry><id>yt:video:abc</id><title>Video</title>" +
+        "<link rel=\"alternate\" href=\"https://www.youtube.com/watch?v=abc\"/>" +
+        "<published>2026-10-29T01:00:00+00:00</published><media:group><media:title>Video</media:title>" +
+        "<media:description>Prima linie.\nA doua linie cu &amp; semn.</media:description></media:group></entry></feed>";
+    var feed = await RssReader.ParseFeedAsync(new MemoryStream(Encoding.UTF8.GetBytes(atom)), CancellationToken.None);
+    var content = feed.Articles.Single().Content;
+    Check(content.Contains("Prima linie.") && content.Contains("A doua linie cu & semn."),
+        "descrierea videoclipului YouTube din media:group ajunge în articol");
 }
 
 void CheckSoundThemes()
