@@ -1,6 +1,13 @@
 # Orizont RSS — situația celor 12 puncte de consolidare
 
-Actualizat la 9 octombrie 2026, după publicarea 1.6.1 și confirmarea practică a upgrade-ului de la 1.6.0. Acesta este registrul scurt al stării **locale**, nu o certificare completă a distribuției publice sau a WinGet. Criteriile complete și ordinea lucrărilor sunt în [ROADMAP.md](ROADMAP.md); probele practice sunt în [MANUAL-REGRESSION-CHECKLIST.md](MANUAL-REGRESSION-CHECKLIST.md), iar intervențiile datate sunt în [WORKLOG.md](../WORKLOG.md). Raportul [AUDIT-2026-09-27.md](AUDIT-2026-09-27.md) consemnează constatările inițiale, nu starea reparată.
+Actualizat la 2 noiembrie 2026. Confirmările de după 1.6.1 și după 1.6.5 sunt consemnate mai jos; starea pe puncte (8/12) nu s-a schimbat, pentru că nicio probă deschisă nu a fost închisă. Acesta este registrul scurt al stării **locale**, nu o certificare completă a distribuției publice sau a WinGet. Criteriile complete și ordinea lucrărilor sunt în [ROADMAP.md](ROADMAP.md); probele practice sunt în [MANUAL-REGRESSION-CHECKLIST.md](MANUAL-REGRESSION-CHECKLIST.md), iar intervențiile datate sunt în [WORKLOG.md](../WORKLOG.md). Raportul [AUDIT-2026-09-27.md](AUDIT-2026-09-27.md) consemnează constatările inițiale, nu starea reparată.
+
+## Confirmare practică pentru lucrările nepublicate după 1.6.5 — 2 noiembrie 2026
+
+Utilizatorul a verificat practic, cu JAWS 2026, lucrările de la 2 noiembrie: descărcarea automată a transcriptului unui videoclip YouTube funcționează; lista limbilor din fereastra transcriptului se citește curat, numai cu numele limbii; butonul „Mai multe rezultate” din căutarea de videoclipuri YouTube încarcă paginile următoare. Confirmarea a fost dată după compilarea de test în locația standard, `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`, unde CoreSmoke a trecut cu 317 verificări la reverificarea din 2 noiembrie. Utilizatorul a mai confirmat descărcarea, copierea și salvarea transcriptului ca `.txt` din fereastra transcriptului; confirmate cu JAWS 2026, în seara de 2 noiembrie 2026, după ora 18:00. Detaliile sunt în `WORKLOG.md`, intrările din 2 noiembrie 2026.
+
+Confirmarea nu acoperă canalele și playlisturile din aceeași fereastră, care păstrează limita anterioară de rezultate. `verify-source.ps1 -Mode Quick -NoRestore` și `verify-localization.ps1 -RequireComplete` au trecut pentru aceste lucrări (2 noiembrie). Probele A02, A09, A07 și A11 rămân deschise și neschimbate; această confirmare nu le declară acceptate.
+
 
 ## Confirmare practică pentru candidatul 1.6.5 — 26 octombrie 2026
 

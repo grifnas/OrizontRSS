@@ -1,5 +1,132 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-02 — Unificarea helperilor comuni ai serviciilor YouTube
+
+- Cerere: unificarea duplicării dintre `YouTubeChannelSearchService`, `YouTubePlaylistSearchService`, `YouTubeVideoSearchService` și `YouTubeTranscriptService`.
+- Comportamente protejate, păstrate neschimbate: limita de 20 de canale și 20 de playlisturi, respectiv 60 de videoclipuri pe pagină; limita de 5 MB pentru răspuns; timeout de 25 de secunde pentru căutări și 30 pentru transcript; endpointul și filtrele de căutare; limba implicită `en`; mesajele de eroare și textele de interfață, toate ca apeluri literale `UiText.Translate(...)`/`UiText.Format(...)` în același loc; comportamentul 429/503; jetonul de continuare al căutării video; cookie-ul de consimțământ și `UseCookies = false` doar pentru transcript; semnăturile metodelor `internal` folosite de `CoreSmoke`.
+- Ce se mută: `ReadPageAsync`, `GetString`, `ReadText`, `ReadLockupTitle`, `CreateSearchClient` (pentru cele trei servicii de căutare) și găsirea blocului `ytInitialData` (`YouTubeCommon.TryFindInitialData`) într-un fișier nou, `Services/Rss/YouTubeCommon.cs`. Transcriptul păstrează `CreateClient` și `GetSimpleText`, care diferă.
+- Fișiere atinse: `Services/Rss/YouTubeCommon.cs` (nou); `YouTubeChannelSearchService.cs`, `YouTubePlaylistSearchService.cs`, `YouTubeVideoSearchService.cs`, `YouTubeTranscriptService.cs` (metode private duplicate scoase, `using static` către `YouTubeCommon`, `using System.IO`/`System.Text` nefolosite scoase). Semnăturile `internal` și mesajele literale neschimbate.
+- Teste: build Release reușit fără erori; CoreSmoke 317 verificări trecute, cod de ieșire 0; `verify-source.ps1 -Mode Quick -NoRestore` a trecut; `verify-localization.ps1 -RequireComplete` a trecut.
+- Duplicare: 57 de blocuri duplicate de 6 linii înainte, 17 după; în scanarea din aceeași zi nu au rămas membri privați neutilizați.
+- Executabil de test: `C:\Users\grigo\Documents\ChatGPT\New project\Orizont RSS\bin\Release\net8.0-windows10.0.17763.0\Orizont.exe`, reconstruit la 21:02. Verificarea cu JAWS a funcțiilor YouTube trebuie refăcută pe acest executabil, pentru că refactorizarea atinge codul pe care utilizatorul l-a confirmat.
+- Confirmat de utilizator după refactorizare: toate funcțiile YouTube verificate anterior funcționează în executabilul din locația standard. Cititorul nu a fost precizat; data nu a fost precizată, dar confirmarea a venit după build-ul de la 21:02.
+- Nicio distribuție, arhivă, tag sau release. Nu s-a făcut commit.
+
+## 2026-11-02 — Verificare automată a codului modificat (fără modificări de cod)
+
+- Cerere: verificare automată a codului, pentru duplicare, cod nefolosit și erori, după confirmarea funcțiilor YouTube.
+- Confirmat de utilizator cu JAWS 2026, seara de 2 noiembrie 2026 după ora 18:00, în executabilul din locația standard: căutarea de videoclipuri și „Mai multe rezultate”, lista limbilor din transcript, descărcarea, copierea și salvarea transcriptului. Restul nu este confirmat.
+- Build cu analizoare (`dotnet build -c Release`, cu `AnalysisLevel=latest-recommended`): 190 avertismente, majoritatea de stil (CA1309, CA1822, CA1305, CA1859). În fișierele modificate azi apar CA1309 și CA1305 în `Services/Rss/YouTubeTranscriptService.cs`, plus CA1861 și CA1870. Avertismentele serioase (CS4014 în `Views/ArticleReaderWindow.xaml.cs:662`, CA1806 în `Services/Speech/EspeakSpeechEngine.cs`, CA2101) nu sunt în fișierele modificate azi, deci sunt vechi.
+- `dotnet format analyzers` pe IDE0051, IDE0052, IDE0060 și IDE0005 pentru fișierele modificate: fără rezultate. Nu s-a verificat dacă aceste reguli erau active la severitatea implicită.
+- Scan propriu: niciun membru privat neutilizat în cele 13 fișiere `.cs` modificate. S-au găsit 57 de blocuri duplicate de 6 linii, cele mai multe între cele patru servicii YouTube (`CreateClient`, `ReadText`, citirea limitată, `SearchAsync`, `Reader`). Nu s-a refactorizat, pentru că regula 8 interzice refactorizările necerute.
+- Nicio modificare de cod. Nu s-a făcut commit.
+
+## 2026-11-02 — Confirmări suplimentare ale utilizatorului pentru transcriptul YouTube
+
+- Confirmat de utilizator cu JAWS 2026, în seara zilei de 2 noiembrie 2026, după ora 18:00 (ora exactă nu a fost precizată): descărcarea transcriptului, copierea transcriptului și salvarea lui ca fișier `.txt` din fereastra transcriptului funcționează.
+- Acceptarea descrisă la 31 octombrie („copierea transcriptului în browser, importul din clipboard, navigarea cu săgeți și salvarea `.txt`”) rămâne deschisă doar pentru pașii pe care utilizatorul nu i-a confirmat încă; importul explicit din clipboard și deschiderea paginii YouTube din dialog nu sunt confirmate prin această intrare.
+- Nicio modificare de cod, distribuție, tag sau release. Nu s-a făcut commit.
+
+## 2026-11-02 — Aliniere a fișierelor de stare și reparare compilare CoreSmoke
+
+- Cerere: verificarea fișierelor de stare față de starea reală a proiectului, repararea neconcordanțelor și un raport general.
+- Constatări: (1) `tests/CoreSmoke/Program.cs` nu compila: `RunDownloadLimitSmokeAsync` era `static` și apela metoda locală `Check` (CS8421); (2) cifra „CoreSmoke 315” din intervenția de mai jos nu corespundea codului, testul rulat acum raportează 317; (3) `PUBLICATION.md` și `docs/ROADMAP.md` indicau încă WinGet 1.6.3 sau 1.6.0 cu PR #431971, în loc de 1.6.5 cu PR #462294; (4) antetul `docs/ACCEPTANCE-STATUS.md` era din 9 octombrie; (5) `CHANGELOG.md` nu marca lucrările nepublicate drept pregătire pentru v1.6.2, cum cere regula 22 din `AGENTS.md`.
+- Fișiere atinse: `tests/CoreSmoke/Program.cs` (eliminat `static` de pe o singură funcție, fără modificarea logicii); `docs/PROJECT-STATUS.md`, `docs/ACCEPTANCE-STATUS.md`, `docs/ROADMAP.md`, `PUBLICATION.md`, `CHANGELOG.md`, `WORKLOG.md`.
+- Teste: `dotnet run --project tests/CoreSmoke/CoreSmoke.csproj -c Release --no-restore`: 317 verificări trecute, cod de ieșire 0.
+- Continuare, aceeași zi: `tools/verify-source.ps1 -Mode Quick -NoRestore` a trecut („SOURCE VALIDATION PASSED (Quick)”): WorkflowSmoke 157/157, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 76, LocalizationSmoke 1.695 resurse în opt limbi, eSpeak NG 132/104, validatorii de ghiduri, codare și consistența release-ului. `tools/verify-localization.ps1 -RequireComplete` a trecut: 0 chei lipsă, 0 goale, 0 erori de format, 0 duplicate, 0 mojibake, 0 chei învechite.
+- Verificat: manifestul WinGet 1.6.5 are același URL și SHA-256 ca registrul de release; cele opt fișiere `Resources/UiStrings*.resx` au același set de chei (1.695).
+- Executabil de test: `C:\Users\grigo\Documents\ChatGPT\New project\Orizont RSS\bin\Release\net8.0-windows10.0.17763.0\Orizont.exe` (reconstruit la 20:27 de compilarea CoreSmoke; SHA-256 `4049AC7C4F956708F186D9CD480E30CC9C89B03652EEC83117FF4424DA48AB92`).
+- Mutare: secțiunile v1.6.4, v1.6.3, v1.6.2 și „Modificări nepublicate după tagul v1.6.4” au fost scoase din `CHANGELOG.md` și puse la capătul acestui fișier, sub „Istoric mutat din CHANGELOG.md”, fără modificări de text. `CHANGELOG.md` păstrează acum doar v1.6.5 și lucrările nepublicate.
+- Nicio distribuție, arhivă, tag sau release. Nu s-a făcut commit.
+
+## 2026-11-02 — Transcript YouTube funcțional, „Mai multe rezultate” și nume curate pentru limbi
+
+- Cereri: repararea descărcării transcripturilor YouTube; trecerea dincolo de primele 20 de rezultate la căutarea de videoclipuri; numele limbilor din fereastra transcriptului să se citească curat în JAWS.
+- Cauze, stabilite din cod (mediul de lucru nu are acces la YouTube, deci nu s-au reprodus acolo): (1) din UE, pagina videoclipului poate fi pagina de consimțământ, fără `ytInitialPlayerResponse`; (2) adresa pistei luată din pagina web cere jeton PO și întoarce corp gol, ceea ce explică și constatarea din 31 octombrie (HTML gol); (3) la căutarea video, `MaximumVideos = 20` și o singură pagină citită, fără jeton de continuare; (4) lista limbilor: JAWS citea reprezentarea implicită a `record`-ului `TranscriptTrack` (cod de limbă și adresă), nu `DisplayName`.
+- `Services/Rss/YouTubeTranscriptService.cs`: lista pistelor se cere întâi prin Innertube cu clientul Android, cu rezervă pagina videoclipului; cookie de consimțământ trimis; `&fmt=` eliminat din adresa pistei; parser pentru `<text start>` și `<p t>` (srv3), entități codificate de două ori, răspuns gol raportat ca transcript indisponibil; numele limbii derivat din codul limbii (`ResolveLanguageName`), cu numele YouTube curățat doar ca rezervă; `ToString()` întoarce `DisplayName`.
+- `Views/YouTubeTranscriptWindow.xaml`: elementele listei de limbi au `AutomationProperties.Name` legat de `DisplayName`. Aceasta a fost modificarea care a rezolvat citirea în JAWS.
+- `Services/Rss/YouTubeVideoSearchService.cs`: limită de 60 pe pagină, `SearchPageAsync`, jeton de continuare, cerere `youtubei/v1/search` pentru pagina următoare. `SearchAsync` și `ParseVideos` păstrează comportamentul anterior.
+- `Views/YouTubeSearchWindow.xaml` și `.xaml.cs`: butonul „Mai multe rezultate”, vizibil numai la tipul Videoclipuri; rezultatele noi se adaugă fără dubluri, primul rezultat nou este selectat și primește focusul, iar starea anunță câte s-au adăugat sau că nu mai există altele. Canalele și playlisturile nu au fost atinse și păstrează aceeași limită.
+- `Resources/UiStrings*.resx` (cele opt): cinci chei noi pentru buton, ajutor și mesaje de stare.
+- `tests/CoreSmoke/Program.cs`: teste noi pentru formatul srv3, răspunsul gol, pista citită din JSON-ul Innertube, numele limbii și pagina de continuare.
+- Verificare automată: `build-test-orizont.bat` (script ajutător din `Documents\Claude`, în afara proiectului) a rulat CoreSmoke, trecut cu 315 verificări, apoi publicarea autonomă în locația standard, fără erori. Nu s-au rulat în această intervenție `verify-source.ps1`, celelalte teste smoke și `verify-localization.ps1 -RequireComplete`; rămân de rulat înainte de orice distribuție.
+- Executabil de test: `C:\Users\grigo\Documents\ChatGPT\New project\Orizont RSS\bin\Release\net8.0-windows10.0.17763.0\Orizont.exe`.
+- Confirmat manual de utilizator cu JAWS 2026, în data de 2 noiembrie 2026: descărcarea transcriptului funcționează; lista limbilor se citește curat, numai cu numele limbii; butonul „Mai multe rezultate” funcționează.
+- Limite: preluarea automată folosește puncte de acces YouTube neoficiale și poate înceta să funcționeze dacă YouTube le schimbă; rezerva din clipboard rămâne disponibilă. Nu s-a creat distribuție, arhivă, tag sau release; nu s-a făcut commit.
+
+## 2026-10-31 — Transcript YouTube: preluare automată cu rezervă accesibilă din clipboard
+
+- Cerere aprobată: să fie făcut ce este practic posibil pentru transcriptul videoclipurilor YouTube.
+- Test izolat al preluării automate, fără cont sau cheie API: pagina video a răspuns HTTP 200 și a expus 7 piste; URL-ul public al pistei a răspuns HTTP 200, dar cu tip `text/html` și corp gol. Endpointul web intern `get_transcript`, cu contextul și datele de vizitator ale paginii, a răspuns HTTP 400 `FAILED_PRECONDITION`, inclusiv cu cookie-ul de consimțământ deja folosit de aplicație. Nu declarăm descărcarea automată funcțională.
+- API-ul oficial YouTube pentru piste de subtitrare cere OAuth cu scope-uri YouTube, nu doar o cheie API; pentru utilizarea transcriptului de la orice video public nu este un substitut simplu pentru descărcarea fără autentificare. Referințe: [captions.list](https://developers.google.com/youtube/data/reference/rest/v3/captions/list) și [ghidul oficial captions](https://developers.google.com/youtube/v3/guides/implementation/captions).
+- Implementare: butonul „Transcript YouTube” este disponibil numai pentru rezultate video. Fereastra încearcă în continuare preluarea automată, dar oferă și „Deschide în browser” și „Importă transcriptul din clipboard”. Utilizatorul poate copia transcriptul din pagina YouTube, reveni în Orizont și importa explicit textul; clipboardul nu este citit la deschiderea ferestrei. Textul importat se navighează în câmpul numai-citire, se poate copia sau salva în `.txt`; filtrele de salvare sunt localizate.
+- Când preluarea automată eșuează, mesajul indică alternativa și focusul ajunge la comanda potrivită. Importul din clipboard păstrează textul copiat, inclusiv eventualele timestamp-uri. Schimbarea limbii nu șterge textul importat manual.
+- O posibilă cale viitoare este analiza video directă prin Gemini API pentru videoclipuri publice, documentată de Google ca funcție Preview; aceasta cere cheia Gemini și produce răspuns generat de model, nu garantează o transcriere literală, deci nu este prezentată drept transcript exact și nu a fost integrată/testată. [Documentația Gemini pentru înțelegerea videoclipurilor](https://ai.google.dev/gemini-api/docs/video-understanding).
+- Fișiere atinse: `Views/YouTubeSearchWindow.xaml(.cs)`, `Views/YouTubeTranscriptWindow.xaml(.cs)`, cele opt `Resources/UiStrings*.resx`, `tests/CoreSmoke/Program.cs`, `WORKLOG.md`, `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md`. Serviciul de preluare automată existent a rămas neschimbat.
+- Verificări: `verify-source.ps1 -Mode Quick -NoRestore` a trecut: build Release, CoreSmoke 307, WorkflowSmoke 157/157, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 76, LocalizationSmoke 1.689 resurse și 1.478 texte UI sursă în opt limbi, eSpeak NG 132/104 și validatorii Quick. `verify-text-encoding.ps1`: 0 mojibake. Nu s-a creat distribuție, arhivă, tag sau release; v1.6.5 rămâne ultima versiune publicată.
+- Executabil autonom de test, fără distribuție: `bin/Release/net8.0-windows10.0.17763.0/win-x64/publish/Orizont.exe`; runtime .NET inclus. SHA-256 `Orizont.dll`: `96290A864A4360872C18224265F5B0A2A1BF96E8618BDC10627FB9AD2D296C55`.
+- Acceptarea practică cu JAWS 2026 rămâne necesară pentru găsirea butonului în modul video, deschiderea paginii YouTube, copierea transcriptului acolo, revenirea în Orizont, importul explicit din clipboard, navigarea cu săgeți și salvarea `.txt`.
+
+## 2026-10-31 — Păstrarea rezultatelor YouTube cu flux RSS neverificat
+
+- Problemă observată: un canal sau playlist putea fi găsit pe YouTube, dar dispărea complet din Orizont dacă verificarea RSS eșua temporar sau fluxul nu putea fi citit. Asta ascundea pagina YouTube găsită și împiedica verificarea manuală.
+- Schimbare: serviciile de căutare a canalelor și playlisturilor păstrează acum candidatul găsit, pagina sa YouTube și adresa RSS chiar dacă RSS nu se verifică; candidatul este marcat „neverificat”. În Hub se afișează numărul rezultatelor verificate și neverificate, se poate reîncerca verificarea RSS și se poate deschide pagina originală YouTube. Adăugarea ca abonament rămâne dezactivată până când fluxul este verificat. Abonarea la canal dintr-un rezultat video acceptă numai un feed verificat.
+- Limite păstrate: căutarea folosește pagina publică și structura HTML YouTube, fără API key; YouTube o poate schimba sau limita. Playlisturile/canalele sunt RSS-uri obișnuite și nu se sincronizează cu NewsBlur în mod special. Importul transcriptelor nu este expus în interfață și nu este declarat funcțional prin această schimbare.
+- Fișiere atinse în această etapă: `Models/DiscoveredFeed.cs`, `Services/Rss/YouTubeChannelSearchService.cs`, `Services/Rss/YouTubePlaylistSearchService.cs`, `Services/Rss/YouTubeVideoSearchService.cs`, `Views/YouTubeSearchWindow.xaml(.cs)`, `Views/YouTubeTranscriptWindow.xaml.cs`, cele opt `Resources/UiStrings*.resx`, `tests/CoreSmoke/Program.cs`, `WORKLOG.md`, `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md`. Modificările existente în celelalte fișiere de lucru au fost păstrate.
+- Verificare: `verify-source.ps1 -Mode Quick -NoRestore` a trecut integral: build Release, CoreSmoke 304, WorkflowSmoke 157/157, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 76, LocalizationSmoke (1.683 resurse și 1.474 texte UI sursă, română și celelalte șapte limbi), eSpeak NG 132 voci / 104 variante și validatorii Quick. `verify-text-encoding.ps1`: 0 mojibake. `git diff --check`: fără erori; au rămas avertismente de conversie LF/CRLF.
+- Executabil autonom local de test, nu distribuție: `bin/Release/net8.0-windows10.0.17763.0/win-x64/publish/Orizont.exe`. SHA-256 pentru `Orizont.dll`: `EBF122EBCBAC7B82EA8FECB45ADCCB76005DB19FE815FBFB514A7899EFB9CD1C`. Publicarea a emis avertismentul existent CS4014 în `ArticleReaderWindow.xaml.cs:662`, fără legătură cu YouTube.
+- Acceptare practică încă necesară cu JAWS 2026: căutare de canale și playlisturi cu rezultate RSS neverificate, anunțul statusului, deplasarea cu săgeți, deschiderea paginii YouTube, reîncercarea verificării și confirmarea că adăugarea se activează numai după verificare. Nu s-a creat distribuție, arhivă, tag, release sau commit; versiunea publicată rămâne 1.6.5.
+
+## 2026-10-31 — Unificarea căutării YouTube în Hub accesibil (Varianta B)
+
+- Cerere aprobată: implementarea Variantei B — crearea unui Hub YouTube unificat pentru simplificarea navigării cu cititoarele de ecran (JAWS 2026), optimizarea ergonomiei în fereastra de descoperire și adăugarea abonării la canal direct din lista de videoclipuri.
+- Implementare:
+  - În `DiscoverTopicWindow`: cele trei butoane YouTube separate au fost înlocuite cu un singur buton aerisit: „Caută pe YouTube…”. Cele trei texte introductive repetitive de confidențialitate au fost condensate într-o singură frază clară. Textul de ajutor pentru câmpul de căutare a fost completat, iar starea de ocupat blochează acum toate butoanele de căutare în mod uniform.
+  - Fereastră unificată nouă `Views/YouTubeSearchWindow.xaml(.cs)`: combină căutarea de canale, playlisturi și videoclipuri YouTube într-un singur dialog dedicat, accesibilizat pentru JAWS 2026.
+  - Selecția tipului de căutare se face printr-un control `ComboBox` dedicat (`Canale (pentru abonare RSS)`, `Playlisturi (pentru abonare RSS)`, `Videoclipuri (pentru vizionare în browser)`), comutabil rapid cu săgețile sus/jos.
+  - Ordinea deplasării cu tasta Tab este strict optimizată pentru accesibilitate: câmpul de scriere (Cuvinte-cheie) -> ComboBox-ul tipului de căutare -> butonul Caută -> lista de rezultate. Tasta Enter atât în câmpul de text, cât și pe ComboBox, lansează imediat căutarea. Rezultatele apar cu primul element selectat și focalizat automat pentru citire de către JAWS.
+  - Butoanele de acțiune inferioare se adaptează dinamic: pentru canale și playlisturi este afișat butonul „Adaugă feed verificat” (ce trimite feedul direct în fluxul obișnuit de abonare `FeedDialog`), iar pentru videoclipuri apar „Deschide în browser” și butonul nou **„Abonează-te la canal”** (care rezolvă fluxul RSS al canalului asociat videoclipului și permite adăugarea în abonamente).
+  - Tasta Enter sau dublu clic pe elemente: adaugă feedul verificat pentru canale/playlisturi sau deschide videoclipul în browser; tasta Escape închide dialogul.
+  - Parsare consolidată: `YouTubeChannelSearchService` a fost modernizat pentru a suporta și noul format YouTube `lockupViewModel` (`LOCKUP_CONTENT_TYPE_CHANNEL`) și parcurgere recursivă din rădăcină. `YouTubeVideoSearchService` extrage acum și `ChannelId` când este disponibil, oferind rezolvare instantanee a feedului la abonare.
+- Fișiere atinse: `Views/DiscoverTopicWindow.xaml`, `Views/DiscoverTopicWindow.xaml.cs`, `Views/YouTubeSearchWindow.xaml`, `Views/YouTubeSearchWindow.xaml.cs`, `Services/Rss/YouTubeChannelSearchService.cs`, `Services/Rss/YouTubeVideoSearchService.cs`, toate cele opt fișiere de resurse `Resources/UiStrings*.resx`, `tests/CoreSmoke/Program.cs`, `WORKLOG.md`, `docs/PROJECT-STATUS.md`.
+- Verificări: `verify-source.ps1 -Mode Quick` a trecut complet (CoreSmoke 300, WorkflowSmoke 157/157, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 76, LocalizationSmoke 1.643 resurse / 1.445 texte sursă în opt limbi, eSpeak NG 132/104 și validatorii de ghiduri, codare, consistență și runner). `verify-text-encoding.ps1` a raportat 0 mojibake. `git diff --check` a trecut fără erori.
+- Executabil autonom de test refăcut în locația standard: `bin\Release\net8.0-windows10.0.17763.0\Orizont.exe` (SHA-256: `4049AC7C4F956708F186D9CD480E30CC9C89B03652EEC83117FF4424DA48AB92`).
+- Nu s-a creat nicio distribuție, arhivă de distribuție, tag sau release; v1.6.5 rămâne versiunea publică de referință.
+
+## 2026-10-31 — Căutare de videoclipuri YouTube
+
+- Cerere aprobată: adăugarea căutării videoclipurilor în fereastra de descoperire RSS/podcast, după confirmarea funcționării căutării de playlisturi.
+- Implementare: buton separat „Caută videoclipuri YouTube” deschide o fereastră cu câmp de căutare, listă de rezultate și comanda „Deschide în browser”. Se recunosc formatele YouTube actual și vechi; sunt validate ID-urile video, eliminate duplicatele și limitate rezultatele la 20. JAWS poate parcurge lista cu săgețile; Enter, dublu clic sau butonul deschid videoclipul selectat în browserul implicit. Videoclipurile nu sunt tratate drept feeduri RSS și nu se adaugă la abonamente.
+- Confidențialitate și limite: căutarea folosește pagina publică și filtrul YouTube neoficial, fără cheie API; termenii sunt trimiși la YouTube. HTML-ul poate fi schimbat sau limitat. Redarea are loc pe pagina YouTube din browserul implicit, nu într-un player încorporat.
+- Sonarpad a fost consultat numai ca material de referință. Pagina proiectului îl descrie drept „source-available, not open source” și interzice redistribuirea și operele derivate fără permisiune scrisă; nu s-a copiat și nu s-a adaptat cod din el. [Depozit Sonarpad](https://github.com/Ambro86/Sonarpad).
+- Fișiere modificate: `Services/Rss/YouTubeVideoSearchService.cs`, `Views/YouTubeVideoSearchWindow.xaml`, `Views/YouTubeVideoSearchWindow.xaml.cs`, `Views/DiscoverTopicWindow.xaml`, `Views/DiscoverTopicWindow.xaml.cs`, `tests/CoreSmoke/Program.cs`, toate cele opt `Resources/UiStrings*.resx`, `WORKLOG.md`, `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md`. Schimbările preexistente pentru canale și playlisturi au fost păstrate.
+- Verificări: CoreSmoke a trecut cu 300 de verificări; localizarea a validat 1.616 chei în fiecare din cele opt limbi, fără lipsuri/duplicate/erori; verificarea live a paginii YouTube a obținut HTTP 200 și a extras 20 de videoclipuri, cu titlu, canal și ID; compilarea autonomă a reușit. `git diff --check` a trecut fără erori; au rămas doar avertismentele obișnuite privind conversia LF/CRLF.
+- Executabil autonom de test în `bin/Release/net8.0-windows10.0.17763.0/win-x64/publish/Orizont.exe`; runtime-ul .NET este inclus (runtimeconfig listează `includedFrameworks` 8.0.33). Compilarea anterioară a semnalat avertismentul CS4014 deja existent în `ArticleReaderWindow.xaml.cs:662`, fără legătură cu funcția video.
+- Confirmare manuală de la utilizator (31 octombrie 2026): căutarea și găsirea videoclipurilor funcționează. Nu s-a precizat separat cititorul folosit și nu consemnăm ca test JAWS individual anunțul de confidențialitate, fiecare schimbare de focus sau deschiderea în browser. Nu s-a creat distribuție, arhivă, tag sau release; 1.6.5 rămâne ultima versiune publică.
+
+## 2026-10-31 — Căutare de playlisturi YouTube după cuvinte-cheie
+
+- Cerere aprobată: adăugarea unei căutări distincte de playlisturi YouTube în fereastra existentă de descoperire RSS/podcast; funcția de căutare a canalelor rămâne separată și neschimbată.
+- Implementare: butonul „Caută playlisturi YouTube” trimite termenul către pagina publică YouTube, fără cheie API, recunoaște rezultatele actuale `lockupViewModel` și formatul mai vechi `playlistRenderer`, ignoră videoclipurile, elimină duplicatele și verifică fluxurile RSS ale playlisturilor. Rezultatele fără flux accesibil și intrări nu apar. Se păstrează lista obișnuită, selecția și focusul pe primul rezultat, navigarea cu săgeți și butonul existent „Adaugă feed verificat”. Căutarea este limitată la 20 de playlisturi și șase verificări paralele.
+- Transparență și limite: textul vizibil, HelpText și mesajele de stare precizează că termenii sunt trimiși la YouTube și nu este necesară cheie API. Căutarea depinde de HTML și de un filtru public YouTube neoficial, deci se poate schimba sau poate fi limitată; fluxurile YouTube se adaugă ca feeduri obișnuite, fără sincronizare NewsBlur.
+- Fișiere modificate în această etapă: `Services/Rss/YouTubePlaylistSearchService.cs`, `Views/DiscoverTopicWindow.xaml`, `Views/DiscoverTopicWindow.xaml.cs`, `tests/CoreSmoke/Program.cs`, toate cele opt `Resources/UiStrings*.resx`, `WORKLOG.md`, `docs/PROJECT-STATUS.md` și `docs/ROADMAP.md`. Modificările locale preexistente pentru căutarea canalelor și fișierele aferente au fost păstrate.
+- Verificări: CoreSmoke a trecut cu 296 verificări; validatorul de localizare a găsit 1.595 de chei în fiecare dintre cele opt limbi, fără chei lipsă, duplicate, valori necompletate ori erori de formatare; `verify-text-encoding.ps1` a raportat 0 mojibake; `git diff --check` fără erori (numai avertismentele obișnuite LF/CRLF). Test live read-only: căutarea YouTube a răspuns HTTP 200 cu 20 de rezultate playlist; primul flux RSS a răspuns HTTP 200 și a conținut 14 intrări.
+- Executabil autonom refăcut în locația standard `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`; runtime-ul .NET este inclus. SHA-256 `Orizont.dll`: `45337C7BAADE1155A03DFD8F536512A23BDD76A97B7EFDA9D676A2B1A8850096`. Compilarea a emis avertismentul preexistent CS4014 în `ArticleReaderWindow.xaml.cs:662`; nu are legătură cu această funcție.
+- Pentru a evita accesul interzis la cache-ul global NuGet, restaurarea reușită a folosit cache local în `obj/codex-nuget` și profil CLI în `obj/codex-cli-home`; publicarea autonomă a inclus `Microsoft.NETCore.App` și `Microsoft.WindowsDesktop.App` 8.0.33.
+- Acceptare manuală rămasă: verificarea cu JAWS 2026 a noului buton, anunțului de confidențialitate, listei/focusului, navigării cu săgeți și adăugării unui playlist. Nu s-a creat distribuție, arhivă, candidat de release, tag sau publicare; v1.6.5 rămâne ultima versiune publică.
+
+## 2026-10-29 — Căutare de canale YouTube după cuvinte-cheie
+
+- Cerere aprobată: adăugarea căutării canalelor YouTube în fereastra existentă de descoperire RSS/podcast, fără cheie API și fără sincronizare NewsBlur.
+- Implementare: butonul „Caută canale YouTube” caută pe pagina publică YouTube, folosește filtrul de canale și construiește fluxul RSS standard `https://www.youtube.com/feeds/videos.xml?channel_id=...`. Sunt afișate numai canalele ale căror fluxuri au fost citite cu succes și conțin articole; duplicatele sunt eliminate, verificările sunt limitate la 20 de canale și cel mult șase simultan. Rezultatele apar în lista comună, primul primește selecția și focusul, iar butoanele de căutare sunt blocate cât timp rulează o căutare.
+- Transparență și limite: câmpul vizibil și HelpText precizează că termenul este trimis către YouTube și că nu este necesară cheie API. Căutarea folosește HTML-ul public și filtrul de canal al paginii, nu un endpoint oficial stabil; modificările YouTube sau limitarea cererilor pot opri căutarea. Mesajele explică limitarea și recomandă introducerea adresei canalului, funcție deja existentă.
+- Fișiere modificate: `Services/Rss/YouTubeChannelSearchService.cs`, `Views/DiscoverTopicWindow.xaml`, `Views/DiscoverTopicWindow.xaml.cs`, `tests/CoreSmoke/Program.cs` și toate cele opt `Resources/UiStrings*.resx`.
+- Teste: `verify-source.ps1 -Mode Quick` a trecut integral: CoreSmoke 289, WorkflowSmoke 157/157, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 76, LocalizationSmoke 1.585 resurse / 1.400 șiruri, eSpeak NG 132 voci / 104 variante și validatorii de localizare, ghiduri, codare, consistența release-ului și runner. Prima rulare a ShortcutsSmoke a fost refuzată de directorul temporar izolat; repetarea în directorul unic creat sub `obj` a trecut, apoi acel director a fost eliminat. Probă de rețea: căutarea publică YouTube pentru „NASA” a returnat pagină cu rezultate de tip canal; canalul NASA a avut fluxul RSS standard accesibil (HTTP 200, XML, 15 intrări).
+- Executabilul autonom de test a fost refăcut în locația standard `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`; `Orizont.runtimeconfig.json` conține ambele frameworkuri incluse și nu cere un runtime instalat. SHA-256 `Orizont.dll`: `909B63CCC6DF439762D3F6379CB2FE3CBEDA88EB34184268CB7FD763BC5B82B0`.
+- `dotnet restore -r win-x64` și publicarea locală au reușit; NuGet a emis `NU1900`, deci verificarea online a vulnerabilităților nu a putut fi făcută în această rulare. Nu s-a creat distribuție.
+- Acceptare manuală: rămâne verificarea în executabil cu JAWS 2026 — butonul nou, anunțul că termenul este trimis la YouTube, focusul pe primul canal, navigarea cu săgeți și adăugarea feedului verificat. NVDA nu a fost testat.
+- Versiunea publică rămâne **1.6.5**. Nu s-a atribuit o versiune candidat, nu s-au creat distribuții/arhive, tag, commit sau release.
+
 ## 2026-10-28 — WinGet 1.6.5: stare de fapt
 
 - PR [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294) este deschis. Verificările automate de validare au trecut, cu excepția scanării installerului și a validării instalării, care erau în curs la 26 octombrie.
@@ -2879,3 +3006,76 @@ Orice intervenție viitoare asupra proiectului trebuie adăugată aici după apl
 - Utilizatorul confirmă că toate funcțiile solicitate merg: redare în modul text, Z X C V B, S (viteză 0,5–2), P (ton 0,5–1,5), D (descărcare).
 - Ghidurile în opt limbi au un paragraf despre podcasturi, în secțiunea despre citire. Validare: `verify-user-guides.ps1` a trecut.
 - Commituri locale neîmpinse: `be1bacd`, `dc30ac0` și actualizarea ghidurilor. Nimic publicat.
+
+## Istoric mutat din CHANGELOG.md (2 noiembrie 2026)
+
+Secțiunile de mai jos au fost scoase din CHANGELOG.md, care păstrează acum numai ultima versiune publicată și lucrările nepublicate. Conținutul este neschimbat.
+
+## Versiunea publicată v1.6.4 — 23 octombrie 2026
+
+Release-ul public v1.6.4 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4). Notele complete sunt în [notele versiunii 1.6.4](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4).
+
+
+Detalii și limitele verificărilor: [notele versiunii 1.6.4](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.4).
+
+- Teme sonore în Setări (Sunetele Windows, Interfață, Clopoței, Orizont), cu sunete pentru zece evenimente. „Activează alertele sonore” oprește toate sunetele aplicației.
+- Bare de stare în 17 ferestre și dialoguri care nu aveau; anunț la deschidere.
+- Cititorul Orizont, modul text: Application și Shift+F10 deschid meniul de fiecare dată.
+- Cititorul Orizont, WebReader: Application și Shift+F10 deschid meniul nativ, cu comenzile Cititorului.
+- Traducerea DeepL în Cititor: citirea vocală în curs se oprește la înlocuirea textului; bara de stare repetă rezultatul.
+- Ghidurile precizează că în WebReader mesajele de stare nu sunt anunțate.
+
+## Versiunea anterioară v1.6.3 — 19 octombrie 2026
+
+Release-ul v1.6.3 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.3).
+
+
+Release-ul public v1.6.3 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.3). Notele complete, inclusiv limitele verificărilor, sunt în [RELEASE-NOTES-1.6.3.md](RELEASE-NOTES-1.6.3.md).
+
+- Corectat: SmartReader 0.9.6 nu mai funcționa după actualizarea AngleSharp la 1.7.1 (avertismentul de securitate din 15 octombrie 2026). Textul integral era extras doar cu extractorul vechi, inclusiv în v1.6.2. SmartReader a fost actualizat la 0.11.1, compatibil cu AngleSharp 1.7.1.
+- WebReader afișează articolul structurat de SmartReader: subtitluri, liste, citate, tabele și linkuri, navigabile cu tastele JAWS (H, L, Tab). Scripturile, imaginile, formularele și atributele sunt eliminate. Textul tradus și paginile nerecunoscute rămân în paragrafe.
+- Cititorul Orizont: tastele Application și Shift+F10 deschid meniul contextual în modul text fără să se închidă imediat; citirea vocală în curs se oprește înainte de înlocuirea textului cu traducerea DeepL.
+
+Probele practice A02, A09, A07 și A11 rămân deschise, conform registrului de acceptare.
+
+## Versiunea anterioară v1.6.2 — 19 octombrie 2026
+
+Release-ul public v1.6.2 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.2). Notele complete sunt pe pagina release-ului.
+
+Noutăți față de 1.6.1:
+
+
+- Mod Citire al browserului, în fereastră externă: opțiune nouă la feed și în Setări („La deschiderea articolului” și „Deschiderea implicită a articolelor”). Articolul se marchează citit.
+- Verificarea soldului DeepSeek și a cotei de caractere DeepL, în Setări.
+- Limba țintă pentru DeepL, în Setări; implicit, limba interfeței. Corectat: interfața în maghiară sau italiană traducea în engleză.
+- Instrucțiunea implicită pentru AI se afișează în limba interfeței.
+- Creditul pentru Claude (Anthropic), alături de Grigore Frișan și OpenAI Codex, în aplicație, pe pagina de prezentare, în ghiduri și în documentele de mulțumiri.
+
+Probele practice A02, A09, A07 și A11 rămân deschise, conform registrului de acceptare; auditul NuGet nu a raportat pachete vulnerabile.
+
+### Alte modificări incluse în v1.6.2
+
+- Actualizarea prin RSS nu mai șterge articolele care au ieșit din fluxul site-ului. Favoritele, articolele „Mai târziu”, etichetele și notițele AI rămân; ștergerea după vechime se face numai prin regula de păstrare, care protejează în continuare favoritele și „Mai târziu”.
+- Sincronizarea NewsBlur nu mai raportează conflict când aceeași schimbare (citit/necitit, favorit sau etichete) a fost făcută pe ambele părți. Bazele de comparație se actualizează, așa că o schimbare ulterioară de pe alt dispozitiv, de exemplu marcarea ca necitit pe telefon, este preluată, nu anulată.
+- Curățarea textului articolelor (Cititor Orizont și sursa pentru traducere) nu mai șterge cuvinte obișnuite precum „publicidad”, „commento” sau „Kommentar” din fraze și nu mai taie articolul la expresii ca „Articole înrudite” sau „o campanie editorială” aflate în text. Etichetele de reclamă și comentarii se elimină când stau singure pe linie sau, pentru marcajele de reclamă, când sunt scrise cu majuscule. Secțiunile de final (articole înrudite, comentariile cititorilor) se taie de la titlul lor.
+- În limbile străine ale interfeței, poziția articolului se citește tradus (de exemplu „3 of 50”), iar folderul implicit apare tradus („Unorganized”, „No organizado” etc.); intern rămâne „Neorganizate”, deci datele și sincronizarea NewsBlur nu se schimbă. „Toate folderele” nu mai apare trunchiat („A” sau „T”) în engleză, spaniolă, franceză, germană și portugheză.
+- Vocea eSpeak NG funcționează și când aplicația este instalată într-un folder cu diacritice, de exemplu sub un utilizator Windows „Frișan” sau „Ionuț”. Înainte, eSpeak nu pornea dintr-un astfel de folder, iar cu „ș”/„ț” putea închide brusc aplicația.
+- Vocea eSpeak NG este mai puternică: setarea „Volum” acoperă acum întreaga gamă a motorului, iar la 100 vocea are o sonoritate medie de circa 1,9 ori mai mare decât înainte. Volumul se poate reduce din aceeași setare. SAPI5 și Gemini nu sunt afectate.
+- Gemini: limită de răspuns mai mare (8.192 în loc de 2.048), ca modelele care „gândesc” să nu mai întoarcă răspunsuri goale la articole lungi. Mesaje clare după motivul opririi: răspuns tăiat la limită (textul rămâne, cu o notă), blocare de siguranță cu motivul, text protejat. Lista modelelor se cere o singură dată pe sesiune, iar cheia API este ascunsă din detaliile erorilor.
+- În fereastra principală, o cerere AI în curs se poate opri cu Escape; mesajul de așteptare anunță această posibilitate.
+- Textul integral al articolelor (comanda de aducere a textului complet, reîncărcarea din Cititor Orizont și textul pentru traducere) este extras cu SmartReader 0.9.6, adaptarea .NET a algoritmului Readability. Rezultatul conține articolul fără meniuri, liste „cele mai citite” sau butoane de distribuire. Paginile care nu sunt recunoscute ca articol, de exemplu cele cu știri live, folosesc extractorul anterior. Sunt incluse licențele SmartReader (Apache-2.0) și AngleSharp (MIT).
+- `THIRD-PARTY-NOTICES.md` menționează acum și Microsoft Edge WebView2 SDK, folosit de WebReader; licența și notificările pachetului sunt incluse în `Licenses/WebView2`.
+- Actualizarea feedurilor este mult mai rapidă: până la 6 feeduri se descarcă simultan (cel mult 2 de pe același site), un site lent nu mai blochează restul listei, iar feedurile nemodificate de la ultima actualizare nu se mai descarcă (răspunsul „nimic nou”, HTTP 304). Fluxurile sunt citite în afara firului ferestrei. Pe 38 de fluxuri publice: 12 secunde înainte, 1,4 secunde la prima actualizare și 1 secundă la următoarea.
+- Lista limbilor pentru Google Translate din Setări afișează numele limbilor în limba interfeței (de exemplu „Arabă (العربية)” în română și „Arabic (العربية)” în engleză), nu mai mereu în engleză.
+- Testele de localizare verifică acum, în toate limbile, traducerile trunchiate, cuvintele românești rămase, combinațiile de taste și textele vizibile sau accesibile din toate ferestrele.
+- Găsirea feedurilor pe un site este mai fiabilă. Acceptă și adresa unui articol, a unui canal YouTube, a unui subreddit, a unui proiect GitHub sau a unui profil Mastodon. Citește pagina cu un analizor HTML (AngleSharp) și urmează paginile-listă de fluxuri ale site-ului. Toate rezultatele sunt verificate automat: lista arată numai feedurile funcționale, cu numele real, numărul de articole și data ultimului articol; feedurile de comentarii sunt marcate și puse la final. Pe 26 de adrese reale: 24 cu feeduri găsite, față de 21 înainte, fără adresele ghicite nefuncționale.
+- Căutarea după subiect pe internet funcționează din nou. Butonul „Caută pe internet” folosește căutarea Feedly, iar fereastra anunță că cuvintele căutate sunt trimise la Feedly. Fiecare rezultat este verificat înainte de afișare, iar pentru un domeniu (de exemplu heise.de) se caută și direct pe site. Erorile serviciului sunt afișate, nu ascunse. Serviciul anterior (feedsearch.dev), care nu accepta cuvinte de căutare, a fost eliminat.
+- În căutarea după subiect, filtrul „Toate categoriile” funcționează și în celelalte limbi ale interfeței, iar numele categoriilor sunt traduse.
+- Ghidurile utilizatorului în cele opt limbi descriu noile funcții: găsirea feedurilor pe un site și căutarea după subiect prin Feedly, textul integral fără meniuri și liste laterale, volumul eSpeak NG, oprirea cererilor AI cu Escape, exportul OPML, păstrarea articolelor ieșite din flux și actualizarea paralelă.
+- Exportul OPML pune feedurile neorganizate la rădăcina fișierului, ca în celelalte cititoare RSS, în loc de un folder „Neorganizate”.
+- Biblioteca AngleSharp, folosită la extragerea textului integral și la găsirea feedurilor, a fost actualizată de la 1.1.2 la 1.7.1, pentru avertismentul de securitate GHSA-pgww-w46g-26qg (severitate moderată). Orizont doar citea pagini cu ea, deci riscul practic era mic.
+
+
+## Modificări nepublicate după tagul v1.6.4
+
+După crearea tagului și a pachetelor release-ului, ramura `main` primește actualizări de documentație și de publicare, inclusiv pagina GitHub Pages și urmărirea manifestelor WinGet. Aceste schimbări de întreținere nu modifică pachetele atașate release-ului și nu constituie o nouă versiune a aplicației.

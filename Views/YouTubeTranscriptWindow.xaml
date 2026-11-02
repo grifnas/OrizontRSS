@@ -1,0 +1,114 @@
+<Window x:Class="CititorRSS.Jaws.YouTubeTranscriptWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Transcript YouTube" Width="760" Height="580" MinWidth="600" MinHeight="420"
+        WindowStartupLocation="CenterOwner" KeyDown="Window_KeyDown">
+  <DockPanel>
+    <StatusBar x:Name="WindowStatusBar" DockPanel.Dock="Bottom" Margin="0,8,0,0"
+               Focusable="False" IsTabStop="False"
+               AutomationProperties.LiveSetting="Polite">
+      <StatusBarItem Focusable="False" IsTabStop="False">
+        <TextBlock x:Name="StatusText" TextWrapping="Wrap"
+                   AutomationProperties.LiveSetting="Polite" />
+      </StatusBarItem>
+    </StatusBar>
+
+    <Grid Margin="24">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <!-- Rândul 0: Titlu, controale limbă/opțiuni -->
+      <StackPanel Grid.Row="0">
+        <TextBlock x:Name="WindowTitle" Text="Transcript YouTube"
+                   Style="{StaticResource SectionTitleTextStyle}" />
+        <TextBlock x:Name="VideoTitleLabel"
+                   Style="{StaticResource DialogIntroTextStyle}"
+                   TextTrimming="CharacterEllipsis" />
+
+        <Grid Margin="0,10,0,0">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" MinWidth="180" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+
+          <!-- ComboBox limbă transcript -->
+          <StackPanel Grid.Column="0" Margin="0,0,12,0">
+            <Label Content="Limbă transcript" Target="{Binding ElementName=TranscriptLanguage}" />
+            <ComboBox x:Name="TranscriptLanguage"
+                      AutomationProperties.Name="Limbă transcript"
+                      AutomationProperties.HelpText="Selectează limba subtitrării pentru videoclip."
+                      IsEnabled="False"
+                      SelectionChanged="TranscriptLanguage_SelectionChanged">
+              <ComboBox.ItemContainerStyle>
+                <Style TargetType="ComboBoxItem">
+                  <Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}" />
+                </Style>
+              </ComboBox.ItemContainerStyle>
+            </ComboBox>
+          </StackPanel>
+
+          <!-- Checkbox timestamp-uri -->
+          <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Margin="0,0,12,0">
+            <CheckBox x:Name="IncludeTimestamps"
+                      Content="Include timestamp-uri"
+                      AutomationProperties.Name="Include timestamp-uri"
+                      AutomationProperties.HelpText="Bifează pentru a include marcajele de timp în formatul [MM:SS] înaintea fiecărui rând."
+                      IsEnabled="False" />
+          </StackPanel>
+
+          <!-- Buton importă -->
+          <Button x:Name="LoadTranscriptButton" Grid.Column="2"
+                  Content="Importă transcript"
+                  Click="LoadTranscript_Click"
+                  IsEnabled="False"
+                  VerticalAlignment="Bottom"
+                  Padding="16,4"
+                  AutomationProperties.Name="Importă transcript"
+                  AutomationProperties.HelpText="Descarcă și afișează transcriptul pentru limba selectată." />
+        </Grid>
+      </StackPanel>
+
+      <!-- Rândul 1: TextBox transcript read-only -->
+      <GroupBox Grid.Row="1" Header="Transcript" Margin="0,10,0,4">
+        <TextBox x:Name="TranscriptText"
+                 IsReadOnly="True"
+                 IsReadOnlyCaretVisible="True"
+                 AcceptsReturn="True"
+                 TextWrapping="Wrap"
+                 VerticalScrollBarVisibility="Auto"
+                 HorizontalScrollBarVisibility="Disabled"
+                 FontFamily="Segoe UI"
+                 FontSize="13"
+                 AutomationProperties.Name="Text transcript"
+                 AutomationProperties.HelpText="Conținutul transcriptului. Folosește Ctrl+A pentru a selecta tot, apoi Ctrl+C pentru a copia." />
+      </GroupBox>
+
+      <!-- Rândul 2: Butoane acțiune -->
+      <WrapPanel Grid.Row="2" HorizontalAlignment="Right" Margin="0,16,0,0">
+        <Button x:Name="OpenVideoButton"
+                Content="Deschide în browser"
+                Click="OpenVideo_Click"
+                AutomationProperties.HelpText="Videoclipul se deschide în browserul implicit." />
+        <Button x:Name="PasteTranscriptButton"
+                Content="Importă transcriptul din clipboard"
+                Click="PasteTranscript_Click"
+                AutomationProperties.HelpText="Pe pagina YouTube, deschide „Afișează transcrierea”, copiază transcriptul, revino aici și importă-l din clipboard." />
+        <Button x:Name="CopyButton"
+                Content="Copiază în clipboard"
+                Click="Copy_Click"
+                IsEnabled="False"
+                AutomationProperties.HelpText="Copiază întregul transcript în clipboard." />
+        <Button x:Name="SaveButton"
+                Content="Salvează ca fișier text..."
+                Click="Save_Click"
+                IsEnabled="False"
+                AutomationProperties.HelpText="Salvează transcriptul ca fișier text UTF-8 pe disc." />
+        <Button Content="Închide" IsCancel="True" />
+      </WrapPanel>
+    </Grid>
+  </DockPanel>
+</Window>

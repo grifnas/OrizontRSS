@@ -1,5 +1,65 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-11-02 — Transcript YouTube confirmat și rezultate video pe mai multe pagini
+
+- Preluarea automată a transcriptului funcționează, confirmat manual de utilizator cu JAWS 2026. Lista pistelor se cere prin Innertube (client Android), cu rezervă pagina videoclipului; parserul citește ambele formate de subtitrare. Concluzia din 31 octombrie, „preluarea automată nu este confirmată”, este înlocuită de aceasta; rezerva din clipboard rămâne.
+- Lista limbilor din fereastra transcriptului se citește curat în JAWS 2026 (numai numele limbii, cu „(generat automat)” unde este cazul).
+- După unificarea helperilor comuni ai serviciilor YouTube (`Services/Rss/YouTubeCommon.cs`), utilizatorul confirmă că toate funcțiile YouTube verificate funcționează; cititorul nu a fost precizat (detalii în `WORKLOG.md`, intrarea de refactorizare).
+- Utilizatorul a confirmat și descărcarea, copierea și salvarea transcriptului ca `.txt` din fereastra transcriptului (JAWS 2026, seara zilei de 2 noiembrie 2026, după ora 18:00; detalii în `WORKLOG.md`, intrarea din 2 noiembrie 2026, a doua).
+- La căutarea de videoclipuri, butonul „Mai multe rezultate” încarcă pagina următoare (limita de 20 a fost ridicată la 60 pe pagină); confirmat manual cu JAWS 2026. Canalele și playlisturile păstrează limita anterioară.
+- CoreSmoke 317 verificări trecut la reverificarea din 2 noiembrie, după corectarea unei erori de compilare din `tests/CoreSmoke/Program.cs` (intervenția inițială raporta 315, cifră depășită de codul actual). Executabilul din locația standard a fost reconstruit; publicare autonomă fără erori. `verify-source.ps1 -Mode Quick -NoRestore` și `verify-localization.ps1 -RequireComplete` au trecut la 2 noiembrie, după intervenția inițială. Detalii în `WORKLOG.md`.
+- Nicio distribuție, arhivă, tag sau release; ultima versiune publicată rămâne 1.6.5.
+
+## 2026-10-31 — Transcript YouTube cu rezervă prin clipboard
+
+- În Hub-ul YouTube, butonul „Transcript YouTube” apare doar la rezultate video. Fereastra încearcă preluarea automată, apoi permite deschiderea videoclipului în browser și importul explicit al transcriptului copiat în clipboard; textul poate fi citit cu săgețile, copiat și salvat ca `.txt`.
+- Preluarea automată nu este confirmată funcțional: pe un video public pagina a oferit 7 piste, dar endpointul pistei a răspuns cu HTML gol; endpointul intern `get_transcript` a răspuns HTTP 400 `FAILED_PRECONDITION`. Mesajul din aplicație oferă alternativa din browser.
+- Verificare automată completă: CoreSmoke 307, `verify-source.ps1 -Mode Quick -NoRestore` trecut și 1.689 chei validate în fiecare din cele opt limbi. Acceptarea cu JAWS 2026 rămâne de făcut.
+- Nu s-a creat distribuție, arhivă, tag ori release; ultima versiune publicată rămâne 1.6.5.
+
+## 2026-10-31 — Rezultatele YouTube nu dispar dacă verificarea RSS eșuează
+
+- Căutarea canalelor și playlisturilor păstrează candidatul găsit pe YouTube chiar dacă RSS-ul nu răspunde ori nu poate fi citit. Utilizatorul vede rezultatele verificate/neverificate, poate deschide pagina YouTube sau reîncerca verificarea RSS. Abonarea rămâne permisă doar pentru fluxurile verificate.
+- CoreSmoke 304 și `verify-source.ps1 -Mode Quick -NoRestore` au trecut. Localizarea: 1.683 de chei în fiecare dintre cele opt limbi, fără chei lipsă, duplicate, valori goale sau erori de format.
+- Executabilul autonom de test este în `bin/Release/net8.0-windows10.0.17763.0/win-x64/publish/Orizont.exe`. Verificarea cu JAWS 2026 pentru anunțarea stărilor, focalizare/navigare și reîncercarea fluxurilor rămâne de făcut.
+- Importul transcriptelor YouTube rămâne ascuns și în afara acceptării acestei funcții. Nicio distribuție, arhivă, tag sau release nu a fost creată; ultima versiune publicată rămâne 1.6.5.
+
+## 2026-10-31 — Hub YouTube unificat integrat local (Varianta B)
+
+- În fereastra de descoperire RSS/podcast (`DiscoverTopicWindow`), cele trei butoane YouTube anterioare au fost consolidate într-un singur buton aerisit: „Caută pe YouTube…”. Antetul a fost curățat de textele introductive repetitive, iar câmpul de căutare a primit instrucțiuni clare pentru utilizatorii de cititoare de ecran (JAWS 2026).
+- Fereastra dedicată `YouTubeSearchWindow` oferă o experiență unificată: comutare rapidă între „Canale (pentru abonare RSS)”, „Playlisturi (pentru abonare RSS)” și „Videoclipuri (pentru vizionare în browser)” prin butoane radio grupate. Tasta Enter în câmpul de căutare lansează căutarea imediat, iar focusul este transferat automat pe primul rezultat.
+- Pentru canale și playlisturi, butonul „Adaugă feed verificat” adaugă feedul direct în fluxul de configurare a folderelor din Orizont RSS. Pentru videoclipuri, pe lângă „Deschide în browser”, a fost introdusă comanda „Abonează-te la canal”, care identifică și verifică fluxul RSS al canalului asociat videoclipului și permite abonarea directă.
+- Parsarea YouTube a fost consolidată: `YouTubeChannelSearchService` suportă acum și formatul `lockupViewModel` (`LOCKUP_CONTENT_TYPE_CHANNEL`) pe lângă `channelRenderer`, iar `YouTubeVideoSearchService` extrage `ChannelId` când este disponibil.
+- Verificări: `verify-source.ps1 -Mode Quick` a trecut integral (CoreSmoke 300, WorkflowSmoke 157, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 76, LocalizationSmoke 1.643 resurse în 8 limbi, eSpeak NG 132/104, 0 mojibake, `git diff --check` curat).
+- Executabil autonom de test în locația standard: `bin\Release\net8.0-windows10.0.17763.0\Orizont.exe` (SHA-256: `4049AC7C4F956708F186D9CD480E30CC9C89B03652EEC83117FF4424DA48AB92`).
+- Nu s-a creat nicio distribuție sau release; v1.6.5 rămâne versiunea de referință publicată.
+
+## 2026-10-31 — Căutare de videoclipuri YouTube integrată local
+
+- În fereastra de descoperire RSS/podcast există un buton „Caută videoclipuri YouTube”, care deschide o fereastră dedicată cu listă de rezultate. Căutarea publică nu necesită cheie API; termenii sunt trimiși la YouTube.
+- Rezultatele arată titlul și canalul și se navighează cu săgețile. Enter, dublu clic sau „Deschide în browser” deschide pagina selectată în browserul implicit. Videoclipurile sunt rezultate punctuale, nu abonamente RSS.
+- Probă live: HTTP 200, 20 videoclipuri parsate din pagina YouTube (titlu/canal/ID). CoreSmoke 300; 1.616 chei localizate complet în opt limbi; codare și compilare autonomă reușite.
+- Executabilul local de test, cu runtime inclus: `bin/Release/net8.0-windows10.0.17763.0/win-x64/publish/Orizont.exe`.
+- Confirmare manuală de la utilizator: căutarea și găsirea videoclipurilor funcționează. Nu s-a consemnat separat cititorul folosit sau verificarea individuală a focalizării, anunțului titlu/canal și deschiderii în browser; nu prezentăm aceste detalii drept test JAWS confirmat. Fluxul depinde de HTML-ul și filtrul neoficial YouTube și se poate schimba sau limita.
+- Nu s-a creat distribuție, arhivă, tag ori release; v1.6.5 rămâne ultima versiune publicată. Sonarpad a fost folosit doar ca referință, fără cod copiat; detalii în `WORKLOG.md`.
+
+## 2026-10-31 — Căutare de playlisturi YouTube integrată local
+
+- În fereastra de descoperire RSS/podcast, butonul nou „Caută playlisturi YouTube” caută după cuvinte-cheie pe pagina publică YouTube, fără cheie API. Căutarea canalelor existente rămâne separată.
+- Sunt recunoscute formatele actual și vechi ale rezultatelor; videoclipurile nu sunt afișate ca playlisturi. Fluxul RSS standard al fiecărui playlist este verificat, iar în lista comună apar numai fluxurile funcționale cu articole. Rezultatele păstrează selecția/focusul inițial, navigarea cu săgeți și adăugarea existentă ca feed verificat.
+- Probă live: pagina publică YouTube a răspuns HTTP 200 și a prezentat 20 de rezultate playlist; fluxul RSS al unui rezultat a răspuns HTTP 200 cu 14 intrări. CoreSmoke: 296 verificări; localizare: 1.595 de chei complete în opt limbi; codare: fără mojibake; `git diff --check`: fără erori.
+- Executabil autonom de test în locația standard `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`. Acceptarea practică cu JAWS 2026 rămâne deschisă pentru buton, anunțul că termenii se trimit către YouTube, focus, săgeți și adăugarea feedului.
+- Limită: YouTube nu oferă aici un API oficial stabil; se folosesc pagina HTML publică și filtrul ei neoficial, care se pot modifica sau limita. Nu s-a creat distribuție, arhivă, tag ori release; 1.6.5 rămâne ultima versiune publicată.
+
+## 2026-10-29 — Căutare canale YouTube integrată local
+
+- În fereastra de descoperire RSS/podcast există acum butonul „Caută canale YouTube”. Căutarea se face după cuvinte-cheie pe pagina publică YouTube, fără cheie API; termenul este trimis serviciului YouTube.
+- Rezultatele sunt canale, nu videoclipuri. Pentru fiecare se generează fluxul RSS standard și se verifică accesul și existența articolelor; lista afișează doar fluxuri funcționale, fără duplicate. RSS-ul se adaugă drept feed obișnuit în Orizont, fără sincronizare NewsBlur.
+- Limita tehnică este notată în `ROADMAP.md`: pagina publică și filtrul folosit nu sunt un API stabil și se pot schimba sau limita. Introducerea adresei unui canal rămâne varianta de rezervă.
+- Teste: `verify-source.ps1 -Mode Quick` a trecut (CoreSmoke 289, WorkflowSmoke 157/157, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 76, LocalizationSmoke 1.585 resurse / 1.400 texte în opt limbi, eSpeak NG 132/104 și validatorii Quick). Pagina publică YouTube pentru „NASA” a răspuns, iar fluxul RSS NASA a returnat HTTP 200 și 15 articole.
+- Executabil autonom de test: `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`; hash SHA-256 pentru `Orizont.dll`: `909B63CCC6DF439762D3F6379CB2FE3CBEDA88EB34184268CB7FD763BC5B82B0`. Acceptarea practică cu JAWS 2026 rămâne deschisă. La restaurarea pentru publicare locală, NU1900 a împiedicat auditul vulnerabilităților NuGet; nu s-a creat distribuție.
+- Versiunea publicată rămâne 1.6.5; `docs/RELEASE-STATUS.json` nu primește un candidat nou. Nu există distribuție sau publicare pentru această schimbare.
+
 ## 2026-10-28 — Stare: 1.6.5 publicat, WinGet în așteptare
 
 - Release public v1.6.5 este publicat și verificat. Pagina de confidențialitate este live.

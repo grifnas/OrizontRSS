@@ -349,6 +349,9 @@ CheckDeepLTargetLanguages();
 CheckSoundThemes();
 CheckPodcastSearchParsing();
 await CheckYouTubeChannelSearchAsync();
+await CheckYouTubePlaylistSearchAsync();
+await CheckYouTubeVideoSearchAsync();
+CheckYouTubeTranscriptParsing();
 CheckYouTubePlaylistCandidate();
 Check(FeedDiscoveryService.NormalizeYouTubePlaylistAddress("https://www.youtube.com/playlist?list=PLabc123&si=x") == "https://www.youtube.com/feeds/videos.xml?playlist_id=PLabc123"
     && FeedDiscoveryService.NormalizeYouTubePlaylistAddress("https://example.test/feed.xml") == "https://example.test/feed.xml",
@@ -357,6 +360,7 @@ Check(RssReader.IsVideoPlatformUrl("https://www.youtube.com/watch?v=abc") && Rss
     "paginile YouTube nu se descarcă pentru citire, iar alte pagini se descarcă normal");
 await CheckYouTubeMediaDescription();
 await RunPodcastEnclosureSmokeAsync();
+await RunDownloadLimitSmokeAsync();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
 
@@ -929,17 +933,19 @@ void CheckPodcastSearchParsing()
 
 async Task CheckYouTubeChannelSearchAsync()
 {
-    const string html = "<script>var ytInitialData = {\"contents\":{\"twoColumnSearchResultsRenderer\":{\"primaryContents\":{\"sectionListRenderer\":{\"contents\":[{\"itemSectionRenderer\":{\"contents\":["
-        + "{\"channelRenderer\":{\"channelId\":\"UC1234567890123456789012\",\"title\":{\"simpleText\":\"Canal NASA\"}}},"
+    const string html = "<script>var ytInitialData = {\"contents\":[{\"itemSectionRenderer\":{\"contents\":["
+        + "{\"lockupViewModel\":{\"contentType\":\"LOCKUP_CONTENT_TYPE_CHANNEL\",\"contentId\":\"UC1234567890123456789012\",\"metadata\":{\"lockupMetadataViewModel\":{\"title\":{\"content\":\"Canal NASA\"}}}}},"
         + "{\"channelRenderer\":{\"channelId\":\"UC1234567890123456789012\",\"title\":{\"simpleText\":\"Canal duplicat\"}}},"
         + "{\"channelRenderer\":{\"channelId\":\"invalid\",\"title\":{\"simpleText\":\"Canal invalid\"}}},"
-        + "{\"videoRenderer\":{\"title\":{\"simpleText\":\"Nu este un canal\"}}}]}}]}}}}};</script>";
+        + "{\"videoRenderer\":{\"title\":{\"simpleText\":\"Nu este un canal\"}}}]}}]};</script>";
     var parsed = CititorRSS.Jaws.Services.Rss.YouTubeChannelSearchService.ParseChannels(html);
     Check(parsed.Count == 1 && parsed[0].Name == "Canal NASA" && parsed[0].ChannelId == "UC1234567890123456789012",
-        "căutarea YouTube citește doar canale, validează ID-urile și elimină duplicatele");
+        "căutarea YouTube citește canale din formatul actual și vechi, validează ID-urile și elimină duplicatele");
     Check(CititorRSS.Jaws.Services.Rss.YouTubeChannelSearchService.BuildFeedUrl(parsed[0].ChannelId)
-        == "https://www.youtube.com/feeds/videos.xml?channel_id=UC1234567890123456789012",
-        "ID-ul canalului produce adresa RSS standard YouTube");
+        == "https://www.youtube.com/feeds/videos.xml?channel_id=UC1234567890123456789012"
+        && CititorRSS.Jaws.Services.Rss.YouTubeChannelSearchService.BuildChannelUrl(parsed[0].ChannelId)
+        == "https://www.youtube.com/channel/UC1234567890123456789012",
+        "ID-ul canalului produce adresele RSS și pagina publică YouTube corecte");
 
     var searchHandler = new UpdateSmokeHttpHandler(request =>
     {
@@ -956,8 +962,166 @@ async Task CheckYouTubeChannelSearchAsync()
     var reader = new RssReader(feedHandler);
     var found = await CititorRSS.Jaws.Services.Rss.YouTubeChannelSearchService.SearchAsync("NASA", "en", searchClient, reader);
     Check(found.Count == 1 && found[0].Name == "Canal NASA" && found[0].IsVerified && found[0].ArticleCount == 1
-        && found[0].Url == "https://www.youtube.com/feeds/videos.xml?channel_id=UC1234567890123456789012",
+        && found[0].Url == "https://www.youtube.com/feeds/videos.xml?channel_id=UC1234567890123456789012"
+        && found[0].WebPageUrl == "https://www.youtube.com/channel/UC1234567890123456789012",
         "căutarea afișează doar canale cu flux RSS verificat și păstrează numele canalului");
+
+    var unavailableReader = new RssReader(new UpdateSmokeHttpHandler(_ => new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)));
+    var retained = await CititorRSS.Jaws.Services.Rss.YouTubeChannelSearchService.SearchAsync("NASA", "en", searchClient, unavailableReader);
+    Check(retained.Count == 1 && retained[0].Name == "Canal NASA" && !retained[0].IsVerified
+        && retained[0].Url == "https://www.youtube.com/feeds/videos.xml?channel_id=UC1234567890123456789012"
+        && retained[0].WebPageUrl == "https://www.youtube.com/channel/UC1234567890123456789012",
+        "canalul găsit rămâne vizibil când RSS-ul este temporar indisponibil, dar este marcat neverificat");
+}
+
+async Task CheckYouTubePlaylistSearchAsync()
+{
+    const string html = "<script>var ytInitialData = {\"contents\":["
+        + "{\"lockupViewModel\":{\"contentType\":\"LOCKUP_CONTENT_TYPE_PLAYLIST\",\"contentId\":\"PLLF1zKBYTWwliOSsK1Wj5XeiZaH2fYpEU\",\"metadata\":{\"lockupMetadataViewModel\":{\"title\":{\"content\":\"NASA Moon Tunes Playlist\"}}}}},"
+        + "{\"lockupViewModel\":{\"contentType\":\"LOCKUP_CONTENT_TYPE_VIDEO\",\"contentId\":\"video-identifier-123\",\"metadata\":{\"lockupMetadataViewModel\":{\"title\":{\"content\":\"Nu este playlist\"}}}}},"
+        + "{\"playlistRenderer\":{\"playlistId\":\"PL1234567890abcdefghijk\",\"title\":{\"simpleText\":\"Playlist vechi\"}}},"
+        + "{\"playlistRenderer\":{\"playlistId\":\"PL1234567890abcdefghijk\",\"title\":{\"simpleText\":\"Duplicat\"}}}]};</script>";
+    var parsed = CititorRSS.Jaws.Services.Rss.YouTubePlaylistSearchService.ParsePlaylists(html);
+    Check(parsed.Count == 2 && parsed[0].Name == "NASA Moon Tunes Playlist" && parsed[0].PlaylistId == "PLLF1zKBYTWwliOSsK1Wj5XeiZaH2fYpEU"
+        && parsed[1].Name == "Playlist vechi",
+        "căutarea playlisturilor recunoaște formatul YouTube actual și vechi, ignoră videoclipuri și elimină duplicatele");
+    Check(CititorRSS.Jaws.Services.Rss.YouTubePlaylistSearchService.BuildFeedUrl(parsed[0].PlaylistId)
+        == "https://www.youtube.com/feeds/videos.xml?playlist_id=PLLF1zKBYTWwliOSsK1Wj5XeiZaH2fYpEU"
+        && CititorRSS.Jaws.Services.Rss.YouTubePlaylistSearchService.BuildPlaylistUrl(parsed[0].PlaylistId)
+        == "https://www.youtube.com/playlist?list=PLLF1zKBYTWwliOSsK1Wj5XeiZaH2fYpEU",
+        "ID-ul playlistului produce adresele RSS și pagina publică YouTube corecte");
+
+    var searchHandler = new UpdateSmokeHttpHandler(request =>
+    {
+        Check(request.RequestUri!.AbsoluteUri.Contains("search_query=NASA%20Moon%20Tunes", StringComparison.Ordinal)
+            && request.RequestUri.AbsoluteUri.Contains("sp=EgIQAw%3D%3D", StringComparison.Ordinal)
+            && request.RequestUri.AbsoluteUri.Contains("hl=en", StringComparison.Ordinal),
+            "căutarea publică YouTube folosește termenul, filtrul de playlisturi și limba interfeței");
+        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(html, Encoding.UTF8, "text/html") };
+    });
+    var feedHandler = new UpdateSmokeHttpHandler(request => request.RequestUri!.AbsoluteUri.Contains("playlist_id=PLLF1zKBYTWwliOSsK1Wj5XeiZaH2fYpEU", StringComparison.Ordinal)
+        ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("<feed xmlns=\"http://www.w3.org/2005/Atom\"><title>Playlist NASA</title><entry><id>video-1</id><title>Melodie nouă</title><published>2026-10-28T12:00:00Z</published></entry></feed>", Encoding.UTF8, "application/atom+xml") }
+        : new HttpResponseMessage(HttpStatusCode.NotFound));
+    using var searchClient = new HttpClient(searchHandler);
+    var reader = new RssReader(feedHandler);
+    var found = await CititorRSS.Jaws.Services.Rss.YouTubePlaylistSearchService.SearchAsync("NASA Moon Tunes", "en", searchClient, reader);
+    Check(found.Count == 2 && found[0].Name == "NASA Moon Tunes Playlist" && found[0].IsVerified && found[0].ArticleCount == 1
+        && found[0].Url == "https://www.youtube.com/feeds/videos.xml?playlist_id=PLLF1zKBYTWwliOSsK1Wj5XeiZaH2fYpEU"
+        && found[0].WebPageUrl == "https://www.youtube.com/playlist?list=PLLF1zKBYTWwliOSsK1Wj5XeiZaH2fYpEU"
+        && found[1].Name == "Playlist vechi" && !found[1].IsVerified,
+        "căutarea păstrează toate playlisturile găsite și marchează separat fluxurile RSS verificate");
+
+    var unavailableReader = new RssReader(new UpdateSmokeHttpHandler(_ => new HttpResponseMessage(HttpStatusCode.NotFound)));
+    var retained = await CititorRSS.Jaws.Services.Rss.YouTubePlaylistSearchService.SearchAsync("NASA Moon Tunes", "en", searchClient, unavailableReader);
+    Check(retained.Count == 2 && retained.All(playlist => !playlist.IsVerified)
+        && retained[0].Name == "NASA Moon Tunes Playlist"
+        && retained[0].Url == "https://www.youtube.com/feeds/videos.xml?playlist_id=PLLF1zKBYTWwliOSsK1Wj5XeiZaH2fYpEU"
+        && retained[0].WebPageUrl == "https://www.youtube.com/playlist?list=PLLF1zKBYTWwliOSsK1Wj5XeiZaH2fYpEU",
+        "playlisturile găsite rămân vizibile când RSS-ul nu se verifică și nu sunt prezentate ca feeduri funcționale");
+}
+
+async Task CheckYouTubeVideoSearchAsync()
+{
+    const string html = "<script>var ytInitialData = {\"contents\":["
+        + "{\"lockupViewModel\":{\"contentType\":\"LOCKUP_CONTENT_TYPE_VIDEO\",\"contentId\":\"B_7EUmCxcvE\",\"metadata\":{\"lockupMetadataViewModel\":{\"title\":{\"content\":\"NASA launch video\"},\"metadata\":{\"contentMetadataViewModel\":{\"metadataRows\":[{\"metadataParts\":[{\"text\":{\"content\":\"NASA\"}}]}]}}}}}},"
+        + "{\"lockupViewModel\":{\"contentType\":\"LOCKUP_CONTENT_TYPE_VIDEO\",\"contentId\":\"B_7EUmCxcvE\",\"metadata\":{\"lockupMetadataViewModel\":{\"title\":{\"content\":\"Duplicate\"}}}}},"
+        + "{\"videoRenderer\":{\"videoId\":\"abcDEF12345\",\"title\":{\"runs\":[{\"text\":\"ESA update\"}]},\"ownerText\":{\"runs\":[{\"text\":\"ESA\"}]}}},"
+        + "{\"videoRenderer\":{\"videoId\":\"bad-id\",\"title\":{\"simpleText\":\"Invalid ID\"}}},"
+        + "{\"playlistRenderer\":{\"playlistId\":\"PL1234567890abcdefghijk\",\"title\":{\"simpleText\":\"Not a video\"}}}]};</script>";
+    var parsed = CititorRSS.Jaws.Services.Rss.YouTubeVideoSearchService.ParseVideos(html);
+    Check(parsed.Count == 2 && parsed[0].Title == "NASA launch video" && parsed[0].ChannelName == "NASA"
+        && parsed[1].Title == "ESA update" && parsed[1].ChannelName == "ESA",
+        "căutarea video recunoaște formatele YouTube actual și vechi, validează ID-urile și elimină duplicatele");
+    Check(parsed[0].Url == "https://www.youtube.com/watch?v=B_7EUmCxcvE"
+        && parsed[0].Name == "NASA launch video"
+        && parsed[0].Status.Contains("NASA", StringComparison.Ordinal)
+        && parsed[0].DisplayName.Contains("NASA launch video", StringComparison.Ordinal)
+        && parsed[0].DisplayName.Contains("NASA", StringComparison.Ordinal),
+        "rezultatul video păstrează URL-ul de redare și afișează titlul cu canalul");
+
+    var searchHandler = new UpdateSmokeHttpHandler(request =>
+    {
+        Check(request.RequestUri!.AbsoluteUri.Contains("search_query=NASA%20launch", StringComparison.Ordinal)
+            && request.RequestUri.AbsoluteUri.Contains("sp=EgIQAQ%3D%3D", StringComparison.Ordinal)
+            && request.RequestUri.AbsoluteUri.Contains("hl=en", StringComparison.Ordinal),
+            "căutarea publică YouTube folosește termenul, filtrul video și limba interfeței");
+        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(html, Encoding.UTF8, "text/html") };
+    });
+    using var searchClient = new HttpClient(searchHandler);
+    var found = await CititorRSS.Jaws.Services.Rss.YouTubeVideoSearchService.SearchAsync("NASA launch", "en", searchClient);
+    Check(found.Count == 2 && found[0].VideoId == "B_7EUmCxcvE" && found[1].Url == "https://www.youtube.com/watch?v=abcDEF12345",
+        "căutarea returnează rezultate video navigabile, fără a le prezenta drept feeduri RSS");
+
+    var pagedHtml = html.Replace("]};</script>", ",{\"continuationItemRenderer\":{\"continuationEndpoint\":{\"continuationCommand\":{\"token\":\"TOKEN123\"}}}}]};</script>", StringComparison.Ordinal);
+    var firstPage = CititorRSS.Jaws.Services.Rss.YouTubeVideoSearchService.ParsePage(pagedHtml);
+    Check(firstPage.Videos.Count == 2 && firstPage.ContinuationToken == "TOKEN123"
+        && CititorRSS.Jaws.Services.Rss.YouTubeVideoSearchService.ParsePage(html).ContinuationToken.Length == 0,
+        "prima pagină de rezultate video păstrează jetonul pentru pagina următoare, iar lipsa lui este recunoscută");
+
+    const string continuationJson = "{\"onResponseReceivedCommands\":[{\"appendContinuationItemsAction\":{\"continuationItems\":["
+        + "{\"itemSectionRenderer\":{\"contents\":[{\"videoRenderer\":{\"videoId\":\"zzzzzzzzzzz\",\"title\":{\"simpleText\":\"Next page video\"}}}]}},"
+        + "{\"continuationItemRenderer\":{\"continuationEndpoint\":{\"continuationCommand\":{\"token\":\"TOKEN456\"}}}}]}}]}";
+    var nextPage = CititorRSS.Jaws.Services.Rss.YouTubeVideoSearchService.ParseContinuationJson(continuationJson);
+    Check(nextPage.Videos.Count == 1 && nextPage.Videos[0].VideoId == "zzzzzzzzzzz" && nextPage.ContinuationToken == "TOKEN456",
+        "pagina următoare de rezultate video este citită din răspunsul de continuare, cu noul jeton");
+
+    var continuationHandler = new UpdateSmokeHttpHandler(request =>
+    {
+        Check(request.Method == HttpMethod.Post
+            && request.RequestUri!.AbsoluteUri.Contains("/youtubei/v1/search", StringComparison.Ordinal),
+            "pagina următoare de rezultate video se cere cu jetonul de continuare, nu cu o nouă căutare");
+        return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(continuationJson, Encoding.UTF8, "application/json") };
+    });
+    using var continuationClient = new HttpClient(continuationHandler);
+    var more = await CititorRSS.Jaws.Services.Rss.YouTubeVideoSearchService.SearchPageAsync("NASA launch", "en", "TOKEN123", continuationClient);
+    Check(more.Videos.Count == 1 && more.ContinuationToken == "TOKEN456",
+        "cererea paginii următoare returnează videoclipurile noi și jetonul următor");
+}
+
+void CheckYouTubeTranscriptParsing()
+{
+    const string html = "ytInitialPlayerResponse = {\"captions\":{\"playerCaptionsTracklistRenderer\":{\"captionTracks\":["
+        + "{\"languageCode\":\"en\",\"name\":{\"simpleText\":\"English\"},\"baseUrl\":\"https://www.youtube.com/api/timedtext?v=test&lang=en\",\"kind\":\"asr\"},"
+        + "{\"languageCode\":\"ro\",\"name\":{\"simpleText\":\"Română\"},\"baseUrl\":\"https://www.youtube.com/api/timedtext?v=test&lang=ro\"}]}}};";
+    var tracks = CititorRSS.Jaws.Services.Rss.YouTubeTranscriptService.ParseTracks(html);
+    Check(tracks.Count == 2 && tracks[0].LanguageCode == "ro" && !tracks[0].IsAutoGenerated
+        && tracks[1].LanguageCode == "en" && tracks[1].IsAutoGenerated,
+        "transcriptul YouTube sortează subtitrările manuale înaintea celor generate automat");
+
+    const string xml = "<transcript><text start=\"0.75\">Salut &amp; bun venit</text><text start=\"61.2\">Al doilea rând</text></transcript>";
+    var withTimestamps = CititorRSS.Jaws.Services.Rss.YouTubeTranscriptService.ParseTranscriptXml(xml, includeTimestamps: true);
+    var withoutTimestamps = CititorRSS.Jaws.Services.Rss.YouTubeTranscriptService.ParseTranscriptXml(xml, includeTimestamps: false);
+    Check(withTimestamps.Contains("[00:00] Salut & bun venit", StringComparison.Ordinal)
+        && withTimestamps.Contains("[01:01] Al doilea rând", StringComparison.Ordinal)
+        && !withoutTimestamps.Contains("[00:", StringComparison.Ordinal)
+        && withoutTimestamps.Contains("Salut & bun venit", StringComparison.Ordinal),
+        "parserul transcriptului decodifică entitățile și include opțional marcajele temporale");
+
+    var emptyRejected = false;
+    try { CititorRSS.Jaws.Services.Rss.YouTubeTranscriptService.ParseTranscriptXml("<transcript />", includeTimestamps: false); }
+    catch (InvalidOperationException) { emptyRejected = true; }
+    Check(emptyRejected, "un transcript gol este raportat ca indisponibil, nu este afișat drept rezultat valid");
+
+    const string srv3 = "<timedtext format=\"3\"><body><p t=\"750\" d=\"2000\"><s>Salut </s><s>&amp;amp; bun venit</s></p><p t=\"61200\" d=\"1500\">Al doilea r\u00e2nd</p></body></timedtext>";
+    var srv3Text = CititorRSS.Jaws.Services.Rss.YouTubeTranscriptService.ParseTranscriptXml(srv3, includeTimestamps: true);
+    Check(srv3Text.Contains("[00:00] Salut & bun venit", StringComparison.Ordinal)
+        && srv3Text.Contains("[01:01] Al doilea r\u00e2nd", StringComparison.Ordinal),
+        "parserul transcriptului citește și formatul srv3 (<p t=\"ms\">), cu entități codificate dublu");
+
+    var cleanedName = CititorRSS.Jaws.Services.Rss.YouTubeTranscriptService.ResolveLanguageName("!!", "Rom\u00e2n\u0103 - ro.abc123= (auto-generated) [x]");
+    var derivedName = CititorRSS.Jaws.Services.Rss.YouTubeTranscriptService.ResolveLanguageName("en", "English - en=1");
+    Check(cleanedName == "Rom\u00e2n\u0103" && derivedName.Length > 0 && derivedName.All(char.IsLetter),
+        "numele limbii transcriptului păstrează doar numele limbii, fără coduri sau semne tehnice");
+
+    var blankRejected = false;
+    try { CititorRSS.Jaws.Services.Rss.YouTubeTranscriptService.ParseTranscriptXml("", includeTimestamps: false); }
+    catch (InvalidOperationException) { blankRejected = true; }
+    Check(blankRejected, "un răspuns gol de la YouTube este raportat ca transcript indisponibil");
+
+    var apiTracks = CititorRSS.Jaws.Services.Rss.YouTubeTranscriptService.ParseTracksFromJson(
+        "{\"captions\":{\"playerCaptionsTracklistRenderer\":{\"captionTracks\":[{\"languageCode\":\"ro\",\"name\":{\"runs\":[{\"text\":\"Rom\u00e2n\u0103\"}]},\"baseUrl\":\"https://www.youtube.com/api/timedtext?v=test&lang=ro\"}]}}}");
+    Check(apiTracks.Count == 1 && apiTracks[0].LanguageCode == "ro" && apiTracks[0].LanguageName.Length > 0 && apiTracks[0].LanguageName.All(char.IsLetter),
+        "răspunsul Innertube este citit direct din JSON, inclusiv numele limbii în formatul „runs”, redus la numele limbii");
 }
 
 void CheckYouTubePlaylistCandidate()
@@ -1050,6 +1214,18 @@ async Task RunDeepSeekBalanceSmokeAsync()
     try { await failing.GetBalanceAsync("synthetic-key"); }
     catch (InvalidOperationException exception) { message = exception.Message; }
     Check(message.Length > 0 && !message.Contains("synthetic-key", StringComparison.Ordinal), "eroarea soldului DeepSeek nu afișează cheia API");
+}
+
+async Task RunDownloadLimitSmokeAsync()
+{
+    const string smallFeed = "<rss version=\"2.0\"><channel><title>Mic</title><item><guid>1</guid><title>Articol</title></item></channel></rss>";
+    var smallReader = new RssReader(new UpdateSmokeHttpHandler(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(smallFeed, Encoding.UTF8, "application/rss+xml") }));
+    Check((await smallReader.LoadAsync("https://feed.example.test/small.xml")).Count == 1, "un flux obișnuit se descarcă normal sub limita de dimensiune");
+
+    var oversized = new byte[(int)RssReader.MaximumDownloadBytes + 1024];
+    var largeReader = new RssReader(new UpdateSmokeHttpHandler(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(oversized) }));
+    Check(await ThrowsUpdateAsync<HttpRequestException>(() => largeReader.LoadAsync("https://feed.example.test/huge.xml")),
+        "un flux mai mare decât limita de dimensiune este refuzat fără a fi încărcat în memorie");
 }
 
 static async Task<bool> ThrowsUpdateAsync<TException>(Func<Task> action) where TException : Exception

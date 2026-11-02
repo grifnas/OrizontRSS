@@ -16,17 +16,17 @@ Pachetele includ .NET și Windows Desktop 8.0.31; nu cer instalarea separată a 
 
 ## Acceptare și limite cunoscute
 
-A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; nu sunt declarate trecute. Auditul NuGet, rulat la 19 octombrie 2026, nu a raportat pachete vulnerabile. Aceste limite sunt descrise în notele publice [RELEASE-NOTES-1.6.3.md](RELEASE-NOTES-1.6.3.md).
+A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; nu sunt declarate trecute. Auditul NuGet, rulat la 19 octombrie 2026, nu a raportat pachete vulnerabile. Aceste limite sunt descrise în notele publice [RELEASE-NOTES-1.6.5.md](RELEASE-NOTES-1.6.5.md).
 
 ## Pagina de prezentare și documentele
 
-Cele opt pagini `docs/index*.html`, linkurile directe spre installerul și arhiva portabilă versionate, precum și documentele de stare au fost sincronizate cu v1.6.3 după publicarea release-ului și împinse pe `main`. Până la propagarea GitHub Pages, pagina publică poate afișa încă versiunea anterioară. Orice build local ulterior nu este pachetul public al tagului și **nu este pachetul public v1.6.3**.
+Cele opt pagini `docs/index*.html`, linkurile directe spre installerul și arhiva portabilă versionate, precum și documentele de stare au fost sincronizate cu v1.6.5 după publicarea release-ului și împinse pe `main`. Până la propagarea GitHub Pages, pagina publică poate afișa încă versiunea anterioară. Orice build local ulterior nu este pachetul public al tagului și **nu este pachetul public v1.6.5**.
 
 ## WinGet
 
-Manifestele locale curente sunt numai cele din `packaging/winget/Grifnas.OrizontRSS/1.6.3/`; URL-ul installerului și hash-ul arhivei portabile corespund release-ului public. `winget validate` a trecut la pregătirea manifestelor; la reverificarea din 8 octombrie, comanda `winget.exe` nu a putut porni din mediul izolat (`SEC_E_NO_CREDENTIALS`/WindowsApps), deci validarea nu a putut fi repetată în această sesiune. Snapshotul local 1.6.0 a fost eliminat din arborele curent; istoricul său rămâne în Git.
+Manifestele locale curente sunt numai cele din `packaging/winget/Grifnas.OrizontRSS/1.6.5/`; URL-ul installerului și hash-ul arhivei portabile corespund release-ului public. `winget validate` a trecut la pregătirea manifestelor; la reverificarea din 8 octombrie, comanda `winget.exe` nu a putut porni din mediul izolat (`SEC_E_NO_CREDENTIALS`/WindowsApps), deci validarea nu a putut fi repetată în această sesiune. Snapshotul local 1.6.0 a fost eliminat din arborele curent; istoricul său rămâne în Git.
 
-PR-ul existent [microsoft/winget-pkgs#431971](https://github.com/microsoft/winget-pkgs/pull/431971) este deschis și a fost actualizat la 1.6.3 pe ramura existentă `submission/orizont-rss-1.5.3`, fără PR duplicat. Până la actualizarea și fuziunea PR-ului, disponibilitatea în catalogul WinGet nu este confirmată.
+PR-ul pentru 1.6.5 este [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294). La 28 octombrie 2026 aștepta aprobarea unui moderator voluntar, iar semnarea CLA pe contul `grifnas` nu era confirmată. PR-ul [#431971](https://github.com/microsoft/winget-pkgs/pull/431971) (1.6.4) a fost închis ca înlocuit. Până la fuziunea PR-ului, disponibilitatea în catalogul WinGet nu este confirmată.
 
 ## Curățarea copiilor istorice
 

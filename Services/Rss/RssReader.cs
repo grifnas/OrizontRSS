@@ -35,6 +35,9 @@ public sealed class RssReader
         @"(?is)\b(?:Anunțuri de acasă|Home\s+News\s+Reviews|Advertisements?\s+from\s+home|Werbung von der Startseite|Anuncios de inicio|Publicités de la page d’accueil|Anúncios da página inicial|Kezdőlap hirdetések|Pubblicità dalla home)\b.*$",
         System.Text.RegularExpressions.RegexOptions.Compiled | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
 
+    /// <summary>Dimensiunea maximă acceptată pentru un flux sau o pagină descărcată (32 MiB).</summary>
+    internal const long MaximumDownloadBytes = 32L * 1024 * 1024;
+
     private readonly HttpClient _client;
     public RssReader()
         : this(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All, AllowAutoRedirect = true, CheckCertificateRevocationList = true })
@@ -44,7 +47,8 @@ public sealed class RssReader
     /// <summary>Allows tests to supply a simulated server.</summary>
     public RssReader(HttpMessageHandler handler)
     {
-        _client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30) };
+        // Un flux sau o pagină neobișnuit de mare nu trebuie să umple memoria aplicației: peste această limită descărcarea se oprește cu eroare.
+        _client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(30), MaxResponseContentBufferSize = MaximumDownloadBytes };
         _client.DefaultRequestHeaders.UserAgent.ParseAdd("CititorRSS-JAWS/1.0");
         _client.DefaultRequestHeaders.Accept.ParseAdd("application/rss+xml, application/atom+xml, application/xml, text/xml, */*");
     }

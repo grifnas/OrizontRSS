@@ -96,8 +96,7 @@ public partial class DiscoverTopicWindow : Window
         var cancellation = new CancellationTokenSource();
         _searchCancellation = cancellation;
         StatusText.Text = T("Se caută podcasturi în catalogul Apple Podcasts. Cuvintele căutate sunt trimise la Apple.");
-        PodcastSearchButton.IsEnabled = false;
-        LiveSearchButton.IsEnabled = false;
+        SetSearchButtonsEnabled(false);
         AddButton.IsEnabled = false;
 
         try
@@ -123,8 +122,17 @@ public partial class DiscoverTopicWindow : Window
         {
             _searchCancellation = null;
             cancellation.Dispose();
-            PodcastSearchButton.IsEnabled = true;
-            LiveSearchButton.IsEnabled = true;
+            SetSearchButtonsEnabled(true);
+        }
+    }
+
+    private void YouTubeSearch_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new YouTubeSearchWindow(Keywords.Text.Trim()) { Owner = this };
+        if (dialog.ShowDialog() == true && dialog.SelectedFeed is not null)
+        {
+            SelectedFeed = dialog.SelectedFeed;
+            DialogResult = true;
         }
     }
 
@@ -141,7 +149,7 @@ public partial class DiscoverTopicWindow : Window
         var cancellation = new CancellationTokenSource();
         _searchCancellation = cancellation;
         StatusText.Text = T("Se caută pe internet prin Feedly și se verifică rezultatele. Cuvintele căutate sunt trimise la Feedly.");
-        LiveSearchButton.IsEnabled = false;
+        SetSearchButtonsEnabled(false);
         AddButton.IsEnabled = false;
 
         try
@@ -169,7 +177,7 @@ public partial class DiscoverTopicWindow : Window
         {
             _searchCancellation = null;
             cancellation.Dispose();
-            LiveSearchButton.IsEnabled = true;
+            SetSearchButtonsEnabled(true);
         }
     }
 
@@ -217,6 +225,14 @@ public partial class DiscoverTopicWindow : Window
             PerformCatalogSearch();
             e.Handled = true;
         }
+    }
+
+    private void SetSearchButtonsEnabled(bool enabled)
+    {
+        CatalogSearchButton.IsEnabled = enabled;
+        LiveSearchButton.IsEnabled = enabled;
+        PodcastSearchButton.IsEnabled = enabled;
+        YouTubeSearchButton.IsEnabled = enabled;
     }
 
     private static string T(string source) => UiText.Translate(source);

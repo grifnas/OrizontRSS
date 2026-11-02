@@ -14,12 +14,12 @@
     <StackPanel Grid.Row="0">
       <TextBlock Text="Caută feeduri RSS după subiect" Style="{StaticResource SectionTitleTextStyle}" />
       <TextBlock Text="Alege o categorie din catalogul verificat sau caută după cuvinte-cheie. Căutarea pe internet folosește serviciul Feedly: cuvintele căutate sunt trimise la Feedly, iar feedurile găsite sunt verificate automat." Style="{StaticResource DialogIntroTextStyle}" />
+      <TextBlock Text="Căutarea pe YouTube trimite termenii direct către YouTube și nu necesită cheie API." Style="{StaticResource DialogIntroTextStyle}" Margin="0,4,0,0" />
 
       <Grid Margin="0,4,0,0">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0" Margin="0,0,6,0">
@@ -27,17 +27,18 @@
           <ComboBox x:Name="CategoryFilter" SelectionChanged="CategoryFilter_SelectionChanged" AutomationProperties.Name="Filtru categorie catalog" />
         </StackPanel>
 
-        <StackPanel Grid.Column="1" Margin="6,0,6,0">
+        <StackPanel Grid.Column="1" Margin="6,0,0,0">
           <Label Content="Cuvinte-cheie" Target="{Binding ElementName=Keywords}" />
-          <TextBox x:Name="Keywords" KeyDown="Keywords_KeyDown" AutomationProperties.Name="Cuvinte-cheie pentru feeduri" AutomationProperties.HelpText="Tastați un subiect și apasă Enter sau Caută." />
-        </StackPanel>
-
-        <StackPanel Grid.Column="2" VerticalAlignment="Bottom" Orientation="Horizontal">
-          <Button Content="Caută în catalog" Click="SearchCatalog_Click" Margin="0,0,6,0" />
-          <Button x:Name="LiveSearchButton" Content="Caută pe internet" Click="LiveSearch_Click" AutomationProperties.HelpText="Trimite cuvintele-cheie la serviciul Feedly și verifică automat feedurile găsite. Poți scrie și adresa unui site." />
-          <Button x:Name="PodcastSearchButton" Content="Caută podcasturi" Click="PodcastSearch_Click" AutomationProperties.HelpText="Trimite cuvintele-cheie la catalogul Apple Podcasts și arată feedurile RSS ale podcasturilor găsite. Verifică-le înainte de adăugare." Margin="6,0,0,0" />
+          <TextBox x:Name="Keywords" KeyDown="Keywords_KeyDown" AutomationProperties.Name="Cuvinte-cheie pentru feeduri" AutomationProperties.HelpText="Tastați un subiect și apasă Enter pentru catalog sau folosește Tab pentru căutare pe internet, podcasturi ori YouTube." />
         </StackPanel>
       </Grid>
+
+      <WrapPanel Margin="0,8,0,0">
+        <Button x:Name="CatalogSearchButton" Content="Caută în catalog" Click="SearchCatalog_Click" Margin="0,0,6,4" />
+        <Button x:Name="LiveSearchButton" Content="Caută pe internet" Click="LiveSearch_Click" AutomationProperties.HelpText="Trimite cuvintele-cheie la serviciul Feedly și verifică automat feedurile găsite. Poți scrie și adresa unui site." Margin="0,0,6,4" />
+        <Button x:Name="PodcastSearchButton" Content="Caută podcasturi" Click="PodcastSearch_Click" AutomationProperties.HelpText="Trimite cuvintele-cheie la catalogul Apple Podcasts și arată feedurile RSS ale podcasturilor găsite. Verifică-le înainte de adăugare." Margin="0,0,6,4" />
+        <Button x:Name="YouTubeSearchButton" Content="Caută pe YouTube…" Click="YouTubeSearch_Click" AutomationProperties.HelpText="Deschide căutarea YouTube pentru canale, playlisturi sau videoclipuri." Margin="0,0,6,4" />
+      </WrapPanel>
 
       <TextBlock x:Name="StatusText" Style="{StaticResource DialogStatusTextStyle}" Margin="0,8,0,0" AutomationProperties.LiveSetting="Polite" />
     </StackPanel>

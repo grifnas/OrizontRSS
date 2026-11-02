@@ -1,5 +1,53 @@
 # Foaia de parcurs Orizont RSS
 
+## 2026-11-02 — Transcript YouTube confirmat și „Mai multe rezultate” confirmat
+
+- Preluarea automată a transcriptului a fost reparată (Innertube cu client Android, rezervă pagina videoclipului, cookie de consimțământ, parser pentru ambele formate de subtitrare) și confirmată cu JAWS 2026 de utilizator. Constatarea din 31 octombrie despre corpul gol este depășită; rezerva din clipboard rămâne.
+- Lista limbilor din fereastra transcriptului se citește curat în JAWS 2026, numai cu numele limbii.
+- Căutarea de videoclipuri YouTube: „Mai multe rezultate” încarcă pagina următoare (limită 60 pe pagină), confirmat cu JAWS 2026. Canalele și playlisturile păstrează limita anterioară.
+- Confirmat cu JAWS 2026 de utilizator, în seara zilei de 2 noiembrie 2026, după ora 18:00: descărcarea transcriptului, copierea transcriptului și salvarea `.txt` din fereastra transcriptului. Importul explicit din clipboard și deschiderea paginii YouTube din dialog nu au această confirmare.
+- Verificări: `verify-source.ps1 -Mode Quick -NoRestore` și `verify-localization.ps1 -RequireComplete` au trecut; CoreSmoke trece cu 317 verificări. Nu înlocuiesc proba JAWS pentru fluxurile YouTube, care este deja confirmată mai sus. Nicio distribuție, tag sau release; versiunea publică rămâne 1.6.5.
+
+## 2026-10-31 — Transcriptul videoclipurilor YouTube
+
+- Implementată local o cale accesibilă cu două variante: încercare automată best-effort și import explicit din clipboard după copierea transcriptului din pagina YouTube. Dialogul oferă și deschiderea directă a videoclipului, navigarea textului cu săgețile, copierea și salvarea `.txt`.
+- Limită verificată la data respectivă (depășită la 2 noiembrie 2026, vezi intrarea de mai sus): metoda automată nu a preluat corpul transcriptului; endpointul public a returnat HTTP 200 cu corp gol, iar endpointul intern al paginii HTTP 400 `FAILED_PRECONDITION`. Butonul rămâne util prin fallback, dar nu se afirmă că transcriptul se descarcă automat.
+- Pas rămas: acceptare JAWS 2026 a fluxului de copiere din YouTube și importului în Orizont. Gemini poate analiza URL-uri video publice, însă cere API key și produce conținut generat, nu transcript literal; se păstrează ca opțiune separată de discutat, nu ca implementare actuală.
+- Nu s-a creat distribuție/publicare; versiunea publică rămâne 1.6.5.
+
+## 2026-10-31 — Păstrarea candidaților YouTube cu RSS neverificat
+
+- Schimbarea este implementată local: canalele și playlisturile găsite rămân vizibile când verificarea fluxului RSS eșuează, cu pagină YouTube și adresă RSS păstrate pentru control. Se poate deschide pagina originală sau relua verificarea.
+- Protecție: utilizatorul nu poate adăuga candidatul ca abonament până când fluxul nu trece verificarea. Rezultatele video continuă să fie distincte; abonarea la canal din video folosește numai flux verificat.
+- `verify-source.ps1 -Mode Quick -NoRestore` a trecut integral, inclusiv 304 teste CoreSmoke și localizarea în opt limbi. Executabil de test autonom disponibil în folderul standard `bin/Release/net8.0-windows10.0.17763.0/win-x64/publish/`.
+- Pasul rămas este verificarea practică a acestui flux cu JAWS 2026. Căutarea rămâne dependentă de pagina publică și de filtrul HTML neoficial YouTube; niciun API key nu este necesar.
+- Importul de transcript rămâne ascuns/neacceptat separat. Nu s-a creat distribuție sau publicare; versiunea publicată rămâne 1.6.5.
+
+## 2026-10-31 — Căutarea videoclipurilor YouTube
+
+- Implementată local, cu buton separat din fereastra de descoperire RSS/podcast și o fereastră dedicată de rezultate. Căutarea folosește pagina publică YouTube, fără API key; termenii sunt trimiși la YouTube.
+- Titlul și canalul sunt citibile în listă; săgețile navighează rezultatele, iar Enter/dublu clic/butonul deschid videoclipul ales în browserul implicit. Videoclipurile nu sunt fluxuri RSS și nu se salvează ca abonamente.
+- Teste: CoreSmoke 300; localizare completă în opt limbi; proba live a parsării paginii a obținut 20 de videoclipuri. Executabilul autonom de test, cu runtime inclus, este `bin/Release/net8.0-windows10.0.17763.0/win-x64/publish/Orizont.exe`.
+- Utilizatorul a confirmat manual căutarea și găsirea videoclipurilor funcționează. Nu s-au documentat separat verificarea fiecărui anunț/focus sau cititorul folosit; nu afirmăm o acceptare JAWS nominală dincolo de confirmarea dată. Căutarea depinde de pagina HTML și filtrul YouTube neoficial; poate fi limitată sau schimbată. Sonarpad a fost consultat fără a reutiliza cod; licența lui nu permite opere derivate fără permisiune.
+- Nicio distribuție/publicare nu a fost creată; ultima versiune publică rămâne 1.6.5.
+
+## 2026-10-31 — Căutarea playlisturilor YouTube
+
+- Implementată local, lângă căutarea existentă a canalelor: buton separat în fereastra de descoperire RSS/podcast, căutare după cuvinte-cheie pe pagina publică YouTube, fără cheie API.
+- Sunt afișate doar playlisturi recunoscute (format YouTube actual și vechi) cu feed RSS accesibil și articole; videoclipurile și feedurile nefuncționale sunt excluse. Adăugarea folosește fluxul RSS standard și mecanismul existent de feed verificat.
+- Probă live: pagina de căutare a răspuns HTTP 200 cu 20 rezultate playlist; un flux RSS rezultat a răspuns HTTP 200 cu 14 intrări. CoreSmoke 296, localizare completă în opt limbi, codare fără erori.
+- Acceptare practică JAWS 2026 încă necesară. Calea depinde de structura paginii publice și filtrul YouTube neoficial; nu este un API garantat și poate fi limitată sau schimbată.
+- Nicio distribuție sau publicare nu a fost creată. Ultima versiune publică rămâne 1.6.5.
+
+## 2026-10-29 — După versiunea publică 1.6.5
+
+### Căutare de canale YouTube după subiect
+
+- Implementată local, fără API key: buton separat în fereastra de descoperire RSS/podcast; termenii sunt trimiși la YouTube. Rezultatele sunt canale, iar fluxurile RSS sunt verificate înainte să apară în listă.
+- Risc cunoscut: se folosește pagina publică de căutare și filtrul ei pentru canale, nu un API oficial stabil. O schimbare de structură sau limitarea cererilor poate dezactiva această cale. Introducerea URL-ului unui canal și descoperirea RSS-ului existentă rămân alternativa fără căutare după cuvinte-cheie.
+- Verificările automate au trecut, inclusiv toate limbile și rezultatul live NASA (flux RSS HTTP 200, 15 intrări). Acceptare rămasă: test practic cu JAWS 2026 pentru accesul la buton, anunțul că termenul este trimis la YouTube, focusul pe primul rezultat, navigarea cu săgeți, verificarea RSS și adăugarea feedului. Executabilul de test autonom este în locația standard `bin/Release/net8.0-windows10.0.17763.0/Orizont.exe`.
+- Nu s-a stabilit versiunea următoare și nu s-a creat candidat, distribuție, tag sau release; 1.6.5 rămâne ultima versiune publică.
+
 ## Lucrare aprobată și amânată — semnarea digitală a instalatorului (14 octombrie 2026)
 
 Utilizatorul agreează propunerea de semnare digitală și a decis amânarea ei pentru o dată ulterioară. Nu se începe fără o nouă cerere expresă.
@@ -267,7 +315,7 @@ La 14 septembrie 2026, opțiunea Google Translate a fost adăugată și în meni
 
 La 16 septembrie 2026, coada de dezabonare NewsBlur a fost întărită pentru adrese canonice: aliasurile `www` și o potrivire unică a numelui leagă acum feedul local de abonamentul remote echivalent. Căile diferite nu sunt unite automat fără o potrivire sigură, iar feedurile confirmate ca șterse nu mai sunt reimportate.
 
-Ultima versiune descărcabilă publică este 1.6.0. Release-ul `v1.6.0` este public și include installerul autonom `OrizontSetup-1.6.0.exe` (și `OrizontSetup.exe`), arhiva portabilă `Orizont-RSS-1.6.0-win-x64.zip`, arhiva sursă și fișierele lor SHA-256. Toate cele opt pagini GitHub Pages sunt actualizate la versiunea 1.6.0 și publicate pe `main`. În WinGet, PR-ul oficial `#431971` conține setul complet de manifeste pentru 1.6.0. La 20 septembrie 2026, release-ul 1.6.0 înregistrează 23 de descărcări (12 arhiva portabilă, 11 instalatorul), ridicând totalul cumulat pe toate versiunile la 87 de descărcări.
+Ultima versiune descărcabilă publică era 1.6.0 (stare din 20 septembrie 2026; din 26 octombrie 2026 este 1.6.5, vezi PUBLICATION.md). Release-ul `v1.6.0` este public și include installerul autonom `OrizontSetup-1.6.0.exe` (și `OrizontSetup.exe`), arhiva portabilă `Orizont-RSS-1.6.0-win-x64.zip`, arhiva sursă și fișierele lor SHA-256. Toate cele opt pagini GitHub Pages sunt actualizate la versiunea 1.6.0 și publicate pe `main`. În WinGet, PR-ul oficial `#431971` conține setul complet de manifeste pentru 1.6.0. La 20 septembrie 2026, release-ul 1.6.0 înregistrează 23 de descărcări (12 arhiva portabilă, 11 instalatorul), ridicând totalul cumulat pe toate versiunile la 87 de descărcări.
 
 Localizarea este disponibilă în română, engleză, spaniolă, franceză, germană, portugheză, maghiară și italiană. Verificarea completă a tuturor resurselor a trecut pentru cele opt limbi; inventarul curent este de 1.181 de chei și 1.100 de referințe UI.
 
@@ -320,7 +368,7 @@ Nu se publică un singur pachet izolat. O nouă distribuție se creează numai l
    - `winget search OrizontRSS`
    - `winget install Grifnas.OrizontRSS`
    - `winget uninstall Grifnas.OrizontRSS`
-5. Admiterea inițială în WinGet pentru `Grifnas.OrizontRSS` a fost actualizată direct la versiunea 1.6.0 în PR-ul oficial `microsoft/winget-pkgs#431971` (commit `819cc8f04`). Manifestele au trecut `winget validate` local, verificarea CLA este recunoscută, validările Azure pipelines sunt active, iar PR-ul așteaptă aprobarea moderatorului comunitar Microsoft. După fuzionare se va efectua testarea completă cu comenzile CLI de mai sus.
+5. Admiterea în WinGet pentru `Grifnas.OrizontRSS`: PR-ul pentru 1.6.5 este [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294). La 28 octombrie 2026 aștepta aprobarea unui moderator voluntar, iar semnarea CLA pe contul `grifnas` nu era confirmată (vezi `WORKLOG.md`, intrarea din 28 octombrie). PR-ul #431971 (1.6.4) a fost închis ca înlocuit. După fuzionare se va efectua testarea completă cu comenzile CLI de mai sus.
 6. Promovarea aplicației și paginii publice, conform strategiei consemnate în `docs/PROJECT-STATUS.md`:
    - Listarea Orizont RSS pe AlternativeTo.net ca alternativă accesibilă și curată la cititoarele RSS populare.
    - Promovarea în comunitățile de accesibilitate și nevăzători (România: Pontes, ANR; internațional: Reddit r/Blind, Blind Bargains, The Accessible World, Mastodon a11y).

@@ -6,6 +6,8 @@ public sealed class DiscoveredFeed
 {
     public string Name { get; set; } = string.Empty;
     public string Url { get; set; } = string.Empty;
+    /// <summary>Pagina YouTube asociată rezultatului; poate fi deschisă chiar dacă RSS-ul nu se verifică.</summary>
+    public string WebPageUrl { get; set; } = string.Empty;
     public string SourceSite { get; set; } = string.Empty;
     public bool RequiresVerification { get; set; }
     public bool IsVerified { get; set; }
