@@ -361,6 +361,7 @@ Check(RssReader.IsVideoPlatformUrl("https://www.youtube.com/watch?v=abc") && Rss
 await CheckYouTubeMediaDescription();
 await RunPodcastEnclosureSmokeAsync();
 await RunDownloadLimitSmokeAsync();
+await RunAtomicSaveSmokeAsync();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
 
@@ -1214,6 +1215,28 @@ async Task RunDeepSeekBalanceSmokeAsync()
     try { await failing.GetBalanceAsync("synthetic-key"); }
     catch (InvalidOperationException exception) { message = exception.Message; }
     Check(message.Length > 0 && !message.Contains("synthetic-key", StringComparison.Ordinal), "eroarea soldului DeepSeek nu afișează cheia API");
+}
+
+async Task RunAtomicSaveSmokeAsync()
+{
+    var folder = Path.Combine(Path.GetTempPath(), "orizont-atomic-" + Guid.NewGuid().ToString("N"));
+    var path = Path.Combine(folder, "settings.json");
+    try
+    {
+        var save = typeof(FeedStore).GetMethod("SaveJsonAsync", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+            .MakeGenericMethod(typeof(AppSettings));
+        var store = new FeedStore();
+        await (Task)save.Invoke(store, new object[] { path, new AppSettings { UiLanguage = "ro-RO" } })!;
+        Check(File.Exists(path) && !File.Exists(path + ".bak"), "prima salvare nu creează copie de rezervă");
+        await (Task)save.Invoke(store, new object[] { path, new AppSettings { UiLanguage = "en-US" } })!;
+        Check(File.ReadAllText(path).Contains("en-US", StringComparison.Ordinal), "a doua salvare scrie noua stare");
+        Check(File.ReadAllText(path + ".bak").Contains("ro-RO", StringComparison.Ordinal), "starea anterioară rămâne în copia .bak");
+        Check(Directory.GetFiles(folder, "*.tmp").Length == 0, "după salvare nu rămân fișiere temporare");
+    }
+    finally
+    {
+        if (Directory.Exists(folder)) Directory.Delete(folder, true);
+    }
 }
 
 async Task RunDownloadLimitSmokeAsync()

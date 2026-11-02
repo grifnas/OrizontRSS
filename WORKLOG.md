@@ -1,5 +1,15 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-02 — Salvare atomică a fișierelor de stare și de setări (Storage/FeedStore.cs)
+
+- Cerere: verificarea și includerea modificării nenotate din `Storage/FeedStore.cs`, dacă este utilă utilizatorului.
+- Modificare: `SaveJsonAsync` scrie întâi într-un fișier temporar, cu `Flush(flushToDisk: true)` înaintea înlocuirii, apoi îl pune în locul fișierului existent cu `File.Replace`, iar starea anterioară rămâne în `<fișier>.bak`. Prima salvare, când fișierul nu există, folosește `File.Move`.
+- Efect pentru utilizator: o pană de curent sau o oprire în timpul salvării nu mai lasă un fișier gol; ultima stare salvată rămâne recuperabilă manual din `.bak`. Costul: un fișier `.bak` în același folder, cu aceleași date ca fișierul precedent.
+- Test nou în `tests/CoreSmoke/Program.cs` (`RunAtomicSaveSmokeAsync`): prima salvare nu creează `.bak`; a doua scrie noua stare și păstrează anterioara în `.bak`; nu rămân fișiere `.tmp`. Patru verificări noi.
+- Teste: CoreSmoke 321 verificări trecute, cod de ieșire 0; `verify-source.ps1 -Mode Quick -NoRestore` a trecut (inclusiv ShortcutsSmoke 95, RulesSmoke 42, WorkflowSmoke 157).
+- Nu s-a testat o pană de curent reală; nu s-a testat nici blocarea fișierului de un program antivirus. Dacă `File.Replace` eșuează pe un fișier blocat, salvarea eșuează, ca și înainte la suprascriere.
+- Instalatorul din `packaging/installer` nu este inclus; nu a fost cerut.
+
 ## 2026-11-02 — Unificarea helperilor comuni ai serviciilor YouTube
 
 - Cerere: unificarea duplicării dintre `YouTubeChannelSearchService`, `YouTubePlaylistSearchService`, `YouTubeVideoSearchService` și `YouTubeTranscriptService`.
@@ -10,6 +20,7 @@
 - Duplicare: 57 de blocuri duplicate de 6 linii înainte, 17 după; în scanarea din aceeași zi nu au rămas membri privați neutilizați.
 - Executabil de test: `C:\Users\grigo\Documents\ChatGPT\New project\Orizont RSS\bin\Release\net8.0-windows10.0.17763.0\Orizont.exe`, reconstruit la 21:02. Verificarea cu JAWS a funcțiilor YouTube trebuie refăcută pe acest executabil, pentru că refactorizarea atinge codul pe care utilizatorul l-a confirmat.
 - Confirmat de utilizator după refactorizare: toate funcțiile YouTube verificate anterior funcționează în executabilul din locația standard. Cititorul nu a fost precizat; data nu a fost precizată, dar confirmarea a venit după build-ul de la 21:02.
+- Commit local `fa38e5b` cu lucrările YouTube, documentele de stare și corecția CoreSmoke. Neincluse, fiindcă nu sunt consemnate și nu au fost confirmate: `Storage/FeedStore.cs` (salvare atomică cu copie `.bak`) și `packaging/installer/*` (text pentru folder nesigur). Folderul `Assets/Sounds/propuneri-internet` rămâne exclus, ca în intervenția de la sunete. Nu s-a împins nimic.
 - Nicio distribuție, arhivă, tag sau release. Nu s-a făcut commit.
 
 ## 2026-11-02 — Verificare automată a codului modificat (fără modificări de cod)

@@ -62,8 +62,16 @@ public sealed class FeedStore
             var temporary = Path.Combine(folder, $".{Path.GetFileName(destination)}.{Guid.NewGuid():N}.tmp");
             try
             {
-                await File.WriteAllBytesAsync(temporary, snapshot);
-                File.Move(temporary, destination, overwrite: true);
+                // Conținutul ajunge efectiv pe disc înaintea înlocuirii, ca o pană de curent să nu lase un fișier gol.
+                await using (var output = new FileStream(temporary, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous))
+                {
+                    await output.WriteAsync(snapshot);
+                    await output.FlushAsync();
+                    output.Flush(flushToDisk: true);
+                }
+                // Ultima stare salvată anterior rămâne în „<fișier>.bak”: recuperabilă manual dacă fișierul curent se corupe.
+                if (File.Exists(destination)) File.Replace(temporary, destination, destination + ".bak", ignoreMetadataErrors: true);
+                else File.Move(temporary, destination);
             }
             finally
             {
