@@ -104,16 +104,16 @@ Acest director nu trebuie inclus într-o distribuție sau într-un raport public
 Validarea completă, inclusiv testele automate pentru logică, 1.200 de articole, localizare, eSpeak NG, ghiduri și distribuție, se rulează astfel:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools\verify-all.ps1 -DistributionPath .\bin\Release\final-1.6.1-win-x64
+powershell -ExecutionPolicy Bypass -File tools\verify-all.ps1 -DistributionPath .\bin\Release\final-1.6.6-win-x64
 ```
 
-Comanda folosește candidatul indicat de `docs\RELEASE-STATUS.json` (în prezent 1.6.1); pentru altă versiune se transmite și `-ExpectedProductVersion`.
+Comanda folosește candidatul indicat de `docs\RELEASE-STATUS.json` (în prezent 1.6.6); pentru altă versiune se transmite și `-ExpectedProductVersion`.
 
 Pentru installerul offline local, construiește mai întâi arhiva portabilă și fișierul
 `.sha256`, apoi publică proiectul `packaging\installer\OrizontSetup.csproj` cu
 proprietățile `OfflinePackageZip` și `OfflinePackageHash` setate la căile acestor
 fișiere. Ambele sunt incluse în installer, iar hash-ul este verificat înainte de
-extragere. Un installer 1.6.0 fără pachetul inclus se oprește; nu descarcă accidental
+extragere. Un installer fără pachetul inclus se oprește; nu descarcă accidental
 o versiune publică anterioară.
 
 ## Verificarea localizării

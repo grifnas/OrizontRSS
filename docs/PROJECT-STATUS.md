@@ -1,5 +1,13 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-11-06 — Versiunea curentă 1.6.6, publicată; CLA și WinGet
+
+- Versiunea publică curentă este 1.6.6, publicată la 6 noiembrie 2026: tag `v1.6.6` pe commit-ul `736940b`, release GitHub cu instalatorul offline, arhiva portabilă, arhiva sursă și fișierele SHA-256. 1.6.5 este versiunea publicată anterioară și rămâne doar în istoric.
+- Pagina de prezentare afișează 1.6.6. Sursele ghidurilor de utilizator sunt la 1.6.6, dar pachetul publicat 1.6.6 conține ghidurile cu versiunea 1.6.5 în antet și subsol; corectarea ajunge abia în versiunea următoare.
+- WinGet: pull request-ul [#462294](https://github.com/microsoft/winget-pkgs/pull/462294) a fost actualizat la 1.6.6. Semnătura CLA a fost înregistrată de utilizator prin comentariul de acceptare; verificarea `license/cla` este verde, iar eticheta `Needs-CLA` a dispărut. PR-ul așteaptă aprobarea unui moderator voluntar.
+- Rămân neverificate cu JAWS: instalatorul (refuzul folderelor nesigure, dezinstalarea), canalele și playlisturile YouTube, importul transcriptului din clipboard și deschiderea în browser din dialogul transcriptului. Acceptările A02, A07, A09 și A11 rămân deschise.
+- Nu există încă o versiune candidat după 1.6.6.
+
 ## 2026-11-02 — Transcript YouTube confirmat și rezultate video pe mai multe pagini
 
 - Preluarea automată a transcriptului funcționează, confirmat manual de utilizator cu JAWS 2026. Lista pistelor se cere prin Innertube (client Android), cu rezervă pagina videoclipului; parserul citește ambele formate de subtitrare. Concluzia din 31 octombrie, „preluarea automată nu este confirmată”, este înlocuită de aceasta; rezerva din clipboard rămâne.

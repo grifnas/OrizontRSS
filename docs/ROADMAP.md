@@ -1,5 +1,10 @@
 # Foaia de parcurs Orizont RSS
 
+## 2026-11-06 — Versiunea curentă 1.6.6, publicată
+
+- Versiunea publică curentă este 1.6.6 (tag `v1.6.6`, publicată la 6 noiembrie 2026). 1.6.5 este versiunea anterioară, păstrată în istoric.
+- WinGet: PR-ul #462294 este actualizat la 1.6.6. CLA-ul este semnat și verificarea `license/cla` este verde; PR-ul așteaptă aprobarea moderatorului.
+
 ## 2026-11-02 — Transcript YouTube confirmat și „Mai multe rezultate” confirmat
 
 - Preluarea automată a transcriptului a fost reparată (Innertube cu client Android, rezervă pagina videoclipului, cookie de consimțământ, parser pentru ambele formate de subtitrare) și confirmată cu JAWS 2026 de utilizator. Constatarea din 31 octombrie despre corpul gol este depășită; rezerva din clipboard rămâne.
@@ -368,7 +373,7 @@ Nu se publică un singur pachet izolat. O nouă distribuție se creează numai l
    - `winget search OrizontRSS`
    - `winget install Grifnas.OrizontRSS`
    - `winget uninstall Grifnas.OrizontRSS`
-5. Admiterea în WinGet pentru `Grifnas.OrizontRSS`: PR-ul pentru 1.6.5 este [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294). La 28 octombrie 2026 aștepta aprobarea unui moderator voluntar, iar semnarea CLA pe contul `grifnas` nu era confirmată (vezi `WORKLOG.md`, intrarea din 28 octombrie). PR-ul #431971 (1.6.4) a fost închis ca înlocuit. După fuzionare se va efectua testarea completă cu comenzile CLI de mai sus.
+5. Admiterea în WinGet pentru `Grifnas.OrizontRSS`: PR-ul [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294) este actualizat la 1.6.6. CLA-ul este semnat și `license/cla` este verde; PR-ul așteaptă aprobarea moderatorului voluntar.
 6. Promovarea aplicației și paginii publice, conform strategiei consemnate în `docs/PROJECT-STATUS.md`:
    - Listarea Orizont RSS pe AlternativeTo.net ca alternativă accesibilă și curată la cititoarele RSS populare.
    - Promovarea în comunitățile de accesibilitate și nevăzători (România: Pontes, ANR; internațional: Reddit r/Blind, Blind Bargains, The Accessible World, Mastodon a11y).

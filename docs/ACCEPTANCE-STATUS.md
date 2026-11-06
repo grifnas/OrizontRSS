@@ -1,6 +1,6 @@
 # Orizont RSS — situația celor 12 puncte de consolidare
 
-Actualizat la 2 noiembrie 2026. Confirmările de după 1.6.1 și după 1.6.5 sunt consemnate mai jos; starea pe puncte (8/12) nu s-a schimbat, pentru că nicio probă deschisă nu a fost închisă. Acesta este registrul scurt al stării **locale**, nu o certificare completă a distribuției publice sau a WinGet. Criteriile complete și ordinea lucrărilor sunt în [ROADMAP.md](ROADMAP.md); probele practice sunt în [MANUAL-REGRESSION-CHECKLIST.md](MANUAL-REGRESSION-CHECKLIST.md), iar intervențiile datate sunt în [WORKLOG.md](../WORKLOG.md). Raportul [AUDIT-2026-09-27.md](AUDIT-2026-09-27.md) consemnează constatările inițiale, nu starea reparată.
+Actualizat la 6 noiembrie 2026. Versiunea curentă este 1.6.6, publicată la 6 noiembrie 2026. Confirmările de după 1.6.1 și după 1.6.5 sunt consemnate mai jos; starea pe puncte (8/12) nu s-a schimbat, pentru că nicio probă deschisă nu a fost închisă. Acesta este registrul scurt al stării **locale**, nu o certificare completă a distribuției publice sau a WinGet. Criteriile complete și ordinea lucrărilor sunt în [ROADMAP.md](ROADMAP.md); probele practice sunt în [MANUAL-REGRESSION-CHECKLIST.md](MANUAL-REGRESSION-CHECKLIST.md), iar intervențiile datate sunt în [WORKLOG.md](../WORKLOG.md). Raportul [AUDIT-2026-09-27.md](AUDIT-2026-09-27.md) consemnează constatările inițiale, nu starea reparată.
 
 ## Confirmare practică pentru lucrările nepublicate după 1.6.5 — 2 noiembrie 2026
 
