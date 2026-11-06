@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using CititorRSS.Jaws.Localization;
 
 namespace CititorRSS.Jaws.Services.Rss;
@@ -31,6 +32,51 @@ internal static class YouTubeCommon
         var client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(25) };
         client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36");
         return client;
+    }
+
+    private static readonly Regex VideoIdPattern = new(@"^[A-Za-z0-9_-]{11}$", RegexOptions.CultureInvariant);
+
+    /// <summary>
+    /// Recunoaște adresele unui videoclip: youtube.com/watch?v=…, youtube.com/shorts/…, youtube.com/embed/… și youtu.be/….
+    /// Celelalte adrese YouTube (canale, playlisturi) și adresele altor site-uri nu sunt recunoscute.
+    /// </summary>
+    internal static bool TryGetVideoId(string? link, out string videoId)
+    {
+        videoId = string.Empty;
+        if (!Uri.TryCreate(link, UriKind.Absolute, out var uri)) return false;
+
+        var host = uri.Host.ToLowerInvariant();
+        var segments = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        string candidate;
+        if (host == "youtu.be")
+        {
+            candidate = segments.Length == 1 ? segments[0] : string.Empty;
+        }
+        else if (host is "youtube.com" or "www.youtube.com" or "m.youtube.com")
+        {
+            if (segments is ["watch"]) candidate = QueryParameter(uri.Query, "v");
+            else if (segments.Length == 2 && segments[0] is "shorts" or "embed") candidate = segments[1];
+            else candidate = string.Empty;
+        }
+        else
+        {
+            candidate = string.Empty;
+        }
+
+        if (!VideoIdPattern.IsMatch(candidate)) return false;
+        videoId = candidate;
+        return true;
+    }
+
+    private static string QueryParameter(string query, string name)
+    {
+        foreach (var pair in query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var separator = pair.IndexOf('=');
+            var key = separator < 0 ? pair : pair[..separator];
+            if (key == name) return separator < 0 ? string.Empty : Uri.UnescapeDataString(pair[(separator + 1)..]);
+        }
+        return string.Empty;
     }
 
     /// <summary>

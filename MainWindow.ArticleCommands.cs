@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using CititorRSS.Jaws.Services.Content;
+using CititorRSS.Jaws.Services.Rss;
 
 namespace CititorRSS.Jaws;
 
@@ -8,6 +9,28 @@ public partial class MainWindow
 {
     private long _contentRequestRevision;
     internal ArticleCommandPorts ArticleCommands { get; set; } = null!;
+
+    /// <summary>
+    /// Articolele cu adresă de videoclip YouTube, inclusiv din canalele la care ești abonat, se deschid în fereastra de videoclip Orizont.
+    /// Întoarce false pentru orice alt articol, care rămâne pe calea obișnuită.
+    /// </summary>
+    private async Task<bool> TryOpenYouTubeVideoAsync(Article article)
+    {
+        if (!YouTubeCommon.TryGetVideoId(article.Link, out var videoId)) return false;
+        try
+        {
+            new YouTubePlayerWindow(videoId, article.Title) { Owner = this }.Show();
+            foreach (var copy in RelatedArticleCopies([article])) copy.IsRead = true;
+            Articles.Items.Refresh();
+            await ArticleCommands.SaveAsync();
+            Say(T("Videoclipul se deschide în Orizont."));
+        }
+        catch (Exception exception)
+        {
+            Say(F("Nu s-a putut deschide videoclipul în Orizont: {0}", Describe(exception)));
+        }
+        return true;
+    }
 
     /// <summary>Pentru videoclipuri YouTube afișează descrierea din feed, fără să descarce pagina de vizionare.</summary>
     private Task<string> LoadReadableForArticleAsync(Article article, string link)

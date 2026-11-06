@@ -60,6 +60,7 @@ public partial class YouTubeSearchWindow : Window
         VerifyFeedButton.Visibility = isFeedSearch ? Visibility.Visible : Visibility.Collapsed;
         OpenResultPageButton.Visibility = isFeedSearch ? Visibility.Visible : Visibility.Collapsed;
         OpenVideoButton.Visibility = isVideo ? Visibility.Visible : Visibility.Collapsed;
+        OpenInAppButton.Visibility = isVideo ? Visibility.Visible : Visibility.Collapsed;
         LoadMoreButton.Visibility = isVideo ? Visibility.Visible : Visibility.Collapsed;
         SubscribeChannelButton.Visibility = isVideo ? Visibility.Visible : Visibility.Collapsed;
         ImportTranscriptButton.Visibility = isVideo ? Visibility.Visible : Visibility.Collapsed;
@@ -223,6 +224,7 @@ public partial class YouTubeSearchWindow : Window
         {
             var isVideo = Results.SelectedItem is YouTubeVideoSearchService.YouTubeVideoCandidate;
             OpenVideoButton.IsEnabled = isVideo;
+            OpenInAppButton.IsEnabled = isVideo;
             SubscribeChannelButton.IsEnabled = isVideo;
             ImportTranscriptButton.IsEnabled = isVideo;
             LoadMoreButton.IsEnabled = _videoContinuation.Length > 0;
@@ -237,6 +239,7 @@ public partial class YouTubeSearchWindow : Window
             OpenResultPageButton.Visibility = string.IsNullOrWhiteSpace(feed?.WebPageUrl) ? Visibility.Collapsed : Visibility.Visible;
             OpenResultPageButton.IsEnabled = !string.IsNullOrWhiteSpace(feed?.WebPageUrl);
             OpenVideoButton.IsEnabled = false;
+            OpenInAppButton.IsEnabled = false;
             SubscribeChannelButton.IsEnabled = false;
             ImportTranscriptButton.IsEnabled = false;
             LoadMoreButton.IsEnabled = false;
@@ -301,6 +304,21 @@ public partial class YouTubeSearchWindow : Window
         {
             SelectedFeed = feed;
             DialogResult = true;
+        }
+    }
+
+    private void OpenInApp_Click(object sender, RoutedEventArgs e)
+    {
+        if (Results.SelectedItem is not YouTubeVideoSearchService.YouTubeVideoCandidate video) return;
+        try
+        {
+            var player = new YouTubePlayerWindow(video.VideoId, video.Title) { Owner = this };
+            player.Show();
+            StatusText.Text = T("Videoclipul se deschide în Orizont.");
+        }
+        catch (Exception exception)
+        {
+            StatusText.Text = F("Nu s-a putut deschide videoclipul în Orizont: {0}", exception.Message);
         }
     }
 
@@ -397,6 +415,7 @@ public partial class YouTubeSearchWindow : Window
             OpenResultPageButton.IsEnabled = false;
             AddFeedButton.IsEnabled = false;
             OpenVideoButton.IsEnabled = false;
+            OpenInAppButton.IsEnabled = false;
             SubscribeChannelButton.IsEnabled = false;
             ImportTranscriptButton.IsEnabled = false;
             LoadMoreButton.IsEnabled = false;

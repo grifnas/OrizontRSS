@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using CititorRSS.Jaws.Services.Content;
+using CititorRSS.Jaws.Services.Rss;
 using CititorRSS.Jaws.Services.Update;
 using CititorRSS.Jaws.Localization;
 using CititorRSS.Jaws;
@@ -362,6 +363,7 @@ await CheckYouTubeMediaDescription();
 await RunPodcastEnclosureSmokeAsync();
 await RunDownloadLimitSmokeAsync();
 await RunAtomicSaveSmokeAsync();
+CheckYouTubeVideoLinks();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
 
@@ -1215,6 +1217,18 @@ async Task RunDeepSeekBalanceSmokeAsync()
     try { await failing.GetBalanceAsync("synthetic-key"); }
     catch (InvalidOperationException exception) { message = exception.Message; }
     Check(message.Length > 0 && !message.Contains("synthetic-key", StringComparison.Ordinal), "eroarea soldului DeepSeek nu afișează cheia API");
+}
+
+void CheckYouTubeVideoLinks()
+{
+    Check(YouTubeCommon.TryGetVideoId("https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=42s", out var watchId) && watchId == "dQw4w9WgXcQ", "adresa watch este recunoscută cu parametri suplimentari");
+    Check(YouTubeCommon.TryGetVideoId("https://youtu.be/dQw4w9WgXcQ?t=42", out var shortId) && shortId == "dQw4w9WgXcQ", "adresa youtu.be este recunoscută");
+    Check(YouTubeCommon.TryGetVideoId("https://www.youtube.com/shorts/dQw4w9WgXcQ", out var shortsId) && shortsId == "dQw4w9WgXcQ", "adresa shorts este recunoscută");
+    Check(YouTubeCommon.TryGetVideoId("https://www.youtube.com/embed/dQw4w9WgXcQ", out var embedId) && embedId == "dQw4w9WgXcQ", "adresa embed este recunoscută");
+    Check(!YouTubeCommon.TryGetVideoId("https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw", out _), "adresa de canal nu este tratată ca videoclip");
+    Check(!YouTubeCommon.TryGetVideoId("https://example.com/watch?v=dQw4w9WgXcQ", out _), "alt site cu același parametru nu este tratat ca videoclip");
+    Check(!YouTubeCommon.TryGetVideoId("https://www.youtube.com/watch?v=scurt", out _), "identificator invalid este respins");
+    Check(!YouTubeCommon.TryGetVideoId(null, out _), "adresa lipsă este respinsă");
 }
 
 async Task RunAtomicSaveSmokeAsync()

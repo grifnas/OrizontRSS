@@ -5123,4 +5123,20 @@ Lire plus tard : {4}</value>
   <data name="Nu mai sunt alte rezultate YouTube pentru această căutare." xml:space="preserve"><value>Il n’y a plus de résultats YouTube pour cette recherche.</value></data>
   <data name="{0} videoclipuri noi adăugate; în total {1}. Primul rezultat nou este selectat." xml:space="preserve"><value>{0} nouvelles vidéos ajoutées ; {1} au total. Le premier nouveau résultat est sélectionné.</value></data>
   <data name="{0} videoclipuri YouTube găsite. Primul rezultat este selectat. Pentru mai multe rezultate folosește butonul Mai multe rezultate." xml:space="preserve"><value>{0} vidéos YouTube trouvées. Le premier résultat est sélectionné. Utilisez le bouton Plus de résultats pour en voir davantage.</value></data>
+  <data name="Videoclip YouTube" xml:space="preserve"><value>Vidéo YouTube</value></data>
+  <data name="Videoclip YouTube: {0}" xml:space="preserve"><value>Vidéo YouTube : {0}</value></data>
+  <data name="Videoclipul este gata. Alt+Z și Alt+X: înapoi, Alt+V și Alt+B: înainte, Alt+C: redare sau pauză, Alt+S: viteză, Alt+T: poziție, Alt+D: deschide în browser, Escape: închide." xml:space="preserve"><value>La vidéo est prête. Alt+Z et Alt+X : reculer, Alt+V et Alt+B : avancer, Alt+C : lecture ou pause, Alt+S : vitesse, Alt+T : position, Alt+D : ouvrir dans le navigateur, Échap : fermer.</value></data>
+  <data name="Videoclipul nu poate fi redat aici. Apasă D ca să-l deschizi în browser." xml:space="preserve"><value>Cette vidéo ne peut pas être lue ici. Appuyez sur D pour l'ouvrir dans le navigateur.</value></data>
+  <data name="Videoclipul nu are un identificator valid." xml:space="preserve"><value>La vidéo n'a pas d'identifiant valide.</value></data>
+  <data name="Înapoi {0} secunde." xml:space="preserve"><value>Reculé de {0} secondes.</value></data>
+  <data name="Înainte {0} secunde." xml:space="preserve"><value>Avancé de {0} secondes.</value></data>
+  <data name="Tonul nu se poate schimba la videoclipurile YouTube." xml:space="preserve"><value>La hauteur du son ne peut pas être modifiée pour les vidéos YouTube.</value></data>
+  <data name="Playerul YouTube nu a putut porni: {0}" xml:space="preserve"><value>Le lecteur YouTube n'a pas pu démarrer : {0}</value></data>
+  <data name="Deschide în Orizont" xml:space="preserve"><value>Ouvrir dans Orizont</value></data>
+  <data name="Videoclipul se deschide în Orizont." xml:space="preserve"><value>La vidéo s'ouvre dans Orizont.</value></data>
+  <data name="Nu s-a putut deschide videoclipul în Orizont: {0}" xml:space="preserve"><value>La vidéo n'a pas pu s'ouvrir dans Orizont : {0}</value></data>
+  <data name="Videoclipul se deschide în browser." xml:space="preserve"><value>La vidéo s'ouvre dans le navigateur.</value></data>
+  <data name="Redare." xml:space="preserve"><value>Lecture.</value></data>
+  <data name="Pauză." xml:space="preserve"><value>Pause.</value></data>
+  <data name="Poziția: {0} din {1}, adică {2}%. Mai sunt {3}." xml:space="preserve"><value>Position : {0} sur {1}, soit {2} %. Il reste {3}.</value></data>
 </root>

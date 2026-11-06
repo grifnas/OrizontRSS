@@ -62,6 +62,18 @@ public sealed record InstallerTexts(
         _ => "Windows Script Host nu este disponibil."
     };
 
+    public string UnsafeFolder => Code switch
+    {
+        "en-US" => "This folder is protected, or it is not an Orizont RSS installation and contains other files. Choose the folder where Orizont RSS is installed, or an empty folder for a new installation.",
+        "es-ES" => "Esta carpeta está protegida o no es una instalación de Orizont RSS y contiene otros archivos. Elige la carpeta donde está instalado Orizont RSS, o una carpeta vacía para una instalación nueva.",
+        "fr-FR" => "Ce dossier est protégé, ou ce n’est pas une installation d’Orizont RSS et il contient d’autres fichiers. Choisissez le dossier où Orizont RSS est installé, ou un dossier vide pour une nouvelle installation.",
+        "de-DE" => "Dieser Ordner ist geschützt, oder er enthält keine Orizont-RSS-Installation, sondern andere Dateien. Wählen Sie den Ordner, in dem Orizont RSS installiert ist, oder einen leeren Ordner für eine neue Installation.",
+        "pt-BR" => "Esta pasta está protegida ou não é uma instalação do Orizont RSS e contém outros arquivos. Escolha a pasta onde o Orizont RSS está instalado ou uma pasta vazia para uma nova instalação.",
+        "hu-HU" => "Ez a mappa védett, vagy nem az Orizont RSS telepítési mappája, és más fájlokat tartalmaz. Válaszd azt a mappát, ahová az Orizont RSS telepítve van, vagy egy üres mappát az új telepítéshez.",
+        "it-IT" => "Questa cartella è protetta oppure non è un’installazione di Orizont RSS e contiene altri file. Scegli la cartella in cui è installato Orizont RSS, oppure una cartella vuota per una nuova installazione.",
+        _ => "Acest folder este protejat sau nu este o instalare Orizont RSS și conține alte fișiere. Alege folderul în care este instalat Orizont RSS sau un folder gol pentru o instalare nouă."
+    };
+
     public string ShortcutCreationFailed => Code switch
     {
         "en-US" => "The shortcut could not be created.",

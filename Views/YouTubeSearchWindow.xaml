@@ -64,6 +64,7 @@
         <Button x:Name="OpenResultPageButton" Content="Deschide în browser" Click="OpenResultPage_Click" IsEnabled="False" Visibility="Collapsed" />
         <Button x:Name="AddFeedButton" Content="Adaugă feed verificat" Click="AddFeed_Click" IsEnabled="False" />
         <Button x:Name="OpenVideoButton" Content="Deschide în browser" Click="OpenVideo_Click" IsEnabled="False" Visibility="Collapsed" />
+        <Button x:Name="OpenInAppButton" Content="Deschide în Orizont" Click="OpenInApp_Click" IsEnabled="False" Visibility="Collapsed" />
         <Button x:Name="LoadMoreButton" Content="Mai multe rezultate" Click="LoadMore_Click" IsEnabled="False" Visibility="Collapsed"
                 AutomationProperties.HelpText="Încarcă următoarea pagină de rezultate YouTube și o adaugă la lista de mai sus." />
         <Button x:Name="SubscribeChannelButton" Content="Abonează-te la canal" Click="SubscribeChannel_Click" IsEnabled="False" Visibility="Collapsed" AutomationProperties.HelpText="Caută fluxul RSS al canalului asociat videoclipului și îl adaugă în abonamente." />

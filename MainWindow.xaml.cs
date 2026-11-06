@@ -792,6 +792,7 @@ public partial class MainWindow : Window
             FocusReader();
             return;
         }
+        if (await TryOpenYouTubeVideoAsync(_article)) return;
         var feed = FindArticleSourceFeed(_article);
         var mode = feed is null ? ArticleOpenModeIds.Default : ArticleOpenModeIds.Normalize(feed.ArticleOpenMode);
         if (mode == ArticleOpenModeIds.Default)
@@ -810,6 +811,7 @@ public partial class MainWindow : Window
     internal async Task OpenArticleInOrizontAsync()
     {
         if (_article is null || string.IsNullOrWhiteSpace(_article.Link)) { Say("Articolul nu are o adresă care poate fi deschisă."); return; }
+        if (await TryOpenYouTubeVideoAsync(_article)) return;
         var article = _article;
         var link = article.Link;
         var request = ++_contentRequestRevision;
@@ -871,6 +873,7 @@ public partial class MainWindow : Window
     private async Task OpenArticleInBrowserReadingModeAsync()
     {
         if (_article is null || string.IsNullOrWhiteSpace(_article.Link)) { Say("Articolul nu are o adresă care poate fi deschisă."); return; }
+        if (await TryOpenYouTubeVideoAsync(_article)) return;
         try
         {
             var mode = BrowserReaderService.OpenReadingMode(_article.Link);

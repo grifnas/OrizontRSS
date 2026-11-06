@@ -5352,4 +5352,20 @@ Ler mais tarde: {4}</value>
   <data name="Nu mai sunt alte rezultate YouTube pentru această căutare." xml:space="preserve"><value>Não há mais resultados do YouTube para esta pesquisa.</value></data>
   <data name="{0} videoclipuri noi adăugate; în total {1}. Primul rezultat nou este selectat." xml:space="preserve"><value>{0} novos vídeos adicionados; {1} no total. O primeiro novo resultado está selecionado.</value></data>
   <data name="{0} videoclipuri YouTube găsite. Primul rezultat este selectat. Pentru mai multe rezultate folosește butonul Mai multe rezultate." xml:space="preserve"><value>{0} vídeos do YouTube encontrados. O primeiro resultado está selecionado. Use o botão Mais resultados para ver mais.</value></data>
+  <data name="Videoclip YouTube" xml:space="preserve"><value>Vídeo do YouTube</value></data>
+  <data name="Videoclip YouTube: {0}" xml:space="preserve"><value>Vídeo do YouTube: {0}</value></data>
+  <data name="Videoclipul este gata. Alt+Z și Alt+X: înapoi, Alt+V și Alt+B: înainte, Alt+C: redare sau pauză, Alt+S: viteză, Alt+T: poziție, Alt+D: deschide în browser, Escape: închide." xml:space="preserve"><value>O vídeo está pronto. Alt+Z e Alt+X: voltar, Alt+V e Alt+B: avançar, Alt+C: reproduzir ou pausar, Alt+S: velocidade, Alt+T: posição, Alt+D: abrir no navegador, Escape: fechar.</value></data>
+  <data name="Videoclipul nu poate fi redat aici. Apasă D ca să-l deschizi în browser." xml:space="preserve"><value>Este vídeo não pode ser reproduzido aqui. Pressione D para abri-lo no navegador.</value></data>
+  <data name="Videoclipul nu are un identificator valid." xml:space="preserve"><value>O vídeo não tem um identificador válido.</value></data>
+  <data name="Înapoi {0} secunde." xml:space="preserve"><value>Voltou {0} segundos.</value></data>
+  <data name="Înainte {0} secunde." xml:space="preserve"><value>Avançou {0} segundos.</value></data>
+  <data name="Tonul nu se poate schimba la videoclipurile YouTube." xml:space="preserve"><value>O tom não pode ser alterado nos vídeos do YouTube.</value></data>
+  <data name="Playerul YouTube nu a putut porni: {0}" xml:space="preserve"><value>O player do YouTube não pôde iniciar: {0}</value></data>
+  <data name="Deschide în Orizont" xml:space="preserve"><value>Abrir no Orizont</value></data>
+  <data name="Videoclipul se deschide în Orizont." xml:space="preserve"><value>O vídeo abre no Orizont.</value></data>
+  <data name="Nu s-a putut deschide videoclipul în Orizont: {0}" xml:space="preserve"><value>Não foi possível abrir o vídeo no Orizont: {0}</value></data>
+  <data name="Videoclipul se deschide în browser." xml:space="preserve"><value>O vídeo abre no navegador.</value></data>
+  <data name="Redare." xml:space="preserve"><value>Reproduzindo.</value></data>
+  <data name="Pauză." xml:space="preserve"><value>Pausado.</value></data>
+  <data name="Poziția: {0} din {1}, adică {2}%. Mai sunt {3}." xml:space="preserve"><value>Posição: {0} de {1}, {2}%. Restam {3}.</value></data>
 </root>

@@ -102,6 +102,11 @@ public partial class MainWindow : Window
             throw new InvalidOperationException(_texts.FolderRequired);
         }
 
+        if (!IsSafeInstallFolder(destination, forInstall: true))
+        {
+            throw new InvalidOperationException(_texts.UnsafeFolder);
+        }
+
         Directory.CreateDirectory(destination);
         var tempZip = Path.Combine(Path.GetTempPath(), $"Orizont-RSS-{Version}.zip");
         ProgressBar.Value = 0;
@@ -237,6 +242,14 @@ public partial class MainWindow : Window
             return;
         }
 
+        if (!IsSafeInstallFolder(destination, forInstall: false))
+        {
+            SetStatus(_texts.UnsafeFolder);
+            System.Windows.MessageBox.Show(_texts.UnsafeFolder, _texts.ConfirmTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
+            Close();
+            return;
+        }
+
         var answer = System.Windows.MessageBox.Show(
             _texts.ConfirmMessage,
             _texts.ConfirmTitle,
@@ -266,6 +279,60 @@ public partial class MainWindow : Window
         });
         await Task.Delay(300);
         Close();
+    }
+
+    /// <summary>
+    /// Protejează fișierele utilizatorului: un folder de sistem sau personal (rădăcina unei unități, profilul,
+    /// Documente, Desktop, Descărcări, Program Files, Windows etc.) sau un folder care le conține nu este
+    /// acceptat niciodată. Instalarea într-un folder existent și nevid, fără o instalare Orizont, este refuzată,
+    /// iar dezinstalarea șterge numai un folder în care există Orizont.exe.
+    /// </summary>
+    private static bool IsSafeInstallFolder(string path, bool forInstall)
+    {
+        string full;
+        try
+        {
+            full = Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
+        if (full.Length == 0) return false;
+        var root = (Path.GetPathRoot(full) ?? string.Empty).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        if (string.Equals(root, full, StringComparison.OrdinalIgnoreCase)) return false;
+
+        var profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        var protectedFolders = new List<string>
+        {
+            profile,
+            string.IsNullOrWhiteSpace(profile) ? string.Empty : Path.Combine(profile, "Downloads"),
+            Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            Environment.GetFolderPath(Environment.SpecialFolder.MyMusic),
+            Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
+            Environment.GetFolderPath(Environment.SpecialFolder.MyVideos),
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+            Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+            Environment.GetFolderPath(Environment.SpecialFolder.System)
+        };
+        foreach (var candidate in protectedFolders.Where(item => !string.IsNullOrWhiteSpace(item)))
+        {
+            var folder = candidate.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (string.Equals(folder, full, StringComparison.OrdinalIgnoreCase)) return false;
+            // Un folder-părinte al unui folder protejat (de exemplu C:\Users) nu este acceptat.
+            if (folder.StartsWith(full + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) return false;
+        }
+
+        var hasOrizont = File.Exists(Path.Combine(full, "Orizont.exe"));
+        if (!forInstall) return hasOrizont;
+        if (hasOrizont || !Directory.Exists(full)) return true;
+        return !Directory.EnumerateFileSystemEntries(full).Any();
     }
 
     private void CreateShortcuts(string destination, bool createDesktopShortcut)
