@@ -2,31 +2,31 @@
 
 ## Ultimul release public
 
-- Versiune: **v1.6.5**, publicată la 26 octombrie 2026.
-- Release oficial: [github.com/grifnas/OrizontRSS/releases/tag/v1.6.5](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.5)
+- Versiune: **v1.6.6**, publicată la 6 noiembrie 2026.
+- Release oficial: [github.com/grifnas/OrizontRSS/releases/tag/v1.6.6](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.6)
 - Pagina de prezentare: [grifnas.github.io/OrizontRSS](https://grifnas.github.io/OrizontRSS/)
-- Codul exact al versiunii: [tagul v1.6.5](https://github.com/grifnas/OrizontRSS/tree/v1.6.5)
-- Commitul tagului v1.6.5: `8b6c1de`. Ramura `main` conține acest commit și actualizările de documentație ulterioare.
-- Installer autonom offline: `OrizontSetup-1.6.5.exe` — 252.832.792 bytes; SHA-256 `7BF7E0672EB16A1C2FE573BFD34D984F9674A15F442632A42AAB59F338C7EB6B`.
-- Variantă portabilă: `Orizont-RSS-1.6.5-win-x64.zip` — 91.042.064 bytes; SHA-256 `B4499F34A61E98E877BDED6E1F57E20A2172AAB5F413237FA42C4084284DD81E`.
-- Arhivă sursă: `Orizont-RSS-1.6.5-source.zip` — 14.644.997 bytes; SHA-256 `07B9EF0CAD18465897DCE5C38F34A9A93427F6E4060F6DF471D9C1191BCA0146`.
+- Codul exact al versiunii: [tagul v1.6.6](https://github.com/grifnas/OrizontRSS/tree/v1.6.6)
+- Commitul tagului v1.6.6: `736940b`. Ramura `main` conține acest commit și actualizările de documentație ulterioare.
+- Installer autonom offline: `OrizontSetup-1.6.6.exe` — 252.914.752 bytes; SHA-256 `D7AC63B5A6B161F9BD20E8A41C53C1143FB00DD39A33C75926B49E3C5A7FEE9D`.
+- Variantă portabilă: `Orizont-RSS-1.6.6-win-x64.zip` — 91.118.089 bytes; SHA-256 `93DFB877D6EF6A66A83FD8C2C11F3EB46D3D027CFD98F9C9E5F20B43023D82E1`.
+- Arhivă sursă: `Orizont-RSS-1.6.6-source.zip` — 14.731.151 bytes; SHA-256 `1B403C251C77FFF725BB22F51290242652F02CAF4F36477B93AC1A369AEF1BD6`.
 - Cele trei fișiere `.sha256` sunt atașate alături de pachete.
 
 Pachetele includ .NET și Windows Desktop 8.0.31; nu cer instalarea separată a .NET Desktop Runtime. WebReader folosește Microsoft Edge WebView2 Runtime. Hash-urile locale au fost comparate cu digesturile afișate de GitHub.
 
 ## Acceptare și limite cunoscute
 
-A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; nu sunt declarate trecute. Auditul NuGet, rulat la 19 octombrie 2026, nu a raportat pachete vulnerabile. Aceste limite sunt descrise în notele publice [RELEASE-NOTES-1.6.5.md](RELEASE-NOTES-1.6.5.md).
+A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; nu sunt declarate trecute. Auditul NuGet, rulat la 19 octombrie 2026, nu a raportat pachete vulnerabile. Aceste limite sunt descrise în notele publice [RELEASE-NOTES-1.6.6.md](RELEASE-NOTES-1.6.6.md).
 
 ## Pagina de prezentare și documentele
 
-Cele opt pagini `docs/index*.html`, linkurile directe spre installerul și arhiva portabilă versionate, precum și documentele de stare au fost sincronizate cu v1.6.5 după publicarea release-ului și împinse pe `main`. Până la propagarea GitHub Pages, pagina publică poate afișa încă versiunea anterioară. Orice build local ulterior nu este pachetul public al tagului și **nu este pachetul public v1.6.5**.
+Cele opt pagini `docs/index*.html`, linkurile directe spre installerul și arhiva portabilă versionate, precum și documentele de stare au fost sincronizate cu v1.6.6 după publicarea release-ului și împinse pe `main`. Până la propagarea GitHub Pages, pagina publică poate afișa încă versiunea anterioară. Orice build local ulterior nu este pachetul public al tagului și **nu este pachetul public v1.6.6**.
 
 ## WinGet
 
-Manifestele locale curente sunt numai cele din `packaging/winget/Grifnas.OrizontRSS/1.6.5/`; URL-ul installerului și hash-ul arhivei portabile corespund release-ului public. `winget validate` a trecut la pregătirea manifestelor; la reverificarea din 8 octombrie, comanda `winget.exe` nu a putut porni din mediul izolat (`SEC_E_NO_CREDENTIALS`/WindowsApps), deci validarea nu a putut fi repetată în această sesiune. Snapshotul local 1.6.0 a fost eliminat din arborele curent; istoricul său rămâne în Git.
+Manifestele locale curente sunt numai cele din `packaging/winget/Grifnas.OrizontRSS/1.6.6/`; URL-ul installerului și hash-ul arhivei portabile corespund release-ului public. `winget validate` a trecut la pregătirea manifestelor; la reverificarea din 8 octombrie, comanda `winget.exe` nu a putut porni din mediul izolat (`SEC_E_NO_CREDENTIALS`/WindowsApps), deci validarea nu a putut fi repetată în această sesiune. Snapshotul local 1.6.0 a fost eliminat din arborele curent; istoricul său rămâne în Git.
 
-PR-ul pentru 1.6.5 este [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294). La 28 octombrie 2026 aștepta aprobarea unui moderator voluntar, iar semnarea CLA pe contul `grifnas` nu era confirmată. PR-ul [#431971](https://github.com/microsoft/winget-pkgs/pull/431971) (1.6.4) a fost închis ca înlocuit. Până la fuziunea PR-ului, disponibilitatea în catalogul WinGet nu este confirmată.
+PR-ul pentru 1.6.6 este [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294). La 28 octombrie 2026 aștepta aprobarea unui moderator voluntar, iar semnarea CLA pe contul `grifnas` nu era confirmată. PR-ul [#431971](https://github.com/microsoft/winget-pkgs/pull/431971) (1.6.4) a fost închis ca înlocuit. Până la fuziunea PR-ului, disponibilitatea în catalogul WinGet nu este confirmată.
 
 ## Curățarea copiilor istorice
 
