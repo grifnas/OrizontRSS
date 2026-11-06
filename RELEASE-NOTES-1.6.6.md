@@ -1,6 +1,6 @@
-# Orizont RSS 1.6.6 — note de lucru (versiune în pregătire)
+# Orizont RSS 1.6.6 — note de lucru
 
-Acest document este o schiță locală pentru versiunea 1.6.6. Nu este un release public, nu există pachete pentru ea și nu a fost creat niciun tag. Ultima versiune publică rămâne 1.6.5.
+Versiunea 1.6.6 este lansată pe GitHub, cu installerul autonom, varianta portabilă ZIP, arhiva sursă și fișierele SHA-256 atașate release-ului. Ultima versiune publică anterioară era 1.6.5.
 
 ## Videoclipuri YouTube
 
