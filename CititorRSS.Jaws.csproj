@@ -37,7 +37,7 @@
     <Content Include="ACKNOWLEDGEMENTS.md" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="CHANGELOG.md" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="RELEASE-NOTES-1.6.5.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="RELEASE-NOTES-1.6.6.md" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Licenses\**\*" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="ThirdParty\eSpeakNG\libespeak-ng.dll">
       <Link>libespeak-ng.dll</Link>
