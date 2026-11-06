@@ -26,7 +26,7 @@ Cele opt pagini `docs/index*.html`, linkurile directe spre installerul și arhiv
 
 Manifestele locale curente sunt numai cele din `packaging/winget/Grifnas.OrizontRSS/1.6.6/`; URL-ul installerului și hash-ul arhivei portabile corespund release-ului public. `winget validate` a trecut la pregătirea manifestelor; la reverificarea din 8 octombrie, comanda `winget.exe` nu a putut porni din mediul izolat (`SEC_E_NO_CREDENTIALS`/WindowsApps), deci validarea nu a putut fi repetată în această sesiune. Snapshotul local 1.6.0 a fost eliminat din arborele curent; istoricul său rămâne în Git.
 
-PR-ul pentru 1.6.6 este [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294). La 28 octombrie 2026 aștepta aprobarea unui moderator voluntar, iar semnarea CLA pe contul `grifnas` nu era confirmată. PR-ul [#431971](https://github.com/microsoft/winget-pkgs/pull/431971) (1.6.4) a fost închis ca înlocuit. Până la fuziunea PR-ului, disponibilitatea în catalogul WinGet nu este confirmată.
+Pull request-ul pentru 1.6.5, [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294), rămâne deschis: eticheta `Needs-CLA` este încă prezentă și nu există revizuire. Manifestele 1.6.6 există în `packaging/winget/Grifnas.OrizontRSS/1.6.6/`, dar nu au încă un pull request. PR-ul [#431971](https://github.com/microsoft/winget-pkgs/pull/431971) (1.6.4) a fost închis ca înlocuit. Până la fuziunea PR-ului, disponibilitatea în catalogul WinGet nu este confirmată.
 
 ## Curățarea copiilor istorice
 
