@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using CititorRSS.Jaws.Localization;
+using CititorRSS.Jaws.Services.Rss;
 using Microsoft.Web.WebView2.Core;
 
 namespace CititorRSS.Jaws;
@@ -21,16 +22,18 @@ public partial class YouTubePlayerWindow : Window
     private static readonly Regex VideoIdPattern = new(@"^[A-Za-z0-9_-]{11}$", RegexOptions.CultureInvariant);
     private readonly string _videoId;
     private readonly string _watchUrl;
+    private readonly string _title;
     private bool _initialized;
 
     public YouTubePlayerWindow(string videoId, string title)
     {
         _videoId = videoId ?? string.Empty;
+        _title = title ?? string.Empty;
         _watchUrl = $"https://www.youtube.com/watch?v={Uri.EscapeDataString(_videoId)}";
         InitializeComponent();
         Title = UiText.Format("Videoclip YouTube: {0}", title);
         WindowStatusAnnouncer.Attach(this, () => UiText.Translate("Videoclip YouTube") + " " +
-            UiText.Translate("Videoclipul este gata. Alt+Z și Alt+X: înapoi, Alt+V și Alt+B: înainte, Alt+C: redare sau pauză, Alt+S: viteză, Alt+T: poziție, Alt+D: deschide în browser, Escape: închide."));
+            UiText.Translate("Videoclipul este gata. Alt+Z și Alt+X: înapoi, Alt+V și Alt+B: înainte, Alt+C: redare sau pauză, Alt+S: viteză, Alt+T: poziție, Alt+K: transcript, Alt+D: deschide în browser, Escape: închide."));
         Loaded += OnLoaded;
         // Închiderea ferestrei oprește și sunetul: WebView2 este eliberat, deci playerul nu mai rulează.
         Closed += (_, _) => PlayerWebView.Dispose();
@@ -90,6 +93,7 @@ public partial class YouTubePlayerWindow : Window
     {
         var message = e.TryGetWebMessageAsString() ?? string.Empty;
         if (message == "open") OpenInBrowser();
+        else if (message == "transcript") OpenTranscript();
         else if (message == "close") Close();
         else if (message.StartsWith("status:", StringComparison.Ordinal)) StatusText.Text = message["status:".Length..];
     }
@@ -97,6 +101,20 @@ public partial class YouTubePlayerWindow : Window
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key == Key.Escape) Close();
+    }
+
+    /// <summary>Deschide transcriptul videoclipului în fereastra de transcript, cu descărcare, copiere și salvare.</summary>
+    private void OpenTranscript()
+    {
+        try
+        {
+            var video = new YouTubeVideoSearchService.YouTubeVideoCandidate(_title, _videoId, string.Empty);
+            new YouTubeTranscriptWindow(video) { Owner = this }.Show();
+        }
+        catch (Exception exception)
+        {
+            StatusText.Text = UiText.Format("Transcriptul nu a putut fi deschis: {0}", exception.Message);
+        }
     }
 
     private void OpenInBrowser()
@@ -120,7 +138,7 @@ public partial class YouTubePlayerWindow : Window
     {
         var texts = new Dictionary<string, string>
         {
-            ["ready"] = UiText.Translate("Videoclipul este gata. Alt+Z și Alt+X: înapoi, Alt+V și Alt+B: înainte, Alt+C: redare sau pauză, Alt+S: viteză, Alt+T: poziție, Alt+D: deschide în browser, Escape: închide."),
+            ["ready"] = UiText.Translate("Videoclipul este gata. Alt+Z și Alt+X: înapoi, Alt+V și Alt+B: înainte, Alt+C: redare sau pauză, Alt+S: viteză, Alt+T: poziție, Alt+K: transcript, Alt+D: deschide în browser, Escape: închide."),
             ["unplayable"] = UiText.Translate("Videoclipul nu poate fi redat aici. Apasă D ca să-l deschizi în browser."),
             ["invalid"] = UiText.Translate("Videoclipul nu are un identificator valid."),
             ["back"] = UiText.Translate("Înapoi {0} secunde."),
@@ -131,6 +149,7 @@ public partial class YouTubePlayerWindow : Window
             ["noPitch"] = UiText.Translate("Tonul nu se poate schimba la videoclipurile YouTube."),
             ["opening"] = UiText.Translate("Videoclipul se deschide în browser."),
             ["position"] = UiText.Translate("Poziția: {0} din {1}, adică {2}%. Mai sunt {3}."),
+            ["transcript"] = UiText.Translate("Transcript YouTube"),
             ["locale"] = CultureInfo.CurrentUICulture.Name
         };
         // Evităm „</” în JSON-ul din script, ca textele să nu închidă elementul.
@@ -246,6 +265,7 @@ document.addEventListener('keydown', function (event) {
     case 'c': togglePlay(); break;
     case 's': changeSpeed(); break;
     case 't': reportPosition(); break;
+    case 'k': say(TEXT.transcript); window.chrome.webview.postMessage('transcript'); break;
     case 'p': say(TEXT.noPitch); break;
     case 'd': say(TEXT.opening); window.chrome.webview.postMessage('open'); break;
     default: return;

@@ -1229,6 +1229,9 @@ void CheckYouTubeVideoLinks()
     Check(!YouTubeCommon.TryGetVideoId("https://example.com/watch?v=dQw4w9WgXcQ", out _), "alt site cu același parametru nu este tratat ca videoclip");
     Check(!YouTubeCommon.TryGetVideoId("https://www.youtube.com/watch?v=scurt", out _), "identificator invalid este respins");
     Check(!YouTubeCommon.TryGetVideoId(null, out _), "adresa lipsă este respinsă");
+    Check(YouTubeChannelVideosService.TryGetChannelId("https://www.youtube.com/feeds/videos.xml?channel_id=UCuAXFkgsw1L7xaCfnd5JJOw", out var channelId) && channelId == "UCuAXFkgsw1L7xaCfnd5JJOw", "feedul unui canal YouTube dă identificatorul canalului");
+    Check(!YouTubeChannelVideosService.TryGetChannelId("https://www.youtube.com/feeds/videos.xml?playlist_id=PLabcdefghij", out _), "feedul unui playlist nu este tratat ca un canal");
+    Check(!YouTubeChannelVideosService.TryGetChannelId("https://example.com/feeds/videos.xml?channel_id=UCuAXFkgsw1L7xaCfnd5JJOw", out _), "alt site nu este tratat ca un canal YouTube");
 }
 
 async Task RunAtomicSaveSmokeAsync()

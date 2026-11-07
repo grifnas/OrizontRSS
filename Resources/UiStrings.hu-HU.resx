@@ -5287,8 +5287,8 @@ Olvasás később: {4}</value>
   <data name="Rezultate YouTube, listă" xml:space="preserve">
     <value>YouTube-találatok, lista</value>
   </data>
-  <data name="Folosește săgețile Sus și Jos. Pentru canale și playlisturi apasă Enter pentru adăugare; pentru videoclipuri apasă Enter pentru deschidere în browser." xml:space="preserve">
-    <value>Használja a Fel és Le nyilakat. Csatornák és lejátszási listák esetén nyomja meg az Entert a hozzáadáshoz; videók esetén az Entert a böngészőben való megnyitáshoz.</value>
+  <data name="Folosește săgețile Sus și Jos. Pentru canale și playlisturi apasă Enter pentru adăugare; pentru videoclipuri apasă Enter pentru deschidere în Orizont." xml:space="preserve">
+    <value>Használja a Fel és Le nyilakat. Csatornák és lejátszási listák esetén nyomja meg az Entert a hozzáadáshoz; videók esetén az Entert az Orizont alkalmazásban való megnyitáshoz.</value>
   </data>
   <data name="Abonează-te la canal" xml:space="preserve">
     <value>Feliratkozás a csatornára</value>
@@ -5356,7 +5356,7 @@ Olvasás később: {4}</value>
   <data name="{0} videoclipuri YouTube găsite. Primul rezultat este selectat. Pentru mai multe rezultate folosește butonul Mai multe rezultate." xml:space="preserve"><value>{0} YouTube-videó található. Az első találat ki van jelölve. További találatokért használja a További találatok gombot.</value></data>
   <data name="Videoclip YouTube" xml:space="preserve"><value>YouTube-videó</value></data>
   <data name="Videoclip YouTube: {0}" xml:space="preserve"><value>YouTube-videó: {0}</value></data>
-  <data name="Videoclipul este gata. Alt+Z și Alt+X: înapoi, Alt+V și Alt+B: înainte, Alt+C: redare sau pauză, Alt+S: viteză, Alt+T: poziție, Alt+D: deschide în browser, Escape: închide." xml:space="preserve"><value>A videó kész. Alt+Z és Alt+X: vissza, Alt+V és Alt+B: előre, Alt+C: lejátszás vagy szünet, Alt+S: sebesség, Alt+T: pozíció, Alt+D: megnyitás böngészőben, Escape: bezárás.</value></data>
+  <data name="Videoclipul este gata. Alt+Z și Alt+X: înapoi, Alt+V și Alt+B: înainte, Alt+C: redare sau pauză, Alt+S: viteză, Alt+T: poziție, Alt+K: transcript, Alt+D: deschide în browser, Escape: închide." xml:space="preserve"><value>A videó kész. Alt+Z és Alt+X: vissza, Alt+V és Alt+B: előre, Alt+C: lejátszás vagy szünet, Alt+S: sebesség, Alt+T: pozíció, Alt+K: átirat, Alt+D: megnyitás böngészőben, Escape: bezárás.</value></data>
   <data name="Videoclipul nu poate fi redat aici. Apasă D ca să-l deschizi în browser." xml:space="preserve"><value>Ez a videó itt nem játszható le. Nyomd meg a D billentyűt a böngészőben való megnyitáshoz.</value></data>
   <data name="Videoclipul nu are un identificator valid." xml:space="preserve"><value>A videónak nincs érvényes azonosítója.</value></data>
   <data name="Înapoi {0} secunde." xml:space="preserve"><value>Vissza {0} másodperc.</value></data>
@@ -5370,4 +5370,17 @@ Olvasás később: {4}</value>
   <data name="Redare." xml:space="preserve"><value>Lejátszás.</value></data>
   <data name="Pauză." xml:space="preserve"><value>Szünet.</value></data>
   <data name="Poziția: {0} din {1}, adică {2}%. Mai sunt {3}." xml:space="preserve"><value>Pozíció: {0} / {1}, ez {2}%. Hátravan: {3}.</value></data>
+  <data name="Vezi toate videoclipurile canalului YouTube" xml:space="preserve"><value>A YouTube-csatorna összes videójának megtekintése</value></data>
+  <data name="Videoclipurile canalului: {0}" xml:space="preserve"><value>A csatorna videói: {0}</value></data>
+  <data name="Videoclipurile canalului" xml:space="preserve"><value>Csatornavideók</value></data>
+  <data name="Videoclipurile canalului, listă" xml:space="preserve"><value>Csatornavideók, lista</value></data>
+  <data name="Feedul selectat nu este un canal YouTube." xml:space="preserve"><value>A kijelölt hírcsatorna nem YouTube-csatorna.</value></data>
+  <data name="YouTube nu a returnat pagina videoclipurilor canalului. Încearcă din nou mai târziu." xml:space="preserve"><value>A YouTube nem adta vissza a csatorna videóoldalát. Próbáld újra később.</value></data>
+  <data name="Se încarcă videoclipurile canalului." xml:space="preserve"><value>A csatorna videóinak betöltése.</value></data>
+  <data name="Canalul nu are videoclipuri de afișat." xml:space="preserve"><value>A csatornának nincs megjeleníthető videója.</value></data>
+  <data name="{0} videoclipuri încărcate." xml:space="preserve"><value>{0} videó betöltve.</value></data>
+  <data name="Pentru mai multe videoclipuri apasă butonul de încărcare." xml:space="preserve"><value>További videókhoz nyomd meg a betöltés gombot.</value></data>
+  <data name="Nu mai sunt videoclipuri de încărcat." xml:space="preserve"><value>Nincs több betölthető videó.</value></data>
+  <data name="Videoclipurile canalului nu au putut fi citite: {0}" xml:space="preserve"><value>A csatorna videóit nem sikerült beolvasni: {0}</value></data>
+  <data name="Transcriptul nu a putut fi deschis: {0}" xml:space="preserve"><value>Az átiratot nem sikerült megnyitni: {0}</value></data>
 </root>

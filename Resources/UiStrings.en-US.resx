@@ -5056,8 +5056,8 @@ Read later: {4}</value>
   <data name="Rezultate YouTube, listă" xml:space="preserve">
     <value>YouTube results, list</value>
   </data>
-  <data name="Folosește săgețile Sus și Jos. Pentru canale și playlisturi apasă Enter pentru adăugare; pentru videoclipuri apasă Enter pentru deschidere în browser." xml:space="preserve">
-    <value>Use Up and Down arrows. For channels and playlists press Enter to add; for videos press Enter to open in browser.</value>
+  <data name="Folosește săgețile Sus și Jos. Pentru canale și playlisturi apasă Enter pentru adăugare; pentru videoclipuri apasă Enter pentru deschidere în Orizont." xml:space="preserve">
+    <value>Use Up and Down arrows. For channels and playlists press Enter to add; for videos press Enter to open in Orizont.</value>
   </data>
   <data name="Abonează-te la canal" xml:space="preserve">
     <value>Subscribe to channel</value>
@@ -5125,7 +5125,7 @@ Read later: {4}</value>
   <data name="{0} videoclipuri YouTube găsite. Primul rezultat este selectat. Pentru mai multe rezultate folosește butonul Mai multe rezultate." xml:space="preserve"><value>{0} YouTube videos found. The first result is selected. Use the More results button for more.</value></data>
   <data name="Videoclip YouTube" xml:space="preserve"><value>YouTube video</value></data>
   <data name="Videoclip YouTube: {0}" xml:space="preserve"><value>YouTube video: {0}</value></data>
-  <data name="Videoclipul este gata. Alt+Z și Alt+X: înapoi, Alt+V și Alt+B: înainte, Alt+C: redare sau pauză, Alt+S: viteză, Alt+T: poziție, Alt+D: deschide în browser, Escape: închide." xml:space="preserve"><value>The video is ready. Alt+Z and Alt+X: back, Alt+V and Alt+B: forward, Alt+C: play or pause, Alt+S: speed, Alt+T: position, Alt+D: open in browser, Escape: close.</value></data>
+  <data name="Videoclipul este gata. Alt+Z și Alt+X: înapoi, Alt+V și Alt+B: înainte, Alt+C: redare sau pauză, Alt+S: viteză, Alt+T: poziție, Alt+K: transcript, Alt+D: deschide în browser, Escape: închide." xml:space="preserve"><value>The video is ready. Alt+Z and Alt+X: back, Alt+V and Alt+B: forward, Alt+C: play or pause, Alt+S: speed, Alt+T: position, Alt+K: transcript, Alt+D: open in browser, Escape: close.</value></data>
   <data name="Videoclipul nu poate fi redat aici. Apasă D ca să-l deschizi în browser." xml:space="preserve"><value>This video cannot be played here. Press D to open it in the browser.</value></data>
   <data name="Videoclipul nu are un identificator valid." xml:space="preserve"><value>The video does not have a valid identifier.</value></data>
   <data name="Înapoi {0} secunde." xml:space="preserve"><value>Back {0} seconds.</value></data>
@@ -5139,4 +5139,17 @@ Read later: {4}</value>
   <data name="Redare." xml:space="preserve"><value>Playing.</value></data>
   <data name="Pauză." xml:space="preserve"><value>Paused.</value></data>
   <data name="Poziția: {0} din {1}, adică {2}%. Mai sunt {3}." xml:space="preserve"><value>Position: {0} of {1}, {2}%. {3} remaining.</value></data>
+  <data name="Vezi toate videoclipurile canalului YouTube" xml:space="preserve"><value>View all videos of the YouTube channel</value></data>
+  <data name="Videoclipurile canalului: {0}" xml:space="preserve"><value>Channel videos: {0}</value></data>
+  <data name="Videoclipurile canalului" xml:space="preserve"><value>Channel videos</value></data>
+  <data name="Videoclipurile canalului, listă" xml:space="preserve"><value>Channel videos, list</value></data>
+  <data name="Feedul selectat nu este un canal YouTube." xml:space="preserve"><value>The selected feed is not a YouTube channel.</value></data>
+  <data name="YouTube nu a returnat pagina videoclipurilor canalului. Încearcă din nou mai târziu." xml:space="preserve"><value>YouTube did not return the channel's videos page. Try again later.</value></data>
+  <data name="Se încarcă videoclipurile canalului." xml:space="preserve"><value>Loading the channel's videos.</value></data>
+  <data name="Canalul nu are videoclipuri de afișat." xml:space="preserve"><value>The channel has no videos to show.</value></data>
+  <data name="{0} videoclipuri încărcate." xml:space="preserve"><value>{0} videos loaded.</value></data>
+  <data name="Pentru mai multe videoclipuri apasă butonul de încărcare." xml:space="preserve"><value>To load more videos, press the load button.</value></data>
+  <data name="Nu mai sunt videoclipuri de încărcat." xml:space="preserve"><value>There are no more videos to load.</value></data>
+  <data name="Videoclipurile canalului nu au putut fi citite: {0}" xml:space="preserve"><value>The channel's videos could not be read: {0}</value></data>
+  <data name="Transcriptul nu a putut fi deschis: {0}" xml:space="preserve"><value>The transcript could not be opened: {0}</value></data>
 </root>

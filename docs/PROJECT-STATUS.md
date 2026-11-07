@@ -1,5 +1,15 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-11-07 — Fereastra YouTube: focus, liste, canale și transcript
+
+- Videoclipurile YouTube se deschid implicit în fereastra Orizont (WebView2), inclusiv din rezultatele căutării (Enter, dublu clic) și din articolele canalelor abonate. Butonul „Deschide în browser” rămâne în browser.
+- Focusul revine pe videoclipul deschis: în rezultatele căutării, în lista canalului și în lista articolelor, după închiderea playerului cu Escape.
+- Meniul Feeduri → Organizare → „Vezi toate videoclipurile canalului YouTube”: listează toate videoclipurile unui canal abonat, cu „Mai multe rezultate”. Cookie-ul de consimțământ este trimis, fără el YouTube nu returnează lista.
+- Lista canalului și a rezultatelor afișează titlul și canalul (ToString al rezultatului video, ca la vocile SAPI5).
+- Playerul: Alt+K deschide transcriptul în fereastra de transcript. Textul de ajutor din player și din rezultate este actualizat în cele opt limbi.
+- Verificări: CoreSmoke 332 trecute; verify-source Quick trecut; verificarea localizării trecută. Executabilul de test din locația standard a fost reconstruit la 19:54.
+- Neverificat cu JAWS: meniul canalului, lista canalului, focusul după Escape în toate ferestrele, Alt+K. Commit local creat, nepublicat (nu este împins); comenzile sunt detaliate în WORKLOG.md (intrările din 2026-11-07).
+
 ## 2026-11-06 — Versiunea curentă 1.6.6, publicată; CLA și WinGet
 
 - Versiunea publică curentă este 1.6.6, publicată la 6 noiembrie 2026: tag `v1.6.6` pe commit-ul `736940b`, release GitHub cu instalatorul offline, arhiva portabilă, arhiva sursă și fișierele SHA-256. 1.6.5 este versiunea publicată anterioară și rămâne doar în istoric.

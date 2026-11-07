@@ -3300,6 +3300,17 @@ public partial class MainWindow : Window
         catch { return null; }
     }
 
+    private void ChannelVideos_Click(object sender, RoutedEventArgs e)
+    {
+        var feed = Feeds.SelectedItem as Feed;
+        if (feed is null || !CititorRSS.Jaws.Services.Rss.YouTubeChannelVideosService.TryGetChannelId(feed.Url, out var channelId))
+        {
+            Say(T("Feedul selectat nu este un canal YouTube."));
+            return;
+        }
+        new YouTubeChannelVideosWindow(channelId, feed.Name) { Owner = this }.Show();
+    }
+
     private async void Edit_Click(object sender, RoutedEventArgs e)
     {
         if (RejectDataChangeDuringRefresh(T("editarea unui feed"))) return;

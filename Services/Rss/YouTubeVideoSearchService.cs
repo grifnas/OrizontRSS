@@ -278,5 +278,7 @@ public static class YouTubeVideoSearchService
         public string DisplayName => string.IsNullOrWhiteSpace(ChannelName)
             ? Title
             : UiText.Format("{0}. Canal YouTube: {1}.", Title, ChannelName);
+        // Ca la vocile SAPI5: lista afișează textul prezentat, nu proprietățile obiectului.
+        public override string ToString() => DisplayName;
     }
 }

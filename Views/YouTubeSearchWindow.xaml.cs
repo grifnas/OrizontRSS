@@ -313,6 +313,7 @@ public partial class YouTubeSearchWindow : Window
         try
         {
             var player = new YouTubePlayerWindow(video.VideoId, video.Title) { Owner = this };
+            player.Closed += (_, _) => FocusResultAfterPlayer(video);
             player.Show();
             StatusText.Text = T("Videoclipul se deschide în Orizont.");
         }
@@ -320,6 +321,18 @@ public partial class YouTubeSearchWindow : Window
         {
             StatusText.Text = F("Nu s-a putut deschide videoclipul în Orizont: {0}", exception.Message);
         }
+    }
+
+    /// <summary>După închiderea playerului, focusul revine pe videoclipul deschis din lista de rezultate.</summary>
+    private void FocusResultAfterPlayer(YouTubeVideoSearchService.YouTubeVideoCandidate video)
+    {
+        if (!IsLoaded) return;
+        if (!Results.Items.Contains(video)) { Results.Focus(); return; }
+        Results.SelectedItem = video;
+        Results.ScrollIntoView(video);
+        Results.UpdateLayout();
+        if (Results.ItemContainerGenerator.ContainerFromItem(video) is ListBoxItem row) row.Focus();
+        else Results.Focus();
     }
 
     private void OpenVideo_Click(object sender, RoutedEventArgs e)
@@ -433,7 +446,7 @@ public partial class YouTubeSearchWindow : Window
     {
         if (e.Key != Key.Enter) return;
         if (SearchType.SelectedIndex == TypeVideosIndex)
-            OpenVideo_Click(OpenVideoButton, new RoutedEventArgs());
+            OpenInApp_Click(OpenInAppButton, new RoutedEventArgs());
         else if (Results.SelectedItem is DiscoveredFeed feed && !feed.IsVerified)
             VerifyFeed_Click(VerifyFeedButton, new RoutedEventArgs());
         else
@@ -445,7 +458,7 @@ public partial class YouTubeSearchWindow : Window
     {
         if (Results.SelectedItem is null) return;
         if (SearchType.SelectedIndex == TypeVideosIndex)
-            OpenVideo_Click(OpenVideoButton, new RoutedEventArgs());
+            OpenInApp_Click(OpenInAppButton, new RoutedEventArgs());
         else if (Results.SelectedItem is DiscoveredFeed feed && !feed.IsVerified)
             VerifyFeed_Click(VerifyFeedButton, new RoutedEventArgs());
         else

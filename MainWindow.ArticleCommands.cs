@@ -19,7 +19,10 @@ public partial class MainWindow
         if (!YouTubeCommon.TryGetVideoId(article.Link, out var videoId)) return false;
         try
         {
-            new YouTubePlayerWindow(videoId, article.Title) { Owner = this }.Show();
+            var player = new YouTubePlayerWindow(videoId, article.Title) { Owner = this };
+            // După închiderea playerului, focusul revine pe articolul deschis, ca la Cititorul Orizont.
+            player.Closed += (_, _) => FocusArticleAfterReader(article);
+            player.Show();
             foreach (var copy in RelatedArticleCopies([article])) copy.IsRead = true;
             Articles.Items.Refresh();
             await ArticleCommands.SaveAsync();

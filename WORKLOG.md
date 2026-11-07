@@ -1,5 +1,29 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-07 — Toate videoclipurile unui canal YouTube abonat (varianta 2)
+
+- Corecție (19:36): fereastra canalului nu încărca videoclipurile. Cauza: cererea către pagina canalului nu trimitea cookie-ul de consimțământ; YouTube redirecționa din UE la pagina de consimțământ, fără date. Remediu: cookie-ul CONSENT=YES+1; SOCS=CAI este trimis la pagina canalului și la paginile următoare. Verificat live cu cookie-ul; fără cookie răspunsul era 302 spre consent.youtube.com. CoreSmoke 332 trecute; verify-source Quick trecut. Neverificat cu JAWS.
+- Corecție (19:42): în lista canalului, fiecare rând afișa textul intern al obiectului („YouTubeVideoCandidate …”). Lista folosește acum o colecție legată la ItemsSource, iar fiecare rând arată titlul și canalul. CoreSmoke 332 trecute; verify-source Quick trecut. Neverificat cu JAWS.
+- Corecție (19:50): ToString al rezultatului video întoarce acum textul afișat (ca la vocile SAPI5), deci și lista canalului arată titlul și canalul. CoreSmoke, verify-source Quick și verificarea localizării au trecut. Neverificat cu JAWS.
+- Alt+K în playerul Orizont: deschide transcriptul videoclipului în fereastra de transcript (descărcare, copiere și salvare `.txt`). Textul de ajutor din player este actualizat în cele opt limbi; textul de eroare nou „Transcriptul nu a putut fi deschis” este tradus. CoreSmoke 332 trecute; verify-source Quick și verificarea localizării trecute; executabil reconstruit la 19:54. Neverificat cu JAWS.
+- Cerere: canalele abonate afișează doar ultimele videoclipuri din feedul RSS. Varianta aleasă: citirea paginii publice „Videoclipuri” a canalului, cu paginile următoare.
+- Implementare: `Services/Rss/YouTubeChannelVideosService.cs` recunoaște feedurile de forma `feeds/videos.xml?channel_id=…`, citește pagina canalului și paginile următoare prin `youtubei/v1/browse`, folosind parserul existent al căutării video. `Views/YouTubeChannelVideosWindow.xaml(.cs)` listează videoclipurile; Enter sau dublu clic deschid playerul Orizont, iar după închidere focusul revine pe videoclip; „Mai multe rezultate” încarcă pagina următoare; Escape închide.
+- Meniul Feeduri → Organizare: „Vezi toate videoclipurile canalului YouTube”. Pentru un feed care nu este canal YouTube, spune că feedul selectat nu este un canal.
+- Resurse: 12 chei noi în cele opt limbi.
+- Verificare live: pagina canalului NASA are structura așteptată (ytInitialData, videoclipuri, jeton de pagina următoare). Parsarea reală nu a fost rulată în interfață.
+- Teste: CoreSmoke 332 verificări trecute (5 noi); verify-source Quick trecut; verificarea localizării trecută. Executabilul de test din locația standard a fost reconstruit la 19:21 (CoreSmoke compilează aplicația).
+- Limită: pagina publică a YouTube nu este un API stabil și poate fi schimbată sau limitată.
+- Neverificat cu JAWS. Nu este commit-uit.
+
+## 2026-11-07 — Focus revine pe videoclipul din lista de rezultate după închiderea playerului
+
+- Corecție: videoclipurile din rezultatele YouTube se deschid implicit în fereastra Orizont (Enter și dublu clic), nu în browser. Butonul „Deschide în browser” rămâne pentru browser. Textul de ajutor al listei, din cele opt limbi, spune acum „deschidere în Orizont”. Executabilul este reconstruit la 12:40; CoreSmoke, verify-source Quick și verificarea localizării au trecut. Neverificat cu JAWS.
+- Focus în fereastra principală: după închiderea playerului deschis dintr-un articol YouTube, focusul revine pe acel articol (FocusArticleAfterReader), ca după Cititorul Orizont. Executabil reconstruit la 12:47; CoreSmoke și verify-source Quick au trecut. Neverificat cu JAWS.
+- Cerere: după Escape, focusul trebuie să revină în lista de rezultate a căutării YouTube, exact pe videoclipul deschis.
+- Modificare: `Views/YouTubeSearchWindow.xaml.cs`, `OpenInApp_Click` înregistrează `Closed` pe `YouTubePlayerWindow`; `FocusResultAfterPlayer` selectează videoclipul, îl derulează în vizor și îi dă focusul. Dacă fereastra de căutare nu mai este încărcată, nu face nimic.
+- Teste: CoreSmoke 329 verificări trecute; `verify-source.ps1 -Mode Quick -NoRestore` trecut; verificarea localizării trecută. Executabilul de test este reconstruit la 12:29, în locația standard.
+- Neverificat cu JAWS. Nu este commit-uit. Lista din fereastra principală a articolelor nu a fost modificată.
+
 ## 2026-11-06 — Fereastră Orizont pentru videoclipuri YouTube (varianta 1, în test)
 
 - Cerere: deschiderea videoclipurilor YouTube într-o fereastră Orizont, cu comenzile de podcast Z X V B C S D, ca test. Varianta cu extragerea audio din YouTube nu se implementează (încalcă condițiile YouTube).

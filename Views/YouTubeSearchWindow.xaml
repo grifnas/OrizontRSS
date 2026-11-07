@@ -41,7 +41,7 @@
       </StackPanel>
 
       <GroupBox Grid.Row="1" Header="Rezultate" Margin="0,10,0,4">
-        <ListBox x:Name="Results" SelectionChanged="Results_SelectionChanged" KeyDown="Results_KeyDown" MouseDoubleClick="Results_MouseDoubleClick" AutomationProperties.Name="Rezultate YouTube, listă" AutomationProperties.HelpText="Folosește săgețile Sus și Jos. Pentru canale și playlisturi apasă Enter pentru adăugare; pentru videoclipuri apasă Enter pentru deschidere în browser.">
+        <ListBox x:Name="Results" SelectionChanged="Results_SelectionChanged" KeyDown="Results_KeyDown" MouseDoubleClick="Results_MouseDoubleClick" AutomationProperties.Name="Rezultate YouTube, listă" AutomationProperties.HelpText="Folosește săgețile Sus și Jos. Pentru canale și playlisturi apasă Enter pentru adăugare; pentru videoclipuri apasă Enter pentru deschidere în Orizont.">
           <ListBox.ItemContainerStyle>
             <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
               <Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}" />

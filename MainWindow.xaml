@@ -26,6 +26,7 @@
           </MenuItem>
           <MenuItem Header="Organizare">
             <MenuItem Header="Editează feedul selectat" Click="Edit_Click" />
+            <MenuItem Header="Vezi toate videoclipurile canalului YouTube" Click="ChannelVideos_Click" />
             <MenuItem Header="Șterge feedul selectat" InputGestureText="Delete" Click="Delete_Click" />
             <MenuItem Header="Șterge folderul afișat" Click="DeleteFolder_Click" />
             <MenuItem Header="Verifică și curăță duplicatele" Click="CleanDuplicates_Click" />
