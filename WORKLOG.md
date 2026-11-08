@@ -1,4 +1,12 @@
 # Jurnalul intervențiilor Orizont RSS
+
+## 2026-11-08 — Commit-uri, verificare completă și pregătirea 1.6.7
+
+- Cerere: toate commit-urile, verificare generală, aliniere a documentației și pregătirea versiunii 1.6.7. Fără pachete, tag sau release: acestea rămân pentru cerere expresă.
+- Commit-uri locale: `6952168` (transcripturi în `Transcripts`, folderele implicite în engleză, notele din actualizare); `1412502` (versiunea 1.6.7 în aplicație și instalator, `RELEASE-NOTES-1.6.7.md`, secțiunea din CHANGELOG, registrul candidatului în `preparation-in-progress`, documentele de stare). Nu s-a împins nimic.
+- Verificare completă `verify-source.ps1 -Mode Full` trecută în worktree la `6952168`. În main, la `1412502`: CoreSmoke 333 verificări; `verify-source.ps1 -Mode Quick -NoRestore` trecut; `verify-release-consistency.ps1` trecut; `verify-localization.ps1 -RequireComplete` trecut. Executabil de test reconstruit la 13:05.
+- Nu s-au construit pachete pentru 1.6.7. Instalatorul conține încă adresa și hash-ul 1.6.6 până la construirea pachetelor.
+- Neverificat cu JAWS: lista canalului, Alt+K, salvarea transcriptului, notele din actualizare, focusul după Escape, instalatorul.
 ## 2026-11-08 — Transcriptele se salvează în Documente\Orizont RSS\Transcripturi
 
 - Cerere: transcriptele să se salveze în folderul Orizont RSS, ca articolele, într-un subfolder separat.
