@@ -1,5 +1,13 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-08 — Publicarea versiunii 1.6.7
+
+- Cerere explicită: publicarea 1.6.7 ca la versiunile anterioare. Commit-uri: `515299d` (notele de publicare), `be49fba` (hash-ul instalatorului; codul din care s-au construit pachetele; tag `v1.6.7`), apoi commit-ul cu documentele de publicare.
+- Pachete finale: instalatorul `OrizontSetup-1.6.7.exe` (252 922 944 octeți, SHA-256 `F8F1D3F3C8D98961FB10D0C5AE9F0A91F23DDAB85B6D07A24E7F93E3D208028C`); portabila `Orizont-RSS-1.6.7-win-x64.zip` (91 125 522 octeți, SHA-256 `0AD4F53C7EBCDA134668EBE1C34B5C02032571F4B6AB6EED932863B2C5195554`); sursa `Orizont-RSS-1.6.7-source.zip` (14 744 007 octeți, SHA-256 `C04497A2D8EEA099A71B931E3630DE40C739CFCC22218556D307C173E2BC8BBC`).
+- Verificat: `verify-source.ps1 -Mode Full` la `6952168`; `dotnet list package --vulnerable` fără pachete vulnerabile; verify-distribution pe aplicația 1.6.7.
+- WinGet: manifestele din repository sunt pentru 1.6.7; PR-ul #462294 rămâne cu manifestele 1.6.6 și nu a fost actualizat.
+- Cunoscut: ghidurile de utilizator din pachetul 1.6.7 afișează 1.6.6; sursele au fost actualizate după tag.
+
 ## 2026-11-08 — Commit-uri, verificare completă și pregătirea 1.6.7
 
 - Cerere: toate commit-urile, verificare generală, aliniere a documentației și pregătirea versiunii 1.6.7. Fără pachete, tag sau release: acestea rămân pentru cerere expresă.

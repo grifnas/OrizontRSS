@@ -1,5 +1,12 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-11-08 — Versiunea 1.6.7 publicată
+
+- Publicată: tag `v1.6.7` pe `be49fba`, release GitHub cu installerul offline, arhiva portabilă, arhiva sursă și fișierele SHA-256. Pagina de prezentare trimite la 1.6.7 după publicare.
+- Ghidurile de utilizator din pachetul 1.6.7 afișează încă 1.6.6 în antet și subsol; sursele au fost actualizate după tag, pentru versiunea următoare.
+- Neverificat cu JAWS: lista canalului, Alt+K, salvarea transcriptului, notele din actualizare, focusul după Escape, instalatorul. Acceptările A02, A07, A09 și A11 rămân deschise.
+- WinGet: PR-ul #462294 conține încă manifestele 1.6.6 și așteaptă moderatorul; actualizarea pentru 1.6.7 nu a fost făcută.
+
 ## 2026-11-08 — Pregătire 1.6.7 (în pregătire locală)
 
 - Versiunea curentă publicată rămâne 1.6.6. Candidatul 1.6.7 este în pregătire locală: numărul de versiune este setat în aplicație și în instalator, `RELEASE-NOTES-1.6.7.md` și secțiunea din `CHANGELOG.md` există, iar `docs/RELEASE-STATUS.json` are candidatul în starea `preparation-in-progress`.
