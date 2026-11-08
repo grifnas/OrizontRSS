@@ -1,5 +1,9 @@
 # Foaia de parcurs Orizont RSS
 
+## 2026-11-08 — Pregătire 1.6.7 (în pregătire locală)
+
+- Candidatul 1.6.7 este în pregătire locală, fără pachete, tag sau release. Ultima versiune publică rămâne 1.6.6. Detalii în docs/PROJECT-STATUS.md.
+
 ## 2026-11-06 — Versiunea curentă 1.6.6, publicată
 
 - Versiunea publică curentă este 1.6.6 (tag `v1.6.6`, publicată la 6 noiembrie 2026). 1.6.5 este versiunea anterioară, păstrată în istoric.

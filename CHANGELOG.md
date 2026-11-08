@@ -13,6 +13,14 @@ Release-ul public v1.6.6 este disponibil pe [GitHub Releases](https://github.com
 - Salvarea setărilor și a feedurilor se face întâi într-un fișier temporar, cu copie `.bak` a stării anterioare.
 - Instalatorul refuză folderele de sistem și personale și șterge la dezinstalare numai un folder care conține Orizont.exe.
 
-## Lucrări nepublicate după v1.6.6
+## Lucrări nepublicate după v1.6.6 (versiunea 1.6.7, în pregătire locală)
 
-- Nicio lucrare nepublicată după v1.6.6.
+Notele de lucru sunt în [RELEASE-NOTES-1.6.7.md](RELEASE-NOTES-1.6.7.md). Nu există pachete, tag sau release pentru 1.6.7.
+
+- Rezultatele căutării YouTube se deschid implicit în fereastra Orizont; focusul revine pe videoclipul deschis după Escape.
+- Meniul Feeduri → Organizare: „Vezi toate videoclipurile canalului YouTube”, cu încărcarea paginilor următoare.
+- Alt+K din player deschide transcriptul videoclipului.
+- Transcriptele se salvează în `Documente\Orizont RSS\Transcripts`; folderul implicit pentru articole este `Articles`.
+- Notele versiunii din fereastra de actualizare își păstrează liniile și se citesc cu săgețile.
+
+

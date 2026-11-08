@@ -1,5 +1,13 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-11-08 — Pregătire 1.6.7 (în pregătire locală)
+
+- Versiunea curentă publicată rămâne 1.6.6. Candidatul 1.6.7 este în pregătire locală: numărul de versiune este setat în aplicație și în instalator, `RELEASE-NOTES-1.6.7.md` și secțiunea din `CHANGELOG.md` există, iar `docs/RELEASE-STATUS.json` are candidatul în starea `preparation-in-progress`.
+- Nu există pachete, tag sau release pentru 1.6.7. Pachetele se construiesc doar la cerere expresă.
+- Verificare completă `verify-source.ps1 -Mode Full` trecută în worktree la commit-ul `6952168`. CoreSmoke 333 verificări; verify-source Quick, verify-release-consistency și verificarea localizării trecute.
+- Funcționalități noi față de 1.6.6: rezultatele YouTube se deschid în fereastra Orizont, cu focus revenit după Escape; lista canalelor abonate; Alt+K pentru transcript; transcripturi în `Transcripts`; folderele implicite în engleză; notele din fereastra de actualizare citibile cu săgețile.
+- De verificat cu JAWS înainte de pachete: lista canalului, Alt+K, salvarea transcriptului, notele din actualizare, focusul după Escape în toate ferestrele, instalatorul (folderele nesigure și dezinstalarea).
+
 ## 2026-11-07 — Fereastra YouTube: focus, liste, canale și transcript
 
 - Videoclipurile YouTube se deschid implicit în fereastra Orizont (WebView2), inclusiv din rezultatele căutării (Enter, dublu clic) și din articolele canalelor abonate. Butonul „Deschide în browser” rămâne în browser.
