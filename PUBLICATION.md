@@ -26,7 +26,7 @@ Cele opt pagini `docs/index*.html`, linkurile directe spre installerul și arhiv
 
 Manifestele WinGet din repository sunt cele din `packaging/winget/Grifnas.OrizontRSS/1.6.7/`; URL-ul installerului și hash-ul arhivei portabile corespund release-ului public. `winget validate` a trecut la pregătirea manifestelor; la reverificarea din 8 octombrie, comanda `winget.exe` nu a putut porni din mediul izolat (`SEC_E_NO_CREDENTIALS`/WindowsApps), deci validarea nu a putut fi repetată în această sesiune. Snapshotul local 1.6.0 a fost eliminat din arborele curent; istoricul său rămâne în Git.
 
-Pull request-ul [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294) conține încă manifestele 1.6.6 și rămâne în așteptarea moderatorului; actualizarea pentru 1.6.7 nu a fost făcută încă.
+Pull request-ul [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294) a fost actualizat la 1.6.7 pe ramura `grifnas:submission/orizont-rss-1.6.5`; titlul este „New version: Grifnas.OrizontRSS version 1.6.7”. Eticheta `Needs-CLA` și revizuirea moderatorului trebuie verificate pe pagina PR-ului.
 
 ## Curățarea copiilor istorice
 

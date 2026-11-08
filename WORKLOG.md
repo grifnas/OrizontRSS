@@ -7,6 +7,7 @@
 - Verificat: `verify-source.ps1 -Mode Full` la `6952168`; `dotnet list package --vulnerable` fără pachete vulnerabile; verify-distribution pe aplicația 1.6.7.
 - WinGet: manifestele din repository sunt pentru 1.6.7; PR-ul #462294 rămâne cu manifestele 1.6.6 și nu a fost actualizat.
 - Cunoscut: ghidurile de utilizator din pachetul 1.6.7 afișează 1.6.6; sursele au fost actualizate după tag.
+- WinGet: PR-ul #462294 a fost actualizat la 1.6.7 (cerere explicită): cele patru manifeste 1.6.7 au înlocuit cele 1.6.6 pe ramura `grifnas:submission/orizont-rss-1.6.5`; titlul este „New version: Grifnas.OrizontRSS version 1.6.7”. Eticheta `Needs-CLA` și revizuirea moderatorului trebuie verificate pe pagina PR-ului.
 
 ## 2026-11-08 — Commit-uri, verificare completă și pregătirea 1.6.7
 
