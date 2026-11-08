@@ -3278,8 +3278,8 @@ Részletek: {1}</value>
   <data name="Folder pentru exportul articolelor" xml:space="preserve">
     <value>Cikkek exportmappája</value>
   </data>
-  <data name="Folderul implicit este Documente\Orizont RSS\Articole. Poți alege un alt folder." xml:space="preserve">
-    <value>Az alapértelmezett mappa a Dokumentumok\Orizont RSS\Cikkek. Másik mappát is választhatsz.</value>
+  <data name="Folderul implicit este Documente\Orizont RSS\Articles. Poți alege un alt folder." xml:space="preserve">
+    <value>Az alapértelmezett mappa a Dokumentumok\Orizont RSS\Articles. Másik mappát is választhatsz.</value>
   </data>
   <data name="Format implicit pentru export" xml:space="preserve">
     <value>Alapértelmezett exportformátum</value>

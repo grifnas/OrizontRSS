@@ -75,7 +75,7 @@ public partial class SettingsWindow : Window
         ArticleExportGroup.Header = T("Export articole");
         ArticleExportFolderLabel.Content = T("Folder pentru exportul articolelor");
         AutomationProperties.SetName(ArticleExportFolder, T("Folder pentru exportul articolelor"));
-        ArticleExportFolderNotice.Text = T("Folderul implicit este Documente\\Orizont RSS\\Articole. Poți alege un alt folder.");
+        ArticleExportFolderNotice.Text = T("Folderul implicit este Documente\\Orizont RSS\\Articles. Poți alege un alt folder.");
         ArticleExportFormatLabel.Content = T("Format implicit pentru export");
         AutomationProperties.SetName(ArticleExportFormat, T("Format implicit pentru export"));
         foreach (ComboBoxItem item in ArticleExportFormat.Items)

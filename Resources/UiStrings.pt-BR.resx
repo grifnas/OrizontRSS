@@ -3276,8 +3276,8 @@ Detalhes: {1}</value>
   <data name="Folder pentru exportul articolelor" xml:space="preserve">
     <value>Pasta de exportação de artigos</value>
   </data>
-  <data name="Folderul implicit este Documente\Orizont RSS\Articole. Poți alege un alt folder." xml:space="preserve">
-    <value>A pasta padrão é Documentos\Orizont RSS\Artigos. Você pode escolher outra pasta.</value>
+  <data name="Folderul implicit este Documente\Orizont RSS\Articles. Poți alege un alt folder." xml:space="preserve">
+    <value>A pasta padrão é Documentos\Orizont RSS\Articles. Você pode escolher outra pasta.</value>
   </data>
   <data name="Format implicit pentru export" xml:space="preserve">
     <value>Formato de exportação padrão</value>

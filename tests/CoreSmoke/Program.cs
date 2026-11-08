@@ -1232,6 +1232,7 @@ void CheckYouTubeVideoLinks()
     Check(YouTubeChannelVideosService.TryGetChannelId("https://www.youtube.com/feeds/videos.xml?channel_id=UCuAXFkgsw1L7xaCfnd5JJOw", out var channelId) && channelId == "UCuAXFkgsw1L7xaCfnd5JJOw", "feedul unui canal YouTube dă identificatorul canalului");
     Check(!YouTubeChannelVideosService.TryGetChannelId("https://www.youtube.com/feeds/videos.xml?playlist_id=PLabcdefghij", out _), "feedul unui playlist nu este tratat ca un canal");
     Check(!YouTubeChannelVideosService.TryGetChannelId("https://example.com/feeds/videos.xml?channel_id=UCuAXFkgsw1L7xaCfnd5JJOw", out _), "alt site nu este tratat ca un canal YouTube");
+    Check(AppSettings.DefaultTranscriptFolder.EndsWith(Path.Combine("Orizont RSS", "Transcripts"), StringComparison.OrdinalIgnoreCase), "transcripturile se salvează în Orizont RSS\\Transcripturi");
 }
 
 async Task RunAtomicSaveSmokeAsync()

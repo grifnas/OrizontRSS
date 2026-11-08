@@ -1,4 +1,20 @@
 # Jurnalul intervențiilor Orizont RSS
+## 2026-11-08 — Transcriptele se salvează în Documente\Orizont RSS\Transcripturi
+
+- Cerere: transcriptele să se salveze în folderul Orizont RSS, ca articolele, într-un subfolder separat.
+- Modificare: `AppSettings.DefaultTranscriptFolder` = Documente\Orizont RSS\Transcripturi. Fereastra de transcript salvează direct acolo, cu nume unic (`ArticleExportService.GetUniquePath`), ca articolele; nu mai deschide dialogul de salvare. Mesajul arată calea completă.
+- Limită: folderul transcriptelor nu este configurabil în Setări, spre deosebire de folderul articolelor; pot adăuga asta dacă e nevoie. Cheile de text ale dialogului vechi („Salvează transcript ca fișier text”, filtrul) au rămas în resurse, neutilizate.
+- Numele implicite ale folderelor sunt în engleză, aceleași în toate limbile: `Documente\Orizont RSS\Articles` (articole) și `Documente\Orizont RSS\Transcripts` (transcripturi). Textul din Setări, „Folderul implicit este Documente\Orizont RSS\Articles”, este actualizat în cele opt limbi; traducerile vechi schimbau și numele folderului („Artikel”, „Articoli”), deci nu corespundeau folderului real. Folderul `Articole` existent și calea salvată în setări rămân neschimbate. CoreSmoke 333 trecute; verify-source Quick și localizarea trecute; executabil reconstruit la 12:46. Nu este commit-uit.
+- Mutare explicită, cu acordul utilizatorului: cele 9 fișiere din `Documente\Orizont RSS\Articole` au fost mutate în `Documente\Orizont RSS\Articles`, iar folderul `Articole`, gol, a fost șters. În `settings.json`, singura modificare este `ArticleExportFolder`, care arată acum spre `Articles` (verificat: restul fișierului este identic). Copia de siguranță a setărilor: `settings-backup-20261108.json` în folderul temporar al utilizatorului. Aplicația nu rula în timpul mutării. Nu este commit-uit.
+- Teste: CoreSmoke 333 trecute (o verificare nouă); verify-source Quick trecut; verificarea localizării trecută. Executabil reconstruit la 12:40. Neverificat cu JAWS. Nu este commit-uit.
+
+## 2026-11-08 — Notele versiunii în fereastra de actualizare (JAWS citea un singur rând)
+
+- Cerere: textul notelor (changelog) nu se citea complet cu JAWS; săgețile nu mutau cursorul. Fereastra vizată este „Actualizare disponibilă” (`Views/UpdateAvailableWindow`), folosită în fluxul de instalare; instalatorul propriu nu afișează notele.
+- Cauză probabilă: GitHub trimite notele cu `\n`, iar caseta de text le afișează corect doar cu `\r\n`. Remediu: `NormalizeLineEndings` la afișare și `IsReadOnlyCaretVisible="True"` pe caseta de text, ca cursorul să fie vizibil și săgețile să navigheze.
+- Teste: CoreSmoke 332 trecute; verify-source Quick trecut. Executabil reconstruit la 12:24. Neverificat cu JAWS și neconfirmat că problema este cea descrisă.
+- Nu este commit-uit.
+
 
 ## 2026-11-07 — Toate videoclipurile unui canal YouTube abonat (varianta 2)
 

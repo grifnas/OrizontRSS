@@ -25,11 +25,14 @@ public partial class UpdateAvailableWindow : Window
         UiLocalizer.Apply(this);
 
         HeaderTextBlock.Text = F("Este disponibilă o nouă versiune a aplicației ({0}). Versiunea ta curentă este {1}.", _updateInfo.LatestVersion, _updateInfo.CurrentVersion);
-        ReleaseNotesTextBox.Text = string.IsNullOrWhiteSpace(_updateInfo.ReleaseNotes) ? T("Nu există note suplimentare pentru această versiune.") : _updateInfo.ReleaseNotes;
+        // GitHub trimite notele cu \n; caseta de text le afișează corect doar cu \r\n, altfel cititorul vede un singur rând.
+        ReleaseNotesTextBox.Text = string.IsNullOrWhiteSpace(_updateInfo.ReleaseNotes) ? T("Nu există note suplimentare pentru această versiune.") : NormalizeLineEndings(_updateInfo.ReleaseNotes);
 
         Loaded += (_, _) => InstallButton.Focus();
         Closing += UpdateWindow_Closing;
     }
+
+    private static string NormalizeLineEndings(string text) => text.Replace("\r\n", "\n", StringComparison.Ordinal).Replace("\n", "\r\n", StringComparison.Ordinal);
 
     public VerifiedUpdateInstaller? TakePreparedInstaller()
     {

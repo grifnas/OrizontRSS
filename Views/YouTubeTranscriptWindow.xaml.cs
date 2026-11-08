@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using CititorRSS.Jaws.Localization;
+using CititorRSS.Jaws.Services.Content;
 using CititorRSS.Jaws.Services.Rss;
 using Microsoft.Win32;
 
@@ -199,24 +200,14 @@ public partial class YouTubeTranscriptWindow : Window
             return;
         }
 
-        // Construim un nume de fișier implicit curat din titlul videoclipului.
-        var safeTitle = string.Concat(_video.Title.Split(Path.GetInvalidFileNameChars()));
-        if (safeTitle.Length > 80) safeTitle = safeTitle[..80].TrimEnd();
-
-        var dialog = new SaveFileDialog
-        {
-            Title = T("Salvează transcript ca fișier text"),
-            Filter = T("Fișier text (*.txt)|*.txt"),
-            DefaultExt = ".txt",
-            FileName = string.IsNullOrWhiteSpace(safeTitle) ? "transcript" : safeTitle
-        };
-
-        if (dialog.ShowDialog(this) != true) return;
-
+        // Transcriptul se salvează în folderul Transcripturi, la fel ca articolele în folderul Articole.
         try
         {
-            File.WriteAllText(dialog.FileName, text, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-            StatusText.Text = F("Transcriptul a fost salvat în {0}.", System.IO.Path.GetFileName(dialog.FileName));
+            var folder = AppSettings.DefaultTranscriptFolder;
+            Directory.CreateDirectory(folder);
+            var path = ArticleExportService.GetUniquePath(folder, _video.Title, "txt");
+            File.WriteAllText(path, text, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+            StatusText.Text = F("Transcriptul a fost salvat în {0}.", path);
         }
         catch (Exception exception)
         {

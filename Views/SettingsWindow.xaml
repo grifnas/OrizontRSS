@@ -71,7 +71,7 @@
               <StackPanel Margin="12">
                 <Label x:Name="ArticleExportFolderLabel" Content="Folder pentru exportul articolelor" Target="{Binding ElementName=ArticleExportFolder}" />
                 <TextBox x:Name="ArticleExportFolder" AutomationProperties.Name="Folder pentru exportul articolelor" />
-                <TextBlock x:Name="ArticleExportFolderNotice" Text="Folderul implicit este Documente\Orizont RSS\Articole. Poți alege un alt folder." Style="{StaticResource SecondaryTextStyle}" Margin="4,6,4,0" TextWrapping="Wrap" />
+                <TextBlock x:Name="ArticleExportFolderNotice" Text="Folderul implicit este Documente\Orizont RSS\Articles. Poți alege un alt folder." Style="{StaticResource SecondaryTextStyle}" Margin="4,6,4,0" TextWrapping="Wrap" />
                 <Label x:Name="ArticleExportFormatLabel" Content="Format implicit pentru export" Target="{Binding ElementName=ArticleExportFormat}" Margin="0,8,0,0" />
                 <ComboBox x:Name="ArticleExportFormat" AutomationProperties.Name="Format implicit pentru export">
                   <ComboBoxItem Content="Fișier TXT (.txt)" Tag="txt" />

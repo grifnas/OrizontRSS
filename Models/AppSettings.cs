@@ -5,7 +5,9 @@ public sealed class AppSettings
     public Dictionary<string, string> Shortcuts { get; set; } = new();
     public List<ArticleRule> ArticleRules { get; set; } = [];
     public const string DefaultAiInstructions = "Răspunde în limba interfeței. Fii clar, concis și semnalează incertitudinile.";
-    public static string DefaultArticleExportFolder => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Orizont RSS", "Articole");
+    public static string DefaultArticleExportFolder => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Orizont RSS", "Articles");
+    /// <summary>Folderul în care se salvează transcriptele YouTube, lângă folderul articolelor.</summary>
+    public static string DefaultTranscriptFolder => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Orizont RSS", "Transcripts");
     public string? UiLanguage { get; set; }
     /// <summary>Application colour scheme; Windows follows the active system contrast theme.</summary>
     public string ColorScheme { get; set; } = ColorThemeManager.Windows;
