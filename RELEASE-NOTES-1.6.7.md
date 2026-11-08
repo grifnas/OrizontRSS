@@ -1,6 +1,6 @@
 # Orizont RSS 1.6.7 — note de lucru
 
-Acest document descrie versiunea 1.6.7, în pregătire locală. Nu există încă pachete pentru ea și nu a fost creat niciun tag. Ultima versiune publică este 1.6.6.
+Versiunea 1.6.7 este lansată pe GitHub, cu installerul autonom, varianta portabilă ZIP, arhiva sursă și fișierele SHA-256 atașate release-ului. Ultima versiune publicată anterioară era 1.6.6.
 
 ## Videoclipuri YouTube
 
