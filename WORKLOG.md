@@ -5,7 +5,11 @@
 - Cerere: toate commit-urile, verificare generală, aliniere a documentației și pregătirea versiunii 1.6.7. Fără pachete, tag sau release: acestea rămân pentru cerere expresă.
 - Commit-uri locale: `6952168` (transcripturi în `Transcripts`, folderele implicite în engleză, notele din actualizare); `1412502` (versiunea 1.6.7 în aplicație și instalator, `RELEASE-NOTES-1.6.7.md`, secțiunea din CHANGELOG, registrul candidatului în `preparation-in-progress`, documentele de stare). Nu s-a împins nimic.
 - Verificare completă `verify-source.ps1 -Mode Full` trecută în worktree la `6952168`. În main, la `1412502`: CoreSmoke 333 verificări; `verify-source.ps1 -Mode Quick -NoRestore` trecut; `verify-release-consistency.ps1` trecut; `verify-localization.ps1 -RequireComplete` trecut. Executabil de test reconstruit la 13:05.
-- Nu s-au construit pachete pentru 1.6.7. Instalatorul conține încă adresa și hash-ul 1.6.6 până la construirea pachetelor.
+- Pachete 1.6.7 construite local, fără publicare. Aplicația self-contained din `9839bd4` (runtimeconfig cu includedFrameworks; fără .pdb, settings.json, feeds.json; verify-distribution trecut). Commit-ul `d716f57` fixează adresa și hash-ul instalatorului pentru 1.6.7; instalatorul offline și arhiva sursă (`git archive` la `d716f57`) sunt construite de acolo. Artefactele sunt în `bin\Release` și `bin\Release\distribution-1.6.7`:
+  - `OrizontSetup-1.6.7.exe`, 252 922 944 octeți, SHA-256 `D16A9D975011BFA808238FB98349604A78C568268AAEE34EEF2338D5ED30101C`;
+  - `Orizont-RSS-1.6.7-win-x64.zip`, 91 125 493 octeți, SHA-256 `B6FAE31C2C64B17A671B7F2FBC65BDE62F6B082E7D43970437A300402A5C1600`;
+  - `Orizont-RSS-1.6.7-source.zip`, 14 743 613 octeți, SHA-256 `7779A32047E5ECDC1BD718A99B36DA5A0FBA24C98B9EC71FFE71C89143295973`.
+  Registrul candidatului 1.6.7 este în `distribution-prepared`, nepublicat. `verify-release-consistency.ps1` a trecut. Înainte de publicare, notele 1.6.7 trebuie reformulate (acum spun „în pregătire”), iar pachetele se reconstruiesc din commit-ul de publicare.
 - Neverificat cu JAWS: lista canalului, Alt+K, salvarea transcriptului, notele din actualizare, focusul după Escape, instalatorul.
 ## 2026-11-08 — Transcriptele se salvează în Documente\Orizont RSS\Transcripturi
 
