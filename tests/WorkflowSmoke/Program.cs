@@ -346,7 +346,7 @@ internal static class Program
                   (bool)shouldHandleReaderShortcut.Invoke(null, [System.Windows.Input.Key.F10, System.Windows.Input.ModifierKeys.Shift])! &&
                   !(bool)shouldHandleReaderShortcut.Invoke(null, [System.Windows.Input.Key.F10, System.Windows.Input.ModifierKeys.None])!,
                 "The reader window handles Application and Shift+F10 before the text box, as in text mode Shift+F10 already works");
-            var contextSaveMenu = readerContextMenu.Items.OfType<MenuItem>()
+            var contextSaveMenu = readerContextMenu!.Items.OfType<MenuItem>()
                 .FirstOrDefault(item => string.Equals(item.Header?.ToString(), "Salvează articolul", StringComparison.Ordinal));
             var readerMenu = (Menu)articleReader.FindName("ReaderMenu");
             var topLevelReaderMenu = readerMenu.Items.OfType<MenuItem>()

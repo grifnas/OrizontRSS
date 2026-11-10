@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using CititorRSS.Jaws.Localization;
+using CititorRSS.Jaws.Services;
 using CititorRSS.Jaws.Services.Update;
 using CititorRSS.Jaws.Services.Content;
 using CititorRSS.Jaws.Views;
@@ -3743,6 +3744,7 @@ public partial class MainWindow : Window
         }
         catch (Exception exception)
         {
+            RuntimeLog.Write($"Preluarea din NewsBlur a eșuat: {RuntimeLog.Summarize(exception)}.");
             Say(F("Preluarea din NewsBlur a eșuat; se încearcă fluxurile RSS directe: {0}", Describe(exception)));
             outcome = new NewsBlurSyncOutcome(false, false, _refreshCancellation.IsCancellationRequested, newsBlurCandidates);
         }
@@ -3901,6 +3903,7 @@ public partial class MainWindow : Window
                     failedFeeds.Add(feed);
                     feed.ConsecutiveFailures++;
                     feed.LastError = Describe(exception);
+                    RuntimeLog.Write($"Feed cu eroare: {feed.Name}: {RuntimeLog.Summarize(exception)}.");
                 }
                 finally
                 {
@@ -3951,6 +3954,7 @@ public partial class MainWindow : Window
             if (failureNames.Count > 0) result += UiText.Translate(" Comanda Reîncearcă feedurile cu eroare este disponibilă în meniul Feeduri.");
             if (skippedLocalDemoFeeds > 0) result += " " + T("Feedurile locale nu se actualizează de pe internet; articolele demonstrative sunt deja disponibile.");
             Say(result);
+            RuntimeLog.Write($"Actualizare RSS {(cancelled ? "oprită" : "încheiată")}: {_refreshProcessed} din {_refreshTotal} feeduri, {successes} reușite, {failures} cu eroare, {articlesAdded} articole noi, {(int)elapsed.TotalSeconds} s.");
             if (!cancelled) SoundAlertService.RefreshFinished(
                 _settings.SoundAlertsEnabled,
                 _settings.SoundAlertOnSuccess,
@@ -3961,6 +3965,7 @@ public partial class MainWindow : Window
         }
         catch (Exception exception)
         {
+            RuntimeLog.Write($"Actualizarea RSS nu a putut fi finalizată sau salvată: {RuntimeLog.Summarize(exception)}.");
             Say(F("Actualizarea nu a putut fi finalizată sau salvată: {0} Datele deja salvate anterior nu au fost șterse.", Describe(exception)));
             SoundAlertService.RefreshFinished(
                 _settings.SoundAlertsEnabled,

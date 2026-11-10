@@ -1268,6 +1268,29 @@ async Task RunAtomicSaveSmokeAsync()
               !ArticleReaderWindow.IsExternalLinkAllowed("ms-settings:privacy") &&
               !ArticleReaderWindow.IsExternalLinkAllowed("javascript:alert(1)"),
             "Cititorul refuză fișierele locale, căile de rețea și protocoalele de aplicații");
+
+        var logFolder = Path.Combine(folder, "jurnal");
+        var logPath = Path.Combine(logFolder, CititorRSS.Jaws.Services.RuntimeLog.FileName);
+        CititorRSS.Jaws.Services.RuntimeLog.Write("înainte de pornire");
+        Check(!Directory.Exists(logFolder), "jurnalul de funcționare nu scrie nimic înainte de pornire");
+        try
+        {
+            CititorRSS.Jaws.Services.RuntimeLog.Start(logFolder);
+            CititorRSS.Jaws.Services.RuntimeLog.Write("prima\r\nlinie");
+            Check(File.ReadAllLines(logPath).Length == 1 && File.ReadAllText(logPath).Contains("prima linie", StringComparison.Ordinal),
+                "jurnalul de funcționare scrie fiecare mesaj pe un singur rând");
+            File.WriteAllBytes(logPath, new byte[CititorRSS.Jaws.Services.RuntimeLog.MaxBytes]);
+            CititorRSS.Jaws.Services.RuntimeLog.Write("după limită");
+            Check(new FileInfo(logPath).Length < 1024 &&
+                  new FileInfo(Path.Combine(logFolder, CititorRSS.Jaws.Services.RuntimeLog.PreviousFileName)).Length == CititorRSS.Jaws.Services.RuntimeLog.MaxBytes,
+                "la depășirea limitei, jurnalul vechi este păstrat separat și cel nou pornește gol");
+        }
+        finally
+        {
+            CititorRSS.Jaws.Services.RuntimeLog.Stop();
+        }
+        Check(CititorRSS.Jaws.Services.RuntimeLog.Summarize(new HttpRequestException("https://secret.example.test/?key=abc", null, HttpStatusCode.NotFound)) == "HttpRequestException, HTTP 404",
+            "rezumatul erorii din jurnal nu conține mesajul, care poate include adrese");
     }
     finally
     {

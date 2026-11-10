@@ -42,6 +42,8 @@ public partial class App : Application
             return;
         }
 
+        RuntimeLog.Start(DiagnosticFolder);
+        RuntimeLog.Write($"Pornire Orizont RSS {typeof(App).Assembly.GetName().Version}; {Environment.OSVersion}.");
         UiCulture.Apply(FeedStore.LoadUiLanguageForStartup());
         ColorThemeManager.Apply(ColorThemeManager.Windows);
         base.OnStartup(e);
@@ -52,6 +54,7 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        RuntimeLog.Write($"Oprire, cod {e.ApplicationExitCode}.");
         _singleInstanceGuard?.Dispose();
         _singleInstanceGuard = null;
         base.OnExit(e);
@@ -77,11 +80,14 @@ public partial class App : Application
         e.Handled = true;
     }
 
+    private static string DiagnosticFolder =>
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CititorRSS-JAWS", "diagnostic");
+
     private static string? TryWriteErrorReport(Exception exception)
     {
         try
         {
-            var folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CititorRSS-JAWS", "diagnostic");
+            var folder = DiagnosticFolder;
             Directory.CreateDirectory(folder);
             var path = Path.Combine(folder, $"eroare-{DateTime.Now:yyyy-MM-dd-HHmmss}.txt");
             var report = new StringBuilder()
@@ -93,6 +99,7 @@ public partial class App : Application
                 .AppendLine(exception.ToString())
                 .ToString();
             File.WriteAllText(path, report, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
+            RuntimeLog.Write($"Eroare neașteptată: {exception.GetType().Name}; raport: {Path.GetFileName(path)}.");
             return path;
         }
         catch

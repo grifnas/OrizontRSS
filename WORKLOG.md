@@ -1,8 +1,16 @@
 # Jurnalul intervențiilor Orizont RSS
 
-## 2026-11-10 — Scanare generală și reparații mici, necomise
+## 2026-11-10 — WebView2 actualizat, jurnal de funcționare, avertismentul din teste
 
-- Cerere: scanarea proiectului cu raport, apoi repararea problemelor mici găsite. Fără commit până la confirmarea utilizatorului.
+- Cerere: cele cinci lucrări mici rămase după scanare, făcute la rând, cu commit și push aprobate dinainte de utilizator.
+- `Microsoft.Web.WebView2` trece de la 1.0.2903.40 la 1.0.4314.35 (`CititorRSS.Jaws.csproj`, `THIRD-PARTY-NOTICES.md`). `LICENSE.txt` și `NOTICE.txt` din pachetul nou au același text ca fișierele din `Licenses/WebView2` (diferă doar sfârșiturile de rând), deci au rămas neschimbate. WebReader și playerul YouTube nu au fost probate cu JAWS după actualizare; verificarea rămâne la utilizator.
+- `Services/RuntimeLog.cs`, nou: jurnal tehnic în `%LOCALAPPDATA%\CititorRSS-JAWS\diagnostic\jurnal.txt`, cel mult 512 KB, cu un singur fișier anterior (`jurnal-anterior.txt`). Scrie pornirea (versiune, sistem), oprirea, rezultatul fiecărei actualizări RSS, feedurile cu eroare (numele feedului, tipul erorii și codul HTTP), eșecul preluării din NewsBlur și erorile neașteptate. Nu scrie adrese de feeduri, mesaje de eroare, titluri, text de articole sau chei. Este inactiv până la `App.OnStartup`, deci testele nu scriu în profil. Fără texte noi în interfață.
+- `tests/WorkflowSmoke/Program.cs`: avertismentul CS8602 eliminat; toată soluția de verificare se compilează fără avertismente.
+- Verificat: `verify-source.ps1 -Mode Full` trecut cu SDK 8.0.427 (CoreSmoke 342, cu 4 verificări noi pentru jurnal; WorkflowSmoke 157/157; Rules 42; Shortcuts 95; AiProviderSmoke 76; localizare 1724 resurse; Scale 20). Aplicația nu a fost pornită, deci jurnalul nu a fost văzut scriind într-o rulare reală.
+
+## 2026-11-10 — Scanare generală și reparații mici
+
+- Cerere: scanarea proiectului cu raport, apoi repararea problemelor mici găsite. Commit local `b7dbead`, făcut după confirmarea utilizatorului.
 - Constatat: PR-ul WinGet #462294 are pasul 08 (testul de instalare) eșuat la 8 noiembrie și etichetele `Validation-Defender-Error` și `Needs-Author-Feedback`; rularea CI a tagului `v1.6.7` a eșuat în `verify-release-consistency.ps1`, care cerea pachetele candidatului pe disc.
 - Modificat: `tools/verify-release-consistency.ps1` sare verificarea prezenței pachetelor când `GITHUB_ACTIONS` este `true`; `Views/ArticleReaderWindow.xaml.cs` deschide numai linkuri HTTP, HTTPS și mailto (`IsExternalLinkAllowed`), fără șiruri noi de tradus; `Storage/FeedStore.cs` șterge la încărcare fișierele `.feeds.json.*.tmp` și `.settings.json.*.tmp` mai vechi de o zi; teste noi în CoreSmoke; `PUBLICATION.md`, `docs/ACCEPTANCE-STATUS.md`, `CHANGELOG.md` și titlul din `RELEASE-NOTES-1.6.7.md` aduse la zi.
 - A doua rundă, tot necomisă, la cererea utilizatorului:

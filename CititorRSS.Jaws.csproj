@@ -50,7 +50,7 @@
     <Content Include="ThirdParty\eSpeakNG\UPSTREAM.md" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4314.35" />
     <PackageReference Include="SmartReader" Version="0.11.1" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="SoundTouch.Net" Version="2.3.2" />

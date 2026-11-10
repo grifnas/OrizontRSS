@@ -22,12 +22,12 @@ Orizont RSS include biblioteca `libespeak-ng.dll` și datele vocilor eSpeak NG 1
 - Licență principală: GPL-3.0-or-later
 - Orizont RSS nu include și nu folosește executabilul de linie de comandă eSpeak NG.
 
-## Microsoft Edge WebView2 SDK 1.0.2903.40
+## Microsoft Edge WebView2 SDK 1.0.4314.35
 
 Modul de citire WebReader folosește controlul Microsoft Edge WebView2. Orizont RSS include bibliotecile SDK-ului WebView2 (`Microsoft.Web.WebView2.Core.dll`, `Microsoft.Web.WebView2.Wpf.dll`, `Microsoft.Web.WebView2.WinForms.dll`) și `WebView2Loader.dll`. Motorul WebView2 Runtime nu este inclus: aplicația folosește runtime-ul instalat în Windows. Textul licenței și notificările terțe ale pachetului sunt incluse în `Licenses/WebView2`.
 
 - Proiect: https://aka.ms/webview
-- Versiune inclusă: 1.0.2903.40
+- Versiune inclusă: 1.0.4314.35
 - Licență: licența Microsoft pentru WebView2 SDK (tip BSD), din `Licenses/WebView2/LICENSE.txt`
 - Copyright (C) Microsoft Corporation
 
