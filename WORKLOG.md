@@ -1,9 +1,18 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-10 — Comentariu în PR-ul WinGet: cerere de reluare a validării
+
+- Cerere explicită a utilizatorului: comentariu în PR-ul microsoft/winget-pkgs#462294, cu textul aprobat de el înainte de postare.
+- Verificat înainte: arhiva publicată `Orizont-RSS-1.6.7-win-x64.zip` are pe GitHub 91 125 522 octeți și SHA-256 `0AD4F53C7EBCDA134668EBE1C34B5C02032571F4B6AB6EED932863B2C5195554`, la fel ca manifestul din PR și ca fișierul local. Scanare locală cu Microsoft Defender (`MpCmdRun -Scan -ScanType 3 -DisableRemediation`, definiții 1.463.226.0 din 10 noiembrie 2026): nicio amenințare.
+- Postat la 10 noiembrie 2026, 14:54 UTC, din contul `grifnas`: https://github.com/microsoft/winget-pkgs/pull/462294#issuecomment-6770578091. Comentariul spune că rezultatul pare fals pozitiv, dă hash-ul și rezultatul scanării, menționează că executabilul nu este semnat și cere reluarea validării; promite trimiterea la echipa Defender dacă validarea pică din nou.
+- Nefăcut: trimiterea fișierului la Microsoft Defender (pagina cere autentificare cu cont Microsoft, iar arhiva de 91 MB nu poate fi încărcată de asistent). Rămâne varianta a doua, de hotărât cu utilizatorul.
+- Stare imediat după postare: etichetele `Validation-Defender-Error` și `Needs-Author-Feedback` erau încă pe PR.
+
 ## 2026-11-10 — WebView2 actualizat, jurnal de funcționare, avertismentul din teste
 
 - Cerere: cele cinci lucrări mici rămase după scanare, făcute la rând, cu commit și push aprobate dinainte de utilizator.
-- `Microsoft.Web.WebView2` trece de la 1.0.2903.40 la 1.0.4314.35 (`CititorRSS.Jaws.csproj`, `THIRD-PARTY-NOTICES.md`). `LICENSE.txt` și `NOTICE.txt` din pachetul nou au același text ca fișierele din `Licenses/WebView2` (diferă doar sfârșiturile de rând), deci au rămas neschimbate. WebReader și playerul YouTube nu au fost probate cu JAWS după actualizare; verificarea rămâne la utilizator.
+- `Microsoft.Web.WebView2` trece de la 1.0.2903.40 la 1.0.4314.35 (`CititorRSS.Jaws.csproj`, `THIRD-PARTY-NOTICES.md`). `LICENSE.txt` și `NOTICE.txt` din pachetul nou au același text ca fișierele din `Licenses/WebView2` (diferă doar sfârșiturile de rând), deci au rămas neschimbate. WebReader și playerul YouTube nu au fost probate de asistent după actualizare.
+- Confirmare de la utilizator, 10 noiembrie 2026, după push: WebView2 funcționează bine cu versiunea nouă. Utilizatorul nu a precizat ce ferestre și ce comenzi a probat.
 - `Services/RuntimeLog.cs`, nou: jurnal tehnic în `%LOCALAPPDATA%\CititorRSS-JAWS\diagnostic\jurnal.txt`, cel mult 512 KB, cu un singur fișier anterior (`jurnal-anterior.txt`). Scrie pornirea (versiune, sistem), oprirea, rezultatul fiecărei actualizări RSS, feedurile cu eroare (numele feedului, tipul erorii și codul HTTP), eșecul preluării din NewsBlur și erorile neașteptate. Nu scrie adrese de feeduri, mesaje de eroare, titluri, text de articole sau chei. Este inactiv până la `App.OnStartup`, deci testele nu scriu în profil. Fără texte noi în interfață.
 - `tests/WorkflowSmoke/Program.cs`: avertismentul CS8602 eliminat; toată soluția de verificare se compilează fără avertismente.
 - Verificat: `verify-source.ps1 -Mode Full` trecut cu SDK 8.0.427 (CoreSmoke 342, cu 4 verificări noi pentru jurnal; WorkflowSmoke 157/157; Rules 42; Shortcuts 95; AiProviderSmoke 76; localizare 1724 resurse; Scale 20). Aplicația nu a fost pornită, deci jurnalul nu a fost văzut scriind într-o rulare reală.

@@ -1,5 +1,11 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-11-10 — Lucrări nepublicate după 1.6.7
+
+- Versiunea publicată rămâne 1.6.7. În sursă, nepublicate: linkuri numai HTTP, HTTPS și mailto în Cititor, ștergerea fișierelor temporare vechi de salvare, raport pentru erorile de fundal, jurnal tehnic `jurnal.txt` în folderul de diagnostic, SDK fixat la .NET 8 prin `global.json`.
+- Microsoft Edge WebView2 SDK este actualizat la 1.0.4314.35. Utilizatorul a confirmat la 10 noiembrie 2026 că WebView2 funcționează bine cu versiunea nouă.
+- Verificarea completă a sursei a trecut local și pe GitHub Actions la `820e95a`.
+
 ## 2026-11-08 — Versiunea 1.6.7 publicată
 
 - Publicată: tag `v1.6.7` pe `be49fba`, release GitHub cu installerul offline, arhiva portabilă, arhiva sursă și fișierele SHA-256. Pagina de prezentare trimite la 1.6.7 după publicare.
