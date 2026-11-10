@@ -1250,6 +1250,24 @@ async Task RunAtomicSaveSmokeAsync()
         Check(File.ReadAllText(path).Contains("en-US", StringComparison.Ordinal), "a doua salvare scrie noua stare");
         Check(File.ReadAllText(path + ".bak").Contains("ro-RO", StringComparison.Ordinal), "starea anterioară rămâne în copia .bak");
         Check(Directory.GetFiles(folder, "*.tmp").Length == 0, "după salvare nu rămân fișiere temporare");
+
+        var stale = Path.Combine(folder, ".feeds.json.vechi.tmp");
+        var recent = Path.Combine(folder, ".settings.json.nou.tmp");
+        var unrelated = Path.Combine(folder, "altceva.tmp");
+        foreach (var file in new[] { stale, recent, unrelated }) File.WriteAllText(file, "x");
+        File.SetLastWriteTimeUtc(stale, DateTime.UtcNow.AddDays(-3));
+        File.SetLastWriteTimeUtc(unrelated, DateTime.UtcNow.AddDays(-3));
+        Check(FeedStore.DeleteStaleTemporaryFiles(folder, DateTime.UtcNow) == 1 && !File.Exists(stale), "fișierul temporar vechi de salvare este șters la pornire");
+        Check(File.Exists(recent), "un fișier temporar recent de salvare nu este atins");
+        Check(File.Exists(unrelated) && File.Exists(path) && File.Exists(path + ".bak"), "curățarea nu atinge alte fișiere, datele sau copia .bak");
+
+        Check(ArticleReaderWindow.IsExternalLinkAllowed("https://example.test/a") && ArticleReaderWindow.IsExternalLinkAllowed("mailto:a@example.test"),
+            "Cititorul deschide linkurile web și de e-mail");
+        Check(!ArticleReaderWindow.IsExternalLinkAllowed("file:///C:/Windows/System32/calc.exe") &&
+              !ArticleReaderWindow.IsExternalLinkAllowed(@"\\server\share\x.exe") &&
+              !ArticleReaderWindow.IsExternalLinkAllowed("ms-settings:privacy") &&
+              !ArticleReaderWindow.IsExternalLinkAllowed("javascript:alert(1)"),
+            "Cititorul refuză fișierele locale, căile de rețea și protocoalele de aplicații");
     }
     finally
     {

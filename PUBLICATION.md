@@ -16,7 +16,7 @@ Pachetele includ .NET și Windows Desktop 8.0.31; nu cer instalarea separată a 
 
 ## Acceptare și limite cunoscute
 
-A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; nu sunt declarate trecute. Auditul NuGet, rulat la 19 octombrie 2026, nu a raportat pachete vulnerabile. Aceste limite sunt descrise în notele publice [RELEASE-NOTES-1.6.7.md](RELEASE-NOTES-1.6.7.md).
+A02, A09, A07 și A11 rămân deschise și transferate ciclului următor; nu sunt declarate trecute. Auditul NuGet, rulat la 8 noiembrie 2026 și repetat la 10 noiembrie, nu a raportat pachete vulnerabile. Aceste limite sunt descrise în notele publice [RELEASE-NOTES-1.6.7.md](RELEASE-NOTES-1.6.7.md).
 
 ## Pagina de prezentare și documentele
 
@@ -26,7 +26,9 @@ Cele opt pagini `docs/index*.html`, linkurile directe spre installerul și arhiv
 
 Manifestele WinGet din repository sunt cele din `packaging/winget/Grifnas.OrizontRSS/1.6.7/`; URL-ul installerului și hash-ul arhivei portabile corespund release-ului public. `winget validate` a trecut la pregătirea manifestelor; la reverificarea din 8 octombrie, comanda `winget.exe` nu a putut porni din mediul izolat (`SEC_E_NO_CREDENTIALS`/WindowsApps), deci validarea nu a putut fi repetată în această sesiune. Snapshotul local 1.6.0 a fost eliminat din arborele curent; istoricul său rămâne în Git.
 
-Pull request-ul [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294) a fost actualizat la 1.6.7 pe ramura `grifnas:submission/orizont-rss-1.6.5`; titlul este „New version: Grifnas.OrizontRSS version 1.6.7”. Eticheta `Needs-CLA` și revizuirea moderatorului trebuie verificate pe pagina PR-ului.
+Pull request-ul [microsoft/winget-pkgs#462294](https://github.com/microsoft/winget-pkgs/pull/462294) a fost actualizat la 1.6.7 pe ramura `grifnas:submission/orizont-rss-1.6.5`; titlul este „New version: Grifnas.OrizontRSS version 1.6.7”. CLA-ul este semnat (`license/cla` trecut).
+
+Starea la 10 noiembrie 2026: pașii 01–07, inclusiv scanarea installerelor, au trecut; pasul 08, testul de instalare, a eșuat la 8 noiembrie, iar pasul 09 a fost sărit. PR-ul poartă etichetele `Validation-Defender-Error` și `Needs-Author-Feedback` și așteaptă răspunsul autorului; moderatorii nu au început revizuirea. Jurnalul intern al testului nu este accesibil; cauza probabilă, neconfirmată, este blocarea executabilului nesemnat de Microsoft Defender. Pașii rămași autorului: trimiterea arhivei portabile la Microsoft pentru analiză ca fals pozitiv și un comentariu în PR pentru reluarea validării.
 
 ## Curățarea copiilor istorice
 

@@ -3,7 +3,7 @@
 ## Cerințe
 
 - Windows 10 sau Windows 11 pe 64 de biți;
-- .NET 8 SDK;
+- .NET 8 SDK (`global.json` cere 8.0.400 sau o versiune 8.0 mai nouă, chiar dacă este instalat și un SDK mai nou);
 - PowerShell sau un terminal echivalent.
 
 Proiectul folosește WPF din .NET 8, pachetul NuGet Microsoft.Web.WebView2 și, în timpul execuției, poate apela interfața SAPI5 disponibilă în Windows.

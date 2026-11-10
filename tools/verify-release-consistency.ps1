@@ -82,7 +82,11 @@ if (-not [string]::IsNullOrWhiteSpace($candidateVersion)) {
         if ($artifactNames | Where-Object { [string]::IsNullOrWhiteSpace($_) }) {
             throw 'Prepared candidate registry is missing one or more artifact names.'
         }
+        # Pachetele candidatului există numai pe calculatorul care le-a construit (bin\Release nu este în Git);
+        # pe GitHub Actions se verifică doar registrul, altfel commitul tagului ar eșua mereu.
+        $artifactsExpectedOnDisk = $env:GITHUB_ACTIONS -ne 'true'
         foreach ($artifact in $artifactNames) {
+            if (-not $artifactsExpectedOnDisk) { continue }
             $artifactPath = Join-Path $projectRoot (Join-Path 'bin\Release' $artifact)
             if (-not (Test-Path -LiteralPath $artifactPath -PathType Leaf)) {
                 throw "Prepared candidate artifact is missing: $artifact."

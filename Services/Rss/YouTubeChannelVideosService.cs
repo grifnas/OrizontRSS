@@ -49,7 +49,7 @@ internal static class YouTubeChannelVideosService
         if (!ChannelIdPattern.IsMatch(channelId ?? string.Empty))
             throw new InvalidOperationException(UiText.Translate("Feedul selectat nu este un canal YouTube."));
 
-        using var request = new HttpRequestMessage(HttpMethod.Get, $"https://www.youtube.com/channel/{Uri.EscapeDataString(channelId)}/videos?hl=en");
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"https://www.youtube.com/channel/{Uri.EscapeDataString(channelId!)}/videos?hl=en");
         request.Headers.Accept.ParseAdd("text/html,application/xhtml+xml");
         // Fără cookie-ul de consimțământ, YouTube redirecționează din UE la pagina de consimțământ, fără date.
         request.Headers.TryAddWithoutValidation("Cookie", ConsentCookie);

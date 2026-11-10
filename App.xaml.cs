@@ -14,6 +14,16 @@ public partial class App : Application
     public App()
     {
         DispatcherUnhandledException += OnDispatcherUnhandledException;
+        // Erorile din afara firului interfeței nu au dialog; lasă măcar raportul tehnic în folderul de diagnostic.
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+        {
+            if (args.ExceptionObject is Exception exception) TryWriteErrorReport(exception);
+        };
+        TaskScheduler.UnobservedTaskException += (_, args) =>
+        {
+            TryWriteErrorReport(args.Exception);
+            args.SetObserved();
+        };
         EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent, new RoutedEventHandler(OnWindowLoaded), true);
     }
 

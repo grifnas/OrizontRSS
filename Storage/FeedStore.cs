@@ -25,8 +25,35 @@ public sealed class FeedStore
             return "ro-RO";
         }
     }
+    /// <summary>
+    /// Șterge fișierele temporare de salvare rămase după o oprire bruscă. Numai cele mai vechi de o zi,
+    /// ca o salvare în curs să nu fie atinsă niciodată.
+    /// </summary>
+    internal static int DeleteStaleTemporaryFiles(string folder, DateTime utcNow)
+    {
+        if (!Directory.Exists(folder)) return 0;
+        var deleted = 0;
+        foreach (var pattern in new[] { ".feeds.json.*.tmp", ".settings.json.*.tmp" })
+        {
+            foreach (var path in Directory.EnumerateFiles(folder, pattern))
+            {
+                try
+                {
+                    if (utcNow - File.GetLastWriteTimeUtc(path) < TimeSpan.FromDays(1)) continue;
+                    File.Delete(path);
+                    deleted++;
+                }
+                catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+                {
+                    // Curățarea nu trebuie să împiedice pornirea.
+                }
+            }
+        }
+        return deleted;
+    }
     public async Task<List<Feed>> LoadAsync()
     {
+        DeleteStaleTemporaryFiles(Path.GetDirectoryName(FilePath)!, DateTime.UtcNow);
         if (!File.Exists(FilePath)) return [];
         await using var stream = File.OpenRead(FilePath);
         var feeds = await JsonSerializer.DeserializeAsync<List<Feed>>(stream) ?? [];

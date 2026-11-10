@@ -165,6 +165,13 @@ public partial class ArticleReaderWindow : Window
         }
 
         e.Cancel = true;
+        // Numai adresele web și de e-mail ajung la Windows; file:, UNC sau protocoale de aplicații nu sunt pornite din articol.
+        if (!IsExternalLinkAllowed(e.Uri))
+        {
+            SetStatus(F("Nu s-a putut deschide linkul: {0}", T("Adresa articolului nu este o adresă web HTTP sau HTTPS validă.")));
+            return;
+        }
+
         try
         {
             Process.Start(new ProcessStartInfo(e.Uri) { UseShellExecute = true });
@@ -175,6 +182,10 @@ public partial class ArticleReaderWindow : Window
             SetStatus(F("Nu s-a putut deschide linkul: {0}", ex.Message));
         }
     }
+
+    internal static bool IsExternalLinkAllowed(string? address) =>
+        Uri.TryCreate(address, UriKind.Absolute, out var uri) &&
+        (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps || uri.Scheme == Uri.UriSchemeMailto);
 
     private async Task SetReaderModeAsync(string mode, bool updateSettings = true)
     {
@@ -659,7 +670,7 @@ public partial class ArticleReaderWindow : Window
             var translatedMessage = T("Articolul a fost tradus cu DeepL.");
             SetStatus(translatedMessage);
             // Mutarea focusului în text poate întrerupe anunțul; îl repetăm după ce focusul s-a stabilizat.
-            Dispatcher.BeginInvoke(new Action(() => SetStatus(translatedMessage)), System.Windows.Threading.DispatcherPriority.ContextIdle);
+            _ = Dispatcher.BeginInvoke(new Action(() => SetStatus(translatedMessage)), System.Windows.Threading.DispatcherPriority.ContextIdle);
             SoundAlertService.Play(SoundEvent.AiReady);
         }
         catch (Exception exception) { var message = F("DeepL nu a putut traduce articolul: {0}", exception.Message); SetStatus(message); ShowAiProblem(message); }

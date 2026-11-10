@@ -14,4 +14,9 @@ Release-ul public v1.6.7 este disponibil pe [GitHub Releases](https://github.com
 
 ## Lucrări nepublicate după v1.6.7
 
-- Nicio lucrare nepublicată după v1.6.7.
+- Cititorul Orizont deschide din articol numai linkuri web (HTTP, HTTPS) și de e-mail; fișierele locale, căile de rețea și protocoalele de aplicații sunt refuzate.
+- La pornire sunt șterse fișierele temporare de salvare mai vechi de o zi, rămase după o oprire bruscă.
+- `verify-release-consistency.ps1` nu mai cere pe GitHub Actions pachetele candidatului, care există doar local; commitul unui tag nu mai eșuează din acest motiv.
+- Documentele de stare descriu blocajul PR-ului WinGet la testul de instalare.
+- Erorile neașteptate din sarcinile de fundal lasă acum un raport tehnic în folderul de diagnostic, ca erorile din interfață.
+- `global.json` fixează compilarea pe .NET SDK 8.0, la fel local și pe GitHub Actions; aplicația se compilează fără avertismente.

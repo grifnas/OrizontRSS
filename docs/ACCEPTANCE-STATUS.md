@@ -43,6 +43,8 @@ Actualizare A02 — 1 octombrie 2026: protecția testată inițial în copia izo
 
 ## Limite comune ale dovezilor
 
+- Actualizare 10 noiembrie 2026: `verify-source.ps1 -Mode Full` a trecut pe sursa principală, la `57748de` și din nou după modificările nepublicate din aceeași zi; `dotnet list package --vulnerable --include-transitive` nu a raportat pachete vulnerabile. Rularea din 1 octombrie descrisă mai jos este istorică. Probele A02, A09, A07 și A11 rămân deschise.
+
 - Full-ul cel mai recent a trecut la 1 octombrie într-un worktree separat, detașat de la `a870078`: CoreSmoke 127, WorkflowSmoke 148, RulesSmoke 42, ShortcutsSmoke 95, AiProviderSmoke 47, LocalizationSmoke 1.419 resurse/1.294 șiruri, eSpeak 132 voci/104 variante, ScaleSmoke 20 și ceilalți validatori trecuți. După acea rulare, Quick a trecut pe sursa principală cu CoreSmoke 140 și apoi CoreSmoke singur a trecut 145/145 după cele cinci teste A08 adăugate; Full nu a fost repetat după aceste ultime schimbări. Niciun rezultat automat nu certifică anunțurile JAWS sau sincronizarea reală între două calculatoare.
 - Runnerul Full compilează Release în checkoutul curent. De aceea a fost rulat într-un worktree Git separat, apoi acel folder generat a fost eliminat după verificarea statusului; copia autonomă principală și-a păstrat hashurile. Procedura reproductibilă este în `BUILDING.md`.
 - Rularea Full în terminalul izolat a avut `NuGetAudit=false` și nu constituie audit de vulnerabilități. Separat, la 1 octombrie, `dotnet restore` cu audit activ și `dotnet list ... --vulnerable --include-transitive` au reușit în afara izolării; nu au fost raportate vulnerabilități cunoscute pentru pachetele aplicației în sursele curente. Rezultatul este punctual și trebuie repetat periodic.

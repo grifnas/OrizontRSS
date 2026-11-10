@@ -1,5 +1,18 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-10 — Scanare generală și reparații mici, necomise
+
+- Cerere: scanarea proiectului cu raport, apoi repararea problemelor mici găsite. Fără commit până la confirmarea utilizatorului.
+- Constatat: PR-ul WinGet #462294 are pasul 08 (testul de instalare) eșuat la 8 noiembrie și etichetele `Validation-Defender-Error` și `Needs-Author-Feedback`; rularea CI a tagului `v1.6.7` a eșuat în `verify-release-consistency.ps1`, care cerea pachetele candidatului pe disc.
+- Modificat: `tools/verify-release-consistency.ps1` sare verificarea prezenței pachetelor când `GITHUB_ACTIONS` este `true`; `Views/ArticleReaderWindow.xaml.cs` deschide numai linkuri HTTP, HTTPS și mailto (`IsExternalLinkAllowed`), fără șiruri noi de tradus; `Storage/FeedStore.cs` șterge la încărcare fișierele `.feeds.json.*.tmp` și `.settings.json.*.tmp` mai vechi de o zi; teste noi în CoreSmoke; `PUBLICATION.md`, `docs/ACCEPTANCE-STATUS.md`, `CHANGELOG.md` și titlul din `RELEASE-NOTES-1.6.7.md` aduse la zi.
+- A doua rundă, tot necomisă, la cererea utilizatorului:
+  - `global.json` nou fixează SDK-ul la linia 8.0 (`8.0.400`, `rollForward: latestFeature`). Local sunt instalate 8.0.427 și 10.0.403; fără fixare, `dotnet` alegea SDK 10, iar CI folosea 8. Acum ambele folosesc 8 (`dotnet --version` dă 8.0.427). Motivul notat inițial pentru amânare („ar strica local sau CI”) era greșit și neverificat.
+  - Avertismente de compilare eliminate din aplicație: CS8604 în `Services/Rss/YouTubeChannelVideosService.cs` și CS4014 în `Views/ArticleReaderWindow.xaml.cs`. Compilarea aplicației are 0 avertismente; rămâne CS8602 în `tests/WorkflowSmoke/Program.cs` (linia 349), neatins.
+  - `App.xaml.cs` scrie raport în folderul `diagnostic` și pentru erorile din afara firului interfeței (`AppDomain.UnhandledException`, `TaskScheduler.UnobservedTaskException`), fără dialog și fără șiruri noi. Neverificat printr-o eroare reală provocată.
+  - Șterse cu acordul explicit al utilizatorului: worktree-ul `..\Orizont RSS-verification-full` (prin `git worktree remove`; era detașat la `be49fba`, fără modificări, commit conținut în `main`) și folderul gol `%LOCALAPPDATA%\CititorRSS-JAWS\diagnostics`. Folderul real de rapoarte, `diagnostic`, este neatins. Worktree-ul se poate recrea oricând după `BUILDING.md`.
+  - Verificat: `verify-source.ps1 -Mode Full` trecut cu SDK 8.0.427 (CoreSmoke 338, WorkflowSmoke 157/157, Rules 42, Shortcuts 95, AiProviderSmoke 76, localizare 1724 resurse, Scale 20).
+- Neatins: `feeds.json` și setările utilizatorului, PR-ul WinGet. Fișierul temporar orfan din 9 octombrie va fi șters de aplicație la următoarea pornire cu codul nou.
+
 ## 2026-11-08 — Publicarea versiunii 1.6.7
 
 - Cerere explicită: publicarea 1.6.7 ca la versiunile anterioare. Commit-uri: `515299d` (notele de publicare), `be49fba` (hash-ul instalatorului; codul din care s-au construit pachetele; tag `v1.6.7`), apoi commit-ul cu documentele de publicare.
