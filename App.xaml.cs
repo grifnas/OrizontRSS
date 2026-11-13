@@ -63,7 +63,11 @@ public partial class App : Application
 
     private static void OnWindowLoaded(object sender, RoutedEventArgs e)
     {
-        if (sender is Window window && ReferenceEquals(e.OriginalSource, window)) UiLocalizer.Apply(window);
+        if (sender is Window window && ReferenceEquals(e.OriginalSource, window))
+        {
+            UiLocalizer.Apply(window);
+            ButtonIcons.ApplyTo(window);
+        }
     }
 
     private static void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)

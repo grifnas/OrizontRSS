@@ -1,5 +1,16 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-13 — Pictograme decorative pe butoane
+
+- Scop: pictograme decorative pentru butoanele cu acțiuni clare, ca tratamentul aplicat Bibliotecii Pontes. Alegerea se face după identificatorul butonului (x:Name), nu după text, pentru că textul se schimbă cu limba interfeței. Butoanele al căror identificator nu corespunde acțiunii (CancelButton, SaveButton, TestDeepSeekButton și altele) rămân fără pictogramă.
+- Fișiere atinse: `Services/ButtonIcons.cs` (nou) și `App.xaml.cs` (handler-ul de încărcare a ferestrei aplică pictogramele după localizare). Numele accesibile rămân textele traduse, fără tasta de acces.
+- Teste: compilare Release fără erori. Suita nu a fost rulată, pentru că testele compilează aplicația și pot înlocui copia autonomă; trebuie rulate într-un checkout separat, conform BUILDING.md.
+- Incident: un `dotnet build` simplu a înlocuit copia autonomă din `bin\Release\net8.0-windows10.0.17763.0`, cu un runtime cerut separat. A fost refăcută cu publicarea din BUILDING.md (`includedFrameworks` în runtimeconfig, 296 de fișiere).
+- Verificare: pornire reușită din copia autonomă; în fereastra principală numele butoanelor (Citește acum, Afișează feedurile care necesită atenție, Filtre articole, Marchează toate articolele afișate ca citite) sunt neschimbate.
+- Executabil de test: `C:\Users\grigo\Documents\ChatGPT\New project\Orizont RSS\bin\Release\net8.0-windows10.0.17763.0\Orizont.exe`.
+- De confirmat cu JAWS 2026: butoanele se citesc ca înainte, fără cuvinte în plus, și pictogramele sunt la locul lor.
+
+
 ## 2026-11-10 — Comentariu în PR-ul WinGet: cerere de reluare a validării
 
 - Cerere explicită a utilizatorului: comentariu în PR-ul microsoft/winget-pkgs#462294, cu textul aprobat de el înainte de postare.
