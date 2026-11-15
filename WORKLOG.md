@@ -1,5 +1,12 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-15 — Confirmări după publicarea v1.6.8 (confirmate de utilizator)
+
+- Instalarea cu installerul 1.6.8 a reușit, cu JAWS.
+- Actualizarea din 1.6.4 prin fereastra „Actualizare disponibilă” a descărcat și instalat 1.6.8. Butoanele sunt dezactivate în timpul descărcării, ca de obicei.
+- Rămân de verificat: dezinstalarea și refuzul folderelor nesigure. Copia de test `bin\Test-1.6.6` a fost ștearsă.
+- Nelucrat: trimiterea manifestelor WinGet 1.6.8, acceptările A02, A07, A09 și A11.
+
 ## 2026-11-15 — Publicarea v1.6.8, la cererea expresă a utilizatorului
 
 - Push la commiturile locale pe `main` (până la `e801ae9`). Tagul `v1.6.8` pe `b4f5f95`, commitul din care s-au construit pachetele și hash-ul instalatorului. Release-ul GitHub `v1.6.8` cu installerul offline, arhiva portabilă, arhiva sursă și cele trei fișiere `.sha256`. Digest-urile GitHub coincid cu cele locale.

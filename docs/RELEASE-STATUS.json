@@ -19,7 +19,7 @@
     "candidateSourceHash":  null,
     "candidateInstallerHash":  null,
     "latestPublishedNuGetAuditStatus":  "no-vulnerable-packages-2026-11-15",
-    "latestPublishedManualAcceptanceStatus":  "1.6.8 is published. JAWS checks of the installer (install, uninstall, refusal of unsafe folders) are pending; A02,A09,A07,A11 open",
+    "latestPublishedManualAcceptanceStatus":  "1.6.8 is published. Installation with JAWS and the update from 1.6.4 through the update window are confirmed by the user; uninstall and the refusal of unsafe folders are pending; A02,A09,A07,A11 open",
     "latestPublishedInstaller":  "OrizontSetup-1.6.8.exe",
     "latestPublishedInstallerBytes":  252988901,
     "latestPublishedInstallerSha256":  "147624A9042E744503695A7E8969ADB8D3DBCF8D930EAC18020DB4E55EBAD7C1",
