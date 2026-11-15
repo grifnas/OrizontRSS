@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.28.0.schema.json
+PackageIdentifier: Grifnas.OrizontRSS
+PackageVersion: 1.6.8
+InstallerType: zip
+NestedInstallerType: portable
+NestedInstallerFiles:
+- RelativeFilePath: Orizont.exe
+  PortableCommandAlias: orizont-rss
+Installers:
+- Architecture: x64
+  InstallerUrl: https://github.com/grifnas/OrizontRSS/releases/download/v1.6.8/Orizont-RSS-1.6.8-win-x64.zip
+  InstallerSha256: 91018D157A14C004EDFE7F7AB69DB707DE94D58DAA9413652FE8AB099A73EDEE
+ManifestType: installer
+ManifestVersion: 1.28.0
