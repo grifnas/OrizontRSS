@@ -22,7 +22,27 @@
 - Cauza nu este identificată. Nu am schimbat codul în această etapă.
 - Lista canalului afișează câte 30 de videoclipuri pe tranșă, probabil dimensiunea paginii de la YouTube; „Mai multe rezultate” încarcă tranșa următoare. Nu am verificat cifra în cod.
 
-## 2026-11-15 — Candidatul 1.6.8 în pregătire (necomis, fără pachete și fără tag)
+## 2026-11-15 — Pachete 1.6.8 construite local (fără tag, fără publicare, fără push)
+
+- Cerere explicită: construirea pachetelor 1.6.8 local. Nu s-a creat tag, nu s-a publicat nimic, nu s-a făcut push, nu s-a atins WinGet.
+- Commituri locale: `fc68402` (pregătirea) și `b4f5f95` (adresa și hash-ul instalatorului 1.6.8). Aplicația din pachete este construită din codul comun celor două; `b4f5f95` schimbă doar instalatorul.
+- Aplicația: `dotnet publish` autonom, `bin\Release\distribution-1.6.8`; `verify-distribution.ps1` complet, 444 fișiere eSpeak, versiunea 1.6.8.0.
+- Pachete, copiate și în `bin\Release`, unde le cere `verify-release-consistency.ps1`:
+  - `Orizont-RSS-1.6.8-win-x64.zip`, 91 190 374 octeți, SHA-256 `91018D157A14C004EDFE7F7AB69DB707DE94D58DAA9413652FE8AB099A73EDEE`, 998 de intrări, `Orizont.exe` la rădăcină.
+  - `Orizont-RSS-1.6.8-source.zip`, 14 723 901 octeți, SHA-256 `19DE01BA81180D6E46ED8A5745511DEAAF6C4222CE8FF9CA1E7BD37188BDCBB4`, din `git archive` la `b4f5f95`.
+  - `OrizontSetup-1.6.8.exe`, 252 988 901 octeți, SHA-256 `147624A9042E744503695A7E8969ADB8D3DBCF8D930EAC18020DB4E55EBAD7C1`, cu arhiva portabilă încorporată, versiunea de produs 1.6.8.
+  - Fiecare are fișierul `.sha256` alături.
+- Registru: `docs/RELEASE-STATUS.json` are candidatul 1.6.8 în `distribution-prepared`, cu numele pachetelor și al sidecar-urilor. `verify-release-consistency.ps1` trece.
+- Verificat: `verify-source.ps1 -Mode Full` trecut la `b4f5f95`; `verify-release-consistency` trecut.
+- Neverificat: instalatorul nu a fost rulat, pentru că ar instala aplicația pe profilul tău. Instalarea, dezinstalarea și descărcarea online rămân de verificat cu JAWS; adresa de descărcare online (`releases/download/v1.6.8`) funcționează numai după publicarea release-ului.
+
+## 2026-11-15 — Pagini publice și ghiduri: rămân la 1.6.7 până la publicare
+
+- Constatat: paginile `docs/index*.html` și ghidurile au 1.6.7 în titluri și, mai important, în linkurile de descărcare `releases/latest/download/OrizontSetup-1.6.7.exe` și `Orizont-RSS-1.6.7-win-x64.zip`. Paginile se publică la push, prin GitHub Pages.
+- Decizie: nu le schimb înainte de publicarea 1.6.8. Dacă ar fi schimbate acum, linkurile ar duce la fișiere inexistente, iar paginile ar anunța o versiune care nu există încă.
+- De făcut la publicare: aceste pagini și ghidurile, după ce release-ul 1.6.8 și fișierele lui există.
+
+## 2026-11-15 — Candidatul 1.6.8 în pregătire (comis local în fc68402, fără pachete și fără tag)
 
 - Cerere: pregătirea versiunii 1.6.8, cu număr, note și verificare completă; fără pachete și fără tag.
 - Modificat: versiunea 1.6.8 în `CititorRSS.Jaws.csproj` și `packaging/installer/OrizontSetup.csproj`; `RELEASE-NOTES-1.6.8.md` nou, cu conținutul real al modificărilor; `RELEASE-STATUS.json` are candidatul 1.6.8 în `preparation-in-progress`, nedistribuit, nepublicat; testul de titlu din `LocalizationSmoke` așteaptă „Orizont RSS 1.6.8”.
