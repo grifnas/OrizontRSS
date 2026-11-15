@@ -363,6 +363,8 @@ await CheckYouTubeMediaDescription();
 await RunPodcastEnclosureSmokeAsync();
 await RunDownloadLimitSmokeAsync();
 await RunAtomicSaveSmokeAsync();
+await RunFeedRecoverySmokeAsync();
+RunSensitiveTextSmoke();
 CheckYouTubeVideoLinks();
 RunFolderLocalizationSmoke();
 Console.WriteLine($"Core smoke test passed: {checks} verificări, inclusiv actualizări sigure, articole, retenție, duplicate, backup și căutare.");
@@ -1291,6 +1293,77 @@ async Task RunAtomicSaveSmokeAsync()
         }
         Check(CititorRSS.Jaws.Services.RuntimeLog.Summarize(new HttpRequestException("https://secret.example.test/?key=abc", null, HttpStatusCode.NotFound)) == "HttpRequestException, HTTP 404",
             "rezumatul erorii din jurnal nu conține mesajul, care poate include adrese");
+    }
+    finally
+    {
+        if (Directory.Exists(folder)) Directory.Delete(folder, true);
+    }
+}
+
+void RunSensitiveTextSmoke()
+{
+    var redactedUrl = CititorRSS.Jaws.Services.SensitiveText.Redact("GET https://feed.example.test/api?key=AIzaSyA1234567890abcdefghijklmnopqrstu&page=2 failed");
+    Check(!redactedUrl.Contains("AIzaSy", StringComparison.Ordinal) && redactedUrl.Contains("&page=2", StringComparison.Ordinal),
+        "un parametru key din adresă este ascuns, iar parametrii obișnuiți rămân");
+    var redactedToken = CititorRSS.Jaws.Services.SensitiveText.Redact("https://pod.example.test/a?access_token=abc123&x=1");
+    Check(redactedToken == "https://pod.example.test/a?access_token=[ascuns]&x=1",
+        "parametrul access_token este ascuns, iar cel următor rămâne");
+    var redactedHeader = CititorRSS.Jaws.Services.SensitiveText.Redact("Authorization: Bearer eyJhbGciOi.payload_part-2+x/==\r\nnext line");
+    Check(redactedHeader.Contains("Bearer [ascuns]", StringComparison.Ordinal) && !redactedHeader.Contains("eyJ", StringComparison.Ordinal) && redactedHeader.Contains("next line", StringComparison.Ordinal),
+        "tokenul Bearer este ascuns, fără să înghită rândul următor");
+    var redactedCookie = CititorRSS.Jaws.Services.SensitiveText.Redact("Cookie: sessionid=xyz; csrftoken=abc\r\nHost: example.test");
+    Check(redactedCookie.Contains("Cookie: [ascuns]", StringComparison.Ordinal) && !redactedCookie.Contains("xyz", StringComparison.Ordinal) && redactedCookie.Contains("Host: example.test", StringComparison.Ordinal),
+        "antetul Cookie este ascuns până la sfârșitul rândului");
+    var redactedOpenAi = CititorRSS.Jaws.Services.SensitiveText.Redact("cheia sk-proj-AbCdEf1234567890XyZ a fost respinsă");
+    Check(redactedOpenAi == "cheia [ascuns] a fost respinsă", "o cheie în stil OpenAI este ascunsă");
+    var plain = "System.InvalidOperationException: Nu s-a putut deschide feedul 'Știri' (HTTP 404). Verifică adresa; basic settings rămân.";
+    Check(CititorRSS.Jaws.Services.SensitiveText.Redact(plain) == plain && CititorRSS.Jaws.Services.SensitiveText.Redact(null) == string.Empty,
+        "textul obișnuit al erorilor rămâne neschimbat, iar valoarea lipsă devine șir gol");
+}
+
+async Task RunFeedRecoverySmokeAsync()
+{
+    var folder = Path.Combine(Path.GetTempPath(), "orizont-feeds-" + Guid.NewGuid().ToString("N"));
+    var path = Path.Combine(folder, "feeds.json");
+    const string older = "[{\"Name\":\"Vechi\",\"Url\":\"https://vechi.example.test/feed\",\"Folder\":\"F\"}]";
+    const string truncated = "[{\"Name\":\"Bu";
+    try
+    {
+        Directory.CreateDirectory(folder);
+        var none = await FeedStore.LoadFeedsFileAsync(path);
+        Check(none.Feeds.Count == 0 && !none.RecoveredFromBackup, "lipsa fișierului feeds.json înseamnă listă goală, fără recuperare");
+
+        File.WriteAllText(path, older);
+        var normal = await FeedStore.LoadFeedsFileAsync(path);
+        Check(normal.Feeds.Count == 1 && normal.Feeds[0].Name == "Vechi" && !normal.RecoveredFromBackup, "un feeds.json valid se citește normal");
+
+        File.WriteAllText(path + ".bak", older);
+        File.WriteAllText(path, truncated);
+        var recovered = await FeedStore.LoadFeedsFileAsync(path);
+        var kept = Directory.GetFiles(folder, "feeds.json.corrupt-*");
+        Check(recovered.RecoveredFromBackup && recovered.Feeds.Count == 1 && recovered.Feeds[0].Name == "Vechi",
+            "un feeds.json trunchiat este înlocuit cu copia .bak");
+        Check(kept.Length == 1 && File.ReadAllText(kept[0]) == truncated && File.ReadAllText(path) == older,
+            "fișierul corupt rămâne păstrat lângă cel restaurat, iar feeds.json devine valid");
+        Check(File.ReadAllText(path + ".bak") == older, "copia .bak rămâne neschimbată după restaurare");
+
+        File.WriteAllText(path, "");
+        var empty = await FeedStore.LoadFeedsFileAsync(path);
+        Check(empty.RecoveredFromBackup && empty.Feeds.Count == 1, "un feeds.json gol este tratat ca fiind corupt");
+
+        File.Delete(path + ".bak");
+        File.WriteAllText(path, truncated);
+        var threw = false;
+        try { await FeedStore.LoadFeedsFileAsync(path); }
+        catch (JsonException) { threw = true; }
+        Check(threw && File.ReadAllText(path) == truncated, "fără copie .bak pornirea se oprește și fișierul rămâne neatins");
+
+        File.WriteAllText(path + ".bak", "{rupt");
+        threw = false;
+        try { await FeedStore.LoadFeedsFileAsync(path); }
+        catch (JsonException) { threw = true; }
+        Check(threw && File.ReadAllText(path) == truncated && File.ReadAllText(path + ".bak") == "{rupt",
+            "dacă și copia .bak este coruptă, eroarea originală se propagă și niciun fișier nu se modifică");
     }
     finally
     {

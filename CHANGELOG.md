@@ -19,6 +19,9 @@ Release-ul public v1.6.7 este disponibil pe [GitHub Releases](https://github.com
 - `verify-release-consistency.ps1` nu mai cere pe GitHub Actions pachetele candidatului, care există doar local; commitul unui tag nu mai eșuează din acest motiv.
 - Documentele de stare descriu blocajul PR-ului WinGet la testul de instalare.
 - Erorile neașteptate din sarcinile de fundal lasă acum un raport tehnic în folderul de diagnostic, ca erorile din interfață.
+- Dacă `feeds.json` este trunchiat sau gol la pornire, aplicația folosește copia `feeds.json.bak` și păstrează fișierul corupt lângă ea, ca `feeds.json.corrupt-<data>`. Până acum pornirea se oprea.
+- Integrarea continuă verifică acum pachetele NuGet cu vulnerabilități cunoscute, înainte de verificarea completă.
+- Raportul de eroare ascunde adresele cu chei, tokenii Bearer și antetele Cookie înainte de a fi scris; filtrul este euristic.
 - Jurnal tehnic de funcționare în folderul de diagnostic (`jurnal.txt`): pornire, oprire, rezultatul actualizărilor și feedurile cu eroare, fără adrese, conținut de articole sau chei.
 - Microsoft Edge WebView2 SDK actualizat la 1.0.4314.35.
 - `global.json` fixează compilarea pe .NET SDK 8.0, la fel local și pe GitHub Actions; aplicația se compilează fără avertismente.

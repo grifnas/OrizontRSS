@@ -100,7 +100,8 @@ public partial class App : Application
                 .AppendLine(UiText.Format("Sistem: {0}", Environment.OSVersion))
                 .AppendLine(UiText.Format("Proces pe 64 de biți: {0}", Environment.Is64BitProcess))
                 .AppendLine()
-                .AppendLine(exception.ToString())
+                // Textul excepției poate conține adrese cu chei sau antete; îl filtrăm înainte de scriere.
+                .AppendLine(SensitiveText.Redact(exception.ToString()))
                 .ToString();
             File.WriteAllText(path, report, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
             RuntimeLog.Write($"Eroare neașteptată: {exception.GetType().Name}; raport: {Path.GetFileName(path)}.");

@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.Json;
+using CititorRSS.Jaws.Services;
 
 namespace CititorRSS.Jaws;
 
@@ -51,14 +52,63 @@ public sealed class FeedStore
         }
         return deleted;
     }
+    /// <summary>True când ultimul <see cref="LoadAsync"/> a folosit copia „.bak” pentru că fișierul principal era corupt.</summary>
+    public bool RecoveredFromBackup { get; private set; }
+
     public async Task<List<Feed>> LoadAsync()
     {
         DeleteStaleTemporaryFiles(Path.GetDirectoryName(FilePath)!, DateTime.UtcNow);
-        if (!File.Exists(FilePath)) return [];
-        await using var stream = File.OpenRead(FilePath);
+        var (feeds, recovered) = await LoadFeedsFileAsync(FilePath);
+        RecoveredFromBackup = recovered;
+        if (recovered) RuntimeLog.Write("feeds.json nu a putut fi citit; s-a restaurat copia „.bak”. Fișierul corupt a fost păstrat lângă el.");
+        return feeds;
+    }
+
+    /// <summary>
+    /// Citește feedurile. Dacă fișierul principal este corupt (trunchiat sau gol), se folosește „.bak” și
+    /// fișierul corupt se păstrează ca „feeds.json.corrupt-<data>”. Dacă nici „.bak” nu se poate citi,
+    /// eroarea originală se propagă, iar pornirea se oprește fără să scrie nimic.
+    /// </summary>
+    internal static async Task<(List<Feed> Feeds, bool RecoveredFromBackup)> LoadFeedsFileAsync(string path)
+    {
+        if (!File.Exists(path)) return ([], false);
+        try
+        {
+            return (await ReadFeedsAsync(path), false);
+        }
+        catch (JsonException)
+        {
+            var backupPath = path + ".bak";
+            if (!File.Exists(backupPath)) throw;
+            var backup = await TryReadFeedsAsync(backupPath);
+            if (backup is null) throw;
+            // Copiem, nu mutăm: fișierul corupt rămâne la locul lui până când copia restaurată este scrisă.
+            var suffix = $"{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}"[..24];
+            var aside = Path.Combine(Path.GetDirectoryName(path)!, $"{Path.GetFileName(path)}.corrupt-{suffix}");
+            File.Copy(path, aside);
+            File.Copy(backupPath, path, overwrite: true);
+            return (backup, true);
+        }
+    }
+
+    private static async Task<List<Feed>> ReadFeedsAsync(string path)
+    {
+        await using var stream = File.OpenRead(path);
         var feeds = await JsonSerializer.DeserializeAsync<List<Feed>>(stream) ?? [];
         Normalize(feeds);
         return feeds;
+    }
+
+    private static async Task<List<Feed>?> TryReadFeedsAsync(string path)
+    {
+        try
+        {
+            return await ReadFeedsAsync(path);
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
     }
     public async Task SaveAsync(List<Feed> feeds)
     {

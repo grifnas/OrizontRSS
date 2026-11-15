@@ -1,5 +1,32 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-15 — Pachete vulnerabile verificate în CI (necomis)
+
+- Cerere: al treilea punct al ordinii propuse după auditul extern.
+- Constatat: verificarea `dotnet list package --vulnerable` exista doar manual; CI nu o rula. Comanda nu iese cu eroare când găsește vulnerabilități, deci pasul verifică și textul ieșirii.
+- Modificat: `.github/workflows/ci.yml`, pas nou înaintea verificării complete. Restaurează `CititorRSS.Jaws.csproj`, rulează `dotnet list … package --vulnerable --include-transitive` și eșuează dacă apare „has the following vulnerable packages”. Proiectele de test nu sunt scanate; ele nu intră în distribuție.
+- Verificat local: comanda dă „no vulnerable packages” cu codul 0, iar expresia de detecție prinde un rezultat pozitiv și nu semnalează un rezultat curat.
+- Neverificat: pasul nu a rulat încă în GitHub Actions, pentru că nu este împins. Prima rulare după push îl va verifica. Dacă NuGet nu răspunde în CI, pasul pică fără pachete vulnerabile; asta ar apărea ca eroare de rețea.
+
+## 2026-11-15 — Filtru de secrete pentru raportul de eroare (necomis)
+
+- Cerere: al doilea punct al ordinii propuse după auditul extern.
+- Constatat: raportul de eroare scria `exception.ToString()` fără filtrare. Jurnalul `RuntimeLog` nu are problema: scrie doar tipul excepției și codul HTTP, niciodată mesajul. Auditul a confundat cele două.
+- Modificat: `Services/SensitiveText.cs`, nou, cu `Redact`. Ascunde valorile după `key`, `api_key`, `token`, `access_token`, `session`, `sessionid`, `password`, `secret` și `auth` în parametrii de adresă; tokenul după `Bearer`/`Basic` (cu majuscule, fără potrivire insensibilă, ca să nu înghită „basic settings”); tot rândul după `Cookie`/`Set-Cookie`; chei în formatul `AIza…` și `sk-…`. `App.xaml.cs` trece textul excepției prin `Redact` înainte de scriere.
+- Limită: este o plasă euristică. O cheie într-un format nou sau fără prefix nu o prinde. Nu am verificat o cheie reală în raport; testele folosesc valori inventate.
+- Teste: `RunSensitiveTextSmoke` în CoreSmoke, cu șase verificări (adresă cu key, access_token, Bearer, Cookie, cheie OpenAI, text obișnuit și valoare lipsă). CoreSmoke are 356.
+- Verificat: `verify-source.ps1 -Mode Full` trecut.
+
+## 2026-11-15 — Recuperarea feeds.json din copia .bak (necomis)
+
+- Cerere: primul punct al ordinii propuse după auditul extern, cu test, fără commit.
+- Constatat: la o citire eșuată, pornirea se oprea cu mesaj și nu scria nimic, dar aplicația nu mai pornea deloc, deși copia `feeds.json.bak` era de obicei bună. Copia `.bak` era scrisă la salvare, dar nu era folosită la citire.
+- Modificat: `Storage/FeedStore.cs`, `LoadFeedsFileAsync`. La `JsonException` (fișier trunchiat, gol sau invalid) se citește `.bak`. Dacă este valid, fișierul corupt se copiază ca `feeds.json.corrupt-<data>-<opt caractere>` lângă cel principal, apoi `.bak` se copiază peste `feeds.json`. Copia `.bak` nu se modifică. Dacă și `.bak` este invalid sau lipsește, eroarea originală se propagă, ca până acum: pornirea se oprește fără scriere. Erorile de I/O (fișier blocat) nu declanșează recuperarea.
+- Jurnal: când se restaurează, `RuntimeLog` scrie o linie. Nu s-a adăugat mesaj vizibil în interfață, pentru că orice text nou cere traduceri în cele opt limbi. Utilizatorul nu vede deci, deocamdată, că s-a făcut restaurarea; în jurnal și în folder se vede.
+- Teste: `RunFeedRecoverySmokeAsync` în CoreSmoke: fișier lipsă, valid, trunchiat cu `.bak` bun, gol, trunchiat fără `.bak`, trunchiat cu `.bak` corupt. Opt verificări noi; CoreSmoke are 350.
+- Verificat: `verify-source.ps1 -Mode Full` trecut. Testele folosesc un folder temporar, nu profilul utilizatorului.
+- Neverificat: restaurarea reală pe un `feeds.json` stricat din profilul utilizatorului; nu am modificat date reale.
+
 ## 2026-11-13 — Pictograme decorative pe butoane
 
 - Scop: pictograme decorative pentru butoanele cu acțiuni clare, ca tratamentul aplicat Bibliotecii Pontes. Alegerea se face după identificatorul butonului (x:Name), nu după text, pentru că textul se schimbă cu limba interfeței. Butoanele al căror identificator nu corespunde acțiunii (CancelButton, SaveButton, TestDeepSeekButton și altele) rămân fără pictogramă.

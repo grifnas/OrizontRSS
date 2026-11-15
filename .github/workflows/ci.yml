@@ -17,5 +17,15 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
+      - name: Pachete NuGet cu vulnerabilități cunoscute
+        shell: pwsh
+        run: |
+          # dotnet list nu iese cu eroare când găsește vulnerabilități; verificăm textul și codul de ieșire.
+          dotnet restore CititorRSS.Jaws.csproj
+          if ($LASTEXITCODE -ne 0) { throw "dotnet restore a eșuat." }
+          $output = (dotnet list CititorRSS.Jaws.csproj package --vulnerable --include-transitive | Out-String)
+          Write-Output $output
+          if ($LASTEXITCODE -ne 0) { throw "dotnet list package --vulnerable a eșuat." }
+          if ($output -match 'has the following vulnerable packages') { throw "Există pachete NuGet vulnerabile; vezi lista de mai sus." }
       - name: Verificare comună completă (aceeași ca local)
         run: powershell -NoProfile -ExecutionPolicy Bypass -File .\tools\verify-source.ps1 -Mode Full
