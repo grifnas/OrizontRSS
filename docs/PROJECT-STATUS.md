@@ -1,5 +1,20 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-11-15 — Verificare JAWS: fereastra de actualizare (remediată în sursă)
+
+- Confirmat de utilizator, în copia de test: notele din „Actualizare disponibilă” se citesc rând cu rând cu săgețile. Cauza a fost lipsa atributului `AcceptsReturn="True"` la caseta notelor, singura casetă numai citire multi-linie fără el.
+- Remediul este în sursă, necomis. Versiunea publicată 1.6.7 nu are remediul; notele 1.6.7 care afirmau contrariul trebuie corectate în versiunea următoare.
+
+- Constatat de utilizator, în versiunea de test: notele din „Actualizare disponibilă” se citesc în continuare ca un singur rând, la fel ca în 1.6.6 și 1.6.7. Afirmația că se citesc rând cu rând, din notele 1.6.7, nu este confirmată de JAWS.
+- Lista canalului afișează câte 30 de videoclipuri pe tranșă; „Mai multe rezultate” încarcă tranșa următoare.
+
+## 2026-11-15 — Verificare JAWS: transcript și focus
+
+- Confirmat de utilizator cu JAWS: Alt+K deschide opțiunile de salvare a transcriptului, iar salvarea a reușit. Escape închide ferestrele deschise și readuce focusul la locul de unde a pornit.
+- Verificarea a fost făcută în versiunea de test, nu în instalarea publicată 1.6.7. Acceptanțele A02, A07, A09 și A11 rămân deschise; această confirmare nu le închide.
+- Rămân de verificat în versiunea de test: lista canalului și notele din fereastra de actualizare.
+- Instalatorul se verifică doar când există un instalator nou; până atunci rămâne neverificat.
+
 ## 2026-11-10 — Lucrări nepublicate după 1.6.7
 
 - Versiunea publicată rămâne 1.6.7. În sursă, nepublicate: linkuri numai HTTP, HTTPS și mailto în Cititor, ștergerea fișierelor temporare vechi de salvare, raport pentru erorile de fundal, jurnal tehnic `jurnal.txt` în folderul de diagnostic, SDK fixat la .NET 8 prin `global.json`.

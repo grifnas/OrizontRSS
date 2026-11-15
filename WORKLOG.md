@@ -1,6 +1,35 @@
 # Jurnalul intervențiilor Orizont RSS
 
-## 2026-11-15 — MainWindow în fișiere partial: navigare (necomis)
+## 2026-11-15 — Caseta notelor: AcceptsReturn confirmat cu JAWS (necomis)
+
+- Confirmat de utilizator, în copia de test: notele din „Actualizare disponibilă” se citesc acum rând cu rând cu săgețile. Ipoteza despre `AcceptsReturn="True"` s-a confirmat.
+- Copia de test (`bin\Test-1.6.6`, compilată cu versiunea 1.6.6 doar pentru a deschide fereastra) a fost ștearsă. Executabilul principal de 1.6.7 nu a fost atins.
+- Notele 1.6.7 publicate (`CHANGELOG.md` linia 13, `RELEASE-NOTES-1.6.7.md` linia 21) afirmă că notele se citeau rând cu rând. Asta nu era adevărat pentru 1.6.7, iar remediul este doar în sursă. Textul publicat nu l-am modificat; de corectat în notele versiunii următoare.
+- Modificarea (`Views/UpdateAvailableWindow.xaml`, un atribut) este necomisă.
+
+## 2026-11-15 — Caseta notelor: AcceptsReturn pentru JAWS (necomis, de testat)
+
+- Ipoteză: caseta `ReleaseNotesTextBox` din `Views/UpdateAvailableWindow.xaml` era singura casetă numai citire multi-linie fără `AcceptsReturn="True"`. JAWS ar putea-o vedea ca pe un câmp cu un singur rând. Celelalte casete numai citire, citite corect, au atributul, iar stilul `ReadOnlyDocumentStyle` îl setează implicit.
+- Modificat: un atribut în XAML, `AcceptsReturn="True"`. Nu s-a schimbat niciun text și nu s-au adăugat șiruri noi.
+- Verificat: `dotnet build` fără erori și fără avertismente; `verify-localization.ps1 -RequireComplete` trecut.
+- De testat de utilizator, în versiunea de test: săgețile în caseta notelor din „Actualizare disponibilă”. Dacă JAWS citește rând cu rând, ipoteza se confirmă; dacă nu, cauza rămâne deschisă.
+- Nu s-a modificat nicio notă publicată.
+
+## 2026-11-15 — Verificare JAWS: fereastra de actualizare nu citește rând cu rând (constatat de utilizator)
+
+- Constatat de utilizator, în versiunea de test: notele din „Actualizare disponibilă” tot se citesc ca un singur rând, la fel ca în 1.6.6 și 1.6.7. Remediul din 8 noiembrie (`NormalizeLineEndings` și `IsReadOnlyCaretVisible`) nu a rezolvat problema pentru JAWS.
+- Afirmația din `CHANGELOG.md` (linia 13) și din `RELEASE-NOTES-1.6.7.md` (linia 21), că notele se citesc rând cu rând cu săgețile, este nevalidată de o probă JAWS și este contrazisă de această constatare. Nu a fost modificată, pentru că face parte din notele publicate pentru 1.6.7 pe GitHub; decizia de a corecta notele este a utilizatorului.
+- Cauza nu este identificată. Nu am schimbat codul în această etapă.
+- Lista canalului afișează câte 30 de videoclipuri pe tranșă, probabil dimensiunea paginii de la YouTube; „Mai multe rezultate” încarcă tranșa următoare. Nu am verificat cifra în cod.
+
+## 2026-11-15 — Verificare JAWS: Alt+K și Escape (confirmată de utilizator)
+
+- Confirmat de utilizator: Alt+K deschide opțiunile de salvare a transcriptului, iar salvarea a reușit. Escape închide ferestrele deschise și readuce focusul exact de unde a pornit.
+- Verificarea a fost făcută în versiunea de test (executabilul construit din sursă), nu în instalarea publicată 1.6.7. Nu am schimbat starea acceptanțelor A02, A07, A09 și A11; nu știu sigur care dintre ele acoperă aceste comenzi.
+- Rămân de verificat cu JAWS: lista canalului și notele din fereastra de actualizare, în versiunea de test.
+- Instalatorul nu se poate verifica decât cu un instalator nou, care nu există încă. Verificarea rămâne pentru acel moment.
+
+## 2026-11-15 — MainWindow în fișiere partial: navigare (comis local, 18af657)
 
 - Cerere: utilizatorul a aprobat gruparea propusă pentru navigare, fără schimbare de comportament, fără commit.
 - Mutat în `MainWindow.Navigation.cs` (5 metode, 109 linii): `FocusFeeds`, `FocusFolderSelector`, `FocusSelectedFolderArticles`, `FocusArticles` și `FocusReader`. Sunt singurele metode de focus, într-un bloc continuu. `MainWindow.xaml.cs` scade de la 2.890 la 2.805 de linii.

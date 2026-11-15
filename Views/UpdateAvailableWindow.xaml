@@ -44,6 +44,7 @@
             <TextBox x:Name="ReleaseNotesTextBox"
                      IsReadOnly="True"
                      IsReadOnlyCaretVisible="True"
+                     AcceptsReturn="True"
                      TextWrapping="Wrap"
                      VerticalScrollBarVisibility="Auto"
                      HorizontalScrollBarVisibility="Disabled"
