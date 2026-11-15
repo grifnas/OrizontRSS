@@ -36,6 +36,13 @@
 - Verificat: `verify-source.ps1 -Mode Full` trecut la `b4f5f95`; `verify-release-consistency` trecut.
 - Neverificat: instalatorul nu a fost rulat, pentru că ar instala aplicația pe profilul tău. Instalarea, dezinstalarea și descărcarea online rămân de verificat cu JAWS; adresa de descărcare online (`releases/download/v1.6.8`) funcționează numai după publicarea release-ului.
 
+## 2026-11-15 — Pași 1, 3 și 4 după pachete (fără publicare)
+
+- Pasul 1 (verificarea instalatorului cu JAWS): nu l-am putut executa. Instalarea ar fi schimbat aplicația din profilul utilizatorului; o face utilizatorul.
+- Pasul 3 (pagini și ghiduri la 1.6.8): încercat local, apoi anulat. `verify-public-pages.ps1` cere ca paginile să indice versiunea publicată, 1.6.7, iar linkurile `releases/latest/download/…1.6.8` n-ar funcționa până la release. Paginile rămân la 1.6.7 până la publicare; fișierele sunt neatinse.
+- Pasul 4 (manifestele WinGet 1.6.8): creat `packaging/winget/Grifnas.OrizontRSS/1.6.8`, cu adresa și hash-ul pachetului 1.6.8, `winget validate` trece. Nu este trimis nimic în microsoft/winget-pkgs; PR-ul 1.6.7 rămâne neatins.
+- Verificat: `verify-release-consistency.ps1` și `verify-source.ps1 -Mode Full` trecute.
+
 ## 2026-11-15 — Pagini publice și ghiduri: rămân la 1.6.7 până la publicare
 
 - Constatat: paginile `docs/index*.html` și ghidurile au 1.6.7 în titluri și, mai important, în linkurile de descărcare `releases/latest/download/OrizontSetup-1.6.7.exe` și `Orizont-RSS-1.6.7-win-x64.zip`. Paginile se publică la push, prin GitHub Pages.
