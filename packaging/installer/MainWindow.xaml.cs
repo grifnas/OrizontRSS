@@ -13,8 +13,8 @@ namespace OrizontSetup;
 public partial class MainWindow : Window
 {
     private static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.6.0";
-    private const string DownloadUrl = "https://github.com/grifnas/OrizontRSS/releases/download/v1.6.7/Orizont-RSS-1.6.7-win-x64.zip";
-    private const string ExpectedSha256 = "0AD4F53C7EBCDA134668EBE1C34B5C02032571F4B6AB6EED932863B2C5195554";
+    private const string DownloadUrl = "https://github.com/grifnas/OrizontRSS/releases/download/v1.6.8/Orizont-RSS-1.6.8-win-x64.zip";
+    private const string ExpectedSha256 = "91018D157A14C004EDFE7F7AB69DB707DE94D58DAA9413652FE8AB099A73EDEE";
     private const string EmbeddedPackageResource = "OrizontSetup.EmbeddedPackage.zip";
     private const string EmbeddedPackageHashResource = "OrizontSetup.EmbeddedPackage.sha256";
     private readonly bool _uninstallMode;
