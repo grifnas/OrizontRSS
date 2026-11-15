@@ -22,6 +22,20 @@
 - Cauza nu este identificată. Nu am schimbat codul în această etapă.
 - Lista canalului afișează câte 30 de videoclipuri pe tranșă, probabil dimensiunea paginii de la YouTube; „Mai multe rezultate” încarcă tranșa următoare. Nu am verificat cifra în cod.
 
+## 2026-11-15 — Candidatul 1.6.8 în pregătire (necomis, fără pachete și fără tag)
+
+- Cerere: pregătirea versiunii 1.6.8, cu număr, note și verificare completă; fără pachete și fără tag.
+- Modificat: versiunea 1.6.8 în `CititorRSS.Jaws.csproj` și `packaging/installer/OrizontSetup.csproj`; `RELEASE-NOTES-1.6.8.md` nou, cu conținutul real al modificărilor; `RELEASE-STATUS.json` are candidatul 1.6.8 în `preparation-in-progress`, nedistribuit, nepublicat; testul de titlu din `LocalizationSmoke` așteaptă „Orizont RSS 1.6.8”.
+- Nemodificat, intenționat: `RELEASE-NOTES-1.6.7.md` și manifestele WinGet 1.6.7 rămân, pentru că sunt versiunea publicată, pe care verificarea o cere.
+- De făcut înainte de pachete: `packaging/installer/MainWindow.xaml.cs` are încă URL-ul și hash-ul versiunii 1.6.7. Instalatorul 1.6.8 nu trebuie construit înainte de a seta adresa și hash-ul pachetului 1.6.8, altfel descarcă versiunea greșită.
+- De făcut la publicare: ghidurile și paginile de prezentare, care afișează încă 1.6.7; manifestele WinGet pentru 1.6.8, cu hash-uri după construirea pachetelor.
+- Verificat: `verify-release-consistency.ps1` trecut; `verify-source.ps1 -Mode Full` trecut, cu 356 verificări în CoreSmoke.
+
+## 2026-11-15 — Lista canalului confirmată de utilizator (necomis)
+
+- Utilizatorul a confirmat că lista canalului este în regulă, cu tranșe de câte 30 de videoclipuri. Constatarea de mai devreme, că tranșa de 30 pare o limită de la YouTube, nu este un defect.
+- `CHANGELOG.md`: secțiunea nepublicată primește remedierea notelor și împărțirea `MainWindow`; afirmația despre notele 1.6.7 din secțiunea publicată este corectată cu o trimitere la remediu.
+
 ## 2026-11-15 — Verificare JAWS: Alt+K și Escape (confirmată de utilizator)
 
 - Confirmat de utilizator: Alt+K deschide opțiunile de salvare a transcriptului, iar salvarea a reușit. Escape închide ferestrele deschise și readuce focusul exact de unde a pornit.

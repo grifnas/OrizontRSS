@@ -10,7 +10,7 @@ Release-ul public v1.6.7 este disponibil pe [GitHub Releases](https://github.com
 - Meniul Feeduri → Organizare: „Vezi toate videoclipurile canalului YouTube”, cu încărcarea paginilor următoare.
 - Alt+K din player deschide transcriptul videoclipului.
 - Transcriptele se salvează în `Documente\Orizont RSS\Transcripts`; folderul implicit pentru articole este `Articles`.
-- Notele versiunii din fereastra de actualizare își păstrează liniile și se citesc cu săgețile.
+- Notele versiunii din fereastra de actualizare își păstrează liniile. Afirmația că se citesc rând cu rând cu săgețile nu era adevărată pentru această versiune; remediul este în secțiunea de mai jos.
 
 ## Lucrări nepublicate după v1.6.7
 
@@ -25,3 +25,6 @@ Release-ul public v1.6.7 este disponibil pe [GitHub Releases](https://github.com
 - Jurnal tehnic de funcționare în folderul de diagnostic (`jurnal.txt`): pornire, oprire, rezultatul actualizărilor și feedurile cu eroare, fără adrese, conținut de articole sau chei.
 - Microsoft Edge WebView2 SDK actualizat la 1.0.4314.35.
 - `global.json` fixează compilarea pe .NET SDK 8.0, la fel local și pe GitHub Actions; aplicația se compilează fără avertismente.
+- Caseta notelor din fereastra „Actualizare disponibilă” are `AcceptsReturn`, ca JAWS să citească notele rând cu rând cu săgețile. Confirmat cu JAWS în versiunea de test.
+- `MainWindow` este împărțit în fișiere `partial` (actualizare RSS, NewsBlur, AI, navigare), fără schimbare de comportament.
+- Numele limbilor pentru subtitrările YouTube folosesc aceeași funcție ca restul serviciilor YouTube.
