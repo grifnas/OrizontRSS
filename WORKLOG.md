@@ -1,5 +1,14 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-15 — Publicarea v1.6.8, la cererea expresă a utilizatorului
+
+- Push la commiturile locale pe `main` (până la `e801ae9`). Tagul `v1.6.8` pe `b4f5f95`, commitul din care s-au construit pachetele și hash-ul instalatorului. Release-ul GitHub `v1.6.8` cu installerul offline, arhiva portabilă, arhiva sursă și cele trei fișiere `.sha256`. Digest-urile GitHub coincid cu cele locale.
+- Corpul release-ului este textul public din notele 1.6.8, fără „candidat” sau „nepublicat”. Asta este textul pe care verificarea de actualizări îl afișează utilizatorilor, din câmpul `body` al release-ului.
+- Abatere: `RELEASE-NOTES-1.6.8.md` din arbore a fost actualizat la starea publicată, dar copia din pachete (instalator și ZIP) spune încă „candidat”. Se corectează la următoarea versiune.
+- După publicare: `RELEASE-STATUS.json` la 1.6.8; pagini și ghiduri la 1.6.8 (linkurile `releases/latest` funcționează acum); README, CHANGELOG și PUBLICATION la 1.6.8; notele și manifestele WinGet 1.6.7 scoase din arbore (istoric în Git și pe GitHub); manifestele 1.6.8 rămân nesubmise.
+- Instalatorul 1.6.8 nu a fost verificat cu JAWS (instalare, dezinstalare, folder nesigur). Acceptările A02, A07, A09 și A11 rămân deschise.
+- Verificat: `verify-release-consistency.ps1` și `verify-source.ps1 -Mode Full` trecute după modificările de publicare.
+
 ## 2026-11-15 — Caseta notelor: AcceptsReturn confirmat cu JAWS (necomis)
 
 - Confirmat de utilizator, în copia de test: notele din „Actualizare disponibilă” se citesc acum rând cu rând cu săgețile. Ipoteza despre `AcceptsReturn="True"` s-a confirmat.

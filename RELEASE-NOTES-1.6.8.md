@@ -1,6 +1,6 @@
-# Orizont RSS 1.6.8 — note de versiune (candidat, nepublicat)
+# Orizont RSS 1.6.8 — note de versiune
 
-Versiunea 1.6.8 este în pregătire locală și nu este publicată. Ultima versiune publicată rămâne 1.6.7. Pachetele, tag-ul și release-ul pentru 1.6.8 se construiesc doar la cerere expresă.
+Versiunea 1.6.8 este lansată pe GitHub, cu installerul offline, varianta portabilă ZIP, arhiva sursă și fișierele SHA-256 atașate release-ului. Ultima versiune publicată anterioară era 1.6.7.
 
 ## Fereastra „Actualizare disponibilă”
 
@@ -30,6 +30,5 @@ Versiunea 1.6.8 este în pregătire locală și nu este publicată. Ultima versi
 
 ## Ce nu este verificat
 
-- Instalatorul 1.6.8 nu există încă; instalarea și dezinstalarea rămân de verificat cu JAWS.
+- Instalarea și dezinstalarea cu installerul 1.6.8 nu au fost verificate cu JAWS.
 - Acceptările A02, A07, A09 și A11 rămân deschise.
-- Ghidurile și paginile de prezentare afișează încă 1.6.7 și se actualizează la publicare.
