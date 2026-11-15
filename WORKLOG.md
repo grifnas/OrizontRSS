@@ -1,5 +1,40 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-15 — MainWindow în fișiere partial: navigare (necomis)
+
+- Cerere: utilizatorul a aprobat gruparea propusă pentru navigare, fără schimbare de comportament, fără commit.
+- Mutat în `MainWindow.Navigation.cs` (5 metode, 109 linii): `FocusFeeds`, `FocusFolderSelector`, `FocusSelectedFolderArticles`, `FocusArticles` și `FocusReader`. Sunt singurele metode de focus, într-un bloc continuu. `MainWindow.xaml.cs` scade de la 2.890 la 2.805 de linii.
+- Neatins, intenționat: handlerii de selecție (`Feeds_SelectionChanged`, `Articles_SelectionChanged`), handlerii de taste și `FocusArticleSearch_Click`. Sunt amestecați cu alte comportamente și nu fac parte din grupul de focus; se pot muta separat, dacă vrei.
+- Verificat: `dotnet build` fără erori și fără avertismente; `verify-source.ps1 -Mode Full` trecut.
+- Copia de siguranță dinaintea mutării este în folderul temporar al sesiunii (`MainWindow.before-navigation.cs`).
+
+## 2026-11-15 — MainWindow în fișiere partial: AI (necomis)
+
+- Cerere: continuarea mutărilor din `MainWindow`, fără schimbare de comportament, fără commit.
+- Mutat în `MainWindow.Ai.cs` (9 metode, 133 de linii): `AiSettings_Click`, comenzile Rezumat, Traducere, Explică, Ideile principale și Discută, `ShowAiNotes_Click`, `AskAiAsync` și `ShowAiProblem`. `MainWindow.xaml.cs` scade de la 2.997 la 2.890 de linii.
+- Neatins, intenționat: `EditSelectedTags_Click` (etichete, nu AI) și `CountExpiredArticles`, care sunt printre metodele vecine.
+- Neatins, deocamdată: grupa de navigare. Metodele de focus (`FocusFeeds`, `FocusArticles`, `FocusReader` etc.) sunt intercalate cu handlerii de taste și de selecție; mutarea lor cere o decizie de grupare, nu doar o tăiere de linii.
+- Verificat: `dotnet build` fără erori și fără avertismente; `verify-source.ps1 -Mode Full` trecut.
+- Copia de siguranță dinaintea mutării AI este în folderul temporar al sesiunii (`MainWindow.before-ai.cs`).
+
+## 2026-11-15 — MainWindow în fișiere partial: actualizarea RSS și NewsBlur (necomis)
+
+- Cerere: al cincilea punct al ordinii propuse după auditul extern, fără schimbare de comportament, fără commit.
+- Mutat, fără modificarea codului: `MainWindow.Refresh.cs` (comenzile Actualizează, Actualizează tot, Oprește, Reîncearcă și metodele de actualizare RSS, 330 de linii din `MainWindow.xaml.cs`) și `MainWindow.NewsBlur.cs` (cele 22 de metode NewsBlur, 1.278 de linii). `MainWindow.xaml.cs` scade de la 4.581 la 2.997 de linii.
+- Neatins: câmpurile, tipurile imbricate și `FeedDetails_Click`, care a rămas în fișierul principal.
+- Verificat: `dotnet build` fără erori și fără avertismente după fiecare mutare; `verify-source.ps1 -Mode Full` trecut. Testele găsesc membrii prin reflecție după nume, deci nu depind de fișier.
+- Rămas: grupele de AI, navigare și citire din `MainWindow.xaml.cs`, pentru pași următori.
+- Copia de siguranță dinaintea mutării NewsBlur este în folderul temporar al sesiunii (`MainWindow.before-newsblur.cs`).
+
+## 2026-11-15 — Serviciul de transcript: un ajutor comun în loc de duplicat (necomis)
+
+- Cerere: al patrulea punct al ordinii propuse după auditul extern.
+- Constatat: auditul spune că serviciul de transcript este din sesiunea anterioară și posibil depășit. Fals: fișierul există în tagul `v1.6.7` și este folosit și testat. Din duplicatele indicate, `ReadPageAsync`, `GetString` și `ReadText` vin deja din `YouTubeCommon`. Rămâneau două: `GetSimpleText`, aproape identic cu `ReadText`, și `CreateClient`, care diferă de `CreateSearchClient` prin `UseCookies = false` și timeout de 30 de secunde.
+- Modificat: `Services/Rss/YouTubeTranscriptService.cs`. Numele limbii folosește `ReadText` din `YouTubeCommon`, iar `GetSimpleText` a fost șters. Diferența: `ReadText` taie spațiile de la capete, dar numele trece oricum prin curățare sau cade pe codul limbii.
+- Nemodificat, intenționat: `CreateClient` rămâne separat. Unirea cu clientul de căutare ar trimite cookie-urile între cereri și ar schimba timeout-ul descărcării.
+- Verificat: `verify-source.ps1 -Mode Full` trecut, cu aceleași 356 de verificări.
+- Neverificat: lista de limbi a unui videoclip real. Testele folosesc JSON inventat.
+
 ## 2026-11-15 — Pachete vulnerabile verificate în CI (necomis)
 
 - Cerere: al treilea punct al ordinii propuse după auditul extern.

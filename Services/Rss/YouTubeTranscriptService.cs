@@ -189,7 +189,7 @@ internal static class YouTubeTranscriptService
         foreach (var trackElement in captionTracks.EnumerateArray())
         {
             var languageCode = GetString(trackElement, "languageCode");
-            var languageName = GetSimpleText(trackElement, "name");
+            var languageName = ReadText(trackElement, "name");
             // baseUrl poate conține \u0026 în loc de & — JsonDocument deserializează automat escape-urile Unicode
             var trackBaseUrl = GetString(trackElement, "baseUrl");
             var kind = GetString(trackElement, "kind");
@@ -348,34 +348,8 @@ internal static class YouTubeTranscriptService
         return cleaned.Length > 0 ? cleaned : code;
     }
 
-    private static string GetSimpleText(JsonElement element, string property)
-    {
-        if (element.ValueKind != JsonValueKind.Object
-            || !element.TryGetProperty(property, out var value))
-            return string.Empty;
-
-        if (value.ValueKind == JsonValueKind.String)
-            return value.GetString() ?? string.Empty;
-
-        if (value.ValueKind == JsonValueKind.Object
-            && value.TryGetProperty("simpleText", out var simple)
-            && simple.ValueKind == JsonValueKind.String)
-            return simple.GetString() ?? string.Empty;
-
-        // Răspunsurile Innertube folosesc {"runs":[{"text":"..."}]}.
-        if (value.ValueKind == JsonValueKind.Object
-            && value.TryGetProperty("runs", out var runs)
-            && runs.ValueKind == JsonValueKind.Array)
-        {
-            var builder = new StringBuilder();
-            foreach (var run in runs.EnumerateArray())
-                builder.Append(GetString(run, "text"));
-            return builder.ToString();
-        }
-
-        return string.Empty;
-    }
-
+    // Clientul rămâne separat de cel de căutare: nu trimite cookie-urile între cereri (UseCookies = false)
+    // și are timeout de 30 de secunde, pentru descărcarea transcriptului. Unirea ar schimba ambele comportamente.
     private static HttpClient CreateClient()
     {
         var handler = new HttpClientHandler
