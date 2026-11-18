@@ -38,18 +38,20 @@ internal static class YouTubeChannelVideosService
     }
 
     /// <summary>Prima pagină cu videoclipurile canalului.</summary>
-    internal static Task<YouTubeVideoSearchService.YouTubeVideoPage> FirstPageAsync(string channelId, CancellationToken cancellationToken = default) =>
-        FirstPageAsync(channelId, Client, cancellationToken);
+    internal static Task<YouTubeVideoSearchService.YouTubeVideoPage> FirstPageAsync(string channelId, string? language = null, CancellationToken cancellationToken = default) =>
+        FirstPageAsync(channelId, language, Client, cancellationToken);
 
     internal static async Task<YouTubeVideoSearchService.YouTubeVideoPage> FirstPageAsync(
         string channelId,
+        string? language,
         HttpClient client,
         CancellationToken cancellationToken = default)
     {
         if (!ChannelIdPattern.IsMatch(channelId ?? string.Empty))
             throw new InvalidOperationException(UiText.Translate("Feedul selectat nu este un canal YouTube."));
 
-        using var request = new HttpRequestMessage(HttpMethod.Get, $"https://www.youtube.com/channel/{Uri.EscapeDataString(channelId!)}/videos?hl=en");
+        // Limba interfeței, ca la căutarea video: YouTube trimite titlurile traduse de autor în această limbă, dacă există.
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"https://www.youtube.com/channel/{Uri.EscapeDataString(channelId!)}/videos?hl={Uri.EscapeDataString(SafeLanguage(language))}");
         request.Headers.Accept.ParseAdd("text/html,application/xhtml+xml");
         // Fără cookie-ul de consimțământ, YouTube redirecționează din UE la pagina de consimțământ, fără date.
         request.Headers.TryAddWithoutValidation("Cookie", ConsentCookie);
@@ -63,17 +65,18 @@ internal static class YouTubeChannelVideosService
     }
 
     /// <summary>Pagina următoare, cu jetonul primit de la pagina anterioară.</summary>
-    internal static Task<YouTubeVideoSearchService.YouTubeVideoPage> NextPageAsync(string continuationToken, CancellationToken cancellationToken = default) =>
-        NextPageAsync(continuationToken, Client, cancellationToken);
+    internal static Task<YouTubeVideoSearchService.YouTubeVideoPage> NextPageAsync(string continuationToken, string? language = null, CancellationToken cancellationToken = default) =>
+        NextPageAsync(continuationToken, language, Client, cancellationToken);
 
     internal static async Task<YouTubeVideoSearchService.YouTubeVideoPage> NextPageAsync(
         string continuationToken,
+        string? language,
         HttpClient client,
         CancellationToken cancellationToken = default)
     {
         var body = JsonSerializer.Serialize(new
         {
-            context = new { client = new { clientName = "WEB", clientVersion = WebClientVersion, hl = "en", gl = "US" } },
+            context = new { client = new { clientName = "WEB", clientVersion = WebClientVersion, hl = SafeLanguage(language), gl = "US" } },
             continuation = continuationToken
         });
         using var request = new HttpRequestMessage(HttpMethod.Post, "https://www.youtube.com/youtubei/v1/browse?prettyPrint=false")
@@ -90,6 +93,8 @@ internal static class YouTubeChannelVideosService
         EnsureSuccess(response);
         return YouTubeVideoSearchService.ParseContinuationJson(await YouTubeCommon.ReadPageAsync(response.Content, cancellationToken).ConfigureAwait(false));
     }
+
+    private static string SafeLanguage(string? language) => string.IsNullOrWhiteSpace(language) ? "en" : language.Trim();
 
     private static void EnsureSuccess(HttpResponseMessage response)
     {

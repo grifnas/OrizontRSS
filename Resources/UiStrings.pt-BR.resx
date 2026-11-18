@@ -5314,6 +5314,13 @@ Ler mais tarde: {4}</value>
   <data name="Descărcarea transcriptului a eșuat cu eroarea {0}." xml:space="preserve"><value>O download da transcrição falhou com o erro {0}.</value></data>
   <data name="Deschide fereastra de import transcript pentru videoclipul selectat." xml:space="preserve"><value>Abre a janela de importação da transcrição do vídeo selecionado.</value></data>
   <data name="Importă transcript" xml:space="preserve"><value>Importar transcrição</value></data>
+  <data name="Cu furnizorul AI implicit" xml:space="preserve"><value>Com o provedor de IA padrão</value></data>
+  <data name="Traduce transcriptul cu DeepL sau cu furnizorul AI implicit din setări." xml:space="preserve"><value>Traduz a transcrição com o DeepL ou com o provedor de IA padrão das configurações.</value></data>
+  <data name="Se traduce transcriptul cu {0}. Așteaptă." xml:space="preserve"><value>Traduzindo a transcrição com {0}. Aguarde.</value></data>
+  <data name="Transcriptul a fost tradus cu {0}." xml:space="preserve"><value>A transcrição foi traduzida com {0}.</value></data>
+  <data name="Traducerea transcriptului nu a reușit: {0}" xml:space="preserve"><value>Não foi possível traduzir a transcrição: {0}</value></data>
+  <data name="Nu există transcript de tradus." xml:space="preserve"><value>Não há transcrição para traduzir.</value></data>
+  <data name="Tradu transcriptul de mai jos în limba interfeței. Păstrează rândurile și marcajele de timp, fără comentarii." xml:space="preserve"><value>Traduza a transcrição abaixo para o idioma da interface. Mantenha as linhas e as marcas de tempo, sem comentários.</value></data>
   <data name="Importul transcriptului nu a reușit: {0}" xml:space="preserve"><value>Falha ao importar a transcrição: {0}</value></data>
   <data name="Include timestamp-uri" xml:space="preserve"><value>Incluir horários</value></data>
   <data name="Limbă schimbată. Apasă Importă transcript pentru a importa din nou." xml:space="preserve"><value>O idioma foi alterado. Pressione Importar transcrição para importar novamente.</value></data>

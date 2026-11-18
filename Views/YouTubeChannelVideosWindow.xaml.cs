@@ -42,9 +42,10 @@ public partial class YouTubeChannelVideosWindow : Window
         StatusText.Text = T("Se încarcă videoclipurile canalului.");
         try
         {
+            var language = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             var page = first
-                ? await YouTubeChannelVideosService.FirstPageAsync(_channelId)
-                : await YouTubeChannelVideosService.NextPageAsync(_continuation);
+                ? await YouTubeChannelVideosService.FirstPageAsync(_channelId, language)
+                : await YouTubeChannelVideosService.NextPageAsync(_continuation, language);
             foreach (var video in page.Videos)
             {
                 if (!_seenVideoIds.Add(video.VideoId)) continue;

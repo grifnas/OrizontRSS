@@ -5316,6 +5316,13 @@ Mai târziu: {4}</value>
   <data name="Descărcarea transcriptului a eșuat cu eroarea {0}." xml:space="preserve"><value>Descărcarea transcriptului a eșuat cu eroarea {0}.</value></data>
   <data name="Deschide fereastra de import transcript pentru videoclipul selectat." xml:space="preserve"><value>Deschide fereastra de import transcript pentru videoclipul selectat.</value></data>
   <data name="Importă transcript" xml:space="preserve"><value>Importă transcript</value></data>
+  <data name="Cu furnizorul AI implicit" xml:space="preserve"><value>Cu furnizorul AI implicit</value></data>
+  <data name="Traduce transcriptul cu DeepL sau cu furnizorul AI implicit din setări." xml:space="preserve"><value>Traduce transcriptul cu DeepL sau cu furnizorul AI implicit din setări.</value></data>
+  <data name="Se traduce transcriptul cu {0}. Așteaptă." xml:space="preserve"><value>Se traduce transcriptul cu {0}. Așteaptă.</value></data>
+  <data name="Transcriptul a fost tradus cu {0}." xml:space="preserve"><value>Transcriptul a fost tradus cu {0}.</value></data>
+  <data name="Traducerea transcriptului nu a reușit: {0}" xml:space="preserve"><value>Traducerea transcriptului nu a reușit: {0}</value></data>
+  <data name="Nu există transcript de tradus." xml:space="preserve"><value>Nu există transcript de tradus.</value></data>
+  <data name="Tradu transcriptul de mai jos în limba interfeței. Păstrează rândurile și marcajele de timp, fără comentarii." xml:space="preserve"><value>Tradu transcriptul de mai jos în limba interfeței. Păstrează rândurile și marcajele de timp, fără comentarii.</value></data>
   <data name="Importul transcriptului nu a reușit: {0}" xml:space="preserve"><value>Importul transcriptului nu a reușit: {0}</value></data>
   <data name="Include timestamp-uri" xml:space="preserve"><value>Include timestamp-uri</value></data>
   <data name="Limbă schimbată. Apasă Importă transcript pentru a importa din nou." xml:space="preserve"><value>Limbă schimbată. Apasă Importă transcript pentru a importa din nou.</value></data>

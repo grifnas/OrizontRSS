@@ -26,6 +26,7 @@ public static class ShortcutBindings
         new("Filters", "Filtre articole", "Ctrl+Shift+F"),
         new("Unread", "Toate articolele necitite", "Ctrl+Shift+U"),
         new("FullText", "Adu textul complet de pe site", "Ctrl+Shift+R"),
+        new("ChannelVideos", "Vezi toate videoclipurile canalului YouTube", "Ctrl+Alt+V"),
         new("Search", "Caută în articole", "Ctrl+F"),
         new("SearchAlternate", "Caută în articole — alternativă", "F3"),
         new("Read", "Marchează articolele selectate ca citite sau necitite.", "R", "Articles"),

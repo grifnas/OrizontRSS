@@ -1010,6 +1010,7 @@ public partial class MainWindow : Window
             case "Filters": ArticleFilters_Click(this, e); break;
             case "Unread": ShowUnreadOverview_Click(this, e); break;
             case "FullText": LoadFullArticle_Click(this, e); break;
+            case "ChannelVideos": ChannelVideos_Click(this, e); break;
             case "Search":
             case "SearchAlternate": FocusArticleSearch_Click(this, e); break;
         }

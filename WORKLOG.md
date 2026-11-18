@@ -1,5 +1,27 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-18 — Ctrl+Alt+V pentru videoclipurile canalului YouTube (necomis)
+
+- Cerere: o combinație de taste pentru „Vezi toate videoclipurile canalului YouTube”, de exemplu Ctrl+Alt+V.
+- Modificat: `Services/Content/ShortcutBindings.cs` (comanda nouă `ChannelVideos`, implicit Ctrl+Alt+V, configurabilă ca celelalte); `MainWindow.xaml.cs` (comanda este tratată în fereastra principală); `MainWindow.xaml` (meniul Feeduri → Organizare arată Ctrl+Alt+V); `tests/ShortcutsSmoke/Program.cs` (22 de comenzi și verificarea combinației implicite). Numele comenzii folosește textul de meniu existent, deja tradus.
+- Verificat: `verify-source.ps1 -Mode Full` trecut; ShortcutsSmoke 99 de verificări.
+- Neverificat cu JAWS. Ghidurile de utilizator nu menționează încă scurtătura.
+
+## 2026-11-18 — Lista videoclipurilor canalului în limba interfeței (necomis)
+
+- Constatat de utilizator: titlurile din „Vezi toate videoclipurile canalului YouTube” apăreau în engleză. Cauza: `YouTubeChannelVideosService` cerea fix `hl=en`, atât la prima pagină, cât și la paginile următoare, din commitul `8a1c380`. Căutarea video folosea deja limba interfeței.
+- Modificat: `Services/Rss/YouTubeChannelVideosService.cs` primește limba (`FirstPageAsync` și `NextPageAsync`), cu engleza ca rezervă; `Views/YouTubeChannelVideosWindow.xaml.cs` trimite limba interfeței, ca fereastra de căutare.
+- Limită: YouTube arată titlul în limba cerută doar dacă autorul canalului a pus o traducere; altfel rămâne titlul original.
+- Verificat: build fără erori și fără avertismente; `verify-source.ps1 -Mode Full` trecut. Neverificat pe un canal real, cu JAWS.
+
+## 2026-11-18 — Buton „Traducere” cu submeniu în fereastra de transcript (necomis)
+
+- Cerere: renunțarea la butonul de încărcare a limbilor; în locul lui, un buton de traducere cu submeniu: DeepL și furnizorul AI implicit din setări.
+- Modificat: `Views/YouTubeTranscriptWindow.xaml` (butonul „Traducere” cu meniul „Traduce cu DeepL” și „Cu furnizorul AI implicit”); `Views/YouTubeTranscriptWindow.xaml.cs` (traducerea transcriptului; setările se citesc din `FeedStore`, cheile se decriptează cu `SecretProtector`, ca în fereastra principală); `Resources/UiStrings*.resx` (șapte texte noi, în cele opt limbi). Încărcarea limbilor a fost anulată și nu mai există în cod.
+- Comportament: traducerea înlocuiește textul transcriptului din fereastră; după traducere se poate copia sau salva. Dacă DeepL sau furnizorul AI nu sunt activate, sau lipsește cheia, fereastra afișează mesajul corespunzător.
+- Verificat: build fără erori și fără avertismente; `verify-localization.ps1 -RequireComplete` trecut (1731 de chei, fără lipsuri); `verify-source.ps1 -Mode Full` trecut.
+- Neverificat: traducerea reală cu DeepL sau cu un furnizor AI, și comportamentul cu JAWS.
+
 ## 2026-11-15 — Confirmări după publicarea v1.6.8 (confirmate de utilizator)
 
 - Instalarea cu installerul 1.6.8 a reușit, cu JAWS.

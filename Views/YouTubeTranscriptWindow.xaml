@@ -89,6 +89,18 @@
 
       <!-- Rândul 2: Butoane acțiune -->
       <WrapPanel Grid.Row="2" HorizontalAlignment="Right" Margin="0,16,0,0">
+        <Button x:Name="TranslateButton"
+                Content="Traducere"
+                Click="Translate_Click"
+                IsEnabled="False"
+                AutomationProperties.HelpText="Traduce transcriptul cu DeepL sau cu furnizorul AI implicit din setări.">
+          <Button.ContextMenu>
+            <ContextMenu x:Name="TranslateMenu">
+              <MenuItem Header="Traduce cu DeepL" Click="TranslateDeepL_Click" />
+              <MenuItem Header="Cu furnizorul AI implicit" Click="TranslateAi_Click" />
+            </ContextMenu>
+          </Button.ContextMenu>
+        </Button>
         <Button x:Name="OpenVideoButton"
                 Content="Deschide în browser"
                 Click="OpenVideo_Click"

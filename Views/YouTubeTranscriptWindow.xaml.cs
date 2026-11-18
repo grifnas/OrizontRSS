@@ -15,6 +15,7 @@ public partial class YouTubeTranscriptWindow : Window
 {
     private readonly YouTubeVideoSearchService.YouTubeVideoCandidate _video;
     private CancellationTokenSource? _loadCancellation;
+    private CancellationTokenSource? _translationCancellation;
     private bool _transcriptLoadedFromSelectedTrack;
 
     public YouTubeTranscriptWindow(YouTubeVideoSearchService.YouTubeVideoCandidate video)
@@ -25,7 +26,11 @@ public partial class YouTubeTranscriptWindow : Window
             UiText.Translate("Transcript YouTube") + " " +
             UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
         Loaded += OnLoaded;
-        Closed += (_, _) => _loadCancellation?.Cancel();
+        Closed += (_, _) =>
+        {
+            _loadCancellation?.Cancel();
+            _translationCancellation?.Cancel();
+        };
     }
 
     // ───────────────────────────────────────────────
@@ -111,6 +116,7 @@ public partial class YouTubeTranscriptWindow : Window
             _transcriptLoadedFromSelectedTrack = true;
             CopyButton.IsEnabled = text.Length > 0;
             SaveButton.IsEnabled = text.Length > 0;
+            TranslateButton.IsEnabled = text.Length > 0;
             var lineCount = text.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
             StatusText.Text = F("Transcript importat: {0} rânduri de text. Folosește Ctrl+A și Ctrl+C pentru a copia.", lineCount);
             TranscriptText.Focus();
@@ -162,6 +168,7 @@ public partial class YouTubeTranscriptWindow : Window
             IncludeTimestamps.IsEnabled = false;
             CopyButton.IsEnabled = true;
             SaveButton.IsEnabled = true;
+            TranslateButton.IsEnabled = true;
             var lineCount = text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries).Length;
             StatusText.Text = F("Transcript importat din clipboard: {0} rânduri.", lineCount);
             TranscriptText.Focus();
@@ -235,6 +242,133 @@ public partial class YouTubeTranscriptWindow : Window
         PasteTranscriptButton.IsEnabled = !busy;
         CopyButton.IsEnabled = !busy && TranscriptText.Text.Length > 0;
         SaveButton.IsEnabled = !busy && TranscriptText.Text.Length > 0;
+        TranslateButton.IsEnabled = !busy && TranscriptText.Text.Length > 0 && _translationCancellation is null;
+    }
+
+    // ───────────────────────────────────────────────
+    // Traducere
+    // ───────────────────────────────────────────────
+
+    private void Translate_Click(object sender, RoutedEventArgs e)
+    {
+        TranslateMenu.PlacementTarget = TranslateButton;
+        TranslateMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        TranslateMenu.IsOpen = true;
+    }
+
+    private async void TranslateDeepL_Click(object sender, RoutedEventArgs e) => await TranslateTranscriptAsync(useDeepL: true);
+
+    private async void TranslateAi_Click(object sender, RoutedEventArgs e) => await TranslateTranscriptAsync(useDeepL: false);
+
+    private async Task TranslateTranscriptAsync(bool useDeepL)
+    {
+        if (_translationCancellation is not null) return;
+        var source = TranscriptText.Text;
+        if (string.IsNullOrWhiteSpace(source))
+        {
+            StatusText.Text = T("Nu există transcript de tradus.");
+            return;
+        }
+
+        var settings = await new FeedStore().LoadSettingsAsync();
+        string providerName;
+        Func<CancellationToken, Task<string>> translate;
+
+        if (useDeepL)
+        {
+            providerName = "DeepL";
+            if (!settings.DeepLEnabled)
+            {
+                StatusText.Text = T("DeepL nu este activat. Deschide Setări, Setări Inteligență artificială, testează cheia DeepL și apasă Salvează.");
+                return;
+            }
+            string deepLKey;
+            try { deepLKey = SecretProtector.Unprotect(settings.EncryptedDeepLKey); }
+            catch
+            {
+                StatusText.Text = T("Cheia DeepL salvată nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială.");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(deepLKey))
+            {
+                StatusText.Text = T("Nu există o cheie DeepL salvată. Deschide Setări Inteligență artificială.");
+                return;
+            }
+            var targetLanguage = DeepLConnection.ResolveTargetLanguage(settings.DeepLTargetLanguage);
+            translate = cancellation => new DeepLConnection().TranslateAsync(deepLKey, source, targetLanguage, cancellation);
+        }
+        else
+        {
+            var provider = AiProviderIds.Normalize(settings.AiDefaultProvider);
+            providerName = AiProviderIds.DisplayName(provider);
+            var enabled = provider switch
+            {
+                AiProviderIds.OpenAI => settings.OpenAiEnabled,
+                AiProviderIds.Mistral => settings.MistralEnabled,
+                AiProviderIds.DeepSeek => settings.DeepSeekEnabled,
+                _ => settings.GeminiEnabled
+            };
+            if (!enabled)
+            {
+                StatusText.Text = F("Furnizorul AI implicit nu este activat. Deschide Setări Inteligență artificială și verifică cheia API pentru {0}.", providerName);
+                return;
+            }
+            var encryptedKey = provider switch
+            {
+                AiProviderIds.OpenAI => settings.EncryptedOpenAiKey,
+                AiProviderIds.Mistral => settings.EncryptedMistralKey,
+                AiProviderIds.DeepSeek => settings.EncryptedDeepSeekKey,
+                _ => settings.EncryptedGeminiKey
+            };
+            var model = provider switch
+            {
+                AiProviderIds.Mistral => settings.MistralModel,
+                AiProviderIds.DeepSeek => settings.DeepSeekModel,
+                _ => settings.OpenAiModel
+            };
+            string aiKey;
+            try { aiKey = SecretProtector.Unprotect(encryptedKey); }
+            catch
+            {
+                StatusText.Text = F("Cheia API pentru {0} nu poate fi citită pentru acest cont Windows. Introdu cheia din nou în Setări Inteligență artificială.", providerName);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(aiKey))
+            {
+                StatusText.Text = F("Nu există o cheie API pentru {0}. Deschide Setări Inteligență artificială.", providerName);
+                return;
+            }
+            var prompt = $"{T("Tradu transcriptul de mai jos în limba interfeței. Păstrează rândurile și marcajele de timp, fără comentarii.")}\n\n{source}";
+            var instructions = settings.AiInstructions;
+            translate = cancellation => new AiProviderService().GenerateAsync(provider, aiKey, model, instructions, prompt, cancellation);
+        }
+
+        var cancellation = new CancellationTokenSource();
+        _translationCancellation = cancellation;
+        TranslateButton.IsEnabled = false;
+        StatusText.Text = F("Se traduce transcriptul cu {0}. Așteaptă.", providerName);
+
+        try
+        {
+            var translated = await translate(cancellation.Token);
+            TranscriptText.Text = translated;
+            _transcriptLoadedFromSelectedTrack = false;
+            CopyButton.IsEnabled = translated.Length > 0;
+            SaveButton.IsEnabled = translated.Length > 0;
+            StatusText.Text = F("Transcriptul a fost tradus cu {0}.", providerName);
+            TranscriptText.Focus();
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
+        catch (Exception exception)
+        {
+            StatusText.Text = F("Traducerea transcriptului nu a reușit: {0}", exception.Message);
+        }
+        finally
+        {
+            _translationCancellation = null;
+            cancellation.Dispose();
+            TranslateButton.IsEnabled = TranscriptText.Text.Length > 0;
+        }
     }
 
     private static string T(string source) => UiText.Translate(source);

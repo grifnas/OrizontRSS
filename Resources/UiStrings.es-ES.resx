@@ -5085,6 +5085,13 @@ Leer más tarde: {4}</value>
   <data name="Descărcarea transcriptului a eșuat cu eroarea {0}." xml:space="preserve"><value>La descarga de la transcripción falló con el error {0}.</value></data>
   <data name="Deschide fereastra de import transcript pentru videoclipul selectat." xml:space="preserve"><value>Abre la ventana de importación de transcripción para el video seleccionado.</value></data>
   <data name="Importă transcript" xml:space="preserve"><value>Importar transcripción</value></data>
+  <data name="Cu furnizorul AI implicit" xml:space="preserve"><value>Con el proveedor de IA predeterminado</value></data>
+  <data name="Traduce transcriptul cu DeepL sau cu furnizorul AI implicit din setări." xml:space="preserve"><value>Traduce la transcripción con DeepL o con el proveedor de IA predeterminado de la configuración.</value></data>
+  <data name="Se traduce transcriptul cu {0}. Așteaptă." xml:space="preserve"><value>Traduciendo la transcripción con {0}. Espera.</value></data>
+  <data name="Transcriptul a fost tradus cu {0}." xml:space="preserve"><value>La transcripción se tradujo con {0}.</value></data>
+  <data name="Traducerea transcriptului nu a reușit: {0}" xml:space="preserve"><value>No se pudo traducir la transcripción: {0}</value></data>
+  <data name="Nu există transcript de tradus." xml:space="preserve"><value>No hay transcripción que traducir.</value></data>
+  <data name="Tradu transcriptul de mai jos în limba interfeței. Păstrează rândurile și marcajele de timp, fără comentarii." xml:space="preserve"><value>Traduce la transcripción siguiente al idioma de la interfaz. Conserva las líneas y las marcas de tiempo, sin comentarios.</value></data>
   <data name="Importul transcriptului nu a reușit: {0}" xml:space="preserve"><value>Error al importar la transcripción: {0}</value></data>
   <data name="Include timestamp-uri" xml:space="preserve"><value>Incluir marcas de tiempo</value></data>
   <data name="Limbă schimbată. Apasă Importă transcript pentru a importa din nou." xml:space="preserve"><value>Idioma cambiado. Pulsa Importar transcripción para importarla de nuevo.</value></data>
