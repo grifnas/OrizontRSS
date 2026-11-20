@@ -2,14 +2,14 @@
 
 ## Ultimul release public
 
-- Versiune: **v1.6.8**, publicată la 15 noiembrie 2026.
-- Release oficial: [github.com/grifnas/OrizontRSS/releases/tag/v1.6.8](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.8)
+- Versiune: **v1.6.9**, publicată la 20 noiembrie 2026.
+- Release oficial: [github.com/grifnas/OrizontRSS/releases/tag/v1.6.9](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.9)
 - Pagina de prezentare: [grifnas.github.io/OrizontRSS](https://grifnas.github.io/OrizontRSS/)
-- Codul exact al versiunii: [tagul v1.6.8](https://github.com/grifnas/OrizontRSS/tree/v1.6.8)
-- Commitul tagului v1.6.8: `b4f5f95`, din care s-au construit pachetele. Ramura `main` conține acest commit și actualizările ulterioare, de documentație și de manifeste.
-- Installer autonom offline: `OrizontSetup-1.6.8.exe` — 252.988.901 bytes; SHA-256 `147624A9042E744503695A7E8969ADB8D3DBCF8D930EAC18020DB4E55EBAD7C1`.
-- Variantă portabilă: `Orizont-RSS-1.6.8-win-x64.zip` — 91.190.374 bytes; SHA-256 `91018D157A14C004EDFE7F7AB69DB707DE94D58DAA9413652FE8AB099A73EDEE`.
-- Arhivă sursă: `Orizont-RSS-1.6.8-source.zip` — 14.723.901 bytes; SHA-256 `19DE01BA81180D6E46ED8A5745511DEAAF6C4222CE8FF9CA1E7BD37188BDCBB4`.
+- Codul exact al versiunii: [tagul v1.6.9](https://github.com/grifnas/OrizontRSS/tree/v1.6.9)
+- Commitul tagului v1.6.9: `8b6392e`, din care s-au construit pachetele. Ramura `main` conține acest commit și actualizările ulterioare, de documentație și de manifeste.
+- Installer autonom offline: `OrizontSetup-1.6.9.exe` — 252.992.997 bytes; SHA-256 `DE82C2DF427A3840D4892D002E03457ECBFEFDC7370CE33B8FE39C24986309CB`.
+- Variantă portabilă: `Orizont-RSS-1.6.9-win-x64.zip` — 91.196.354 bytes; SHA-256 `75EB3DAFD772E481528D821F532819F1D3044BA7C70C0B94330399DBABD2ABEB`.
+- Arhivă sursă: `Orizont-RSS-1.6.9-source.zip` — 14.734.927 bytes; SHA-256 `E25509A96327BAB07B89BE11C804F875673C11ED73A919D27B75150182B5CEB8`.
 - Cele trei fișiere `.sha256` sunt atașate alături de pachete.
 
 Pachetele includ .NET și Windows Desktop 8.0.31; nu cer instalarea separată a .NET Desktop Runtime. WebReader folosește Microsoft Edge WebView2 Runtime. Hash-urile locale au fost comparate cu digesturile afișate de GitHub.

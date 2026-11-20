@@ -2,6 +2,19 @@
 
 Acest fișier descrie numai ultima versiune publicată și lucrările ulterioare încă nepublicate. Istoricul mai vechi poate fi recuperat din istoricul Git și din release-urile publice anterioare; nu este copiat în această pagină activă.
 
+## Versiunea publicată v1.6.9 — 20 noiembrie 2026
+
+Release-ul public v1.6.9 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.9). Notele complete sunt în release-ul de pe GitHub.
+
+- Fereastra de transcript are butonul „Traducere”, cu DeepL sau cu furnizorul AI implicit, într-o limbă aleasă din listă.
+- Listele „Limbă transcript” și „Limba țintă a traducerii” anunță limba aleasă la fiecare săgeată.
+- Butonul „Închide” din fereastra de transcript funcționează cu clic.
+- Lista videoclipurilor unui canal cere titlurile în limba interfeței.
+- Ctrl+Alt+V deschide lista videoclipurilor canalului; Ctrl+Alt+Y deschide căutarea YouTube. Ambele pot fi schimbate din setări.
+- Cu lista de foldere deschisă, Escape închide lista, iar Delete nu mai șterge folderul.
+- Lista de limbi țintă DeepL din Setări are nume de limbi în limba interfeței.
+- Ajutorul listei de feeduri nu mai promite că Tab duce la căutarea din Articole.
+
 ## Versiunea publicată v1.6.8 — 15 noiembrie 2026
 
 Release-ul public v1.6.8 este disponibil pe [GitHub Releases](https://github.com/grifnas/OrizontRSS/releases/tag/v1.6.8). Notele complete sunt în release-ul de pe GitHub.
