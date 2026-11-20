@@ -42,13 +42,7 @@
                       AutomationProperties.Name="Limbă transcript"
                       AutomationProperties.HelpText="Selectează limba subtitrării pentru videoclip."
                       IsEnabled="False"
-                      SelectionChanged="TranscriptLanguage_SelectionChanged">
-              <ComboBox.ItemContainerStyle>
-                <Style TargetType="ComboBoxItem">
-                  <Setter Property="AutomationProperties.Name" Value="{Binding DisplayName}" />
-                </Style>
-              </ComboBox.ItemContainerStyle>
-            </ComboBox>
+                      SelectionChanged="TranscriptLanguage_SelectionChanged" />
           </StackPanel>
 
           <!-- Checkbox timestamp-uri -->
@@ -89,6 +83,11 @@
 
       <!-- Rândul 2: Butoane acțiune -->
       <WrapPanel Grid.Row="2" HorizontalAlignment="Right" Margin="0,16,0,0">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
+          <Label Content="Limba țintă a traducerii" Target="{Binding ElementName=TranslationTarget}" />
+          <ComboBox x:Name="TranslationTarget" MinWidth="180"
+                    AutomationProperties.Name="Limba țintă a traducerii" />
+        </StackPanel>
         <Button x:Name="TranslateButton"
                 Content="Traducere"
                 Click="Translate_Click"
@@ -119,7 +118,7 @@
                 Click="Save_Click"
                 IsEnabled="False"
                 AutomationProperties.HelpText="Salvează transcriptul ca fișier text UTF-8 pe disc." />
-        <Button Content="Închide" IsCancel="True" />
+        <Button Content="Închide" IsCancel="True" Click="Close_Click" />
       </WrapPanel>
     </Grid>
   </DockPanel>

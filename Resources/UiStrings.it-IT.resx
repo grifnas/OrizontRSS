@@ -679,8 +679,8 @@
     <value>Utilizza le frecce Su e Giù per leggere. La scheda si sposta sul campo per continuare la conversazione.</value>
     <comment>Sursă XAML: AiResponseWindow.xaml</comment>
   </data>
-  <data name="Folosește săgețile Sus și Jos pentru feeduri. Ctrl sau Shift cu săgețile selectează mai multe feeduri. Delete șterge feedurile selectate după confirmare. Tab trece la căutarea din Articole. F6 trece la Articole. Shift+F6 trece la Conținut articol. Ctrl+1 revine aici." xml:space="preserve">
-    <value>Utilizza le frecce su e giù per i feed. Ctrl o Shift con le frecce selezionano più feed. Elimina elimina i feed selezionati dopo la conferma. La scheda passa alla ricerca negli articoli. F6 passa agli Articoli. Shift+F6 passa al Contenuto dell'articolo. Ctrl+1 ritorna qui.</value>
+  <data name="Folosește săgețile Sus și Jos pentru feeduri. Ctrl sau Shift cu săgețile selectează mai multe feeduri. Delete șterge feedurile selectate după confirmare. F6 trece la Articole. Shift+F6 trece la Conținut articol. Ctrl+1 revine aici." xml:space="preserve">
+    <value>Utilizza le frecce su e giù per i feed. Ctrl o Shift con le frecce selezionano più feed. Elimina elimina i feed selezionati dopo la conferma. F6 passa agli Articoli. Shift+F6 passa al Contenuto dell'articolo. Ctrl+1 ritorna qui.</value>
     <comment>Sursă XAML: MainWindow.xaml</comment>
   </data>
   <data name="Folosește săgețile Sus și Jos pentru parcurgerea scurtăturilor. Escape închide fereastra." xml:space="preserve">
@@ -5316,13 +5316,14 @@ Leggi più tardi: {4}</value>
   <data name="Descărcarea transcriptului a eșuat cu eroarea {0}." xml:space="preserve"><value>Download della trascrizione non riuscito: errore {0}.</value></data>
   <data name="Deschide fereastra de import transcript pentru videoclipul selectat." xml:space="preserve"><value>Apre la finestra di importazione della trascrizione per il video selezionato.</value></data>
   <data name="Importă transcript" xml:space="preserve"><value>Importa trascrizione</value></data>
+  <data name="Tradu transcriptul de mai jos în limba: {0}. Păstrează rândurile și marcajele de timp, fără comentarii." xml:space="preserve"><value>Traduci la trascrizione seguente in questa lingua: {0}. Mantieni le righe e i marcatori temporali, senza commenti.</value></data>
+  <data name="Limba țintă a traducerii" xml:space="preserve"><value>Lingua di destinazione della traduzione</value></data>
   <data name="Cu furnizorul AI implicit" xml:space="preserve"><value>Con il fornitore di IA predefinito</value></data>
   <data name="Traduce transcriptul cu DeepL sau cu furnizorul AI implicit din setări." xml:space="preserve"><value>Traduce la trascrizione con DeepL o con il fornitore di IA predefinito delle impostazioni.</value></data>
   <data name="Se traduce transcriptul cu {0}. Așteaptă." xml:space="preserve"><value>Traduzione della trascrizione con {0}. Attendi.</value></data>
   <data name="Transcriptul a fost tradus cu {0}." xml:space="preserve"><value>La trascrizione è stata tradotta con {0}.</value></data>
   <data name="Traducerea transcriptului nu a reușit: {0}" xml:space="preserve"><value>Non è stato possibile tradurre la trascrizione: {0}</value></data>
   <data name="Nu există transcript de tradus." xml:space="preserve"><value>Non c'è nessuna trascrizione da tradurre.</value></data>
-  <data name="Tradu transcriptul de mai jos în limba interfeței. Păstrează rândurile și marcajele de timp, fără comentarii." xml:space="preserve"><value>Traduci la trascrizione seguente nella lingua dell'interfaccia. Mantieni le righe e i marcatori temporali, senza commenti.</value></data>
   <data name="Importul transcriptului nu a reușit: {0}" xml:space="preserve"><value>Importazione della trascrizione non riuscita: {0}</value></data>
   <data name="Include timestamp-uri" xml:space="preserve"><value>Includi timestamp</value></data>
   <data name="Limbă schimbată. Apasă Importă transcript pentru a importa din nou." xml:space="preserve"><value>Lingua modificata. Premi Importa trascrizione per importarla di nuovo.</value></data>

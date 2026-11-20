@@ -1,5 +1,77 @@
 # Jurnalul intervențiilor Orizont RSS
 
+## 2026-11-20 — Lista limbii țintă DeepL din Setări (necomis, de testat cu JAWS)
+
+- Lista avea aceeași construcție ca lista veche din transcript: `ComboBoxItem` construite în cod. Acum conține texte simple, iar codurile stau în paralel, după index (`_deepLTargetCodes`).
+- Numele afișate vin din `DeepLConnection.TargetDisplayName`, mutat din fereastra de transcript: numele în limba interfeței, cu numele nativ în paranteză. Testul de localizare respingea „Română” ca text netradus în listă.
+- Neatinse, aceeași construcție: listele Google Translate din Setări (sursă și țintă). De retestat și de reparat după același model, dacă e nevoie.
+- Verificat: `verify-source.ps1 -Mode Full` trecut.
+
+## 2026-11-20 — Opțiuni notate pentru mai târziu (nu prioritare)
+
+- Notate în `docs/ROADMAP.md`, la secțiunea „Opțiuni posibile, nefiind prioritare”: marcaje cu timp și linkuri (varianta A), redarea doar a secvenței în playerul oficial (varianta B). Excluse: descărcarea fluxului video sau audio.
+
+## 2026-11-20 — Salvarea fragmentului din transcript: retrasă
+
+- Cerere inițială înțeleasă greșit: utilizatorul voia secvențe din videoclip, nu din transcript. Funcția care salva un fragment din transcript a fost scoasă din cod, din XAML și din resurse; nu a rămas nimic din ea.
+- Verificat după scoatere: `verify-source.ps1 -Mode Full` trecut.
+
+## 2026-11-20 — Audit de accesibilitate (Codex): primele două puncte (necomis, de testat cu JAWS)
+
+- Verificat în cod: Delete era tratat de fereastra principală înainte de lista de foldere, deci putea șterge un folder cu lista deschisă; Escape era interceptat de fereastră (oprire actualizare, AI sau voce) înainte de listă. Corectat: cu o `ComboBox` deschisă focalizată, `Window_PreviewKeyDown` nu mai tratează Escape și Delete.
+- Anunțul de selecție (`ComboBoxSelectionAnnouncer`) se emite acum numai dacă focalizarea este încă pe control, lista e închisă și valoarea afișată este încă cea anunțată.
+- Instrucțiunea despre Tab din feeduri: decizia (varianta A, aleasă de utilizator) este corectarea textului. Propoziția „Tab trece la căutarea din Articole” a fost scoasă din ajutorul listei de feeduri, din XAML și din cele opt limbi. Ordinea Tab rămâne neschimbată; căutarea se ajunge prin meniu, `Ctrl+F` sau `F3`.
+- Verificat: `verify-source.ps1 -Mode Full` trecut. Neverificat cu JAWS.
+
+## 2026-11-19 — Anunț la schimbarea selecției: confirmat o singură dată de utilizator
+
+- Confirmat de utilizator: notificarea anunță limba o singură dată la fiecare săgeată, fără dublare.
+- Rămâne de înțeles cauza primară: nu s-a stabilit dacă problema era nemodalitatea ferestrei sau altceva. Notificarea rezolvă simptomul.
+
+## 2026-11-19 — Butonul Închide din fereastra de transcript (necomis)
+
+- Constatat de utilizator: butonul „Închide” nu funcționa cu clic; doar Escape închidea fereastra. Cauză: butonul avea `IsCancel="True"` fără handler de clic, deci Escape era singura cale.
+- Modificat: `Views/YouTubeTranscriptWindow.xaml` (`Click="Close_Click"`) și `Views/YouTubeTranscriptWindow.xaml.cs` (`Close_Click` închide fereastra).
+- Verificat: `verify-source.ps1 -Mode Full` trecut. Confirmat de utilizator: butonul funcționează cu clic.
+
+## 2026-11-19 — Anunț explicit la schimbarea selecției în listele din transcript (necomis, de retestat)
+
+- Constatat de utilizator: nici după trecerea la texte simple, JAWS nu anunța limba la săgeți, în ambele liste ale ferestrei de transcript.
+- Standard: tipul de control ComboBox din UI Automation cere modelul ExpandCollapse și evenimentul de schimbare a valorii, dacă lista expune valoarea; o schimbare de selecție trebuie semnalată cititorului de ecran.
+- Diferență găsită: fereastra de transcript se deschide nemodal (`Show`) din player, care conține WebView2; căutarea YouTube, unde lista merge, se deschide modal (`ShowDialog`). Cauza exactă nu este dovedită.
+- Modificat: `Common/ComboBoxSelectionAnnouncer.cs`, nou: la o schimbare de selecție de la tastatură, cu lista închisă, ridică notificarea UIA (`RaiseNotificationEvent`) cu textul ales, ca bara de stare, pe care JAWS o citește. Atașat la „Limbă transcript” și „Limba țintă a traducerii”.
+- Verificat: `verify-source.ps1 -Mode Full` trecut. De retestat cu JAWS; poate apărea dublarea anunțului dacă JAWS citește și singur.
+
+## 2026-11-19 — Lista limbii țintă: JAWS nu anunța limba la săgeți (necomis, de retestat)
+
+- Constatat de utilizator: traducerea funcționează cu DeepL și cu AI, iar limbile apar în listă, dar trecerea cu săgețile era tăcută; JAWS citea limba doar cu Insert+săgeată.
+- Prima încercare (obiecte cu `ToString` și `ItemContainerStyle` cu `AutomationProperties.Name`) nu a schimbat nimic, confirmat de utilizator. Nici lista „Limbă transcript”, construită la fel, nu era citită corect.
+- Model care funcționează, după utilizator: lista „Tip căutare” din căutarea YouTube, care conține doar texte simple, fără stil de accesibilitate pe elemente.
+- Modificat: ambele liste din fereastra de transcript conțin acum doar textul afișat. Pistele de subtitrare și codurile limbilor țintă stau în liste paralele (`_tracks`, `_translationTargetCodes`), după indexul selectat. Stilurile `ItemContainerStyle` au fost scoase. Limbile țintă se afișează ca în lista Google Translate: numele în limba interfeței, cu numele nativ în paranteză (testul de localizare respingea „Română” ca text netradus).
+- De observat: lista limbii țintă DeepL din Setări folosește tot `ComboBoxItem` construite în cod și poate avea aceeași problemă. Neschimbată.
+- Verificat: `verify-source.ps1 -Mode Full` trecut. De retestat cu JAWS.
+
+## 2026-11-19 — Limba țintă a traducerii transcriptului (necomis)
+
+- Cerere: o listă pentru alegerea limbii țintă, ca traducerea să nu fie obligatoriu în limba interfeței.
+- Modificat: `Views/YouTubeTranscriptWindow.xaml` (lista „Limba țintă a traducerii”, înaintea butonului „Traducere”); `Views/YouTubeTranscriptWindow.xaml.cs` (lista conține „Limba interfeței aplicației” și cele 28 de limbi DeepL, ca în Setări; pornește de la limba țintă DeepL din Setări; DeepL primește codul limbii alese, iar furnizorul AI primește numele ei); `Resources/UiStrings*.resx` (eticheta nouă și o cerere AI care numește limba țintă, în cele opt limbi; cererea veche, „în limba interfeței”, a fost scoasă).
+- Verificat: `verify-source.ps1 -Mode Full` trecut; localizare 1732 de resurse, fără lipsuri. Neverificat cu JAWS și fără o traducere reală într-o limbă aleasă.
+
+## 2026-11-19 — Traducerea transcriptului cu AI confirmată de utilizator
+
+- Confirmat de utilizator: butonul „Traducere” → „Cu furnizorul AI implicit” din fereastra de transcript traduce transcriptul. Traducerea cu DeepL nu a fost încă verificată.
+
+## 2026-11-18 — Ctrl+Alt+V și Ctrl+Alt+Y confirmate de utilizator
+
+- Confirmat de utilizator: ambele scurtături funcționează. Ctrl+Alt+V deschide lista videoclipurilor canalului YouTube, iar Ctrl+Alt+Y deschide dialogul de căutare YouTube.
+
+## 2026-11-18 — Ctrl+Alt+Y pentru căutarea pe YouTube (necomis)
+
+- Cerere: Ctrl+Alt+Y să deschidă dialogul de căutare YouTube, cu lista tipurilor de căutare (canale, playlisturi, videoclipuri).
+- Modificat: `MainWindow.xaml` (meniul Descoperire feeduri noi → „Caută pe YouTube”, cu Ctrl+Alt+Y); `MainWindow.xaml.cs` (`YouTubeSearchDialog_Click` deschide `YouTubeSearchWindow` direct; adăugarea unui canal sau playlist ales folosește aceeași cale ca „Caută feeduri după subiect”, extrasă în `AddDiscoveredFeedAsync`); `Services/Content/ShortcutBindings.cs` (comanda `YouTubeSearch`, configurabilă); `tests/ShortcutsSmoke/Program.cs` (23 de comenzi). Fără texte noi: „Caută pe YouTube” era deja tradus.
+- Comportament: focusul pornește în câmpul de cuvinte, ca înainte; lista tipului de căutare este la Tab. Vizionarea videoclipurilor nu este blocată în timpul unei actualizări; numai adăugarea unui feed este.
+- Verificat: `verify-source.ps1 -Mode Full` trecut; ShortcutsSmoke 103 verificări; WorkflowSmoke 157/157. Neverificat cu JAWS.
+
 ## 2026-11-18 — Ctrl+Alt+V pentru videoclipurile canalului YouTube (necomis)
 
 - Cerere: o combinație de taste pentru „Vezi toate videoclipurile canalului YouTube”, de exemplu Ctrl+Alt+V.

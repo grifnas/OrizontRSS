@@ -934,6 +934,8 @@ public partial class MainWindow : Window
     private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         var key = e.Key == Key.System ? e.SystemKey : e.Key;
+        // Cu o listă derulantă deschisă, Escape închide lista și Delete nu șterge nimic: tratarea o face controlul.
+        if (Keyboard.FocusedElement is ComboBox { IsDropDownOpen: true } && key is Key.Escape or Key.Delete) return;
         if (HandleConfiguredShortcut(key, Keyboard.Modifiers, e)) return;
         if (key == Key.Escape && Keyboard.Modifiers == ModifierKeys.None && _isRefreshing)
         {
@@ -1011,6 +1013,7 @@ public partial class MainWindow : Window
             case "Unread": ShowUnreadOverview_Click(this, e); break;
             case "FullText": LoadFullArticle_Click(this, e); break;
             case "ChannelVideos": ChannelVideos_Click(this, e); break;
+            case "YouTubeSearch": YouTubeSearchDialog_Click(this, e); break;
             case "Search":
             case "SearchAlternate": FocusArticleSearch_Click(this, e); break;
         }
@@ -1643,7 +1646,21 @@ public partial class MainWindow : Window
         if (RejectDataChangeDuringRefresh(T("adăugarea unui feed din catalog"))) return;
         var dialog = new DiscoverTopicWindow { Owner = this };
         if (dialog.ShowDialog() != true || dialog.SelectedFeed is null) return;
-        var candidate = dialog.SelectedFeed;
+        await AddDiscoveredFeedAsync(dialog.SelectedFeed);
+    }
+
+    // Căutarea YouTube direct din fereastra principală (Ctrl+Alt+Y): videoclipurile se pot viziona fără abonare,
+    // deci verificarea actualizării în curs se face doar dacă utilizatorul alege un canal sau un playlist.
+    private async void YouTubeSearchDialog_Click(object sender, RoutedEventArgs e)
+    {
+        var dialog = new YouTubeSearchWindow { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.SelectedFeed is null) return;
+        if (RejectDataChangeDuringRefresh(T("adăugarea unui feed din catalog"))) return;
+        await AddDiscoveredFeedAsync(dialog.SelectedFeed);
+    }
+
+    private async Task AddDiscoveredFeedAsync(DiscoveredFeed candidate)
+    {
         if (FindFeedByAddress(candidate.Url) is Feed duplicate) { Say(F("Acest feed este deja abonat cu numele {0}.", duplicate.Name)); return; }
         var feedDialog = new FeedDialog { Owner = this };
         feedDialog.SetFolders(AvailableFolders());

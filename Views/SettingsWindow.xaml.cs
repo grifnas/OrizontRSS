@@ -634,7 +634,9 @@ public partial class SettingsWindow : Window
     {
         Settings.DeepLEnabled = DeepLEnabled.IsChecked == true;
         Settings.EncryptedDeepLKey = string.IsNullOrWhiteSpace(DeepLKey.Password) ? null : SecretProtector.Protect(DeepLKey.Password);
-        Settings.DeepLTargetLanguage = DeepLConnection.NormalizeTargetPreference((DeepLTargetLanguage.SelectedItem as ComboBoxItem)?.Tag?.ToString());
+        var targetIndex = DeepLTargetLanguage.SelectedIndex;
+        Settings.DeepLTargetLanguage = DeepLConnection.NormalizeTargetPreference(
+            targetIndex >= 0 && targetIndex < _deepLTargetCodes.Count ? _deepLTargetCodes[targetIndex] : "ui");
     }
     private void PopulateGoogleTranslateLanguages(AppSettings settings)
     {
@@ -659,16 +661,23 @@ public partial class SettingsWindow : Window
     }
     private void PopulateDeepLTargetLanguage(AppSettings settings)
     {
+        // Doar texte simple în listă, ca la celelalte liste citite bine de JAWS; codurile stau în paralel, după index.
         DeepLTargetLanguage.Items.Clear();
-        DeepLTargetLanguage.Items.Add(new ComboBoxItem { Content = T("Limba interfeței aplicației"), Tag = "ui" });
+        _deepLTargetCodes.Clear();
+        DeepLTargetLanguage.Items.Add(T("Limba interfeței aplicației"));
+        _deepLTargetCodes.Add("ui");
         foreach (var language in DeepLConnection.SupportedTargetLanguages)
-            DeepLTargetLanguage.Items.Add(new ComboBoxItem { Content = language.NativeName, Tag = language.Code });
+        {
+            DeepLTargetLanguage.Items.Add(DeepLConnection.TargetDisplayName(language));
+            _deepLTargetCodes.Add(language.Code);
+        }
 
         var targetCode = DeepLConnection.NormalizeTargetPreference(settings.DeepLTargetLanguage);
-        DeepLTargetLanguage.SelectedItem = DeepLTargetLanguage.Items.Cast<ComboBoxItem>()
-            .FirstOrDefault(item => string.Equals(item.Tag?.ToString(), targetCode, StringComparison.OrdinalIgnoreCase))
-            ?? DeepLTargetLanguage.Items[0];
+        var targetIndex = _deepLTargetCodes.FindIndex(item => string.Equals(item, targetCode, StringComparison.OrdinalIgnoreCase));
+        DeepLTargetLanguage.SelectedIndex = targetIndex >= 0 ? targetIndex : 0;
     }
+
+    private readonly List<string> _deepLTargetCodes = [];
     private void SaveGoogleTranslateSettings()
     {
         var source = (GoogleTranslateSourceLanguage.SelectedItem as ComboBoxItem)?.Tag?.ToString();

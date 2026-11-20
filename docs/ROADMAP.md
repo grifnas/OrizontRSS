@@ -1,5 +1,15 @@
 # Foaia de parcurs Orizont RSS
 
+## Opțiuni posibile, nefiind prioritare (noiembrie 2026)
+
+Idei notate pentru mai târziu. Nu sunt în lucru și nu au termen.
+
+### Secvențe din videoclipurile YouTube
+
+- **Varianta A: marcaje cu timp și linkuri.** Utilizatorul introduce secunda de început și de sfârșit; aplicația salvează într-un fișier local titlul, linkul și nota, iar linkul deschide videoclipul la secunda aleasă în browser. Nu se descarcă și nu se copiază nimic din video. Efort mic: câmpuri pentru timp, validare și fișier local.
+- **Varianta B: redarea doar a secvenței în playerul oficial.** Playerul din aplicație pornește de la secunda de început și se oprește la cea de sfârșit. Marcajele se păstrează pe videoclip. Nu se descarcă nimic. Efort mai mare: logica de oprire, marcajele și teste, plus texte în cele opt limbi.
+- **Exclus:** salvarea pe calculator a unui fișier video sau audio al secvenței, pentru că ar însemna descărcarea fluxului de pe YouTube.
+
 ## 2026-11-08 — Versiunea 1.6.7 publicată
 
 - Versiunea publică curentă este 1.6.7 (tag `v1.6.7`, publicată la 8 noiembrie 2026). 1.6.6 este versiunea anterioară. Detalii în docs/PROJECT-STATUS.md.

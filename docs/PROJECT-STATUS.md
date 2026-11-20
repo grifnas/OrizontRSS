@@ -1,5 +1,10 @@
 # Orizont RSS — stare și istoric de proiect
 
+## 2026-11-18 — Scurtături YouTube confirmate cu JAWS
+
+- Confirmat de utilizator: Ctrl+Alt+V deschide lista videoclipurilor canalului YouTube, iar Ctrl+Alt+Y deschide dialogul de căutare YouTube. Ambele sunt în sursă, nepublicate.
+- Tot nepublicate: lista canalului în limba interfeței și butonul „Traducere” din fereastra de transcript. Traducerea cu furnizorul AI implicit este confirmată de utilizator (19 noiembrie 2026); traducerea cu DeepL nu este încă verificată.
+
 ## 2026-11-15 — Verificare JAWS: fereastra de actualizare (remediată în sursă)
 
 - Confirmat de utilizator, în copia de test: notele din „Actualizare disponibilă” se citesc rând cu rând cu săgețile. Cauza a fost lipsa atributului `AcceptsReturn="True"` la caseta notelor, singura casetă numai citire multi-linie fără el.

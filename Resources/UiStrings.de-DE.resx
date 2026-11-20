@@ -552,8 +552,8 @@
   <data name="Folosește săgețile Sus și Jos pentru citire. Tab trece la câmpul pentru continuarea conversației." xml:space="preserve">
     <value>Verwenden Sie zum Lesen die Aufwärts- und Abwärtspfeile. Die Tabulatortaste bewegt sich in das Feld, um die Konversation fortzusetzen.</value>
   </data>
-  <data name="Folosește săgețile Sus și Jos pentru feeduri. Ctrl sau Shift cu săgețile selectează mai multe feeduri. Delete șterge feedurile selectate după confirmare. Tab trece la căutarea din Articole. F6 trece la Articole. Shift+F6 trece la Conținut articol. Ctrl+1 revine aici." xml:space="preserve">
-    <value>Verwenden Sie die Aufwärts- und Abwärtspfeile für Feeds. Ctrl oder Shift mit Pfeilen wählen mehrere Feeds aus. Löschen löscht die ausgewählten Feeds nach Bestätigung. Die Registerkarte wechselt zur Suche in Artikeln. F6 wechselt zu Artikeln. Shift+F6 springt zum Artikelinhalt. Ctrl+1 kehrt hierher zurück.</value>
+  <data name="Folosește săgețile Sus și Jos pentru feeduri. Ctrl sau Shift cu săgețile selectează mai multe feeduri. Delete șterge feedurile selectate după confirmare. F6 trece la Articole. Shift+F6 trece la Conținut articol. Ctrl+1 revine aici." xml:space="preserve">
+    <value>Verwenden Sie die Aufwärts- und Abwärtspfeile für Feeds. Ctrl oder Shift mit Pfeilen wählen mehrere Feeds aus. Löschen löscht die ausgewählten Feeds nach Bestätigung. F6 wechselt zu Artikeln. Shift+F6 springt zum Artikelinhalt. Ctrl+1 kehrt hierher zurück.</value>
   </data>
   <data name="Folosește săgețile Sus și Jos pentru parcurgerea scurtăturilor. Escape închide fereastra." xml:space="preserve">
     <value>Verwenden Sie die Aufwärts- und Abwärtspfeile, um durch die Verknüpfungen zu scrollen. Escape schließt das Fenster.</value>
@@ -5085,13 +5085,14 @@ Später lesen: {4}</value>
   <data name="Descărcarea transcriptului a eșuat cu eroarea {0}." xml:space="preserve"><value>Der Download des Transkripts ist mit Fehler {0} fehlgeschlagen.</value></data>
   <data name="Deschide fereastra de import transcript pentru videoclipul selectat." xml:space="preserve"><value>Öffnet das Transkriptimportfenster für das ausgewählte Video.</value></data>
   <data name="Importă transcript" xml:space="preserve"><value>Transkript importieren</value></data>
+  <data name="Tradu transcriptul de mai jos în limba: {0}. Păstrează rândurile și marcajele de timp, fără comentarii." xml:space="preserve"><value>Übersetze das folgende Transkript in diese Sprache: {0}. Behalte die Zeilen und Zeitmarken bei, ohne Kommentare.</value></data>
+  <data name="Limba țintă a traducerii" xml:space="preserve"><value>Zielsprache der Übersetzung</value></data>
   <data name="Cu furnizorul AI implicit" xml:space="preserve"><value>Mit dem standardmäßigen KI-Anbieter</value></data>
   <data name="Traduce transcriptul cu DeepL sau cu furnizorul AI implicit din setări." xml:space="preserve"><value>Übersetzt das Transkript mit DeepL oder mit dem standardmäßigen KI-Anbieter aus den Einstellungen.</value></data>
   <data name="Se traduce transcriptul cu {0}. Așteaptă." xml:space="preserve"><value>Das Transkript wird mit {0} übersetzt. Bitte warten.</value></data>
   <data name="Transcriptul a fost tradus cu {0}." xml:space="preserve"><value>Das Transkript wurde mit {0} übersetzt.</value></data>
   <data name="Traducerea transcriptului nu a reușit: {0}" xml:space="preserve"><value>Das Transkript konnte nicht übersetzt werden: {0}</value></data>
   <data name="Nu există transcript de tradus." xml:space="preserve"><value>Es gibt kein Transkript zum Übersetzen.</value></data>
-  <data name="Tradu transcriptul de mai jos în limba interfeței. Păstrează rândurile și marcajele de timp, fără comentarii." xml:space="preserve"><value>Übersetze das folgende Transkript in die Oberflächensprache. Behalte die Zeilen und Zeitmarken bei, ohne Kommentare.</value></data>
   <data name="Importul transcriptului nu a reușit: {0}" xml:space="preserve"><value>Der Transkriptimport ist fehlgeschlagen: {0}</value></data>
   <data name="Include timestamp-uri" xml:space="preserve"><value>Zeitmarken einbeziehen</value></data>
   <data name="Limbă schimbată. Apasă Importă transcript pentru a importa din nou." xml:space="preserve"><value>Sprache geändert. Drücke „Transkript importieren“, um es erneut zu importieren.</value></data>

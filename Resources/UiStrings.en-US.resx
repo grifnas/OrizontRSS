@@ -552,8 +552,8 @@
   <data name="Folosește săgețile Sus și Jos pentru citire. Tab trece la câmpul pentru continuarea conversației." xml:space="preserve">
     <value>Use the Up and Down arrows to read. Tab moves to the field to continue the conversation.</value>
   </data>
-  <data name="Folosește săgețile Sus și Jos pentru feeduri. Ctrl sau Shift cu săgețile selectează mai multe feeduri. Delete șterge feedurile selectate după confirmare. Tab trece la căutarea din Articole. F6 trece la Articole. Shift+F6 trece la Conținut articol. Ctrl+1 revine aici." xml:space="preserve">
-    <value>Use the Up and Down arrows for feeds. Ctrl or Shift with arrows selects multiple feeds. Delete deletes the selected feeds after confirmation. Tab switches to searching in Articles. F6 switches to Articles. Shift+F6 switches to Article Content. Ctrl+1 returns here.</value>
+  <data name="Folosește săgețile Sus și Jos pentru feeduri. Ctrl sau Shift cu săgețile selectează mai multe feeduri. Delete șterge feedurile selectate după confirmare. F6 trece la Articole. Shift+F6 trece la Conținut articol. Ctrl+1 revine aici." xml:space="preserve">
+    <value>Use the Up and Down arrows for feeds. Ctrl or Shift with arrows selects multiple feeds. Delete deletes the selected feeds after confirmation. F6 switches to Articles. Shift+F6 switches to Article Content. Ctrl+1 returns here.</value>
   </data>
   <data name="Folosește săgețile Sus și Jos pentru parcurgerea scurtăturilor. Escape închide fereastra." xml:space="preserve">
     <value>Use the Up and Down arrows to scroll through the shortcuts. Escape closes the window.</value>
@@ -5085,13 +5085,14 @@ Read later: {4}</value>
   <data name="Descărcarea transcriptului a eșuat cu eroarea {0}." xml:space="preserve"><value>Transcript download failed with error {0}.</value></data>
   <data name="Deschide fereastra de import transcript pentru videoclipul selectat." xml:space="preserve"><value>Opens the transcript import window for the selected video.</value></data>
   <data name="Importă transcript" xml:space="preserve"><value>Import transcript</value></data>
+  <data name="Tradu transcriptul de mai jos în limba: {0}. Păstrează rândurile și marcajele de timp, fără comentarii." xml:space="preserve"><value>Translate the transcript below into this language: {0}. Keep the lines and timestamps, without comments.</value></data>
+  <data name="Limba țintă a traducerii" xml:space="preserve"><value>Translation target language</value></data>
   <data name="Cu furnizorul AI implicit" xml:space="preserve"><value>With the default AI provider</value></data>
   <data name="Traduce transcriptul cu DeepL sau cu furnizorul AI implicit din setări." xml:space="preserve"><value>Translates the transcript with DeepL or with the default AI provider from settings.</value></data>
   <data name="Se traduce transcriptul cu {0}. Așteaptă." xml:space="preserve"><value>Translating the transcript with {0}. Please wait.</value></data>
   <data name="Transcriptul a fost tradus cu {0}." xml:space="preserve"><value>The transcript was translated with {0}.</value></data>
   <data name="Traducerea transcriptului nu a reușit: {0}" xml:space="preserve"><value>The transcript could not be translated: {0}</value></data>
   <data name="Nu există transcript de tradus." xml:space="preserve"><value>There is no transcript to translate.</value></data>
-  <data name="Tradu transcriptul de mai jos în limba interfeței. Păstrează rândurile și marcajele de timp, fără comentarii." xml:space="preserve"><value>Translate the transcript below into the interface language. Keep the lines and timestamps, without comments.</value></data>
   <data name="Importul transcriptului nu a reușit: {0}" xml:space="preserve"><value>Transcript import failed: {0}</value></data>
   <data name="Include timestamp-uri" xml:space="preserve"><value>Include timestamps</value></data>
   <data name="Limbă schimbată. Apasă Importă transcript pentru a importa din nou." xml:space="preserve"><value>Language changed. Press Import transcript to import again.</value></data>

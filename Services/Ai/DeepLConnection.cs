@@ -79,6 +79,24 @@ public sealed class DeepLConnection
         new("TR", "Türkçe"), new("UK", "Українська"), new("ZH", "中文")
     ];
 
+    /// <summary>
+    /// Numele afișat al unei limbi țintă: numele în limba interfeței, cu numele nativ în paranteză, ca lista Google Translate.
+    /// Listele care citesc textul cu JAWS primesc astfel un text tradus, nu doar „Română”.
+    /// </summary>
+    public static string TargetDisplayName(DeepLTargetLanguage language)
+    {
+        var googleCode = language.Code.ToUpperInvariant() switch
+        {
+            "EN-US" => "en",
+            "PT-BR" => "pt",
+            "NB" => "no",
+            "ZH" => "zh-CN",
+            var code => code.ToLowerInvariant()
+        };
+        return GoogleTranslateConnection.SupportedLanguages.FirstOrDefault(item => item.Code == googleCode)?.DisplayName
+            ?? language.NativeName;
+    }
+
     /// <summary>Păstrează „ui” sau un cod DeepL valid; orice altă valoare revine la limba interfeței.</summary>
     public static string NormalizeTargetPreference(string? selection)
     {

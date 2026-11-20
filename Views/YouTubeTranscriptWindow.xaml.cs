@@ -17,11 +17,18 @@ public partial class YouTubeTranscriptWindow : Window
     private CancellationTokenSource? _loadCancellation;
     private CancellationTokenSource? _translationCancellation;
     private bool _transcriptLoadedFromSelectedTrack;
+    // Listele conțin doar textul afișat, ca lista „Tip căutare” din căutarea YouTube, pe care JAWS o citește la săgeți.
+    // Obiectele din spatele fiecărui rând sunt păstrate aici, în aceeași ordine.
+    private List<YouTubeTranscriptService.TranscriptTrack> _tracks = [];
+    private readonly List<string> _translationTargetCodes = [];
 
     public YouTubeTranscriptWindow(YouTubeVideoSearchService.YouTubeVideoCandidate video)
     {
         _video = video;
         InitializeComponent();
+        PopulateTranslationTargets();
+        ComboBoxSelectionAnnouncer.Attach(TranscriptLanguage);
+        ComboBoxSelectionAnnouncer.Attach(TranslationTarget);
         WindowStatusAnnouncer.Attach(this, () =>
             UiText.Translate("Transcript YouTube") + " " +
             UiText.Translate("Folosește Tab pentru a parcurge comenzile."));
@@ -40,6 +47,9 @@ public partial class YouTubeTranscriptWindow : Window
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
         VideoTitleLabel.Text = _video.Title;
+        // Limba țintă pornește de la preferința DeepL din Setări; utilizatorul o poate schimba pentru acest transcript.
+        try { SelectTranslationTarget((await new FeedStore().LoadSettingsAsync()).DeepLTargetLanguage); }
+        catch (Exception) { SelectTranslationTarget("ui"); }
         StatusText.Text = T("Se încarcă limbile disponibile...");
 
         if (_loadCancellation is not null) return;
@@ -49,10 +59,10 @@ public partial class YouTubeTranscriptWindow : Window
         try
         {
             var tracks = await YouTubeTranscriptService.GetAvailableTracksAsync(_video.VideoId, cancellation.Token);
+            _tracks = tracks;
             TranscriptLanguage.Items.Clear();
             foreach (var track in tracks)
-                TranscriptLanguage.Items.Add(track);
-            TranscriptLanguage.DisplayMemberPath = nameof(YouTubeTranscriptService.TranscriptTrack.DisplayName);
+                TranscriptLanguage.Items.Add(track.DisplayName);
             TranscriptLanguage.SelectedIndex = 0;
             TranscriptLanguage.IsEnabled = true;
             IncludeTimestamps.IsEnabled = true;
@@ -95,7 +105,8 @@ public partial class YouTubeTranscriptWindow : Window
 
     private async void LoadTranscript_Click(object sender, RoutedEventArgs e)
     {
-        if (TranscriptLanguage.SelectedItem is not YouTubeTranscriptService.TranscriptTrack track)
+        var trackIndex = TranscriptLanguage.SelectedIndex;
+        if (trackIndex < 0 || trackIndex >= _tracks.Count)
         {
             StatusText.Text = T("Selectează o limbă din lista de subtitrări.");
             TranscriptLanguage.Focus();
@@ -111,7 +122,7 @@ public partial class YouTubeTranscriptWindow : Window
         try
         {
             var includeTimestamps = IncludeTimestamps.IsChecked == true;
-            var text = await YouTubeTranscriptService.GetTranscriptAsync(track.BaseUrl, includeTimestamps, cancellation.Token);
+            var text = await YouTubeTranscriptService.GetTranscriptAsync(_tracks[trackIndex].BaseUrl, includeTimestamps, cancellation.Token);
             TranscriptText.Text = text;
             _transcriptLoadedFromSelectedTrack = true;
             CopyButton.IsEnabled = text.Length > 0;
@@ -222,6 +233,8 @@ public partial class YouTubeTranscriptWindow : Window
         }
     }
 
+    private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
     private void Window_KeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Escape) return;
@@ -249,6 +262,30 @@ public partial class YouTubeTranscriptWindow : Window
     // Traducere
     // ───────────────────────────────────────────────
 
+    // Aceeași listă ca la limba țintă DeepL din Setări: limba interfeței, apoi limbile acceptate de DeepL.
+    // Furnizorul AI primește numele limbii alese, deci folosește aceeași listă.
+    private void PopulateTranslationTargets()
+    {
+        TranslationTarget.Items.Clear();
+        _translationTargetCodes.Clear();
+        TranslationTarget.Items.Add(T("Limba interfeței aplicației"));
+        _translationTargetCodes.Add("ui");
+        foreach (var language in DeepLConnection.SupportedTargetLanguages)
+        {
+            TranslationTarget.Items.Add(DeepLConnection.TargetDisplayName(language));
+            _translationTargetCodes.Add(language.Code);
+        }
+        TranslationTarget.SelectedIndex = 0;
+    }
+
+
+    private void SelectTranslationTarget(string? preference)
+    {
+        var code = DeepLConnection.NormalizeTargetPreference(preference);
+        var index = _translationTargetCodes.FindIndex(item => string.Equals(item, code, StringComparison.OrdinalIgnoreCase));
+        TranslationTarget.SelectedIndex = index >= 0 ? index : 0;
+    }
+
     private void Translate_Click(object sender, RoutedEventArgs e)
     {
         TranslateMenu.PlacementTarget = TranslateButton;
@@ -271,6 +308,12 @@ public partial class YouTubeTranscriptWindow : Window
         }
 
         var settings = await new FeedStore().LoadSettingsAsync();
+        var targetIndex = TranslationTarget.SelectedIndex;
+        var targetCode = DeepLConnection.NormalizeTargetPreference(
+            targetIndex >= 0 && targetIndex < _translationTargetCodes.Count ? _translationTargetCodes[targetIndex] : "ui");
+        var targetName = targetCode == "ui"
+            ? System.Globalization.CultureInfo.CurrentUICulture.NativeName
+            : TranslationTarget.SelectedItem as string ?? targetCode;
         string providerName;
         Func<CancellationToken, Task<string>> translate;
 
@@ -294,7 +337,7 @@ public partial class YouTubeTranscriptWindow : Window
                 StatusText.Text = T("Nu există o cheie DeepL salvată. Deschide Setări Inteligență artificială.");
                 return;
             }
-            var targetLanguage = DeepLConnection.ResolveTargetLanguage(settings.DeepLTargetLanguage);
+            var targetLanguage = DeepLConnection.ResolveTargetLanguage(targetCode);
             translate = cancellation => new DeepLConnection().TranslateAsync(deepLKey, source, targetLanguage, cancellation);
         }
         else
@@ -338,7 +381,7 @@ public partial class YouTubeTranscriptWindow : Window
                 StatusText.Text = F("Nu există o cheie API pentru {0}. Deschide Setări Inteligență artificială.", providerName);
                 return;
             }
-            var prompt = $"{T("Tradu transcriptul de mai jos în limba interfeței. Păstrează rândurile și marcajele de timp, fără comentarii.")}\n\n{source}";
+            var prompt = $"{F("Tradu transcriptul de mai jos în limba: {0}. Păstrează rândurile și marcajele de timp, fără comentarii.", targetName)}\n\n{source}";
             var instructions = settings.AiInstructions;
             translate = cancellation => new AiProviderService().GenerateAsync(provider, aiKey, model, instructions, prompt, cancellation);
         }

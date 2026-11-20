@@ -58,8 +58,9 @@ internal static class Program
         finally { File.Delete(temp); }
         var window = new ShortcutSettingsWindow(new AppSettings { Shortcuts = custom });
         var list = (ListBox)window.FindName("Commands");
-        Check(list.Items.Count == 22 && list.Items.Count == ShortcutBindings.Definitions.Count, "All supported commands listed");
+        Check(list.Items.Count == 23 && list.Items.Count == ShortcutBindings.Definitions.Count, "All supported commands listed");
         Check(ShortcutBindings.Gesture("ChannelVideos", empty) == "Ctrl+Alt+V", "Channel videos default shortcut is Ctrl+Alt+V");
+        Check(ShortcutBindings.Gesture("YouTubeSearch", empty) == "Ctrl+Alt+Y", "YouTube search default shortcut is Ctrl+Alt+Y");
         list.ApplyTemplate(); list.Measure(new Size(700, 400)); list.Arrange(new Rect(0, 0, 700, 400)); list.UpdateLayout();
         var row = (ListBoxItem)list.ItemContainerGenerator.ContainerFromIndex(0);
         var name = System.Windows.Automation.Peers.FrameworkElementAutomationPeer.CreatePeerForElement(row)?.GetName();

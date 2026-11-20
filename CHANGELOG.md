@@ -30,4 +30,6 @@ Release-ul public v1.6.7 a fost disponibil pe [GitHub Releases](https://github.c
 
 ## Lucrări nepublicate după v1.6.8
 
-Nicio lucrare nepublicată deocamdată.
+- Ctrl+Alt+V deschide lista videoclipurilor canalului YouTube selectat, iar Ctrl+Alt+Y deschide dialogul de căutare YouTube. Ambele scurtături sunt configurabile și confirmate cu JAWS de utilizator.
+- Lista videoclipurilor canalului cere titlurile în limba interfeței, nu în engleză.
+- Fereastra de transcript are butonul „Traducere”, cu DeepL sau cu furnizorul AI implicit din setări. Traducerea cu furnizorul AI este confirmată de utilizator; cea cu DeepL nu este încă verificată.
